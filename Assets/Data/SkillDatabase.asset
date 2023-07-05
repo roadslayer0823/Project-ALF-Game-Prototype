@@ -12,4 +12,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5030ffc2280e547cb88842a3200b9f12, type: 3}
   m_Name: SkillDatabase
   m_EditorClassIdentifier: 
-  skillDataList: []
+  skillDataArray:
+  - elementName: 'ID: 1'
+    id: 1
+    skillName: "\u96FB\u78C1\u7246"
+    skillType: 1
+    actionPointCost: 1
+  - elementName: 'ID: 2'
+    id: 2
+    skillName: "\u8D64\u7130\u7A7A\u7259"
+    skillType: 1
+    actionPointCost: 2
+  - elementName: 'ID: 3'
+    id: 3
+    skillName: "\u706B\u708E\u6C23\u529F\u5F48"
+    skillType: 1
+    actionPointCost: 3
+  - elementName: 'ID: 4'
+    id: 4
+    skillName: "\u9632\u79A6"
+    skillType: 2
+    actionPointCost: 1
+  - elementName: 'ID: 5'
+    id: 5
+    skillName: "\u8FF4\u907F"
+    skillType: 2
+    actionPointCost: 2
+  - elementName: 'ID: 6'
+    id: 6
+    skillName: "\u53CD\u64CA"
+    skillType: 2
+    actionPointCost: 3

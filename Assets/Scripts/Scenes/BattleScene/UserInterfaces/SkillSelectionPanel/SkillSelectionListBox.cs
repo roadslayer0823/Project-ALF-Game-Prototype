@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class SkillSelectionListBox : MonoBehaviour
 {
+    [Header( "Settings" )]
+    [SerializeField] private float itemHeight = 100.0f;
+
+    [Header( "References" )]
     [SerializeField] private RectTransform skillSelectionBoxContainer = null;
     [SerializeField] private SkillSelectionBox skillSelectionBoxPrefab = null;
 
@@ -17,6 +21,9 @@ public class SkillSelectionListBox : MonoBehaviour
 
         for (int i = 0; i < characterSkills.Length; i++)
         {
+            GameObject _skillSelectionBoxObj = Instantiate( skillSelectionBoxPrefabObject, skillSelectionBoxContainer, false );
+            _skillSelectionBoxObj.GetComponent<RectTransform>().anchoredPosition = new Vector2( 0.0f, i * itemHeight );
+            _skillSelectionBoxObj.GetComponent<SkillSelectionBox>().Initialize( this, characterSkills[ i ] );
         }
     }
 

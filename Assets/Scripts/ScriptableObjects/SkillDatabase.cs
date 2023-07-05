@@ -5,7 +5,21 @@ using UnityEngine;
 [CreateAssetMenu( fileName = "SkillDatabase", menuName = "ScriptableObjects/SkillDatabase", order = 1 )]
 public class SkillDatabase : ScriptableObject
 {
-    [SerializeField] private SkillData[] skillDataList = new SkillData[ 0 ];
+    [SerializeField] private SkillData[] skillDataArray = new SkillData[ 0 ];
+
+    public SkillData GetSkillDataById( int id )
+    {
+        for (int i = 0; i < skillDataArray.Length; i++)
+        {
+            SkillData skillData = skillDataArray[ i ];
+            if (skillData.GetId() == id)
+            {
+                return skillData;
+            }
+        }
+
+        return null;
+    }
 
     [System.Serializable]
     public class SkillData : ISerializationCallbackReceiver

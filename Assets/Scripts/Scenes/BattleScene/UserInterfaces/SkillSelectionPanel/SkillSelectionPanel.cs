@@ -31,10 +31,10 @@ public class SkillSelectionPanel : MonoBehaviour
             {
                 backendSkillList.Add( characterSkill );
             }
-
-            this.activeSkillSelectionTab.Initialize( this, activeSkillList.ToArray() );
-            this.backendSkillSelectionTab.Initialize( this, backendSkillList.ToArray() );
         }
+
+        this.activeSkillSelectionTab.Initialize( this, activeSkillList.ToArray() );
+        this.backendSkillSelectionTab.Initialize( this, backendSkillList.ToArray() );
     }
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
