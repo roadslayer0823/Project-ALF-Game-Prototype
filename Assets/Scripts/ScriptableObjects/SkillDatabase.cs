@@ -14,6 +14,7 @@ public class SkillDatabase : ScriptableObject
         [SerializeField] private int id = 0;
         [SerializeField] private string skillName = "";
         [SerializeField] private SkillType skillType = SkillType.None;
+        [SerializeField] private int actionPointCost = 0;
 
         public enum SkillType
         {
@@ -35,6 +36,26 @@ public class SkillDatabase : ScriptableObject
         private void UpdateElementName()
         {
             elementName = "ID: " + id.ToString();
+        }
+
+        public int GetId()
+        {
+            return this.id;
+        }
+
+        public string GetSkillName()
+        {
+            return this.skillName;
+        }
+
+        public SkillType GetSkillType()
+        {
+            return this.skillType;
+        }
+
+        public int GetActionPointCost()
+        {
+            return this.actionPointCost;
         }
     }
 }

@@ -2,10 +2,8 @@ using UnityEngine;
 
 public class PlayerCharacter : GameCharacter
 {
-    public PlayerCharacter( int id, float healthPoint, float actionPoint )
+    public PlayerCharacter( int id, float maximumHealthPoint, float maximumActionPoint )
     {
-        base.id = id;
-        base.healthPoint = healthPoint;
-        base.actionPoint = actionPoint;
+        base.Initialize( id, maximumHealthPoint, maximumActionPoint );
     }
 }

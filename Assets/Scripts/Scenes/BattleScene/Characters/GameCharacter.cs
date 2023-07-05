@@ -3,32 +3,39 @@ using UnityEngine;
 public class GameCharacter : MonoBehaviour
 {
     protected int id = 0;
-    protected float healthPoint = 0.0f;
-    protected float actionPoint = 0.0f;
+    protected float maximumHealthPoint = 0.0f;
+    protected float remainingHealthPoint = 0.0f;
+    protected float maximumActionPoint = 0.0f;
+    protected float remainingActionPoint = 0.0f;
     protected CharacterSkill[] skills = null;
 
-    public GameCharacter()
+    public void Initialize( int id, float maximumHealthPoint, float maximumActionPoint )
     {
+        this.id = id;
+        this.maximumHealthPoint = maximumHealthPoint;
+        this.remainingHealthPoint = maximumHealthPoint;
+        this.maximumActionPoint = maximumActionPoint;
+        this.remainingActionPoint = maximumActionPoint;
     }
 
-    public void AddHealthPoint( float amount )
+    public void AddRemainingHealthPoint( float amount )
     {
-        this.healthPoint += amount;
+        this.remainingHealthPoint += amount;
     }
 
-    public void MinusHealthPoint( float amount )
+    public void MinusRemainingHealthPoint( float amount )
     {
-        this.healthPoint -= amount;
+        this.remainingHealthPoint -= amount;
     }
 
-    public void AddActionPoint( float amount )
+    public void AddRemainingActionPoint( float amount )
     {
-        this.actionPoint += amount;
+        this.remainingActionPoint += amount;
     }
 
-    public void MinusActionPoint( float amount )
+    public void MinusRemainingActionPoint( float amount )
     {
-        this.actionPoint -= amount;
+        this.remainingActionPoint -= amount;
     }
 
     public int GetId()
@@ -36,13 +43,18 @@ public class GameCharacter : MonoBehaviour
         return this.id;
     }
 
-    public float GetHealthPoint()
+    public float GetMaximumHealthPoint()
     {
-        return this.healthPoint;
+        return this.maximumHealthPoint;
     }
 
-    public float GetActionPoint()
+    public float GetMaximumActionPoint()
     {
-        return this.actionPoint;
+        return this.maximumActionPoint;
+    }
+
+    public CharacterSkill[] GetSkills()
+    {
+        return skills;
     }
 }
