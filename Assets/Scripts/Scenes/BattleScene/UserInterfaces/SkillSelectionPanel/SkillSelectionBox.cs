@@ -9,6 +9,7 @@ public class SkillSelectionBox : MonoBehaviour
 
     public void Initialize( SkillSelectionListBox skillSelectionListBox, CharacterSkill characterSkill )
     {
+        this.skillSelectionListBox = skillSelectionListBox;
         this.characterSkill = characterSkill;
         this.isSelected = false;
     }

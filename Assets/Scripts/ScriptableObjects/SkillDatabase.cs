@@ -49,7 +49,7 @@ public class SkillDatabase : ScriptableObject
 
         private void UpdateElementName()
         {
-            elementName = "ID: " + id.ToString();
+            this.elementName = "ID: " + this.id.ToString();
         }
 
         public int GetId()

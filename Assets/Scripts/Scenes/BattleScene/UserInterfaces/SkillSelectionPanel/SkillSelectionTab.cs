@@ -9,9 +9,15 @@ public class SkillSelectionTab : MonoBehaviour
 
     private SkillSelectionPanel skillSelectionPanel = null;
 
-    public void Initialize( SkillSelectionPanel skillSelectionPanel, CharacterSkill[] characterSkills )
+    public void Initialize( SkillSelectionPanel skillSelectionPanel )
     {
-        skillSelectionListBox.Initialize( this, characterSkills );
+        this.skillSelectionPanel = skillSelectionPanel;
+        skillSelectionListBox.Initialize( this );
+    }
+
+    public void Show( CharacterSkill[] characterSkills )
+    {
+        skillSelectionListBox.Show( characterSkills );
     }
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
