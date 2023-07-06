@@ -49,6 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bf8cb49d54494b65b26dd92b06837a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemHeight: 100
   skillSelectionBoxContainer: {fileID: 929896806740624366}
   skillSelectionBoxPrefab: {fileID: 3436927454122306116, guid: 81b2af1036ddf403e9e1fcbd496ba4ff, type: 3}
 --- !u!1 &929896807347168622
