@@ -4,25 +4,18 @@ using UnityEngine;
 
 public class BattleUiManager : MonoBehaviour
 {
-    [SerializeField] private SkillSelectionPanel skillSelectionPanel;
+    [SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
 
     private BattleGameManager battleGameManager = null;
 
     public void Initialize( BattleGameManager battleGameManager )
     {
-        SkillDatabase skillDatabase = battleGameManager.GetSkillDatabase();
-        List<CharacterSkill> characterSkillList = new List<CharacterSkill>();
-
-        for (int i = 1; i <= 6; i++)
-        {
-            characterSkillList.Add( new CharacterSkill( skillDatabase.GetSkillDataById( i ) ) );
-        }
-
-        skillSelectionPanel.Initialize( characterSkillList.ToArray(), OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
+        skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
     }
 
     public void ShowSkillSelectionPanel( GameCharacter gameCharacter )
     {
+        skillSelectionPanel.Show( gameCharacter.GetSkills() );
     }
 
     public void OnSkillSelectedFromSkillSelectionPanel( SkillSelectionBox skillSelectionBox )

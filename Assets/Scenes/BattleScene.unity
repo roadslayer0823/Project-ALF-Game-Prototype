@@ -166,7 +166,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &794048804
 GameObject:
@@ -250,7 +250,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1050411301
 GameObject:
@@ -346,7 +346,7 @@ RectTransform:
   m_Children:
   - {fileID: 1522554463}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -424,7 +424,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1979657849
 GameObject:
@@ -457,6 +457,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   battleUiManager: {fileID: 528806169}
   skillDatabase: {fileID: 11400000, guid: 55edbe0ccc527401a97d77ee599aa6fe, type: 2}
+  characterDatabase: {fileID: 11400000, guid: 7e86b605f7fb74caf8d9ccf7639c5223, type: 2}
 --- !u!4 &1979657851
 Transform:
   m_ObjectHideFlags: 0
@@ -470,7 +471,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5459260373622127483
 PrefabInstance:

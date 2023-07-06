@@ -15,15 +15,33 @@ public class SkillSelectionListBox : MonoBehaviour
     private List<SkillSelectionBox> skillSelectionBoxList = null;
     private GameObject skillSelectionBoxPrefabObject = null;
 
-    public void Initialize( SkillSelectionTab skillSelectionTab, CharacterSkill[] characterSkills )
+    public void Initialize( SkillSelectionTab skillSelectionTab )
     {
-        skillSelectionBoxPrefabObject = skillSelectionBoxPrefab.gameObject;
+        this.skillSelectionTab = skillSelectionTab;
+        this.skillSelectionBoxPrefabObject = this.skillSelectionBoxPrefab.gameObject;
+    }
+
+    public void Show( CharacterSkill[] characterSkills )
+    {
+        if (this.skillSelectionBoxList != null)
+        {
+            for (int i = 0; i < skillSelectionBoxList.Count; i++)
+            {
+                Destroy( skillSelectionBoxList[ i ].gameObject );
+            }
+        }
+
+        this.skillSelectionBoxList = new List<SkillSelectionBox>();
 
         for (int i = 0; i < characterSkills.Length; i++)
         {
-            GameObject _skillSelectionBoxObj = Instantiate( skillSelectionBoxPrefabObject, skillSelectionBoxContainer, false );
-            _skillSelectionBoxObj.GetComponent<RectTransform>().anchoredPosition = new Vector2( 0.0f, i * itemHeight );
-            _skillSelectionBoxObj.GetComponent<SkillSelectionBox>().Initialize( this, characterSkills[ i ] );
+            GameObject _skillSelectionBoxObj = Instantiate( this.skillSelectionBoxPrefabObject, this.skillSelectionBoxContainer, false );
+            _skillSelectionBoxObj.GetComponent<RectTransform>().anchoredPosition = new Vector2( 0.0f, i * this.itemHeight );
+
+            SkillSelectionBox skillSelectionBox = _skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
+            skillSelectionBox.Initialize( this, characterSkills[ i ] );
+
+            skillSelectionBoxList.Add( skillSelectionBox );
         }
     }
 

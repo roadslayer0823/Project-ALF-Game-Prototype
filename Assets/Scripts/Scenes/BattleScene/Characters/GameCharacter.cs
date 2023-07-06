@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GameCharacter : MonoBehaviour
@@ -9,13 +10,22 @@ public class GameCharacter : MonoBehaviour
     protected float remainingActionPoint = 0.0f;
     protected CharacterSkill[] skills = null;
 
-    public void Initialize( int id, float maximumHealthPoint, float maximumActionPoint )
+    public void Initialize( CharacterDatabase.CharacterData characterData, SkillDatabase skillDatabase )
     {
-        this.id = id;
-        this.maximumHealthPoint = maximumHealthPoint;
-        this.remainingHealthPoint = maximumHealthPoint;
-        this.maximumActionPoint = maximumActionPoint;
-        this.remainingActionPoint = maximumActionPoint;
+        this.id = characterData.GetId();
+        this.maximumHealthPoint = characterData.GetMaximumHealthPoint();
+        this.remainingHealthPoint = this.maximumHealthPoint;
+        this.maximumActionPoint = characterData.GetMaximumActionPoint();
+        this.remainingActionPoint = this.maximumActionPoint;
+
+        List<CharacterSkill> _skillList = new List<CharacterSkill>();
+        int[] _skillIdArray = characterData.GetSkillIdArray();
+        for (int i = 0; i < _skillIdArray.Length; i++)
+        {
+            _skillList.Add( new CharacterSkill( skillDatabase.GetSkillDataById( _skillIdArray[ i ] ) ) );
+        }
+
+        skills = _skillList.ToArray();
     }
 
     public void AddRemainingHealthPoint( float amount )

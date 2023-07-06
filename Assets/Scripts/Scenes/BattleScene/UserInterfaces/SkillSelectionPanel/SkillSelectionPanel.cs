@@ -10,11 +10,17 @@ public class SkillSelectionPanel : MonoBehaviour
     private Action<SkillSelectionBox> onSkillSelectedCallback = null;
     private Action<SkillSelectionBox> onSkillDeselectedCallback = null;
 
-    public void Initialize( CharacterSkill[] characterSkills, Action<SkillSelectionBox> onSkillSelectedCallback, Action<SkillSelectionBox> onSkillDeselectedCallback )
+    public void Initialize( Action<SkillSelectionBox> onSkillSelectedCallback, Action<SkillSelectionBox> onSkillDeselectedCallback )
     {
         this.onSkillSelectedCallback = onSkillSelectedCallback;
         this.onSkillDeselectedCallback = onSkillDeselectedCallback;
 
+        this.activeSkillSelectionTab.Initialize( this );
+        this.backendSkillSelectionTab.Initialize( this );
+    }
+
+    public void Show( CharacterSkill[] characterSkills )
+    {
         List<CharacterSkill> activeSkillList = new List<CharacterSkill>();
         List<CharacterSkill> backendSkillList = new List<CharacterSkill>();
 
@@ -33,8 +39,8 @@ public class SkillSelectionPanel : MonoBehaviour
             }
         }
 
-        this.activeSkillSelectionTab.Initialize( this, activeSkillList.ToArray() );
-        this.backendSkillSelectionTab.Initialize( this, backendSkillList.ToArray() );
+        this.activeSkillSelectionTab.Show( activeSkillList.ToArray() );
+        this.backendSkillSelectionTab.Show( backendSkillList.ToArray() );
     }
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
