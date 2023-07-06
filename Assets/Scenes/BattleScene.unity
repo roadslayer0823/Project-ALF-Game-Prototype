@@ -123,6 +123,48 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &273914591
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1050411305}
+    m_Modifications:
+    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5459260374809095461, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
+      propertyPath: m_Name
+      value: SkillSelectionPanel
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
+--- !u!224 &273914592 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
+  m_PrefabInstance: {fileID: 273914591}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &528806168
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 784e4c3a98162407b89a5ebe1990b8af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillSelectionPanel: {fileID: 5459260373622127484}
+  skillSelectionPanel: {fileID: 0}
 --- !u!4 &528806170
 Transform:
   m_ObjectHideFlags: 0
@@ -344,7 +386,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1522554463}
+  - {fileID: 273914592}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -353,11 +395,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!224 &1522554463 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
-  m_PrefabInstance: {fileID: 5459260373622127483}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1919517767
 GameObject:
   m_ObjectHideFlags: 0
@@ -473,51 +510,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &5459260373622127483
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 1050411305}
-    m_Modifications:
-    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5459260374809095460, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5459260374809095461, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
-      propertyPath: m_Name
-      value: SkillSelectionPanel
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
---- !u!114 &5459260373622127484 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5459260374809095451, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
-  m_PrefabInstance: {fileID: 5459260373622127483}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2214a86184e844892adde7361a6e68ce, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
