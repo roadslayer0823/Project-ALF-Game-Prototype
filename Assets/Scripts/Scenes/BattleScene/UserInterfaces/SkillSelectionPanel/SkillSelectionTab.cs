@@ -12,21 +12,35 @@ public class SkillSelectionTab : MonoBehaviour
     public void Initialize( SkillSelectionPanel skillSelectionPanel )
     {
         this.skillSelectionPanel = skillSelectionPanel;
-        skillSelectionListBox.Initialize( this );
+        this.skillSelectionListBox.Initialize( this );
+    }
+
+    private void Start()
+    {
+        this.skillInfoPanel.Hide();
     }
 
     public void Show( CharacterSkill[] characterSkills )
     {
-        skillSelectionListBox.Show( characterSkills );
+        this.skillSelectionListBox.Show( characterSkills );
     }
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
-        skillSelectionPanel.OnSkillSelected( skillSelectionBox );
+        this.skillSelectionPanel.OnSkillSelected( skillSelectionBox );
+
+        this.skillInfoPanel.Show(skillSelectionBox.GetCharacterSkill());
     }
 
     public void OnSkillDeselected( SkillSelectionBox skillSelectionBox )
     {
         skillSelectionPanel.OnSkillDeselected( skillSelectionBox );
+
+        this.skillInfoPanel.Show(skillSelectionBox.GetCharacterSkill());
+    }
+
+    public void HideSkillInfoPanel()
+    {
+        this.skillInfoPanel.Hide();
     }
 }

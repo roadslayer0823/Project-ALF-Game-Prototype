@@ -156,22 +156,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1201968597368767243, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
-      propertyPath: m_Color.a
-      value: 0.39215687
-      objectReference: {fileID: 0}
-    - target: {fileID: 1201968597368767243, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1201968597368767243, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
-      propertyPath: m_Color.g
-      value: 0.6431373
-      objectReference: {fileID: 0}
-    - target: {fileID: 1201968597368767243, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
-      propertyPath: m_Color.r
-      value: 0.5803922
-      objectReference: {fileID: 0}
     - target: {fileID: 8733212395479183965, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
       propertyPath: m_Name
       value: ActiveSkillSelectionTabButton
@@ -183,66 +167,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 538135516510068507, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
   m_PrefabInstance: {fileID: 3267695509206966642}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4465160505463186041 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1201968597368767243, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
-  m_PrefabInstance: {fileID: 3267695509206966642}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6083155453124580143}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!1 &6083155453124580143 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8733212395479183965, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
-  m_PrefabInstance: {fileID: 3267695509206966642}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7335172677374139938
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6083155453124580143}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
-  m_Colors:
-    m_NormalColor: {r: 0.44705886, g: 0.48627454, b: 0.62352943, a: 1}
-    m_HighlightedColor: {r: 0.44705883, g: 0.5641713, b: 0.62352943, a: 1}
-    m_PressedColor: {r: 0.54901963, g: 0.6039216, b: 0.76470596, a: 1}
-    m_SelectedColor: {r: 0.54901963, g: 0.6039216, b: 0.76470596, a: 1}
-    m_DisabledColor: {r: 0.44705886, g: 0.48627454, b: 0.62352943, a: 1}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 4465160505463186041}
-  m_OnClick:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1001 &4744007470880472416
 PrefabInstance:
   m_ObjectHideFlags: 0

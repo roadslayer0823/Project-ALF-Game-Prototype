@@ -10,6 +10,7 @@ public class SkillSelectionListBox : MonoBehaviour
     [Header( "References" )]
     [SerializeField] private RectTransform skillSelectionBoxContainer = null;
     [SerializeField] private SkillSelectionBox skillSelectionBoxPrefab = null;
+    [SerializeField] private RectTransform containerContent = null;
 
     private SkillSelectionTab skillSelectionTab = null;
     private List<SkillSelectionBox> skillSelectionBoxList = null;
@@ -35,10 +36,10 @@ public class SkillSelectionListBox : MonoBehaviour
 
         for (int i = 0; i < characterSkills.Length; i++)
         {
-            GameObject _skillSelectionBoxObj = Instantiate( this.skillSelectionBoxPrefabObject, this.skillSelectionBoxContainer, false );
-            _skillSelectionBoxObj.GetComponent<RectTransform>().anchoredPosition = new Vector2( 0.0f, i * this.itemHeight );
+            GameObject skillSelectionBoxObj = Instantiate( this.skillSelectionBoxPrefabObject, this.containerContent, false );
+            skillSelectionBoxObj.GetComponent<RectTransform>().anchoredPosition = new Vector2( 0.0f, i * this.itemHeight );
 
-            SkillSelectionBox skillSelectionBox = _skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
+            SkillSelectionBox skillSelectionBox = skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
             skillSelectionBox.Initialize( this, characterSkills[ i ] );
 
             skillSelectionBoxList.Add( skillSelectionBox );
