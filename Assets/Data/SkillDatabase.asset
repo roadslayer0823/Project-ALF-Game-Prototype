@@ -43,3 +43,18 @@ MonoBehaviour:
     skillName: "\u53CD\u64CA"
     skillType: 2
     actionPointCost: 3
+  - elementName: 'ID: 7'
+    id: 7
+    skillName: "\u706B\u708E"
+    skillType: 1
+    actionPointCost: 3
+  - elementName: 'ID: 8'
+    id: 8
+    skillName: "\u6C23\u529F\u5F48"
+    skillType: 1
+    actionPointCost: 3
+  - elementName: 'ID: 9'
+    id: 9
+    skillName: "\u6C23\u529F"
+    skillType: 2
+    actionPointCost: 3
