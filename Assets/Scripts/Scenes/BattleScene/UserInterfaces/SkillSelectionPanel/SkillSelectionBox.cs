@@ -5,7 +5,12 @@ using UnityEngine.EventSystems;
 
 public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 {
+    [Header("Settings")]
+    [SerializeField] private float boxHeight = 150f;
+
+    [Header("")]
     [SerializeField] private TextMeshProUGUI skillNameText;
+    [SerializeField] private TextMeshProUGUI skillTypeText;
     [SerializeField] private TextMeshProUGUI selectionText;
 
     private SkillSelectionListBox skillSelectionListBox = null;
@@ -21,10 +26,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     private void Start()
     {
-        this.skillNameText.SetText(characterSkill.GetSkillData().GetSkillName());
-
-        RectTransform rectTransform = GetComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(0, 200f);
+        SetupSkillSelectionBox();
     }
 
     public void ClickToToggle()
@@ -87,5 +89,21 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         {
             this.selectionText.gameObject.SetActive(false);
         }
+    }
+
+    // To mark the selected skill back to deselected if it failed to add into the SelectedSkillList.
+    public void MarkDeselected()
+    {
+        this.isSelected = false;
+    }
+
+    // Set the skill data that needed to display into TMP.
+    private void SetupSkillSelectionBox()
+    {
+        RectTransform rectTransform = GetComponent<RectTransform>();
+        rectTransform.sizeDelta = new Vector2(0, this.boxHeight);
+
+        this.skillNameText.SetText(characterSkill.GetSkillData().GetSkillName());
+        this.skillTypeText.SetText("[" + characterSkill.GetSkillData().GetSkillType().ToString() + "]");
     }
 }

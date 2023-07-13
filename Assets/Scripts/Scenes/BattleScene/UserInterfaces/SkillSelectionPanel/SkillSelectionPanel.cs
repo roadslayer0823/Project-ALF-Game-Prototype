@@ -19,6 +19,9 @@ public class SkillSelectionPanel : MonoBehaviour
     private Action<SkillSelectionBox> onSkillSelectedCallback = null;
     private Action<SkillSelectionBox> onSkillDeselectedCallback = null;
 
+    private List<SkillSelectionBox> selectedActiveSkillList = new List<SkillSelectionBox>();
+    private List<SkillSelectionBox> selectedPassiveSkillList = new List<SkillSelectionBox>();
+
     public void Initialize( Action<SkillSelectionBox> onSkillSelectedCallback, Action<SkillSelectionBox> onSkillDeselectedCallback )
     {
         this.onSkillSelectedCallback = onSkillSelectedCallback;
@@ -36,6 +39,7 @@ public class SkillSelectionPanel : MonoBehaviour
         this.backendSkillSelectionTabButton.GetComponent<Button>().onClick.AddListener(OnPassiveSkillClick);
     }
 
+    // Categorize and display all the skill that the character have based on skill category
     public void Show( CharacterSkill[] characterSkills )
     {
         List<CharacterSkill> activeSkillList = new List<CharacterSkill>();
@@ -65,6 +69,33 @@ public class SkillSelectionPanel : MonoBehaviour
         if (this.onSkillSelectedCallback != null)
         {
             this.onSkillSelectedCallback( skillSelectionBox );
+
+            if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
+            {
+                if (this.selectedActiveSkillList.Count < 3)
+                {
+                    this.selectedActiveSkillList.Add(skillSelectionBox);
+
+                    UpdateSelectedSkillSequence();
+                }
+                else
+                {
+                    skillSelectionBox.MarkDeselected();
+                }
+            }
+            else if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Backend)
+            {
+                if (this.selectedPassiveSkillList.Count < 3)
+                {
+                    this.selectedPassiveSkillList.Add(skillSelectionBox);
+
+                    skillSelectionBox.SetSkillSelectionText("ON");
+                }
+                else
+                {
+                    skillSelectionBox.MarkDeselected();
+                }
+            }
         }
         else
         {
@@ -77,6 +108,21 @@ public class SkillSelectionPanel : MonoBehaviour
         if (this.onSkillDeselectedCallback != null)
         {
             this.onSkillDeselectedCallback( skillSelectionBox );
+
+            if (this.selectedActiveSkillList.Contains(skillSelectionBox))
+            {
+                this.selectedActiveSkillList.Remove(skillSelectionBox);
+
+                skillSelectionBox.SetSkillSelectionSequenceNumber(0);
+
+                UpdateSelectedSkillSequence();
+            }
+            else if (this.selectedPassiveSkillList.Contains(skillSelectionBox))
+            {
+                this.selectedPassiveSkillList.Remove(skillSelectionBox);
+
+                skillSelectionBox.SetSkillSelectionText("");
+            }
         }
         else
         {
@@ -84,6 +130,7 @@ public class SkillSelectionPanel : MonoBehaviour
         }
     }
 
+    // Callback function for the ActiveSkillTabButton
     private void OnActiveSkillTabClick()
     {
         this.activeSkillSelectionTab.gameObject.SetActive(true);
@@ -93,10 +140,9 @@ public class SkillSelectionPanel : MonoBehaviour
         this.backendSkillSelectionTabButton.GetComponent<Image>().color = this.normalColor;
 
         this.backendSkillSelectionTab.HideSkillInfoPanel();
-
-        Debug.Log("Active skill tab selected.");
     }
 
+    // Callback funtion for the PassiveSkillTabButton
     private void OnPassiveSkillClick()
     {
         this.activeSkillSelectionTab.gameObject.SetActive(false);
@@ -106,7 +152,17 @@ public class SkillSelectionPanel : MonoBehaviour
         this.backendSkillSelectionTabButton.GetComponent<Image>().color = this.selectedColor;
 
         this.activeSkillSelectionTab.HideSkillInfoPanel();
+    }
 
-        Debug.Log("Passive skill tab selected.");
+    //Update the sequence number of the selected skill list
+    private void UpdateSelectedSkillSequence()
+    {
+        int skillSelectionCounter = 0;
+
+        foreach (SkillSelectionBox skill in selectedActiveSkillList)
+        {
+            skillSelectionCounter++;
+            skill.SetSkillSelectionSequenceNumber(skillSelectionCounter);
+        }
     }
 }
