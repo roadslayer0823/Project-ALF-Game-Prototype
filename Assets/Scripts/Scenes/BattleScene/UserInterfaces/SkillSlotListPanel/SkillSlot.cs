@@ -4,7 +4,15 @@ using UnityEngine;
 
 public class SkillSlot : MonoBehaviour
 {
-    public void Initialize()
+    private CharacterSkill selectedSkill = null;
+
+    public void SetSelectedSkill( CharacterSkill selectedSkill )
     {
+        this.selectedSkill = selectedSkill;
+    }
+
+    public CharacterSkill GetSelectedSkill()
+    {
+        return this.selectedSkill;
     }
 }

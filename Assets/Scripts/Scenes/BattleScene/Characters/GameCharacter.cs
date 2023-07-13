@@ -9,6 +9,7 @@ public class GameCharacter : MonoBehaviour
     protected float maximumActionPoint = 0.0f;
     protected float remainingActionPoint = 0.0f;
     protected CharacterSkill[] skills = null;
+    protected List<CharacterSkill> selectedSkills = null;
 
     public void Initialize( CharacterDatabase.CharacterData characterData, SkillDatabase skillDatabase )
     {
@@ -26,6 +27,7 @@ public class GameCharacter : MonoBehaviour
         }
 
         skills = _skillList.ToArray();
+        selectedSkills = new List<CharacterSkill>();
     }
 
     public void AddRemainingHealthPoint( float amount )
@@ -48,6 +50,16 @@ public class GameCharacter : MonoBehaviour
         this.remainingActionPoint -= amount;
     }
 
+    public void AddSelectedSkill( CharacterSkill skill )
+    {
+        this.selectedSkills.Add( skill );
+    }
+
+    public void RemoveSelectedSkill( CharacterSkill skill )
+    {
+        this.selectedSkills.Remove( skill );
+    }
+
     public int GetId()
     {
         return this.id;
@@ -65,6 +77,11 @@ public class GameCharacter : MonoBehaviour
 
     public CharacterSkill[] GetSkills()
     {
-        return skills;
+        return this.skills;
+    }
+
+    public List<CharacterSkill> GetSelectedSkills()
+    {
+        return this.selectedSkills;
     }
 }
