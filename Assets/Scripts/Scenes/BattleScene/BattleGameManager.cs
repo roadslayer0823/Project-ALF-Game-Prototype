@@ -19,7 +19,8 @@ public class BattleGameManager : MonoBehaviour
         PlayerCharacter playerCharacter = playerCharacterObj.AddComponent<PlayerCharacter>();
         playerCharacter.Initialize( characterDatabase.GetPlayerCharacterDataById( 1 ), this.skillDatabase );
 
-        battleUiManager.ShowSkillSelectionPanel( playerCharacter );
+        battleUiManager.SetSelectedGameCharacter( playerCharacter );
+        battleUiManager.ShowSkillSelectionPanel();
     }
 
     public SkillDatabase GetSkillDatabase()

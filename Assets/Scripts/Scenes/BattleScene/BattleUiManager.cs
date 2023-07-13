@@ -5,75 +5,53 @@ using UnityEngine;
 public class BattleUiManager : MonoBehaviour
 {
     [SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
+    [SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
 
     private BattleGameManager battleGameManager = null;
-    private List<SkillSelectionBox> selectedActiveSkillList = new List<SkillSelectionBox>();
-    private List<SkillSelectionBox> selectedPassiveSkillList = new List<SkillSelectionBox>();
+    private GameCharacter selectedGameCharacter = null;
 
     public void Initialize( BattleGameManager battleGameManager )
     {
-        skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
+        this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
     }
 
-    public void ShowSkillSelectionPanel( GameCharacter gameCharacter )
+    public void SetSelectedGameCharacter( GameCharacter gameCharacter )
     {
-        skillSelectionPanel.Show( gameCharacter.GetSkills() );
+        this.selectedGameCharacter = gameCharacter;
+    }
+
+#region Skill Selection Panel
+
+    public void ShowSkillSelectionPanel()
+    {
+        this.skillSelectionPanel.Show( this.selectedGameCharacter.GetSkills() );
     }
 
     public void OnSkillSelectedFromSkillSelectionPanel( SkillSelectionBox skillSelectionBox )
     {
-        if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
-        {
-            if (this.selectedActiveSkillList.Count < 3)
-            {
-                this.selectedActiveSkillList.Add(skillSelectionBox);
-
-                UpdateSelectedSkillSequence();
-            }
-        }
-        else if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Backend)
-        {
-            if (this.selectedPassiveSkillList.Count < 3)
-            {
-                this.selectedPassiveSkillList.Add(skillSelectionBox);
-
-                skillSelectionBox.SetSkillSelectionText("ON");
-            }
-        }
-        
+        this.selectedGameCharacter.AddSelectedSkill( skillSelectionBox.GetCharacterSkill() );
+        UpdateSkillSlotListPanel( this.selectedGameCharacter );
     }
 
     public void OnSkillDeselectedFromSkillSelectionPanel( SkillSelectionBox skillSelectionBox )
     {
-        if (this.selectedActiveSkillList.Contains(skillSelectionBox))
-        {
-            this.selectedActiveSkillList.Remove(skillSelectionBox);
-
-            skillSelectionBox.SetSkillSelectionSequenceNumber(0);
-
-            UpdateSelectedSkillSequence();
-        }
-        else if (this.selectedPassiveSkillList.Contains(skillSelectionBox))
-        {
-            this.selectedPassiveSkillList.Remove(skillSelectionBox);
-
-            skillSelectionBox.SetSkillSelectionText("");
-        }
+        this.selectedGameCharacter.RemoveSelectedSkill( skillSelectionBox.GetCharacterSkill() );
+        UpdateSkillSlotListPanel( this.selectedGameCharacter );
     }
+
+#endregion
+
+#region Skill Slot List Panel
+
+    public void UpdateSkillSlotListPanel( GameCharacter gameCharacter )
+    {
+        this.skillSlotListPanel.Show( gameCharacter );
+    }
+
+#endregion
 
     public SkillSelectionPanel GetSkillSelectionPanel()
     {
-        return skillSelectionPanel;
-    }
-
-    private void UpdateSelectedSkillSequence()
-    {
-        int skillSelectionCounter = 0;
-
-        foreach (SkillSelectionBox skill in selectedActiveSkillList)
-        {
-            skillSelectionCounter++;
-            skill.SetSkillSelectionSequenceNumber(skillSelectionCounter);
-        }
+        return this.skillSelectionPanel;
     }
 }
