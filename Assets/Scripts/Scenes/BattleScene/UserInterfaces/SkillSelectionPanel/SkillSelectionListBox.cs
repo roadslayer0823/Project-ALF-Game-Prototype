@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class SkillSelectionListBox : MonoBehaviour
 {
-    [Header( "Settings" )]
-    [SerializeField] private float itemHeight = 100.0f;
-
     [Header( "References" )]
     [SerializeField] private RectTransform skillSelectionBoxContainer = null;
     [SerializeField] private SkillSelectionBox skillSelectionBoxPrefab = null;
+    [SerializeField] private RectTransform containerContent = null;
 
     private SkillSelectionTab skillSelectionTab = null;
     private List<SkillSelectionBox> skillSelectionBoxList = null;
@@ -23,6 +21,7 @@ public class SkillSelectionListBox : MonoBehaviour
 
     public void Show( CharacterSkill[] characterSkills )
     {
+        // Check and clear the "skillSelectionBoxList" if not empty to make sure the list is empty
         if (this.skillSelectionBoxList != null)
         {
             for (int i = 0; i < skillSelectionBoxList.Count; i++)
@@ -33,12 +32,12 @@ public class SkillSelectionListBox : MonoBehaviour
 
         this.skillSelectionBoxList = new List<SkillSelectionBox>();
 
+        // Initialize the SkillSelectionBox so that the skill can be display on it respectively. 
         for (int i = 0; i < characterSkills.Length; i++)
         {
-            GameObject _skillSelectionBoxObj = Instantiate( this.skillSelectionBoxPrefabObject, this.skillSelectionBoxContainer, false );
-            _skillSelectionBoxObj.GetComponent<RectTransform>().anchoredPosition = new Vector2( 0.0f, i * this.itemHeight );
+            GameObject skillSelectionBoxObj = Instantiate( this.skillSelectionBoxPrefabObject, this.containerContent, false );
 
-            SkillSelectionBox skillSelectionBox = _skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
+            SkillSelectionBox skillSelectionBox = skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
             skillSelectionBox.Initialize( this, characterSkills[ i ] );
 
             skillSelectionBoxList.Add( skillSelectionBox );
