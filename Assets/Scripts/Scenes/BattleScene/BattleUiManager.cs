@@ -24,7 +24,7 @@ public class BattleUiManager : MonoBehaviour
 
     public void ShowSkillSelectionPanel()
     {
-        this.skillSelectionPanel.Show( this.selectedGameCharacter.GetSkills() );
+        this.skillSelectionPanel.Show( this.selectedGameCharacter );
     }
 
     public void OnSkillSelectedFromSkillSelectionPanel( SkillSelectionBox skillSelectionBox )

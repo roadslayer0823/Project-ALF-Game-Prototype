@@ -19,6 +19,7 @@ public class SkillSelectionPanel : MonoBehaviour
     private Action<SkillSelectionBox> onSkillSelectedCallback = null;
     private Action<SkillSelectionBox> onSkillDeselectedCallback = null;
 
+    private GameCharacter selectedGameCharacter = null;
     private List<SkillSelectionBox> selectedActiveSkillList = new List<SkillSelectionBox>();
     private List<SkillSelectionBox> selectedBackendSkillList = new List<SkillSelectionBox>();
 
@@ -40,28 +41,31 @@ public class SkillSelectionPanel : MonoBehaviour
     }
 
     // Categorize and display all the skill that the character have based on skill category
-    public void Show( CharacterSkill[] characterSkills )
+    public void Show( GameCharacter selectedGameCharacter )
     {
-        List<CharacterSkill> activeSkillList = new List<CharacterSkill>();
-        List<CharacterSkill> backendSkillList = new List<CharacterSkill>();
+        this.selectedGameCharacter = selectedGameCharacter;
 
-        for (int i = 0; i < characterSkills.Length; i++)
+        CharacterSkill[] _characterSkills = this.selectedGameCharacter.GetSkills();
+        List<CharacterSkill> _activeSkillList = new List<CharacterSkill>();
+        List<CharacterSkill> _backendSkillList = new List<CharacterSkill>();
+
+        for (int i = 0; i < _characterSkills.Length; i++)
         {
-            CharacterSkill characterSkill = characterSkills[ i ];
-            SkillDatabase.SkillData characterSkillData = characterSkill.GetSkillData();
+            CharacterSkill _characterSkill = _characterSkills[ i ];
+            SkillDatabase.SkillData _characterSkillData = _characterSkill.GetSkillData();
 
-            if (characterSkillData.GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
+            if (_characterSkillData.GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
             {
-                activeSkillList.Add( characterSkill );
+                _activeSkillList.Add( _characterSkill );
             }
-            else if (characterSkillData.GetSkillType() == SkillDatabase.SkillData.SkillType.Backend)
+            else if (_characterSkillData.GetSkillType() == SkillDatabase.SkillData.SkillType.Backend)
             {
-                backendSkillList.Add( characterSkill );
+                _backendSkillList.Add( _characterSkill );
             }
         }
 
-        this.activeSkillSelectionTab.Show( activeSkillList.ToArray() );
-        this.backendSkillSelectionTab.Show( backendSkillList.ToArray() );
+        this.activeSkillSelectionTab.Show( _activeSkillList.ToArray() );
+        this.backendSkillSelectionTab.Show( _backendSkillList.ToArray() );
     }
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
