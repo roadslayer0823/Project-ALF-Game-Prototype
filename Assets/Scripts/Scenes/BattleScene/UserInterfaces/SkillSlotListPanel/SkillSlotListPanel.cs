@@ -8,7 +8,7 @@ public class SkillSlotListPanel : MonoBehaviour
 
     public void Show( GameCharacter gameCharacter )
     {
-        List<CharacterSkill> _selectedSkills = gameCharacter.GetSelectedSkills();
+        List<CharacterSkill> _selectedSkills = gameCharacter.GetSelectedActiveSkillList();
 
         if (_selectedSkills.Count > skillSlots.Length)
         {

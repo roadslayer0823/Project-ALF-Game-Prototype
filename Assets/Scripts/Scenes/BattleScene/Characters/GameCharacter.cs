@@ -9,7 +9,8 @@ public class GameCharacter : MonoBehaviour
     protected float maximumActionPoint = 0.0f;
     protected float remainingActionPoint = 0.0f;
     protected CharacterSkill[] skills = null;
-    protected List<CharacterSkill> selectedSkills = null;
+    protected List<CharacterSkill> selectedActiveSkillList = null;
+    protected List<CharacterSkill> selectedBackendSkillList = null;
 
     public void Initialize( CharacterDatabase.CharacterData characterData, SkillDatabase skillDatabase )
     {
@@ -26,8 +27,9 @@ public class GameCharacter : MonoBehaviour
             _skillList.Add( new CharacterSkill( skillDatabase.GetSkillDataById( _skillIdArray[ i ] ) ) );
         }
 
-        skills = _skillList.ToArray();
-        selectedSkills = new List<CharacterSkill>();
+        this.skills = _skillList.ToArray();
+        this.selectedActiveSkillList = new List<CharacterSkill>();
+        this.selectedBackendSkillList = new List<CharacterSkill>();
     }
 
     public void AddRemainingHealthPoint( float amount )
@@ -52,12 +54,32 @@ public class GameCharacter : MonoBehaviour
 
     public void AddSelectedSkill( CharacterSkill skill )
     {
-        this.selectedSkills.Add( skill );
+        if (skill.GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
+        {
+            if (this.selectedActiveSkillList.Count < GameConfiguration.BATTLE_MAXIMUM_SELECTED_ACTIVE_SKILLS)
+            {
+                this.selectedActiveSkillList.Add( skill );
+            }
+        }
+        else
+        {
+            if (this.selectedBackendSkillList.Count < GameConfiguration.BATTLE_MAXIMUM_SELECTED_BACKEND_SKILLS)
+            {
+                this.selectedBackendSkillList.Add( skill );
+            }
+        }
     }
 
     public void RemoveSelectedSkill( CharacterSkill skill )
     {
-        this.selectedSkills.Remove( skill );
+        if (skill.GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
+        {
+            this.selectedActiveSkillList.Remove( skill );
+        }
+        else
+        {
+            this.selectedBackendSkillList.Remove( skill );
+        }
     }
 
     public int GetId()
@@ -80,8 +102,13 @@ public class GameCharacter : MonoBehaviour
         return this.skills;
     }
 
-    public List<CharacterSkill> GetSelectedSkills()
+    public List<CharacterSkill> GetSelectedActiveSkillList()
     {
-        return this.selectedSkills;
+        return this.selectedActiveSkillList;
+    }
+
+    public List<CharacterSkill> GetSelectedBackendSkillList()
+    {
+        return this.selectedBackendSkillList;
     }
 }
