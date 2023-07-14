@@ -156,6 +156,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4858193167201732486, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
+      propertyPath: m_fontSize
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4858193167201732486, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 8733212395479183965, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
       propertyPath: m_Name
       value: ActiveSkillSelectionTabButton
@@ -276,7 +284,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4858193167201732486, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
       propertyPath: m_text
-      value: Passive Skill
+      value: Backend Skill
+      objectReference: {fileID: 0}
+    - target: {fileID: 4858193167201732486, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
+      propertyPath: m_fontSize
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 4858193167201732486, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 8733212395479183965, guid: cb844aaa36db049aba6e57116e4d2de9, type: 3}
       propertyPath: m_Name

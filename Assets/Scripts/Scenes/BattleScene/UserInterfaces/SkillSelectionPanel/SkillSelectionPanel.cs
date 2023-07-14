@@ -20,7 +20,7 @@ public class SkillSelectionPanel : MonoBehaviour
     private Action<SkillSelectionBox> onSkillDeselectedCallback = null;
 
     private List<SkillSelectionBox> selectedActiveSkillList = new List<SkillSelectionBox>();
-    private List<SkillSelectionBox> selectedPassiveSkillList = new List<SkillSelectionBox>();
+    private List<SkillSelectionBox> selectedBackendSkillList = new List<SkillSelectionBox>();
 
     public void Initialize( Action<SkillSelectionBox> onSkillSelectedCallback, Action<SkillSelectionBox> onSkillDeselectedCallback )
     {
@@ -85,9 +85,9 @@ public class SkillSelectionPanel : MonoBehaviour
             }
             else if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Backend)
             {
-                if (this.selectedPassiveSkillList.Count < 3)
+                if (this.selectedBackendSkillList.Count < 3)
                 {
-                    this.selectedPassiveSkillList.Add(skillSelectionBox);
+                    this.selectedBackendSkillList.Add(skillSelectionBox);
 
                     skillSelectionBox.SetSkillSelectionText("ON");
                 }
@@ -117,9 +117,9 @@ public class SkillSelectionPanel : MonoBehaviour
 
                 UpdateSelectedSkillSequence();
             }
-            else if (this.selectedPassiveSkillList.Contains(skillSelectionBox))
+            else if (this.selectedBackendSkillList.Contains(skillSelectionBox))
             {
-                this.selectedPassiveSkillList.Remove(skillSelectionBox);
+                this.selectedBackendSkillList.Remove(skillSelectionBox);
 
                 skillSelectionBox.SetSkillSelectionText("");
             }
