@@ -53,4 +53,9 @@ public class SkillSelectionListBox : MonoBehaviour
     {
         skillSelectionTab.OnSkillDeselected( skillSelectionBox );
     }
+
+    public void ShowSelectedSkillInfo(SkillSelectionBox skillSelectionBox)
+    {
+        skillSelectionTab.ShowSelectedSkillInfo(skillSelectionBox);
+    }
 }
