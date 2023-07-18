@@ -29,13 +29,18 @@ public class SkillSelectionTab : MonoBehaviour
     {
         this.skillSelectionPanel.OnSkillSelected( skillSelectionBox );
 
-        this.skillInfoPanel.Show(skillSelectionBox.GetCharacterSkill());
+        ShowSelectedSkillInfo(skillSelectionBox);
     }
 
     public void OnSkillDeselected( SkillSelectionBox skillSelectionBox )
     {
-        skillSelectionPanel.OnSkillDeselected( skillSelectionBox );
+        this.skillSelectionPanel.OnSkillDeselected( skillSelectionBox );
 
+        ShowSelectedSkillInfo(skillSelectionBox);
+    }
+
+    public void ShowSelectedSkillInfo(SkillSelectionBox skillSelectionBox)
+    {
         this.skillInfoPanel.Show(skillSelectionBox.GetCharacterSkill());
     }
 

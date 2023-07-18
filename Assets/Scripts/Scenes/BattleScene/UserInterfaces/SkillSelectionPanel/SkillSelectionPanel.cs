@@ -70,36 +70,46 @@ public class SkillSelectionPanel : MonoBehaviour
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
+        if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
+        {
+            if (this.selectedGameCharacter.GetSelectedActiveSkillList().Count >= 3)
+            {
+                return;
+            }
+
+            if (this.selectedActiveSkillList.Count < 3)
+            {
+                this.selectedActiveSkillList.Add(skillSelectionBox);
+
+                UpdateSelectedSkillSequence();
+            }
+            else
+            {
+                skillSelectionBox.MarkDeselected();
+            }
+        }
+        else if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Backend)
+        {
+            if (this.selectedGameCharacter.GetSelectedBackendSkillList().Count >= 3)
+            {
+                return;
+            }
+
+            if (this.selectedBackendSkillList.Count < 3)
+            {
+                this.selectedBackendSkillList.Add(skillSelectionBox);
+
+                skillSelectionBox.SetSkillSelectionText("ON");
+            }
+            else
+            {
+                skillSelectionBox.MarkDeselected();
+            }
+        }
+
         if (this.onSkillSelectedCallback != null)
         {
             this.onSkillSelectedCallback( skillSelectionBox );
-
-            if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
-            {
-                if (this.selectedActiveSkillList.Count < 3)
-                {
-                    this.selectedActiveSkillList.Add(skillSelectionBox);
-
-                    UpdateSelectedSkillSequence();
-                }
-                else
-                {
-                    skillSelectionBox.MarkDeselected();
-                }
-            }
-            else if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Backend)
-            {
-                if (this.selectedBackendSkillList.Count < 3)
-                {
-                    this.selectedBackendSkillList.Add(skillSelectionBox);
-
-                    skillSelectionBox.SetSkillSelectionText("ON");
-                }
-                else
-                {
-                    skillSelectionBox.MarkDeselected();
-                }
-            }
         }
         else
         {

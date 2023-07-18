@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 {
@@ -12,6 +13,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     [SerializeField] private TextMeshProUGUI skillNameText;
     [SerializeField] private TextMeshProUGUI skillTypeText;
     [SerializeField] private TextMeshProUGUI selectionText;
+    [SerializeField] private Button selectionButton;
 
     private SkillSelectionListBox skillSelectionListBox = null;
     private CharacterSkill characterSkill = null;
@@ -27,6 +29,8 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     private void Start()
     {
         SetupSkillSelectionBox();
+
+        this.selectionButton.onClick.AddListener(OnSelectionButtonClick);
     }
 
     public void ClickToToggle()
@@ -60,7 +64,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        ClickToToggle();
+        this.skillSelectionListBox.ShowSelectedSkillInfo(this);
     }
 
     public void SetSkillSelectionSequenceNumber(int sequenceText)
@@ -105,5 +109,11 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
         this.skillNameText.SetText(characterSkill.GetSkillData().GetSkillName());
         this.skillTypeText.SetText("[" + characterSkill.GetSkillData().GetSkillType().ToString() + "]");
+    }
+
+    // Callback function for selection button
+    private void OnSelectionButtonClick()
+    {
+        ClickToToggle();
     }
 }
