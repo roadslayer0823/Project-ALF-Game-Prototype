@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BattleFlowATL : MonoBehaviour
+public class BattleFlowATL
 {
     private GameCharacter selectedCharacter = null;
     private CharacterSkill selectedSkill = null;

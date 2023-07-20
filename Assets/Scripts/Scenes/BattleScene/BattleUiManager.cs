@@ -12,6 +12,7 @@ public class BattleUiManager : MonoBehaviour
 
     public void Initialize( BattleGameManager battleGameManager )
     {
+        this.battleGameManager = battleGameManager;
         this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
     }
 
