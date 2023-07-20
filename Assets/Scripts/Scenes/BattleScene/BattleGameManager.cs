@@ -15,10 +15,17 @@ public class BattleGameManager : MonoBehaviour
     private List<PlayerCharacter> playerCharacterList = null;
     private List<EnemyCharacter> enemyCharacterList = null;
 
+    void Awake()
+    {
+        this.battleUiManager.HideSkillSelectionPanel();
+        this.battleUiManager.HideSkillSlotListPanel();
+        this.battleUiManager.HideATLSlotListPanel();
+    }
+
     void Start()
     {
         this.battleUiManager.Initialize( this );
-        this.battleFlowManager.Initialize( this, OnPreparationPhaseStarted );
+        this.battleFlowManager.Initialize( this, OnPreparationPhaseStarted, OnExecutionPhaseStarted );
 
         // -------------------- Set up the player's characters --------------------
 
@@ -47,10 +54,23 @@ public class BattleGameManager : MonoBehaviour
         this.battleFlowManager.StartGame();
     }
 
+    public void StartExecution()
+    {
+        this.battleFlowManager.GetCurrentRound().SetCurrentPhase( BattleFlowRound.PhaseType.Execution );
+    }
+
     private void OnPreparationPhaseStarted()
     {
         this.battleUiManager.SetSelectedGameCharacter( this.playerCharacterList[ 0 ] );
         this.battleUiManager.ShowSkillSelectionPanel();
+        this.battleUiManager.ShowSkillSlotListPanel();
+    }
+
+    private void OnExecutionPhaseStarted()
+    {
+        this.battleUiManager.HideSkillSelectionPanel();
+        this.battleUiManager.HideSkillSlotListPanel();
+        this.battleUiManager.ShowATLSlotListPanel();
     }
 
     public List<PlayerCharacter> GetPlayerCharacterList()

@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +9,8 @@ public class BattleFlowRound
     private PhaseType currentPhase = PhaseType.None;
     private BattleFlowATL[] flowATLs = null;
 
+    private Action<PhaseType> onCurrentPhaseChangedCallback = null;
+
     public enum PhaseType
     {
         None,
@@ -16,10 +18,11 @@ public class BattleFlowRound
         Execution
     }
 
-    public BattleFlowRound( BattleFlowManager battleFlowManager, int roundNumber, bool isPlayerFirst )
+    public BattleFlowRound( BattleFlowManager battleFlowManager, int roundNumber, bool isPlayerFirst, Action<PhaseType> onCurrentPhaseChangedCallback )
     {
         this.battleFlowManager = battleFlowManager;
         this.roundNumber = roundNumber;
+        this.onCurrentPhaseChangedCallback = onCurrentPhaseChangedCallback;
 
         List<BattleFlowATL> _atlList = new List<BattleFlowATL>();
         bool _isPlayer = isPlayerFirst;
@@ -36,6 +39,15 @@ public class BattleFlowRound
     public void SetCurrentPhase( PhaseType currentPhase )
     {
         this.currentPhase = currentPhase;
+
+        if (this.onCurrentPhaseChangedCallback != null)
+        {
+            this.onCurrentPhaseChangedCallback( this.currentPhase );
+        }
+        else
+        {
+            Debug.Log( "The value for 'onCurrentPhaseChangedCallback' is not assigned." );
+        }
     }
 
     public int GetRoundNumber()

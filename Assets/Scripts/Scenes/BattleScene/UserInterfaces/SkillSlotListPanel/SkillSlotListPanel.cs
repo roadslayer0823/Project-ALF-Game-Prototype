@@ -15,18 +15,28 @@ public class SkillSlotListPanel : MonoBehaviour
     private RectTransform rectTransform;
     List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
 
-    public void Show( GameCharacter gameCharacter )
+    public void Show( GameCharacter gameCharacter = null )
     {
-        this.selectedGameCharacter = gameCharacter;
-
-        this.selectedSkills = gameCharacter.GetSelectedActiveSkillList();
-
-        if (this.selectedSkills.Count > skillSlots.Length)
+        if (gameCharacter != null)
         {
-            return;
+            this.selectedGameCharacter = gameCharacter;
+
+            this.selectedSkills = gameCharacter.GetSelectedActiveSkillList();
+
+            if (this.selectedSkills.Count > skillSlots.Length)
+            {
+                return;
+            }
+
+            InsertIntoSkillSlot( this.selectedSkills );
         }
 
-        InsertIntoSkillSlot(this.selectedSkills);
+        this.gameObject.SetActive( true );
+    }
+
+    public void Hide()
+    {
+        this.gameObject.SetActive( false );
     }
 
     private void Start()

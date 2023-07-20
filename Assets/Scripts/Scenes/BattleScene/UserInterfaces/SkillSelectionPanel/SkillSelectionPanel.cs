@@ -66,6 +66,13 @@ public class SkillSelectionPanel : MonoBehaviour
 
         this.activeSkillSelectionTab.Show( _activeSkillList.ToArray() );
         this.backendSkillSelectionTab.Show( _backendSkillList.ToArray() );
+
+        this.gameObject.SetActive( true );
+    }
+
+    public void Hide()
+    {
+        this.gameObject.SetActive( false );
     }
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
