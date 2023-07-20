@@ -8,6 +8,7 @@ public class BattleFlowRound
     private int roundNumber = 0;
     private PhaseType currentPhase = PhaseType.None;
     private BattleFlowATL[] flowATLs = null;
+    private int flowATLIndex = 0;
 
     private Action<PhaseType> onCurrentPhaseChangedCallback = null;
 
@@ -50,8 +51,23 @@ public class BattleFlowRound
         }
     }
 
+    public void StartRunningATL()
+    {
+        this.flowATLIndex = 0;
+    }
+
     public int GetRoundNumber()
     {
         return this.roundNumber;
+    }
+
+    public BattleFlowATL[] GetFlowATLs()
+    {
+        return this.flowATLs;
+    }
+
+    public BattleFlowATL GetCurrentATL()
+    {
+        return this.flowATLs[ this.flowATLIndex ];
     }
 }

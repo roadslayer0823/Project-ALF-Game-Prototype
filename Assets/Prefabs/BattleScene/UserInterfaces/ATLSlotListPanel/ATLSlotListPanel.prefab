@@ -54,7 +54,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bce5f1bcaeef1402d85ff24395505db6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  aTLSlots:
+  theATLSlots:
   - {fileID: 781398519866859975}
   - {fileID: 9115742994094839888}
   - {fileID: 7275273255931888317}

@@ -71,9 +71,9 @@ public class BattleUiManager : MonoBehaviour
 
 #region ATL Slot List Panel
 
-    public void ShowATLSlotListPanel()
+    public void ShowATLSlotListPanel( BattleFlowATL[] flowATLs )
     {
-        this.atlSlotListPanel.Show();
+        this.atlSlotListPanel.Show( flowATLs );
     }
 
     public void HideATLSlotListPanel()

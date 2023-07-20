@@ -14,4 +14,19 @@ public class BattleFlowATL
     {
         this.selectedCharacter = selectedCharacter;
     }
+
+    public GameCharacter GetSelectedCharacter()
+    {
+        return this.selectedCharacter;
+    }
+
+    public void SetSelectedSkill( CharacterSkill selectedSkill )
+    {
+        this.selectedSkill = selectedSkill;
+    }
+
+    public CharacterSkill GetSelectedSkill()
+    {
+        return this.selectedSkill;
+    }
 }

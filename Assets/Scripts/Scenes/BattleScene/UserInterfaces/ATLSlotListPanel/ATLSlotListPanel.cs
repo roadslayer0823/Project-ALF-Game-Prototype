@@ -4,10 +4,24 @@ using UnityEngine;
 
 public class ATLSlotListPanel : MonoBehaviour
 {
-    [SerializeField] private ATLSlot[] aTLSlots = new ATLSlot[ 0 ];
+    [SerializeField] private ATLSlot[] theATLSlots = new ATLSlot[ 0 ];
 
-    public void Show()
+    public void Show( BattleFlowATL[] flowATLs )
     {
+        for (int i = 0; i < theATLSlots.Length; i++)
+        {
+            ATLSlot _altSlot = theATLSlots[ i ];
+
+            if (i < flowATLs.Length)
+            {
+                _altSlot.Show( flowATLs[ i ] );
+            }
+            else
+            {
+                _altSlot.Hide();
+            }
+        }
+
         this.gameObject.SetActive( true );
     }
 

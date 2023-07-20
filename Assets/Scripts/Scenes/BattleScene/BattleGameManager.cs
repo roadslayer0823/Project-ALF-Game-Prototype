@@ -69,8 +69,7 @@ public class BattleGameManager : MonoBehaviour
     private void OnExecutionPhaseStarted()
     {
         this.battleUiManager.HideSkillSelectionPanel();
-        this.battleUiManager.HideSkillSlotListPanel();
-        this.battleUiManager.ShowATLSlotListPanel();
+        this.battleUiManager.ShowATLSlotListPanel( this.battleFlowManager.GetCurrentRound().GetFlowATLs() );
     }
 
     public List<PlayerCharacter> GetPlayerCharacterList()
