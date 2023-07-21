@@ -46,7 +46,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
             yield return webRequest.SendWebRequest();
 
             //Check to make sure no error, then pass the loaded data to other function for using
-            if (webRequest.error == null)
+            if (string.IsNullOrEmpty(webRequest.error))
             {
                 ProcessJsonData<T>(webRequest.downloadHandler.text, sheetName);
 
