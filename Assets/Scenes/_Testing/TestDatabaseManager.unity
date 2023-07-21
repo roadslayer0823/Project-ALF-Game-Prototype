@@ -284,6 +284,10 @@ MonoBehaviour:
   characterSheetName: Characters
   skillSheetName: Skills
   subskillSheetName: Subskills
+  SheetNameList:
+  - Characters
+  - Skills
+  - Subskills
 --- !u!4 &1211409801
 Transform:
   m_ObjectHideFlags: 0
