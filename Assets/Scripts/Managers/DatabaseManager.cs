@@ -1,10 +1,9 @@
 using UnityEngine;
-using Newtonsoft.Json;
 using UnityEngine.Networking;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using static DatabaseManager;
+using Newtonsoft.Json;
 
 public class DatabaseManager : Singleton<DatabaseManager>
 {
@@ -55,6 +54,8 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 {
                     this.onDataUpdatedCallback();
                 }
+
+                Debug.Log("Done.");
             }
             else
             {
