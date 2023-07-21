@@ -14,6 +14,7 @@ public class BattleFlowManager : MonoBehaviour
 
     private Action onPreparationPhaseStartedCallback = null;
     private Action onExecutionPhaseStartedCallback = null;
+    private Action onExecutionPhaseFinishedCallback = null;
 
     public enum PhaseType
     {
@@ -22,11 +23,12 @@ public class BattleFlowManager : MonoBehaviour
         GameEnded
     }
 
-    public void Initialize( BattleGameManager battleGameManager, Action onPreparationPhaseStartedCallback, Action onExecutionPhaseStartedCallback )
+    public void Initialize( BattleGameManager battleGameManager, Action onPreparationPhaseStartedCallback, Action onExecutionPhaseStartedCallback, Action onExecutionPhaseFinishedCallback )
     {
         this.battleGameManager = battleGameManager;
         this.onPreparationPhaseStartedCallback = onPreparationPhaseStartedCallback;
         this.onExecutionPhaseStartedCallback = onExecutionPhaseStartedCallback;
+        this.onExecutionPhaseFinishedCallback = onExecutionPhaseFinishedCallback;
     }
 
     public void StartGame()
@@ -36,7 +38,7 @@ public class BattleFlowManager : MonoBehaviour
         StartNewRound();
     }
 
-    private void StartNewRound()
+    public void StartNewRound()
     {
         int _roundNumber = 0;
         if (this.currentRound != null)
@@ -77,6 +79,19 @@ public class BattleFlowManager : MonoBehaviour
                 else
                 {
                     Debug.Log( "The value for 'onExecutionPhaseStartedCallback' is not assigned." );
+                }
+
+                break;
+
+            case BattleFlowRound.PhaseType.ExecutionDone:
+
+                if (this.onExecutionPhaseFinishedCallback != null)
+                {
+                    this.onExecutionPhaseFinishedCallback();
+                }
+                else
+                {
+                    Debug.Log( "The value for 'onExecutionPhaseFinishedCallback' is not assigned." );
                 }
 
                 break;

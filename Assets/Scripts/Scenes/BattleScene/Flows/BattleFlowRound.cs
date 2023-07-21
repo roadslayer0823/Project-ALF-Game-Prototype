@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,7 +17,8 @@ public class BattleFlowRound
     {
         None,
         Preparation,
-        Execution
+        Execution,
+        ExecutionDone
     }
 
     public BattleFlowRound( BattleFlowManager battleFlowManager, int roundNumber, bool isPlayerFirst, Action<PhaseType> onCurrentPhaseChangedCallback )
@@ -54,6 +56,18 @@ public class BattleFlowRound
     public void StartRunningATL()
     {
         this.flowATLIndex = 0;
+        this.battleFlowManager.StartCoroutine( RunATLFlow() );
+    }
+
+    private IEnumerator RunATLFlow()
+    {
+        while (this.flowATLIndex < this.flowATLs.Length)
+        {
+            yield return new WaitForSeconds( 2.0f );
+            this.flowATLIndex++;
+        }
+
+        SetCurrentPhase( PhaseType.ExecutionDone );
     }
 
     public int GetRoundNumber()

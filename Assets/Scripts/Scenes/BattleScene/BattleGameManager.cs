@@ -25,7 +25,7 @@ public class BattleGameManager : MonoBehaviour
     void Start()
     {
         this.battleUiManager.Initialize( this );
-        this.battleFlowManager.Initialize( this, OnPreparationPhaseStarted, OnExecutionPhaseStarted );
+        this.battleFlowManager.Initialize( this, OnPreparationPhaseStarted, OnExecutionPhaseStarted, OnExecutionPhaseFinished );
 
         // -------------------- Set up the player's characters --------------------
 
@@ -70,6 +70,14 @@ public class BattleGameManager : MonoBehaviour
     {
         this.battleUiManager.HideSkillSelectionPanel();
         this.battleUiManager.ShowATLSlotListPanel( this.battleFlowManager.GetCurrentRound().GetFlowATLs() );
+        this.battleFlowManager.GetCurrentRound().StartRunningATL();
+    }
+
+    private void OnExecutionPhaseFinished()
+    {
+        this.battleUiManager.HideSkillSlotListPanel();
+        this.battleUiManager.HideATLSlotListPanel();
+        this.battleFlowManager.StartNewRound();
     }
 
     public List<PlayerCharacter> GetPlayerCharacterList()
