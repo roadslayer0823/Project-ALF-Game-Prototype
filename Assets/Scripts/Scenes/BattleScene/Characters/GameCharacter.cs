@@ -14,6 +14,8 @@ public class GameCharacter : MonoBehaviour
 
     public void Initialize( CharacterDatabase.CharacterData characterData, SkillDatabase skillDatabase )
     {
+        base.gameObject.name = "Character: " + characterData.GetCharacterName();
+
         this.id = characterData.GetId();
         this.maximumHealthPoint = characterData.GetMaximumHealthPoint();
         this.remainingHealthPoint = this.maximumHealthPoint;

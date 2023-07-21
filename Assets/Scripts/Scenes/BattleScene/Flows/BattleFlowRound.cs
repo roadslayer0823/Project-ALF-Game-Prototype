@@ -53,6 +53,11 @@ public class BattleFlowRound
         }
     }
 
+    public PhaseType GetCurrentPhase()
+    {
+        return this.currentPhase;
+    }
+
     public void StartRunningATL()
     {
         this.flowATLIndex = 0;

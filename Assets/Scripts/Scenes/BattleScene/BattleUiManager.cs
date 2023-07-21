@@ -48,6 +48,11 @@ public class BattleUiManager : MonoBehaviour
         UpdateSkillSlotListPanel( this.selectedGameCharacter );
     }
 
+    public SkillSelectionPanel GetSkillSelectionPanel()
+    {
+        return this.skillSelectionPanel;
+    }
+
 #endregion
 
 #region Skill Slot List Panel
@@ -65,6 +70,11 @@ public class BattleUiManager : MonoBehaviour
     public void UpdateSkillSlotListPanel( GameCharacter gameCharacter )
     {
         this.skillSlotListPanel.Show( gameCharacter );
+    }
+
+    public SkillSlotListPanel GetSkillSlotListPanel()
+    {
+        return this.skillSlotListPanel;
     }
 
 #endregion
@@ -91,9 +101,4 @@ public class BattleUiManager : MonoBehaviour
     }
 
 #endregion
-
-    public SkillSelectionPanel GetSkillSelectionPanel()
-    {
-        return this.skillSelectionPanel;
-    }
 }

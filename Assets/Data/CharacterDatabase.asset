@@ -19,4 +19,10 @@ MonoBehaviour:
     maximumHealthPoint: 100
     maximumActionPoint: 25
     skillIdArray: 010000000200000003000000040000000500000006000000070000000800000009000000
-  enemyCharacterDataArray: []
+  enemyCharacterDataArray:
+  - elementName: 'ID: 1'
+    id: 1
+    characterName: "\u602A\u7378"
+    maximumHealthPoint: 50
+    maximumActionPoint: 20
+    skillIdArray: 0200000005000000

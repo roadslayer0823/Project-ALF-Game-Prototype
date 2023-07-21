@@ -45,7 +45,7 @@ public class BattleGameManager : MonoBehaviour
 
         GameObject _enemyCharacterObj = new GameObject();
         EnemyCharacter _enemyCharacter = _enemyCharacterObj.AddComponent<EnemyCharacter>();
-        _enemyCharacter.Initialize( this.characterDatabase.GetPlayerCharacterDataById( 1 ), this.skillDatabase );
+        _enemyCharacter.Initialize( this.characterDatabase.GetEnemyCharacterDataById( 1 ), this.skillDatabase );
 
         this.enemyCharacterList.Add( _enemyCharacter );
 
@@ -70,6 +70,7 @@ public class BattleGameManager : MonoBehaviour
     {
         this.battleUiManager.HideSkillSelectionPanel();
         this.battleUiManager.ShowATLSlotListPanel( this.battleFlowManager.GetCurrentRound().GetFlowATLs() );
+        this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( true );
         this.battleFlowManager.GetCurrentRound().StartRunningATL();
     }
 
@@ -77,6 +78,7 @@ public class BattleGameManager : MonoBehaviour
     {
         this.battleUiManager.HideSkillSlotListPanel();
         this.battleUiManager.HideATLSlotListPanel();
+        this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( false );
         this.battleFlowManager.StartNewRound();
     }
 

@@ -8,6 +8,7 @@ public class SkillSlotListPanel : MonoBehaviour
 
     private GameCharacter selectedGameCharacter;
 
+    private bool isSkillSlotListScrollable = false;
     private Vector2 mousePressPosition;
     private Vector2 mouseReleasePosition;
     private Vector2 currentSwipe;
@@ -31,12 +32,12 @@ public class SkillSlotListPanel : MonoBehaviour
             InsertIntoSkillSlot( this.selectedSkills );
         }
 
-        this.gameObject.SetActive( true );
+        base.gameObject.SetActive( true );
     }
 
     public void Hide()
     {
-        this.gameObject.SetActive( false );
+        base.gameObject.SetActive( false );
     }
 
     private void Start()
@@ -144,5 +145,10 @@ public class SkillSlotListPanel : MonoBehaviour
         skillList[0] = tempSlot;
 
         InsertIntoSkillSlot(skillList);
+    }
+
+    public void SetIsSkillSlotListScrollable( bool isSkillSlotListScrollable )
+    {
+        this.isSkillSlotListScrollable = isSkillSlotListScrollable;
     }
 }
