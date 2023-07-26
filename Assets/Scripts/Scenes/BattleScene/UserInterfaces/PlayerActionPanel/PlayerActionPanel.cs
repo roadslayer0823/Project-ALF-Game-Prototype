@@ -29,7 +29,7 @@ public class PlayerActionPanel : MonoBehaviour
 
     public void EnableExecuteButton()
     {
-        this.executeButton.interactable = false;
+        this.executeButton.interactable = true;
     }
 
     public void DisableExecuteButton()

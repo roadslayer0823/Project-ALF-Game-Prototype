@@ -24,6 +24,18 @@ public class BattleUiManager : MonoBehaviour
         this.selectedGameCharacter = gameCharacter;
     }
 
+    public void CheckWhetherToEnableExecuteButton()
+    {
+        if (this.selectedGameCharacter.GetSelectedActiveSkillList().Count > 0)
+        {
+            this.playerActionPanel.EnableExecuteButton();
+        }
+        else
+        {
+            this.playerActionPanel.DisableExecuteButton();
+        }
+    }
+
 #region Skill Selection Panel
 
     public void ShowSkillSelectionPanel()
@@ -40,12 +52,14 @@ public class BattleUiManager : MonoBehaviour
     {
         this.selectedGameCharacter.AddSelectedSkill( skillSelectionBox.GetCharacterSkill() );
         UpdateSkillSlotListPanel( this.selectedGameCharacter );
+        CheckWhetherToEnableExecuteButton();
     }
 
     public void OnSkillDeselectedFromSkillSelectionPanel( SkillSelectionBox skillSelectionBox )
     {
         this.selectedGameCharacter.RemoveSelectedSkill( skillSelectionBox.GetCharacterSkill() );
         UpdateSkillSlotListPanel( this.selectedGameCharacter );
+        CheckWhetherToEnableExecuteButton();
     }
 
     public SkillSelectionPanel GetSkillSelectionPanel()
