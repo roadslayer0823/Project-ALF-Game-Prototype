@@ -12,6 +12,10 @@ public class BattleGameManager : MonoBehaviour
     [SerializeField] private SkillDatabase skillDatabase = null;
     [SerializeField] private CharacterDatabase characterDatabase = null;
 
+    [Header( "References" )]
+    [SerializeField] private PlayerCharacter playerCharacter = null;
+    [SerializeField] private EnemyCharacter enemyCharacter = null;
+
     private List<PlayerCharacter> playerCharacterList = null;
     private List<EnemyCharacter> enemyCharacterList = null;
 
@@ -30,24 +34,16 @@ public class BattleGameManager : MonoBehaviour
         // -------------------- Set up the player's characters --------------------
 
         this.playerCharacterList = new List<PlayerCharacter>();
-
-        GameObject _playerCharacterObj = new GameObject();
-        PlayerCharacter _playerCharacter = _playerCharacterObj.AddComponent<PlayerCharacter>();
-        _playerCharacter.Initialize( this.characterDatabase.GetPlayerCharacterDataById( 1 ), this.skillDatabase );
-
-        this.playerCharacterList.Add( _playerCharacter );
+        this.playerCharacter.Initialize( this.characterDatabase.GetPlayerCharacterDataById( 1 ), this.skillDatabase );
+        this.playerCharacterList.Add( this.playerCharacter );
 
         // ------------------------------------------------------------------------
 
         // -------------------- Set up the enemy's characters --------------------
 
         this.enemyCharacterList = new List<EnemyCharacter>();
-
-        GameObject _enemyCharacterObj = new GameObject();
-        EnemyCharacter _enemyCharacter = _enemyCharacterObj.AddComponent<EnemyCharacter>();
-        _enemyCharacter.Initialize( this.characterDatabase.GetEnemyCharacterDataById( 1 ), this.skillDatabase );
-
-        this.enemyCharacterList.Add( _enemyCharacter );
+        this.enemyCharacter.Initialize( this.characterDatabase.GetEnemyCharacterDataById( 1 ), this.skillDatabase );
+        this.enemyCharacterList.Add( this.enemyCharacter );
 
         // -----------------------------------------------------------------------
 
