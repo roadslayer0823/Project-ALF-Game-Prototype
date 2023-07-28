@@ -55,9 +55,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillSlots:
-  - {fileID: 4234097749006564101}
   - {fileID: 7150303466278788141}
   - {fileID: 5933778152268967498}
+  - {fileID: 4234097749006564101}
 --- !u!222 &2349425112503363904
 CanvasRenderer:
   m_ObjectHideFlags: 0
