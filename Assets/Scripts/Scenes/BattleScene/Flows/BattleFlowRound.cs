@@ -66,9 +66,23 @@ public class BattleFlowRound
 
     private IEnumerator RunATLFlow()
     {
+        BattleFlowATL[] tempflowATLs = this.flowATLs;
+
         while (this.flowATLIndex < this.flowATLs.Length)
         {
-            yield return new WaitForSeconds( 2.0f );
+            this.flowATLs[this.flowATLIndex].GetATLSlot().ShowSelectionHighlight();
+            this.flowATLs[this.flowATLIndex].SetIsATLSlotExecuted(true);
+
+            yield return new WaitForSeconds( 3.0f );
+
+            this.flowATLs[this.flowATLIndex].GetATLSlot().MarkATLSlotColorInactive();
+            this.flowATLs[this.flowATLIndex].GetATLSlot().HideSelectionHighlight();
+
+            if (this.flowATLs[this.flowATLIndex].CheckIsPlayer())
+            {
+                this.flowATLs[this.flowATLIndex].GetSelectedCharacter().onATLSlotExecutedCallback();
+            }
+
             this.flowATLIndex++;
         }
 
