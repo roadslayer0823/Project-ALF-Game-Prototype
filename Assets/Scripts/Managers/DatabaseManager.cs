@@ -144,7 +144,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
     public class Character
     {
         [JsonProperty("id")]
-        public int Id;
+        public string Id;
 
         [JsonProperty("display_name")]
         public string DisplayName;
@@ -164,7 +164,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
     public class Skill
     {
         [JsonProperty("id")]
-        public int Id;
+        public string Id;
 
         [JsonProperty("display_name")]
         public string DisplayName;
@@ -184,16 +184,16 @@ public class DatabaseManager : Singleton<DatabaseManager>
     public class Subskill
     {
         [JsonProperty("id")]
-        public int Id;
+        public string Id;
 
         [JsonProperty("skill_id")]
-        public int SkillId;
+        public string SkillId;
 
         [JsonProperty("level")]
         public int Level;
 
         [JsonProperty("derived_skill_id")]
-        public int DerivedSkillId;
+        public string DerivedSkillId;
 
         [JsonProperty("action_point_cost")]
         public int ActionPointCost;
