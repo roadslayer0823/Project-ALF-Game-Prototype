@@ -40,6 +40,11 @@ public class SkillSelectionPanel : MonoBehaviour
         this.backendSkillSelectionTabButton.GetComponent<Button>().onClick.AddListener(OnPassiveSkillClick);
     }
 
+    private void OnEnable()
+    {
+        UpdateSelectedSkillSequence();
+    }
+
     // Categorize and display all the skill that the character have based on skill category
     public void Show( GameCharacter selectedGameCharacter )
     {
@@ -79,11 +84,6 @@ public class SkillSelectionPanel : MonoBehaviour
     {
         if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
         {
-            if (this.selectedGameCharacter.GetSelectedActiveSkillList().Count >= 3)
-            {
-                return;
-            }
-
             if (this.selectedActiveSkillList.Count < 3)
             {
                 this.selectedActiveSkillList.Add(skillSelectionBox);
@@ -97,11 +97,6 @@ public class SkillSelectionPanel : MonoBehaviour
         }
         else if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Backend)
         {
-            if (this.selectedGameCharacter.GetSelectedBackendSkillList().Count >= 3)
-            {
-                return;
-            }
-
             if (this.selectedBackendSkillList.Count < 3)
             {
                 this.selectedBackendSkillList.Add(skillSelectionBox);
