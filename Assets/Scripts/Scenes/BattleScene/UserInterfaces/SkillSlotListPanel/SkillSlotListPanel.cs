@@ -43,7 +43,6 @@ public class SkillSlotListPanel : MonoBehaviour
             this.selectedGameCharacter = gameCharacter;
 
             this.selectedSkills = new List<CharacterSkill>(gameCharacter.GetSelectedActiveSkillList());
-            //this.selectedSkills = gameCharacter.GetSelectedActiveSkillList();
 
             if (this.selectedSkills.Count > skillSlots.Length)
             {
@@ -125,7 +124,6 @@ public class SkillSlotListPanel : MonoBehaviour
         CharacterSkill tempSlot;
 
         List<CharacterSkill> skillList = this.selectedGameCharacter.GetSelectedActiveSkillList();
-        //List<CharacterSkill> skillList = this.selectedSkills;
 
         int i = 0;
         tempSlot = skillList[i];
@@ -146,7 +144,6 @@ public class SkillSlotListPanel : MonoBehaviour
         CharacterSkill tempSlot;
 
         List<CharacterSkill> skillList = this.selectedGameCharacter.GetSelectedActiveSkillList();
-        //List<CharacterSkill> skillList = this.selectedSkills;
 
         int i = skillList.Count - 1;
         tempSlot = skillList[i];
