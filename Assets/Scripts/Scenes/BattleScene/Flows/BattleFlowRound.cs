@@ -32,7 +32,10 @@ public class BattleFlowRound
 
         for (int i = 0; i < GameConfiguration.NUMBER_OF_ATL_SLOTS; i++)
         {
-            _atlList.Add( new BattleFlowATL( ( _isPlayer ) ? this.battleFlowManager.GetNextPlayerCharacter() : this.battleFlowManager.GetNextEnemyCharacter() ) );
+            BattleFlowATL _atl = new BattleFlowATL( ( _isPlayer ) ? this.battleFlowManager.GetNextPlayerCharacter() : this.battleFlowManager.GetNextEnemyCharacter() );
+            _atl.SetAttackTarget( ( _isPlayer ) ? this.battleFlowManager.GetNextEnemyCharacter() : this.battleFlowManager.GetNextPlayerCharacter() );
+            _atlList.Add( _atl );
+
             _isPlayer = !( _isPlayer );
         }
 
@@ -66,10 +69,13 @@ public class BattleFlowRound
 
     private IEnumerator RunATLFlow()
     {
-        while (this.flowATLIndex < this.flowATLs.Length)
+        BattleFlowATL _currentATL = GetCurrentATL();
+
+        while (_currentATL != null)
         {
-            yield return new WaitForSeconds( 2.0f );
+            yield return battleFlowManager.StartCoroutine( this.battleFlowManager.RunBattleAnimation( _currentATL ) );
             this.flowATLIndex++;
+            _currentATL = GetCurrentATL();
         }
 
         SetCurrentPhase( PhaseType.ExecutionDone );
@@ -87,6 +93,11 @@ public class BattleFlowRound
 
     public BattleFlowATL GetCurrentATL()
     {
-        return this.flowATLs[ this.flowATLIndex ];
+        if (this.flowATLIndex < this.flowATLs.Length)
+        {
+            return this.flowATLs[ this.flowATLIndex ];
+        }
+
+        return null;
     }
 }

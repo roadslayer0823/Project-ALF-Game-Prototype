@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -51,6 +52,11 @@ public class BattleFlowManager : MonoBehaviour
 
         // For next round.
         this.isPlayerFirst = !( this.isPlayerFirst );
+    }
+
+    public IEnumerator RunBattleAnimation( BattleFlowATL battleFlowATL )
+    {
+        yield return StartCoroutine( battleGameManager.GetBattleAnimationManager().RunBattleAnimation( battleFlowATL ) );
     }
 
     private void OnCurrentRoundPhaseChanged( BattleFlowRound.PhaseType phaseType )
@@ -117,5 +123,10 @@ public class BattleFlowManager : MonoBehaviour
     public BattleFlowRound GetCurrentRound()
     {
         return this.currentRound;
+    }
+
+    public BattleGameManager GetBattleGameManager()
+    {
+        return this.battleGameManager;
     }
 }
