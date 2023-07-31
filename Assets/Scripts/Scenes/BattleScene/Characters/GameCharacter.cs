@@ -1,8 +1,12 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class GameCharacter : MonoBehaviour
 {
+    [SerializeField] private Animator characterAnimator = null;
+    [SerializeField] private Animator skillEffectAnimator = null;
+
     protected int id = 0;
     protected float maximumHealthPoint = 0.0f;
     protected float remainingHealthPoint = 0.0f;
@@ -11,8 +15,13 @@ public class GameCharacter : MonoBehaviour
     protected CharacterSkill[] skills = null;
     protected List<CharacterSkill> selectedActiveSkillList = null;
     protected List<CharacterSkill> selectedBackendSkillList = null;
+    protected GameObject ownContainer = null;
+    protected GameObject opponentContainer = null;
 
-    public void Initialize( CharacterDatabase.CharacterData characterData, SkillDatabase skillDatabase )
+    protected Action<string> onCharacterAnimationTriggeredCallback = null;
+    protected Action<string> onSkillEffectAnimationTriggeredCallback = null;
+
+    public void Initialize( CharacterDatabase.CharacterData characterData, SkillDatabase skillDatabase, GameObject ownContainer, GameObject opponentContainer )
     {
         base.gameObject.name = "Character: " + characterData.GetCharacterName();
 
@@ -32,6 +41,9 @@ public class GameCharacter : MonoBehaviour
         this.skills = _skillList.ToArray();
         this.selectedActiveSkillList = new List<CharacterSkill>();
         this.selectedBackendSkillList = new List<CharacterSkill>();
+
+        this.ownContainer = ownContainer;
+        this.opponentContainer = opponentContainer;
     }
 
     public void AddRemainingHealthPoint( float amount )
@@ -84,6 +96,38 @@ public class GameCharacter : MonoBehaviour
         }
     }
 
+    public void PlayCharacterAnimation( string animationName, Action<string> onAnimationTriggeredCallback = null )
+    {
+        this.onCharacterAnimationTriggeredCallback = onAnimationTriggeredCallback;
+        this.characterAnimator.Play( animationName );
+    }
+
+    public void PlaySkillEffectAnimation( string animationName, Action<string> onAnimationTriggeredCallback = null )
+    {
+        if (this.skillEffectAnimator == null) return;
+
+        this.onSkillEffectAnimationTriggeredCallback = onAnimationTriggeredCallback;
+        this.skillEffectAnimator.Play( animationName );
+    }
+
+    public void OnCharacterAnimationTriggered( string parameterValue )
+    {
+        if (this.onCharacterAnimationTriggeredCallback != null)
+        {
+            this.onCharacterAnimationTriggeredCallback( parameterValue );
+            this.onCharacterAnimationTriggeredCallback = null;
+        }
+    }
+
+    public void OnSkillEffectAnimationTriggered( string parameterValue )
+    {
+        if (this.onSkillEffectAnimationTriggeredCallback != null)
+        {
+            this.onSkillEffectAnimationTriggeredCallback( parameterValue );
+            this.onSkillEffectAnimationTriggeredCallback = null;
+        }
+    }
+
     public int GetId()
     {
         return this.id;
@@ -117,5 +161,25 @@ public class GameCharacter : MonoBehaviour
     public List<CharacterSkill> GetSelectedBackendSkillList()
     {
         return this.selectedBackendSkillList;
+    }
+
+    public Animator GetCharacterAnimator()
+    {
+        return this.characterAnimator;
+    }
+
+    public Animator GetSkillEffectAnimator()
+    {
+        return this.skillEffectAnimator;
+    }
+
+    public GameObject GetOwnContainer()
+    {
+        return this.ownContainer;
+    }
+
+    public GameObject GetOpponentContainer()
+    {
+        return this.opponentContainer;
     }
 }
