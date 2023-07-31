@@ -21,26 +21,20 @@ public class SkillSelectionListBox : MonoBehaviour
 
     public void Show( CharacterSkill[] characterSkills )
     {
-        // Check and clear the "skillSelectionBoxList" if not empty to make sure the list is empty
-        if (this.skillSelectionBoxList != null)
+        if (this.skillSelectionBoxList == null)
         {
-            for (int i = 0; i < skillSelectionBoxList.Count; i++)
+            this.skillSelectionBoxList = new List<SkillSelectionBox>();
+
+            // Initialize the SkillSelectionBox so that the skill can be display on it respectively. 
+            for (int i = 0; i < characterSkills.Length; i++)
             {
-                Destroy( skillSelectionBoxList[ i ].gameObject );
+                GameObject skillSelectionBoxObj = Instantiate(this.skillSelectionBoxPrefabObject, this.containerContent, false);
+
+                SkillSelectionBox skillSelectionBox = skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
+                skillSelectionBox.Initialize(this, characterSkills[i]);
+
+                this.skillSelectionBoxList.Add(skillSelectionBox);
             }
-        }
-
-        this.skillSelectionBoxList = new List<SkillSelectionBox>();
-
-        // Initialize the SkillSelectionBox so that the skill can be display on it respectively. 
-        for (int i = 0; i < characterSkills.Length; i++)
-        {
-            GameObject skillSelectionBoxObj = Instantiate( this.skillSelectionBoxPrefabObject, this.containerContent, false );
-
-            SkillSelectionBox skillSelectionBox = skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
-            skillSelectionBox.Initialize( this, characterSkills[ i ] );
-
-            skillSelectionBoxList.Add( skillSelectionBox );
         }
     }
 

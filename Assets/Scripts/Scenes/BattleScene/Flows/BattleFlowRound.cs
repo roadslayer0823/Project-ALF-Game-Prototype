@@ -73,7 +73,24 @@ public class BattleFlowRound
 
         while (_currentATL != null)
         {
+            BattleFlowATL currentBattleFlowATL = this.flowATLs[this.flowATLIndex];
+            ATLSlot currentATLSlot = currentBattleFlowATL.GetATLSlot();
+
+            currentATLSlot.ShowSelectionHighlight();
+            currentBattleFlowATL.SetIsATLSlotExecuted(true);
+
             yield return battleFlowManager.StartCoroutine( this.battleFlowManager.RunBattleAnimation( _currentATL ) );
+
+            currentATLSlot.MarkATLSlotColorInactive();
+            currentATLSlot.HideSelectionHighlight();
+
+            if (this.flowATLs[this.flowATLIndex].CheckIsPlayer())
+            {
+                // Auto swipe left the Skill Slot
+                currentATLSlot.onATLSlotExecutedCallback();
+                currentATLSlot.onSkillSlotSwipedCallback();
+            }
+
             this.flowATLIndex++;
             _currentATL = GetCurrentATL();
         }

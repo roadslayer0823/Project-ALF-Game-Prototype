@@ -79,11 +79,6 @@ public class SkillSelectionPanel : MonoBehaviour
     {
         if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
         {
-            if (this.selectedGameCharacter.GetSelectedActiveSkillList().Count >= 3)
-            {
-                return;
-            }
-
             if (this.selectedActiveSkillList.Count < 3)
             {
                 this.selectedActiveSkillList.Add(skillSelectionBox);
@@ -97,11 +92,6 @@ public class SkillSelectionPanel : MonoBehaviour
         }
         else if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Backend)
         {
-            if (this.selectedGameCharacter.GetSelectedBackendSkillList().Count >= 3)
-            {
-                return;
-            }
-
             if (this.selectedBackendSkillList.Count < 3)
             {
                 this.selectedBackendSkillList.Add(skillSelectionBox);

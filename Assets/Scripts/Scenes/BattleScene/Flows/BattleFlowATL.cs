@@ -11,10 +11,35 @@ public class BattleFlowATL
     private int partNumber = 0;
     private float animationDuration = 0.0f;
     private float animationStartTime = 0.0f;
+    private ATLSlot atlSlot = null;
+    private bool isATLSlotExecuted = false;
 
     public BattleFlowATL( GameCharacter selectedCharacter )
     {
         this.selectedCharacter = selectedCharacter;
+    }
+
+    public void UpdateATLSlotInfo()
+    {
+        ClearATLSlotInfo();
+
+        this.atlSlot.SetOwnerName(CheckIsPlayer() ? "Player" : "Enemy");
+
+        if (this.selectedSkill != null)
+        {
+            this.atlSlot.SetSkillName(this.selectedSkill.GetSkillData().GetSkillName());
+        }
+    }
+
+    public bool CheckIsPlayer()
+    {
+        return this.selectedCharacter is PlayerCharacter;
+    }
+
+    private void ClearATLSlotInfo()
+    {
+        this.atlSlot.SetOwnerName("NODATA");
+        this.atlSlot.SetSkillName("NODATA");
     }
 
     public GameCharacter GetSelectedCharacter()
@@ -40,5 +65,25 @@ public class BattleFlowATL
     public GameCharacter GetAttackTarget()
     {
         return this.attackTarget;
+    }
+
+    public ATLSlot GetATLSlot()
+    {
+        return atlSlot;
+    }
+
+    public void SetATLSlot(ATLSlot atlSlot)
+    {
+        this.atlSlot = atlSlot;
+    }
+
+    public bool GetIsATLSlotExecuted()
+    {
+        return this.isATLSlotExecuted;
+    }
+
+    public void SetIsATLSlotExecuted(bool isATLSlotExecuted)
+    {
+        this.isATLSlotExecuted = isATLSlotExecuted;
     }
 }

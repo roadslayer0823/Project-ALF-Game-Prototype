@@ -153,6 +153,11 @@ public class GameCharacter : MonoBehaviour
         return this.selectedActiveSkillList;
     }
 
+    public void SetSelectedActiveSkillList(List<CharacterSkill> selectedActiveSkillList)
+    {
+        this.selectedActiveSkillList = selectedActiveSkillList;
+    }
+
     public List<CharacterSkill> GetSelectedBackendSkillList()
     {
         return this.selectedBackendSkillList;
