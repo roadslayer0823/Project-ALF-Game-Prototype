@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,9 +11,6 @@ public class GameCharacter : MonoBehaviour
     protected CharacterSkill[] skills = null;
     protected List<CharacterSkill> selectedActiveSkillList = null;
     protected List<CharacterSkill> selectedBackendSkillList = null;
-
-    public Action onSkillSlotSwipedCallback = null;
-    public Action onATLSlotExecutedCallback = null;
 
     public void Initialize( CharacterDatabase.CharacterData characterData, SkillDatabase skillDatabase )
     {

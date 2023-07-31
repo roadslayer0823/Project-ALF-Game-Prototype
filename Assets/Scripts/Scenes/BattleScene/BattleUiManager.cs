@@ -17,6 +17,7 @@ public class BattleUiManager : MonoBehaviour
         this.battleGameManager = battleGameManager;
         this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
         this.playerActionPanel.Initialize( OnExecuteButtonClicked );
+        this.skillSlotListPanel.Initialize(OnSkillSlotSwiped);
     }
 
     public void SetSelectedGameCharacter( GameCharacter gameCharacter )
@@ -91,13 +92,18 @@ public class BattleUiManager : MonoBehaviour
         return this.skillSlotListPanel;
     }
 
+    public void OnSkillSlotSwiped()
+    {
+        this.atlSlotListPanel.OnSkillSlotUpdated();
+    }
+
 #endregion
 
 #region ATL Slot List Panel
 
     public void ShowATLSlotListPanel( BattleFlowATL[] flowATLs )
     {
-        this.atlSlotListPanel.Show( flowATLs );
+        this.atlSlotListPanel.Show( flowATLs, OnSkillSlotSwiped, OnATLSlotExecuted);
     }
 
     public void HideATLSlotListPanel()
@@ -105,9 +111,14 @@ public class BattleUiManager : MonoBehaviour
         this.atlSlotListPanel.Hide();
     }
 
+    public void OnATLSlotExecuted()
+    {
+        this.skillSlotListPanel.SwipeLeft();
+    }
+
 #endregion
 
-#region Player Action Panel
+    #region Player Action Panel
 
     public void OnExecuteButtonClicked()
     {

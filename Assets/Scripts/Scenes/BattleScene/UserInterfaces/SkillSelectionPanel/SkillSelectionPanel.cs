@@ -40,11 +40,6 @@ public class SkillSelectionPanel : MonoBehaviour
         this.backendSkillSelectionTabButton.GetComponent<Button>().onClick.AddListener(OnPassiveSkillClick);
     }
 
-    private void OnEnable()
-    {
-        UpdateSelectedSkillSequence();
-    }
-
     // Categorize and display all the skill that the character have based on skill category
     public void Show( GameCharacter selectedGameCharacter )
     {

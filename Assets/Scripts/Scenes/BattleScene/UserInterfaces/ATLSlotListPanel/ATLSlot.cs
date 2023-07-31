@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -17,9 +16,13 @@ public class ATLSlot : MonoBehaviour
 
     private BattleFlowATL battleFlowATL = null;
 
-    public void Initialize()
+    public Action onSkillSlotSwipedCallback = null;
+    public Action onATLSlotExecutedCallback = null;
+
+    public void Initialize(Action onSkillSlotSwipedCallback, Action onATLSlotExecutedCallback)
     {
-        
+        this.onSkillSlotSwipedCallback = onSkillSlotSwipedCallback;
+        this.onATLSlotExecutedCallback = onATLSlotExecutedCallback;
     }
 
     private void OnEnable()

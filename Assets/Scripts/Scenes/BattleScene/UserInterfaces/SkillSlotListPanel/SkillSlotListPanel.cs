@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,6 +15,13 @@ public class SkillSlotListPanel : MonoBehaviour
 
     private RectTransform rectTransform = null;
     private List<CharacterSkill> selectedSkills = null;
+
+    private Action onSkillSlotSwipedCallback = null;
+
+    public void Initialize(Action onSkillSlotSwipedCallback)
+    {
+        this.onSkillSlotSwipedCallback = onSkillSlotSwipedCallback;
+    }
 
     private void Start()
     {
@@ -34,7 +41,6 @@ public class SkillSlotListPanel : MonoBehaviour
         if (gameCharacter != null)
         {
             this.selectedGameCharacter = gameCharacter;
-            this.selectedGameCharacter.onATLSlotExecutedCallback = SwipeLeft;
 
             this.selectedSkills = new List<CharacterSkill>(gameCharacter.GetSelectedActiveSkillList());
             //this.selectedSkills = gameCharacter.GetSelectedActiveSkillList();
@@ -110,11 +116,11 @@ public class SkillSlotListPanel : MonoBehaviour
                 SwipeRight();
             }
 
-            selectedGameCharacter.onSkillSlotSwipedCallback();
+            this.onSkillSlotSwipedCallback();
         }
     }
 
-    private void SwipeLeft()
+    public void SwipeLeft()
     {
         CharacterSkill tempSlot;
 

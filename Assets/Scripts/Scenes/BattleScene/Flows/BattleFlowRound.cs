@@ -70,17 +70,22 @@ public class BattleFlowRound
 
         while (this.flowATLIndex < this.flowATLs.Length)
         {
-            this.flowATLs[this.flowATLIndex].GetATLSlot().ShowSelectionHighlight();
-            this.flowATLs[this.flowATLIndex].SetIsATLSlotExecuted(true);
+            BattleFlowATL currentBattleFlowATL = this.flowATLs[this.flowATLIndex];
+            ATLSlot currentATLSlot = currentBattleFlowATL.GetATLSlot();
+
+            currentATLSlot.ShowSelectionHighlight();
+            currentBattleFlowATL.SetIsATLSlotExecuted(true);
 
             yield return new WaitForSeconds( 3.0f );
 
-            this.flowATLs[this.flowATLIndex].GetATLSlot().MarkATLSlotColorInactive();
-            this.flowATLs[this.flowATLIndex].GetATLSlot().HideSelectionHighlight();
+            currentATLSlot.MarkATLSlotColorInactive();
+            currentATLSlot.HideSelectionHighlight();
 
             if (this.flowATLs[this.flowATLIndex].CheckIsPlayer())
             {
-                this.flowATLs[this.flowATLIndex].GetSelectedCharacter().onATLSlotExecutedCallback();
+                // Auto swipe left the Skill Slot
+                currentATLSlot.onATLSlotExecutedCallback();
+                currentATLSlot.onSkillSlotSwipedCallback();
             }
 
             this.flowATLIndex++;

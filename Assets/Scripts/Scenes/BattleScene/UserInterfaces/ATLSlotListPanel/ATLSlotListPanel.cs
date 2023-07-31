@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class ATLSlotListPanel : MonoBehaviour
 
     private BattleFlowATL[] battleFlowATLs;
 
-    public void Show( BattleFlowATL[] flowATLs )
+    public void Show( BattleFlowATL[] flowATLs, Action onSkillSlotSwipedCallback, Action onATLSlotExecutedCallback)
     {
         for (int i = 0; i < theATLSlots.Length; i++)
         {
@@ -16,9 +17,9 @@ public class ATLSlotListPanel : MonoBehaviour
 
             if (i < flowATLs.Length)
             {
-                flowATLs[i].GetSelectedCharacter().onSkillSlotSwipedCallback = OnSkillSlotUpdated;
                 flowATLs[i].SetATLSlot(_altSlot);
                 flowATLs[i].SetIsATLSlotExecuted(false);
+                _altSlot.Initialize(onSkillSlotSwipedCallback, onATLSlotExecutedCallback);
                 _altSlot.Show(flowATLs[i]);
             }
             else
@@ -38,7 +39,7 @@ public class ATLSlotListPanel : MonoBehaviour
         base.gameObject.SetActive( false );
     }
 
-    private void OnSkillSlotUpdated()
+    public void OnSkillSlotUpdated()
     {
         int playerSkillCounter = 0;
 
