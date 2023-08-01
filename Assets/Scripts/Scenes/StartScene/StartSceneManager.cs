@@ -3,7 +3,12 @@ using UnityEngine.SceneManagement;
 
 public class StartSceneManager : MonoBehaviour
 {
-    void Start()
+    void Awake()
+    {
+        DatabaseManager.Instance.onAllDataLoadedCallback = GoToBattleScene;
+    }
+
+    private void GoToBattleScene()
     {
         SceneManager.LoadScene( "BattleScene" );
     }

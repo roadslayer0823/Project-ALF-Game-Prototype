@@ -7,6 +7,9 @@ using Newtonsoft.Json;
 
 public class DatabaseManager : Singleton<DatabaseManager>
 {
+    [Header( "Settings" )]
+    [SerializeField] private bool isCheckingForUpdatesEnabled = false;
+
     [Header("Google Spreadsheet")]
     [SerializeField] private string databaseSpreadsheetId = "";
     [SerializeField] private string characterSheetName = "";
@@ -18,10 +21,35 @@ public class DatabaseManager : Singleton<DatabaseManager>
     private List<Subskill> subskillList = new List<Subskill>();
 
     public Action onDataUpdatedCallback = null;
+    public Action onAllDataLoadedCallback = null;
 
     void Start()
     {
-        LoadAllData();
+        if (this.isCheckingForUpdatesEnabled)
+        {
+            LoadAllData();
+        }
+        else
+        {
+            string _characterJsonData = PlayerPrefsManager.LoadCharacterDatabase();
+            string _skillJsonData = PlayerPrefsManager.LoadSkillDatabase();
+            string _subskillJsonData = PlayerPrefsManager.LoadSubskillDatabase();
+
+            if (!string.IsNullOrEmpty( _characterJsonData )
+                && !string.IsNullOrEmpty( _skillJsonData )
+                && !string.IsNullOrEmpty( _subskillJsonData ))
+            {
+                ProcessJsonData<Character>( _characterJsonData, this.characterSheetName );
+                ProcessJsonData<Skill>( _skillJsonData, this.skillSheetName );
+                ProcessJsonData<Subskill>( _subskillJsonData, this.subskillSheetName );
+
+                this.onAllDataLoadedCallback?.Invoke();
+            }
+            else
+            {
+                LoadAllData();
+            }
+        }
     }
 
     private void LoadAllData()
@@ -31,44 +59,46 @@ public class DatabaseManager : Singleton<DatabaseManager>
         StartCoroutine(GetJsonData<Subskill>(this.subskillSheetName));
     }
 
-    IEnumerator GetJsonData<T>(string sheetName) where T : class
+    private IEnumerator GetJsonData<T>( string sheetName ) where T : class
     {
-        string jsonURL = "https://opensheet.elk.sh/" + databaseSpreadsheetId + "/" + sheetName;
+        string jsonURL = "https://opensheet.elk.sh/" + this.databaseSpreadsheetId + "/" + sheetName;
 
-        while ( true )
+        Debug.Log( "Processing Data, Please Wait" );
+
+        //Download the data from json
+        UnityWebRequest webRequest = UnityWebRequest.Get( jsonURL );
+
+        //wait for it to download finish
+        yield return webRequest.SendWebRequest();
+
+        //Check to make sure no error, then pass the loaded data to other function for using
+        if (string.IsNullOrEmpty( webRequest.error ))
         {
-            Debug.Log("Processing Data, Please Wait");
+            ProcessJsonData<T>( webRequest.downloadHandler.text, sheetName );
 
-            //Download the data from json
-            UnityWebRequest webRequest = UnityWebRequest.Get(jsonURL);
-
-            //wait for it to download finish
-            yield return webRequest.SendWebRequest();
-
-            //Check to make sure no error, then pass the loaded data to other function for using
-            if (string.IsNullOrEmpty(webRequest.error))
+            if (this.onDataUpdatedCallback != null)
             {
-                ProcessJsonData<T>(webRequest.downloadHandler.text, sheetName);
-
-                if (this.onDataUpdatedCallback != null)
-                {
-                    this.onDataUpdatedCallback();
-                }
-
-                Debug.Log("Done.");
-            }
-            else
-            {
-                Debug.Log("Oops something went wrong");
+                this.onDataUpdatedCallback();
             }
 
-            yield return null;
+            Debug.Log( "Done." );
+        }
+        else
+        {
+            Debug.Log( "Oops something went wrong" );
+        }
+
+        if (this.characterList != null
+            && this.skillList != null
+            && this.subskillList != null)
+        {
+            onAllDataLoadedCallback?.Invoke();
         }
     }
 
-    private void ProcessJsonData<T>(string dataBytes, string sheetName) where T : class
+    private void ProcessJsonData<T>(string jsonData, string sheetName) where T : class
     {
-        List<T> dataList = JsonConvert.DeserializeObject<List<T>>(dataBytes);
+        List<T> dataList = JsonConvert.DeserializeObject<List<T>>( jsonData );
 
         //Check and assign the value into the respective list
         if (sheetName == this.characterSheetName)
@@ -77,8 +107,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
             foreach (Character character in this.characterList)
             {
-                character.SkillIdArray = ConvertStringToIntArray(character.SkillIdArrayString);
+                //character.SkillIdArray = ConvertStringToIntArray(character.SkillIdArrayString);
             }
+
+            PlayerPrefsManager.SaveCharacterDatabase( jsonData );
         }
         else if (sheetName == this.skillSheetName)
         {
@@ -88,6 +120,8 @@ public class DatabaseManager : Singleton<DatabaseManager>
             {
                 skill.skillType = (Skill.SkillType)Enum.Parse(typeof(Skill.SkillType), skill.SkillTypeString);
             }
+
+            PlayerPrefsManager.SaveSkillDatabase( jsonData );
         }
         else if (sheetName == this.subskillSheetName)
         {
@@ -99,8 +133,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 subskill.effectType = (Subskill.EffectType)Enum.Parse(typeof(Subskill.EffectType), subskill.EffectTypeString);
                 subskill.IsAttackingSkill = bool.Parse(subskill.IsAttackingSkillString);
                 subskill.IsInterceptable = bool.Parse(subskill.IsInterceptableString);
-                subskill.Effects = ConvertStringToIntArray(subskill.EffectsString);
+                //subskill.Effects = ConvertStringToIntArray(subskill.EffectsString);
             }
+
+            PlayerPrefsManager.SaveSubskillDatabase( jsonData );
         }
     }
 
