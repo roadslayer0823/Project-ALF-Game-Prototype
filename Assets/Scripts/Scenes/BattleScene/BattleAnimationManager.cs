@@ -68,9 +68,14 @@ public class BattleAnimationManager : MonoBehaviour
             yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartA ) );
         }
 
-        if (_attacker is PlayerCharacter)
+        // Hide the attacker for Part B if the attacker's animation type is ranged.
+        if (_animationType == "ranged")
         {
             _attacker.GetCharacterAnimator().gameObject.SetActive( false );
+        }
+
+        if (_attacker is PlayerCharacter)
+        {
             ChangeToBackgroundPartB();
         }
         else if (_attacker is EnemyCharacter)
