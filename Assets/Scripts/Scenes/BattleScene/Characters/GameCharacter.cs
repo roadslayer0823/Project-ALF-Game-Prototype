@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class GameCharacter : MonoBehaviour
 {
+    [SerializeField] private SortingGroup sortingGroup = null;
     [SerializeField] private Animator characterAnimator = null;
     [SerializeField] private Animator skillEffectAnimator = null;
 
@@ -104,8 +106,6 @@ public class GameCharacter : MonoBehaviour
 
     public void PlaySkillEffectAnimation( string animationName, Action<string> onAnimationTriggeredCallback = null )
     {
-        if (this.skillEffectAnimator == null) return;
-
         this.onSkillEffectAnimationTriggeredCallback = onAnimationTriggeredCallback;
         this.skillEffectAnimator.Play( animationName );
     }
@@ -161,6 +161,11 @@ public class GameCharacter : MonoBehaviour
     public List<CharacterSkill> GetSelectedBackendSkillList()
     {
         return this.selectedBackendSkillList;
+    }
+
+    public SortingGroup GetSortingGroup()
+    {
+        return this.sortingGroup;
     }
 
     public Animator GetCharacterAnimator()

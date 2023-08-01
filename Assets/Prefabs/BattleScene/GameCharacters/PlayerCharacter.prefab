@@ -144,6 +144,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7215210616897525856}
   - component: {fileID: 7215210616897525871}
+  - component: {fileID: 6098698254648782925}
   m_Layer: 0
   m_Name: PlayerCharacter
   m_TagString: Untagged
@@ -180,8 +181,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c91859f91bd04f7993c014ba8eb081f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sortingGroup: {fileID: 6098698254648782925}
   characterAnimator: {fileID: 6783496045404464755}
   skillEffectAnimator: {fileID: 8473947976547384779}
+--- !u!210 &6098698254648782925
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7215210616897525857}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 1
 --- !u!1 &7215210618600483731
 GameObject:
   m_ObjectHideFlags: 0
