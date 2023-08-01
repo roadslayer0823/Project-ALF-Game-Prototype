@@ -9,11 +9,37 @@ public class BattleAnimationManager : MonoBehaviour
 
     private bool isAnimationEventTriggered = false;
 
+    private const string NO_ANIMATION = "-";
+    private const string IDLE_ANIMATION_NAME = "Idle";
+    private const string GETTING_HIT_ANIMATION_NAME = "GettingHit";
+
     public IEnumerator RunBattleAnimation( BattleFlowATL battleFlowATL )
     {
         GameCharacter _attacker = battleFlowATL.GetSelectedCharacter();
         CharacterSkill _skill = battleFlowATL.GetSelectedSkill();
-        bool _hasSkillEffectAnimation = false;
+
+        string _animationType = "";
+        string _characterPartA = "";
+        string _characterPartB = "";
+        string _skillEffectPartA = "";
+        string _skillEffectPartB = "";
+
+        if (_attacker is PlayerCharacter)
+        {
+            _animationType = "ranged";
+            _characterPartA = "Attack";
+            _characterPartB = NO_ANIMATION;
+            _skillEffectPartA = "Fireball_Part_A";
+            _skillEffectPartB = "Fireball_Part_B";
+        }
+        else if (_attacker is EnemyCharacter)
+        {
+            _animationType = "melee";
+            _characterPartA = "Attack_Part_A";
+            _characterPartB = "Attack_Part_B";
+            _skillEffectPartA = NO_ANIMATION;
+            _skillEffectPartB = "HittingEffect";
+        }
 
         _attacker.GetSortingGroup().sortingOrder = 2;
         battleFlowATL.GetAttackTarget().GetSortingGroup().sortingOrder = 1;
@@ -21,12 +47,10 @@ public class BattleAnimationManager : MonoBehaviour
         if (_attacker is PlayerCharacter)
         {
             ChangeToBackgroundPartA();
-            _hasSkillEffectAnimation = true;
         }
         else if (_attacker is EnemyCharacter)
         {
             ChangeToBackgroundPartB();
-            _hasSkillEffectAnimation = false;
         }
 
         _attacker.GetOwnContainer().SetActive( true );
@@ -34,16 +58,14 @@ public class BattleAnimationManager : MonoBehaviour
         _attacker.GetOpponentContainer().SetActive( false );
         yield return new WaitForSeconds( 0.1f );
 
-        if (_attacker is PlayerCharacter)
+        if (_characterPartA != NO_ANIMATION)
         {
-            _attacker.PlayCharacterAnimation( "Attack" );
+            yield return StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartA ) );
         }
 
-        if (_hasSkillEffectAnimation)
+        if (_skillEffectPartA != NO_ANIMATION)
         {
-            _attacker.PlaySkillEffectAnimation( "Fireball_Part_A", OnAnimationEventTriggered );
-            this.isAnimationEventTriggered = false;
-            yield return new WaitUntil( () => this.isAnimationEventTriggered );
+            yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartA ) );
         }
 
         if (_attacker is PlayerCharacter)
@@ -56,36 +78,41 @@ public class BattleAnimationManager : MonoBehaviour
             ChangeToBackgroundPartA();
         }
 
-        if (_hasSkillEffectAnimation)
+        _attacker.GetOpponentContainer().SetActive( true );
+
+        if (_characterPartB != NO_ANIMATION)
         {
-            _attacker.GetOpponentContainer().SetActive( true );
-            _attacker.PlaySkillEffectAnimation( "Fireball_Part_B", OnAnimationEventTriggered );
+            yield return StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartB ) );
         }
 
-        if (_attacker is EnemyCharacter)
+        if (_skillEffectPartB != NO_ANIMATION)
         {
-            _attacker.PlayCharacterAnimation( "Attack_Part_A", OnAnimationEventTriggered );
-            this.isAnimationEventTriggered = false;
-            yield return new WaitUntil( () => this.isAnimationEventTriggered );
-            _attacker.GetOpponentContainer().SetActive( true );
-            _attacker.PlayCharacterAnimation( "Attack_Part_B", OnAnimationEventTriggered );
+            yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartB ) );
         }
 
-        this.isAnimationEventTriggered = false;
-        yield return new WaitUntil( () => this.isAnimationEventTriggered );
-        battleFlowATL.GetAttackTarget().PlayCharacterAnimation( "GettingHit" );
-
-        if (_attacker is EnemyCharacter)
-        {
-            _attacker.PlaySkillEffectAnimation( "HittingEffect" );
-            yield return new WaitForSeconds( 0.3f );
-        }
-
-        yield return new WaitForSeconds( 0.5f );
+        yield return StartCoroutine( PlayCharacterAnimation( battleFlowATL.GetAttackTarget(), GETTING_HIT_ANIMATION_NAME ) );
 
         _attacker.GetOwnContainer().SetActive( false );
         _attacker.GetCharacterAnimator().gameObject.SetActive( true );
-        _attacker.PlayCharacterAnimation( "Idle" );
+        _attacker.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
+    }
+
+    private IEnumerator PlayCharacterAnimation( GameCharacter gameCharacter, string animationName )
+    {
+        gameCharacter.PlayCharacterAnimation( animationName, OnAnimationEventTriggered );
+        yield return StartCoroutine( WaitForAnimationEventTriggered() );
+    }
+
+    private IEnumerator PlaySkillEffectAnimation( GameCharacter gameCharacter, string animationName )
+    {
+        gameCharacter.PlaySkillEffectAnimation( animationName, OnAnimationEventTriggered );
+        yield return StartCoroutine( WaitForAnimationEventTriggered() );
+    }
+
+    private IEnumerator WaitForAnimationEventTriggered()
+    {
+        this.isAnimationEventTriggered = false;
+        yield return new WaitUntil( () => this.isAnimationEventTriggered );
     }
 
     private void OnAnimationEventTriggered( string parameterValue )
