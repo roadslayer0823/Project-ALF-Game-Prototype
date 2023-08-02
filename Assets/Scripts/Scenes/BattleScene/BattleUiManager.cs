@@ -8,6 +8,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
     [SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
     [SerializeField] private PlayerActionPanel playerActionPanel = null;
+    [SerializeField] private CharacterInfoPanel characterInfoPanel = null;
 
     private BattleGameManager battleGameManager = null;
     private GameCharacter selectedGameCharacter = null;
@@ -118,11 +119,20 @@ public class BattleUiManager : MonoBehaviour
 
 #endregion
 
-    #region Player Action Panel
+#region Player Action Panel
 
     public void OnExecuteButtonClicked()
     {
         this.battleGameManager.StartExecution();
+    }
+
+#endregion
+
+#region Character Info Panel
+
+    public CharacterInfoPanel GetCharacterInfoPanel()
+    {
+        return this.characterInfoPanel;
     }
 
 #endregion

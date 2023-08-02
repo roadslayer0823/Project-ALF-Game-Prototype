@@ -23,6 +23,7 @@ public class GameCharacter : MonoBehaviour
 
     protected Action<string> onCharacterAnimationTriggeredCallback = null;
     protected Action<string> onSkillEffectAnimationTriggeredCallback = null;
+    protected Action onCharacterInfoUpdated = null;
 
     public void Initialize( Character characterData, GameObject ownContainer, GameObject opponentContainer )
     {
@@ -52,21 +53,25 @@ public class GameCharacter : MonoBehaviour
     public void AddRemainingHealthPoint( float amount )
     {
         this.remainingHealthPoint += amount;
+        this.onCharacterInfoUpdated?.Invoke();
     }
 
     public void MinusRemainingHealthPoint( float amount )
     {
         this.remainingHealthPoint -= amount;
+        this.onCharacterInfoUpdated?.Invoke();
     }
 
-    public void AddRemainingActionPoint( float amount )
+    public void AddRemainingStatePoint( float amount )
     {
         this.remainingStatePoint += amount;
+        this.onCharacterInfoUpdated?.Invoke();
     }
 
-    public void MinusRemainingActionPoint( float amount )
+    public void MinusRemainingStatePoint( float amount )
     {
         this.remainingStatePoint -= amount;
+        this.onCharacterInfoUpdated?.Invoke();
     }
 
     public void AddSelectedSkill(Skill skill)
@@ -127,6 +132,11 @@ public class GameCharacter : MonoBehaviour
             this.onSkillEffectAnimationTriggeredCallback( parameterValue );
             this.onSkillEffectAnimationTriggeredCallback = null;
         }
+    }
+
+    public void SetOnCharacterInfoUpdated( Action onCharacterInfoUpdated )
+    {
+        this.onCharacterInfoUpdated = onCharacterInfoUpdated;
     }
 
     public string GetId()

@@ -46,6 +46,7 @@ public class BattleGameManager : MonoBehaviour
 
         // -----------------------------------------------------------------------
 
+        this.battleUiManager.GetCharacterInfoPanel().SetSelectedCharacter( this.playerCharacter );
         this.battleFlowManager.StartGame();
     }
 
