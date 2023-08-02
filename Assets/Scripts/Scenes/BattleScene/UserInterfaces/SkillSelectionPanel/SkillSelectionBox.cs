@@ -16,10 +16,10 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Button selectionButton;
 
     private SkillSelectionListBox skillSelectionListBox = null;
-    private CharacterSkill characterSkill = null;
+    private DatabaseManager.Skill characterSkill = null;
     private bool isSelected = false;
 
-    public void Initialize( SkillSelectionListBox skillSelectionListBox, CharacterSkill characterSkill )
+    public void Initialize(SkillSelectionListBox skillSelectionListBox, DatabaseManager.Skill characterSkill)
     {
         this.skillSelectionListBox = skillSelectionListBox;
         this.characterSkill = characterSkill;
@@ -57,7 +57,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         this.skillSelectionListBox.OnSkillDeselected( this );
     }
 
-    public CharacterSkill GetCharacterSkill()
+    public DatabaseManager.Skill GetCharacterSkill()
     {
         return this.characterSkill;
     }
@@ -107,8 +107,8 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         RectTransform rectTransform = GetComponent<RectTransform>();
         rectTransform.sizeDelta = new Vector2(0, this.boxHeight);
 
-        this.skillNameText.SetText(characterSkill.GetSkillData().GetSkillName());
-        this.skillTypeText.SetText("[" + characterSkill.GetSkillData().GetSkillType().ToString() + "]");
+        this.skillNameText.SetText(characterSkill.GetDisplayName());
+        this.skillTypeText.SetText("[" + characterSkill.GetSkillType().ToString() + "]");
     }
 
     // Callback function for selection button

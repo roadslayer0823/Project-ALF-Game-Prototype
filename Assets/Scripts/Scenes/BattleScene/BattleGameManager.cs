@@ -9,10 +9,6 @@ public class BattleGameManager : MonoBehaviour
     [SerializeField] private BattleFlowManager battleFlowManager = null;
     [SerializeField] private BattleAnimationManager battleAnimationManager = null;
 
-    [Header( "Data" )]
-    [SerializeField] private SkillDatabase skillDatabase = null;
-    [SerializeField] private CharacterDatabase characterDatabase = null;
-
     [Header( "References" )]
     [SerializeField] private GameObject playerContainer = null;
     [SerializeField] private GameObject opponentContainer = null;
@@ -37,7 +33,7 @@ public class BattleGameManager : MonoBehaviour
         // -------------------- Set up the player's characters --------------------
 
         this.playerCharacterList = new List<PlayerCharacter>();
-        this.playerCharacter.Initialize( this.characterDatabase.GetPlayerCharacterDataById( 1 ), this.skillDatabase, this.playerContainer, this.opponentContainer );
+        this.playerCharacter.Initialize(DatabaseManager.Instance.GetCharacterDataById("E1"), this.playerContainer, this.opponentContainer );
         this.playerCharacterList.Add( this.playerCharacter );
 
         // ------------------------------------------------------------------------
@@ -45,7 +41,7 @@ public class BattleGameManager : MonoBehaviour
         // -------------------- Set up the enemy's characters --------------------
 
         this.enemyCharacterList = new List<EnemyCharacter>();
-        this.enemyCharacter.Initialize( this.characterDatabase.GetEnemyCharacterDataById( 1 ), this.skillDatabase, this.opponentContainer, this.playerContainer );
+        this.enemyCharacter.Initialize(DatabaseManager.Instance.GetCharacterDataById("E1"), this.opponentContainer, this.playerContainer );
         this.enemyCharacterList.Add( this.enemyCharacter );
 
         // -----------------------------------------------------------------------
@@ -89,16 +85,6 @@ public class BattleGameManager : MonoBehaviour
     public List<EnemyCharacter> GetEnemyCharacterList()
     {
         return this.enemyCharacterList;
-    }
-
-    public SkillDatabase GetSkillDatabase()
-    {
-        return this.skillDatabase;
-    }
-
-    public CharacterDatabase GetCharacterDatabase()
-    {
-        return this.characterDatabase;
     }
 
     public BattleAnimationManager GetBattleAnimationManager()

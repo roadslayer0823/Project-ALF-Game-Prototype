@@ -15,7 +15,7 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI skillStatusBoostValue;
     [SerializeField] private TextMeshProUGUI skillLoadValue;
 
-    public void Show(CharacterSkill characterSkill)
+    public void Show(DatabaseManager.Skill characterSkill)
     {
         this.skillInformation.gameObject.SetActive(true);
         SetupSkillInfomation(characterSkill);
@@ -26,9 +26,9 @@ public class SkillInfoBox : MonoBehaviour
         this.skillInformation.gameObject.SetActive(false);
     }
 
-    private void SetupSkillInfomation(CharacterSkill characterSkill)
+    private void SetupSkillInfomation(DatabaseManager.Skill characterSkill)
     {
-        this.skillType.SetText("[" + characterSkill.GetSkillData().GetSkillType().ToString() + "]");
-        this.skillName.SetText(characterSkill.GetSkillData().GetSkillName());
+        this.skillType.SetText("[" + characterSkill.GetSkillType().ToString() + "]");
+        this.skillName.SetText(characterSkill.GetDisplayName());
     }
 }

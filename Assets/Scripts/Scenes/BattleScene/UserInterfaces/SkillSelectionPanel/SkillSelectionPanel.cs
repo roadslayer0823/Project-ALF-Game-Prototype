@@ -41,33 +41,32 @@ public class SkillSelectionPanel : MonoBehaviour
     }
 
     // Categorize and display all the skill that the character have based on skill category
-    public void Show( GameCharacter selectedGameCharacter )
+    public void Show(GameCharacter selectedGameCharacter)
     {
         this.selectedGameCharacter = selectedGameCharacter;
 
-        CharacterSkill[] _characterSkills = this.selectedGameCharacter.GetSkills();
-        List<CharacterSkill> _activeSkillList = new List<CharacterSkill>();
-        List<CharacterSkill> _backendSkillList = new List<CharacterSkill>();
+        DatabaseManager.Skill[] _characterSkills = this.selectedGameCharacter.GetSkills();
+        List<DatabaseManager.Skill> _activeSkillList = new List<DatabaseManager.Skill>();
+        List<DatabaseManager.Skill> _backendSkillList = new List<DatabaseManager.Skill>();
 
         for (int i = 0; i < _characterSkills.Length; i++)
         {
-            CharacterSkill _characterSkill = _characterSkills[ i ];
-            SkillDatabase.SkillData _characterSkillData = _characterSkill.GetSkillData();
+            DatabaseManager.Skill _characterSkill = _characterSkills[i];
 
-            if (_characterSkillData.GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
+            if (_characterSkill.GetSkillType() == DatabaseManager.Skill.SkillType.active)
             {
-                _activeSkillList.Add( _characterSkill );
+                _activeSkillList.Add(_characterSkill);
             }
-            else if (_characterSkillData.GetSkillType() == SkillDatabase.SkillData.SkillType.Backend)
+            else if (_characterSkill.GetSkillType() == DatabaseManager.Skill.SkillType.backend)
             {
-                _backendSkillList.Add( _characterSkill );
+                _backendSkillList.Add(_characterSkill);
             }
         }
 
-        this.activeSkillSelectionTab.Show( _activeSkillList.ToArray() );
-        this.backendSkillSelectionTab.Show( _backendSkillList.ToArray() );
+        this.activeSkillSelectionTab.Show(_activeSkillList.ToArray());
+        this.backendSkillSelectionTab.Show(_backendSkillList.ToArray());
 
-        base.gameObject.SetActive( true );
+        base.gameObject.SetActive(true);
     }
 
     public void Hide()
@@ -77,7 +76,7 @@ public class SkillSelectionPanel : MonoBehaviour
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
-        if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
+        if (skillSelectionBox.GetCharacterSkill().GetSkillType() == DatabaseManager.Skill.SkillType.active)
         {
             if (this.selectedActiveSkillList.Count < 3)
             {
@@ -90,7 +89,7 @@ public class SkillSelectionPanel : MonoBehaviour
                 skillSelectionBox.MarkDeselected();
             }
         }
-        else if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Backend)
+        else if (skillSelectionBox.GetCharacterSkill().GetSkillType() == DatabaseManager.Skill.SkillType.backend)
         {
             if (this.selectedBackendSkillList.Count < 3)
             {

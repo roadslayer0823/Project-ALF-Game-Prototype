@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using static DatabaseManager;
 
 public class GameCharacter : MonoBehaviour
 {
@@ -9,40 +10,40 @@ public class GameCharacter : MonoBehaviour
     [SerializeField] private Animator characterAnimator = null;
     [SerializeField] private Animator skillEffectAnimator = null;
 
-    protected int id = 0;
+    protected string id = null;
     protected float maximumHealthPoint = 0.0f;
     protected float remainingHealthPoint = 0.0f;
-    protected float maximumActionPoint = 0.0f;
-    protected float remainingActionPoint = 0.0f;
-    protected CharacterSkill[] skills = null;
-    protected List<CharacterSkill> selectedActiveSkillList = null;
-    protected List<CharacterSkill> selectedBackendSkillList = null;
+    protected float maximumStatePoint = 0.0f;
+    protected float remainingStatePoint = 0.0f;
+    protected Skill[] skills = null;
+    protected List<Skill> selectedActiveSkillList = null;
+    protected List<Skill> selectedBackendSkillList = null;
     protected GameObject ownContainer = null;
     protected GameObject opponentContainer = null;
 
     protected Action<string> onCharacterAnimationTriggeredCallback = null;
     protected Action<string> onSkillEffectAnimationTriggeredCallback = null;
 
-    public void Initialize( CharacterDatabase.CharacterData characterData, SkillDatabase skillDatabase, GameObject ownContainer, GameObject opponentContainer )
+    public void Initialize( Character characterData, GameObject ownContainer, GameObject opponentContainer )
     {
-        base.gameObject.name = "Character: " + characterData.GetCharacterName();
+        base.gameObject.name = "Character: " + characterData.GetDisplayName();
 
         this.id = characterData.GetId();
         this.maximumHealthPoint = characterData.GetMaximumHealthPoint();
         this.remainingHealthPoint = this.maximumHealthPoint;
-        this.maximumActionPoint = characterData.GetMaximumActionPoint();
-        this.remainingActionPoint = this.maximumActionPoint;
+        this.maximumStatePoint = characterData.GetMaximumStatePoint();
+        this.remainingStatePoint = this.maximumStatePoint;
 
-        List<CharacterSkill> _skillList = new List<CharacterSkill>();
-        int[] _skillIdArray = characterData.GetSkillIdArray();
+        List<Skill> _skillList = new List<Skill>();
+        string[] _skillIdArray = characterData.GetSkillIdArray();
         for (int i = 0; i < _skillIdArray.Length; i++)
         {
-            _skillList.Add( new CharacterSkill( skillDatabase.GetSkillDataById( _skillIdArray[ i ] ) ) );
+            _skillList.Add(DatabaseManager.Instance.GetSkillDataById(_skillIdArray[i]) );
         }
 
         this.skills = _skillList.ToArray();
-        this.selectedActiveSkillList = new List<CharacterSkill>();
-        this.selectedBackendSkillList = new List<CharacterSkill>();
+        this.selectedActiveSkillList = new List<Skill>();
+        this.selectedBackendSkillList = new List<Skill>();
 
         this.ownContainer = ownContainer;
         this.opponentContainer = opponentContainer;
@@ -60,41 +61,41 @@ public class GameCharacter : MonoBehaviour
 
     public void AddRemainingActionPoint( float amount )
     {
-        this.remainingActionPoint += amount;
+        this.remainingStatePoint += amount;
     }
 
     public void MinusRemainingActionPoint( float amount )
     {
-        this.remainingActionPoint -= amount;
+        this.remainingStatePoint -= amount;
     }
 
-    public void AddSelectedSkill( CharacterSkill skill )
+    public void AddSelectedSkill(Skill skill)
     {
-        if (skill.GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
+        if (skill.GetSkillType() == Skill.SkillType.active)
         {
             if (this.selectedActiveSkillList.Count < GameConfiguration.BATTLE_MAXIMUM_SELECTED_ACTIVE_SKILLS)
             {
-                this.selectedActiveSkillList.Add( skill );
+                this.selectedActiveSkillList.Add(skill);
             }
         }
         else
         {
             if (this.selectedBackendSkillList.Count < GameConfiguration.BATTLE_MAXIMUM_SELECTED_BACKEND_SKILLS)
             {
-                this.selectedBackendSkillList.Add( skill );
+                this.selectedBackendSkillList.Add(skill);
             }
         }
     }
 
-    public void RemoveSelectedSkill( CharacterSkill skill )
+    public void RemoveSelectedSkill(Skill skill)
     {
-        if (skill.GetSkillData().GetSkillType() == SkillDatabase.SkillData.SkillType.Active)
+        if (skill.GetSkillType() == Skill.SkillType.active)
         {
-            this.selectedActiveSkillList.Remove( skill );
+            this.selectedActiveSkillList.Remove(skill);
         }
         else
         {
-            this.selectedBackendSkillList.Remove( skill );
+            this.selectedBackendSkillList.Remove(skill);
         }
     }
 
@@ -128,7 +129,7 @@ public class GameCharacter : MonoBehaviour
         }
     }
 
-    public int GetId()
+    public string GetId()
     {
         return this.id;
     }
@@ -140,25 +141,25 @@ public class GameCharacter : MonoBehaviour
 
     public float GetMaximumActionPoint()
     {
-        return this.maximumActionPoint;
+        return this.maximumStatePoint;
     }
 
-    public CharacterSkill[] GetSkills()
+    public Skill[] GetSkills()
     {
-        return this.skills;
+        return skills;
     }
 
-    public List<CharacterSkill> GetSelectedActiveSkillList()
+    public List<Skill> GetSelectedActiveSkillList()
     {
         return this.selectedActiveSkillList;
     }
 
-    public void SetSelectedActiveSkillList(List<CharacterSkill> selectedActiveSkillList)
+    public void SetSelectedActiveSkillList(List<Skill> selectedActiveSkillList)
     {
         this.selectedActiveSkillList = selectedActiveSkillList;
     }
 
-    public List<CharacterSkill> GetSelectedBackendSkillList()
+    public List<Skill> GetSelectedBackendSkillList()
     {
         return this.selectedBackendSkillList;
     }

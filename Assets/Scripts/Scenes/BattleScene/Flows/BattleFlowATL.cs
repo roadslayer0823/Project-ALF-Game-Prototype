@@ -5,7 +5,6 @@ using UnityEngine;
 public class BattleFlowATL
 {
     private GameCharacter selectedCharacter = null;
-    private CharacterSkill selectedSkill = null;
     private GameCharacter attackTarget = null;
 
     private int partNumber = 0;
@@ -13,6 +12,8 @@ public class BattleFlowATL
     private float animationStartTime = 0.0f;
     private ATLSlot atlSlot = null;
     private bool isATLSlotExecuted = false;
+
+    private DatabaseManager.Skill selectedSkill = null;
 
     public BattleFlowATL( GameCharacter selectedCharacter )
     {
@@ -27,7 +28,7 @@ public class BattleFlowATL
 
         if (this.selectedSkill != null)
         {
-            this.atlSlot.SetSkillName(this.selectedSkill.GetSkillData().GetSkillName());
+            this.atlSlot.SetSkillName(this.selectedSkill.GetDisplayName());
         }
     }
 
@@ -47,12 +48,12 @@ public class BattleFlowATL
         return this.selectedCharacter;
     }
 
-    public void SetSelectedSkill( CharacterSkill selectedSkill )
+    public void SetSelectedSkill(DatabaseManager.Skill selectedSkill)
     {
         this.selectedSkill = selectedSkill;
     }
 
-    public CharacterSkill GetSelectedSkill()
+    public DatabaseManager.Skill GetSelectedSkill()
     {
         return this.selectedSkill;
     }
