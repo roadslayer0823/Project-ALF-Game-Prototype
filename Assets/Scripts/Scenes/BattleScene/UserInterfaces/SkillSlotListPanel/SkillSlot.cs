@@ -7,16 +7,16 @@ public class SkillSlot : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI skillSlotText;
 
-    private CharacterSkill selectedSkill = null;
+    private DatabaseManager.Skill selectedSkill = null;
 
-    public void SetSelectedSkill( CharacterSkill selectedSkill )
+    public void SetSelectedSkill(DatabaseManager.Skill selectedSkill)
     {
         this.selectedSkill = selectedSkill;
 
-        SetSkillSlotText(selectedSkill.GetSkillData().GetSkillName());
+        SetSkillSlotText(selectedSkill.GetDisplayName());
     }
 
-    public CharacterSkill GetSelectedSkill()
+    public DatabaseManager.Skill GetSelectedSkill()
     {
         return this.selectedSkill;
     }

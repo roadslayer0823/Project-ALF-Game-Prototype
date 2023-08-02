@@ -236,11 +236,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56e90d74660d7497c8698ade507fad5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alwaysCheckForUpdate: 0
+  isCheckingForUpdatesEnabled: 0
   databaseSpreadsheetId: 1apb8snjkgf0ZExhw6XkpbTNncPU52ak_jBs9yNvapLY
+  versionSheetName: Versions
   characterSheetName: Characters
   skillSheetName: Skills
   subskillSheetName: Subskills
+  skillAnimationSheetName: Skill_Animations
 --- !u!4 &1794611540
 Transform:
   m_ObjectHideFlags: 0

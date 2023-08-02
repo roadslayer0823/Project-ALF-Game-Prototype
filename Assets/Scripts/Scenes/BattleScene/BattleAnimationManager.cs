@@ -16,7 +16,7 @@ public class BattleAnimationManager : MonoBehaviour
     public IEnumerator RunBattleAnimation( BattleFlowATL battleFlowATL )
     {
         GameCharacter _attacker = battleFlowATL.GetSelectedCharacter();
-        CharacterSkill _skill = battleFlowATL.GetSelectedSkill();
+        DatabaseManager.Skill _skill = battleFlowATL.GetSelectedSkill();
 
         string _animationType = "";
         string _characterPartA = "";

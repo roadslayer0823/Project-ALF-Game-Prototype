@@ -20,9 +20,9 @@ public class SkillSelectionTab : MonoBehaviour
         this.skillInfoPanel.Hide();
     }
 
-    public void Show( CharacterSkill[] characterSkills )
+    public void Show(DatabaseManager.Skill[] characterSkills)
     {
-        this.skillSelectionListBox.Show( characterSkills );
+        this.skillSelectionListBox.Show(characterSkills);
     }
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )

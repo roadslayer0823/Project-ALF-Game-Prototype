@@ -12,13 +12,17 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
     [Header("Google Spreadsheet")]
     [SerializeField] private string databaseSpreadsheetId = "";
+    [SerializeField] private string versionSheetName = "";
     [SerializeField] private string characterSheetName = "";
     [SerializeField] private string skillSheetName = "";
     [SerializeField] private string subskillSheetName = "";
+    [SerializeField] private string skillAnimationSheetName = "";
 
+    private List<Version> versionList = new List<Version>();
     private List<Character> characterList = new List<Character>();
     private List<Skill> skillList = new List<Skill>();
     private List<Subskill> subskillList = new List<Subskill>();
+    private List<SkillAnimation> skillAnimationList = new List<SkillAnimation>();
 
     public Action onDataUpdatedCallback = null;
     public Action onAllDataLoadedCallback = null;
@@ -31,17 +35,27 @@ public class DatabaseManager : Singleton<DatabaseManager>
         }
         else
         {
+            string _versionJsonData = PlayerPrefsManager.LoadVersionDatabase();
             string _characterJsonData = PlayerPrefsManager.LoadCharacterDatabase();
             string _skillJsonData = PlayerPrefsManager.LoadSkillDatabase();
             string _subskillJsonData = PlayerPrefsManager.LoadSubskillDatabase();
+            string _skillAnimationJsonData = PlayerPrefsManager.LoadSkillAnimationDatabase();
 
-            if (!string.IsNullOrEmpty( _characterJsonData )
+            if (!string.IsNullOrEmpty(_versionJsonData)
+                && !string.IsNullOrEmpty( _characterJsonData )
                 && !string.IsNullOrEmpty( _skillJsonData )
-                && !string.IsNullOrEmpty( _subskillJsonData ))
+                && !string.IsNullOrEmpty( _subskillJsonData )
+                && !string.IsNullOrEmpty(_skillAnimationJsonData))
             {
+                //StartCoroutine(CheckDatabaseVersion(_versionJsonData));
+                //StartCoroutine(GetJsonData<Version>(this.versionSheetName));
+                
+                ProcessJsonData<Version>(_versionJsonData, this.versionSheetName);
+
                 ProcessJsonData<Character>( _characterJsonData, this.characterSheetName );
                 ProcessJsonData<Skill>( _skillJsonData, this.skillSheetName );
                 ProcessJsonData<Subskill>( _subskillJsonData, this.subskillSheetName );
+                ProcessJsonData<SkillAnimation>(_skillAnimationJsonData, this.skillAnimationSheetName);
 
                 this.onAllDataLoadedCallback?.Invoke();
             }
@@ -52,11 +66,56 @@ public class DatabaseManager : Singleton<DatabaseManager>
         }
     }
 
+    private IEnumerator CheckDatabaseVersion(string versionJsonData)
+    {
+        yield return StartCoroutine(GetJsonData<Version>(this.versionSheetName));
+
+        if (this.versionList.Count != 0)
+        {
+            Debug.Log("XXX");
+
+            List<Version> latestDatabaseVersionList = new List<Version>();
+            latestDatabaseVersionList = this.versionList;
+
+            ProcessJsonData<Version>(versionJsonData, this.versionSheetName);
+
+            for (int i = 0; i < latestDatabaseVersionList.Count; i++)
+            {
+                foreach (Version previousDatabaseVersion in this.versionList)
+                {
+                    if (previousDatabaseVersion.SheetName == latestDatabaseVersionList[i].SheetName
+                        && previousDatabaseVersion.VersionNumber < latestDatabaseVersionList[i].VersionNumber)
+                    {
+                        if (latestDatabaseVersionList[i].SheetName == this.characterSheetName)
+                        {
+                            StartCoroutine(GetJsonData<Character>(this.characterSheetName));
+                        }
+                        else if (latestDatabaseVersionList[i].SheetName == this.skillSheetName)
+                        {
+                            StartCoroutine(GetJsonData<Skill>(this.skillSheetName));
+                        }
+                        else if (latestDatabaseVersionList[i].SheetName == this.subskillSheetName)
+                        {
+                            StartCoroutine(GetJsonData<Subskill>(this.subskillSheetName));
+                        }
+                        else if (latestDatabaseVersionList[i].SheetName == this.skillAnimationSheetName)
+                        {
+                            StartCoroutine(GetJsonData<SkillAnimation>(this.skillAnimationSheetName));
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
     private void LoadAllData()
     {
+        StartCoroutine(GetJsonData<Version>(this.versionSheetName));
         StartCoroutine(GetJsonData<Character>(this.characterSheetName));
         StartCoroutine(GetJsonData<Skill>(this.skillSheetName));
         StartCoroutine(GetJsonData<Subskill>(this.subskillSheetName));
+        StartCoroutine(GetJsonData<SkillAnimation>(this.skillAnimationSheetName));
     }
 
     private IEnumerator GetJsonData<T>( string sheetName ) where T : class
@@ -88,9 +147,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
             Debug.Log( "Oops something went wrong" );
         }
 
-        if (this.characterList != null
+        if (this.versionList != null
+            && this.characterList != null
             && this.skillList != null
-            && this.subskillList != null)
+            && this.subskillList != null
+            && this.skillAnimationList != null)
         {
             onAllDataLoadedCallback?.Invoke();
         }
@@ -101,13 +162,19 @@ public class DatabaseManager : Singleton<DatabaseManager>
         List<T> dataList = JsonConvert.DeserializeObject<List<T>>( jsonData );
 
         //Check and assign the value into the respective list
-        if (sheetName == this.characterSheetName)
+        if (sheetName == this.versionSheetName)
+        {
+            this.versionList = dataList as List<Version>;
+
+            PlayerPrefsManager.SaveVersionDatabase(jsonData);
+        }
+        else if (sheetName == this.characterSheetName)
         {
             this.characterList = dataList as List<Character>;
 
             foreach (Character character in this.characterList)
             {
-                //character.SkillIdArray = ConvertStringToIntArray(character.SkillIdArrayString);
+                character.SkillIdArray = ConvertStringToStringArray(character.SkillIdArrayString);
             }
 
             PlayerPrefsManager.SaveCharacterDatabase( jsonData );
@@ -133,20 +200,27 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 subskill.effectType = (Subskill.EffectType)Enum.Parse(typeof(Subskill.EffectType), subskill.EffectTypeString);
                 subskill.IsAttackingSkill = bool.Parse(subskill.IsAttackingSkillString);
                 subskill.IsInterceptable = bool.Parse(subskill.IsInterceptableString);
-                //subskill.Effects = ConvertStringToIntArray(subskill.EffectsString);
+                subskill.Effects = ConvertStringToIntArray(subskill.EffectsString);
             }
 
             PlayerPrefsManager.SaveSubskillDatabase( jsonData );
+        }
+        else if (sheetName == this.skillAnimationSheetName)
+        {
+            this.skillAnimationList = dataList as List<SkillAnimation>;
+
+            foreach (SkillAnimation skillAnimation in this.skillAnimationList)
+            {
+                skillAnimation.animationType = (SkillAnimation.AnimationType)Enum.Parse(typeof(SkillAnimation.AnimationType), skillAnimation.AnimationTypeString);
+            }
+
+            PlayerPrefsManager.SaveSkillAnimationDatabase(jsonData);
         }
     }
 
     private int[] ConvertStringToIntArray(string arrayString)
     {
-        string removeLeftSquareBracket = arrayString.Replace("[", "");
-        arrayString = removeLeftSquareBracket;
-
-        string removeRightSquareBracket = arrayString.Replace("]", "");
-        arrayString = removeRightSquareBracket;
+        arrayString = RemoveSquareBracket(arrayString);
 
         if (arrayString != "")
         {
@@ -157,6 +231,63 @@ public class DatabaseManager : Singleton<DatabaseManager>
         {
             return null;
         }
+    }
+
+    private string[] ConvertStringToStringArray(string arrayString)
+    {
+        arrayString = RemoveSquareBracket(arrayString);
+
+        if (arrayString != "")
+        {
+            string[] word = arrayString.Split(",");
+            return word;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    // Remove [] from string
+    private string RemoveSquareBracket(string arrayString)
+    {
+        string removeLeftSquareBracket = arrayString.Replace("[", "");
+        arrayString = removeLeftSquareBracket;
+
+        string removeRightSquareBracket = arrayString.Replace("]", "");
+        arrayString = removeRightSquareBracket;
+
+        return arrayString;
+    }
+
+    // Return correspond skill data based on skill id
+    public Skill GetSkillDataById(string id)
+    {
+        for (int i = 0; i < skillList.Count; i++)
+        {
+            Skill skillData = skillList[i];
+            if (skillData.GetId() == id)
+            {
+                return skillData;
+            }
+        }
+
+        return null;
+    }
+
+    // Return correspond character data based on character id
+    public Character GetCharacterDataById(string id)
+    {
+        for (int i = 0; i < characterList.Count; i++)
+        {
+            Character characterData = characterList[i];
+            if (characterData.GetId() == id)
+            {
+                return characterData;
+            }
+        }
+
+        return null;
     }
 
     public List<Character> GetCharacterList()
@@ -174,9 +305,19 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.subskillList;
     }
 
-
+    // Inner classes declaration
 #region Inner Classes
-    [System.Serializable]
+    [Serializable]
+    public class Version
+    {
+        [JsonProperty("sheet_name")]
+        public string SheetName;
+
+        [JsonProperty("version")]
+        public int VersionNumber;
+    }
+
+    [Serializable]
     public class Character
     {
         [JsonProperty("id")]
@@ -188,15 +329,42 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("maximum_health_point")]
         public int MaximumHealthPoint;
 
-        [JsonProperty("maximum_action_point")]
-        public int MaximumActionPoint;
+        [JsonProperty("maximum_state_point")]
+        public int MaximumStatePoint;
 
         [JsonProperty("skill_id_array")]
         [HideInInspector] public string SkillIdArrayString;
-        public int[] SkillIdArray;
+        public string[] SkillIdArray;
+
+        #region Getter
+        public string GetId()
+        {
+            return Id;
+        }
+
+        public string GetDisplayName()
+        {
+            return DisplayName;
+        }
+
+        public int GetMaximumHealthPoint()
+        {
+            return MaximumHealthPoint;
+        }
+
+        public int GetMaximumStatePoint()
+        {
+            return MaximumStatePoint;
+        }
+
+        public string[] GetSkillIdArray()
+        {
+            return SkillIdArray;
+        }
+        #endregion
     }
 
-    [System.Serializable]
+    [Serializable]
     public class Skill
     {
         [JsonProperty("id")]
@@ -214,9 +382,26 @@ public class DatabaseManager : Singleton<DatabaseManager>
             derived
         }
         public SkillType skillType;
+
+        #region Getter
+        public string GetId()
+        {
+            return Id;
+        }
+
+        public string GetDisplayName()
+        {
+            return DisplayName;
+        }
+
+        public SkillType GetSkillType()
+        {
+            return skillType;
+        }
+        #endregion
     }
 
-    [System.Serializable]
+    [Serializable]
     public class Subskill
     {
         [JsonProperty("id")]
@@ -231,11 +416,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("derived_skill_id")]
         public string DerivedSkillId;
 
-        [JsonProperty("action_point_cost")]
-        public int ActionPointCost;
+        [JsonProperty("state_point_cost")]
+        public int StatePointCost;
 
         [JsonProperty("attack_damage")]
-        public int ActionDamage;
+        public int AttackDamage;
 
         [JsonProperty("defense")]
         public int Defense;
@@ -277,6 +462,38 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("effects")]
         [HideInInspector] public string EffectsString;
         public int[] Effects;
+    }
+
+    [Serializable]
+    public class SkillAnimation
+    {
+        [JsonProperty("id")]
+        public string Id;
+
+        [JsonProperty("subskill_id")]
+        public string SubskillId;
+
+        [JsonProperty("animation_type")]
+        [HideInInspector] public string AnimationTypeString;
+        public enum AnimationType
+        {
+            none,
+            melee,
+            ranged
+        }
+        public AnimationType animationType;
+
+        [JsonProperty("character_part_a")]
+        public string CharacterPartA;
+
+        [JsonProperty("character_part_b")]
+        public string CharacterPartB;
+
+        [JsonProperty("skill_effect_part_a")]
+        public string SkillEffectPartA;
+
+        [JsonProperty("skill_effect_part_b")]
+        public string SkillEffectPartB;
     }
 
 #endregion
