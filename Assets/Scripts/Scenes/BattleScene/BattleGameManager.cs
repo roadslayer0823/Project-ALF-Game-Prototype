@@ -33,7 +33,7 @@ public class BattleGameManager : MonoBehaviour
         // -------------------- Set up the player's characters --------------------
 
         this.playerCharacterList = new List<PlayerCharacter>();
-        this.playerCharacter.Initialize(DatabaseManager.Instance.GetCharacterDataById("E1"), this.playerContainer, this.opponentContainer );
+        this.playerCharacter.Initialize(DatabaseManager.Instance.GetCharacterDataById("C1"), this.playerContainer, this.opponentContainer );
         this.playerCharacterList.Add( this.playerCharacter );
 
         // ------------------------------------------------------------------------
