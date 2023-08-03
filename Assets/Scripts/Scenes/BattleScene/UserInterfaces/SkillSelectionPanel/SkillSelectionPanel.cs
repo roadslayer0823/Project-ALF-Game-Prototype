@@ -9,8 +9,10 @@ public class SkillSelectionPanel : MonoBehaviour
     [SerializeField] private SkillSelectionTab backendSkillSelectionTab = null;
 
     [Header("SkillTabButtons")]
-    [SerializeField] private RectTransform activeSkillSelectionTabButton = null;
-    [SerializeField] private RectTransform backendSkillSelectionTabButton = null;
+    [SerializeField] private Button activeSkillSelectionTabButton = null;
+    [SerializeField] private Button backendSkillSelectionTabButton = null;
+    [SerializeField] private Image activeSkillSelectionTabColor = null;
+    [SerializeField] private Image backendSkillSelectionTabColor = null;
 
     [Header("SkillTabInteractionColor")]
     [SerializeField] private Color normalColor;
@@ -36,8 +38,8 @@ public class SkillSelectionPanel : MonoBehaviour
     {
         this.backendSkillSelectionTab.gameObject.SetActive(false);
 
-        this.activeSkillSelectionTabButton.GetComponent<Button>().onClick.AddListener(OnActiveSkillTabClick);
-        this.backendSkillSelectionTabButton.GetComponent<Button>().onClick.AddListener(OnPassiveSkillClick);
+        this.activeSkillSelectionTabButton.onClick.AddListener(OnActiveSkillTabClick);
+        this.backendSkillSelectionTabButton.onClick.AddListener(OnPassiveSkillClick);
     }
 
     // Categorize and display all the skill that the character have based on skill category
@@ -146,8 +148,8 @@ public class SkillSelectionPanel : MonoBehaviour
         this.activeSkillSelectionTab.gameObject.SetActive(true);
         this.backendSkillSelectionTab.gameObject.SetActive(false);
 
-        this.activeSkillSelectionTabButton.GetComponent<Image>().color = this.selectedColor;
-        this.backendSkillSelectionTabButton.GetComponent<Image>().color = this.normalColor;
+        this.activeSkillSelectionTabColor.color = this.selectedColor;
+        this.backendSkillSelectionTabColor.color = this.normalColor;
 
         this.backendSkillSelectionTab.HideSkillInfoPanel();
     }
@@ -158,8 +160,8 @@ public class SkillSelectionPanel : MonoBehaviour
         this.activeSkillSelectionTab.gameObject.SetActive(false);
         this.backendSkillSelectionTab.gameObject.SetActive(true);
 
-        this.activeSkillSelectionTabButton.GetComponent<Image>().color = this.normalColor;
-        this.backendSkillSelectionTabButton.GetComponent<Image>().color = this.selectedColor;
+        this.activeSkillSelectionTabColor.color = this.normalColor;
+        this.backendSkillSelectionTabColor.color = this.selectedColor;
 
         this.activeSkillSelectionTab.HideSkillInfoPanel();
     }

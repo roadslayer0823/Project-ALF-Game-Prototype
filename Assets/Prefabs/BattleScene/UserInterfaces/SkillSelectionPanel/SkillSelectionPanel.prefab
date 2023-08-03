@@ -54,8 +54,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   activeSkillSelectionTab: {fileID: 5459260374220162652}
   backendSkillSelectionTab: {fileID: 612517740939008948}
-  activeSkillSelectionTabButton: {fileID: 973456180678701636}
-  backendSkillSelectionTabButton: {fileID: 6993350616127483478}
+  activeSkillSelectionTabButton: {fileID: 8015979577208796029}
+  backendSkillSelectionTabButton: {fileID: 8063163667737907253}
+  activeSkillSelectionTabColor: {fileID: 1899391260004626004}
+  backendSkillSelectionTabColor: {fileID: 8562688838882046534}
   normalColor: {r: 0.44705886, g: 0.48627454, b: 0.62352943, a: 0.5019608}
   selectedColor: {r: 0.5803922, g: 0.6431373, b: 1, a: 0.39215687}
 --- !u!1001 &317417582073872088
@@ -324,21 +326,55 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
---- !u!224 &973456180678701636 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 3039640190419287657, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+--- !u!114 &1899391260004626004 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4465160505463186041, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
   m_PrefabInstance: {fileID: 2858819958902754349}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &6993350616127483478 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 5089576439661699707, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
-  m_PrefabInstance: {fileID: 2858819958902754349}
-  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &7196490032152648714 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4932426845173518375, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
   m_PrefabInstance: {fileID: 2858819958902754349}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8015979577208796029 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5229500981005451088, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+  m_PrefabInstance: {fileID: 2858819958902754349}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8063163667737907253 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5209131198087470104, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+  m_PrefabInstance: {fileID: 2858819958902754349}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8562688838882046534 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5870540773383356011, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+  m_PrefabInstance: {fileID: 2858819958902754349}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5126389791967994672
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -437,6 +473,10 @@ PrefabInstance:
     - target: {fileID: 929896807347168622, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_Name
       value: ActiveSkillSelectionTab
+      objectReference: {fileID: 0}
+    - target: {fileID: 5395172928961972319, guid: be42383b28f1248dca855ac668a32226, type: 3}
+      propertyPath: m_fontSize
+      value: 54.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be42383b28f1248dca855ac668a32226, type: 3}
