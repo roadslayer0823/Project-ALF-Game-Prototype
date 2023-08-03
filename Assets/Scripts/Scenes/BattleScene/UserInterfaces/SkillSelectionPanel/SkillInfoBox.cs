@@ -32,7 +32,7 @@ public class SkillInfoBox : MonoBehaviour
     {
         this.skillType.SetText("[" + characterSkill.GetSkillData().GetSkillType().ToString() + "]");
         this.displayName.SetText(characterSkill.GetSkillData().GetDisplayName());
-        this.attackDamage.SetText(characterSkill.GetSubskillByLevel(3).GetAttackDamage().ToString());
-        this.statePointCost.SetText(characterSkill.GetSubskillByLevel(3).GetStatePointCost().ToString());
+        this.attackDamage.SetText(characterSkill.GetSubskillByLevel(1).GetAttackDamage().ToString());
+        this.statePointCost.SetText(characterSkill.GetSubskillByLevel(1).GetStatePointCost().ToString());
     }
 }
