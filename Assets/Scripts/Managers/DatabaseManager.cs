@@ -36,6 +36,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
         else
         {
             string _versionJsonData = PlayerPrefsManager.LoadVersionDatabase();
+            if (!string.IsNullOrEmpty(_versionJsonData))
+            {
+                StartCoroutine(CheckDatabaseVersion(_versionJsonData));
+            }
+
             string _characterJsonData = PlayerPrefsManager.LoadCharacterDatabase();
             string _skillJsonData = PlayerPrefsManager.LoadSkillDatabase();
             string _subskillJsonData = PlayerPrefsManager.LoadSubskillDatabase();
@@ -47,11 +52,6 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 && !string.IsNullOrEmpty( _subskillJsonData )
                 && !string.IsNullOrEmpty(_skillAnimationJsonData))
             {
-                //StartCoroutine(CheckDatabaseVersion(_versionJsonData));
-                //StartCoroutine(GetJsonData<Version>(this.versionSheetName));
-                
-                ProcessJsonData<Version>(_versionJsonData, this.versionSheetName);
-
                 ProcessJsonData<Character>( _characterJsonData, this.characterSheetName );
                 ProcessJsonData<Skill>( _skillJsonData, this.skillSheetName );
                 ProcessJsonData<Subskill>( _subskillJsonData, this.subskillSheetName );
@@ -68,41 +68,46 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
     private IEnumerator CheckDatabaseVersion(string versionJsonData)
     {
+        // Get latest database version list
         yield return StartCoroutine(GetJsonData<Version>(this.versionSheetName));
+
+        Debug.Log("Previous version json data: " + versionJsonData);
 
         if (this.versionList.Count != 0)
         {
-            Debug.Log("XXX");
+            Debug.Log("Check Database Version.");
 
-            List<Version> latestDatabaseVersionList = new List<Version>();
-            latestDatabaseVersionList = this.versionList;
+            List<Version> latestDatabaseVersionList = this.versionList;
+            List<Version> previousDatabaseVersionList = JsonConvert.DeserializeObject<List<Version>>(versionJsonData);
 
-            ProcessJsonData<Version>(versionJsonData, this.versionSheetName);
-
-            for (int i = 0; i < latestDatabaseVersionList.Count; i++)
+            foreach (Version latestDatabaseVersion in latestDatabaseVersionList)
             {
-                foreach (Version previousDatabaseVersion in this.versionList)
+                foreach (Version previousDatabaseVersion in previousDatabaseVersionList)
                 {
-                    if (previousDatabaseVersion.SheetName == latestDatabaseVersionList[i].SheetName
-                        && previousDatabaseVersion.VersionNumber < latestDatabaseVersionList[i].VersionNumber)
+                    // Compare the loaded previous database version number with latest database version number
+                    if (previousDatabaseVersion.SheetName == latestDatabaseVersion.SheetName
+                        && previousDatabaseVersion.VersionNumber < latestDatabaseVersion.VersionNumber)
                     {
-                        if (latestDatabaseVersionList[i].SheetName == this.characterSheetName)
+                        if (latestDatabaseVersion.SheetName == this.characterSheetName)
                         {
                             StartCoroutine(GetJsonData<Character>(this.characterSheetName));
+                            Debug.Log("Update: " + this.characterSheetName);
                         }
-                        else if (latestDatabaseVersionList[i].SheetName == this.skillSheetName)
+                        else if (latestDatabaseVersion.SheetName == this.skillSheetName)
                         {
                             StartCoroutine(GetJsonData<Skill>(this.skillSheetName));
+                            Debug.Log("Update: " + this.skillSheetName);
                         }
-                        else if (latestDatabaseVersionList[i].SheetName == this.subskillSheetName)
+                        else if (latestDatabaseVersion.SheetName == this.subskillSheetName)
                         {
                             StartCoroutine(GetJsonData<Subskill>(this.subskillSheetName));
+                            Debug.Log("Update: " + this.subskillSheetName);
                         }
-                        else if (latestDatabaseVersionList[i].SheetName == this.skillAnimationSheetName)
+                        else if (latestDatabaseVersion.SheetName == this.skillAnimationSheetName)
                         {
                             StartCoroutine(GetJsonData<SkillAnimation>(this.skillAnimationSheetName));
+                            Debug.Log("Update: " + this.skillAnimationSheetName);
                         }
-                        break;
                     }
                 }
             }
@@ -164,6 +169,8 @@ public class DatabaseManager : Singleton<DatabaseManager>
         //Check and assign the value into the respective list
         if (sheetName == this.versionSheetName)
         {
+            Debug.Log("Latest json version data: " + jsonData);
+
             this.versionList = dataList as List<Version>;
 
             PlayerPrefsManager.SaveVersionDatabase(jsonData);
