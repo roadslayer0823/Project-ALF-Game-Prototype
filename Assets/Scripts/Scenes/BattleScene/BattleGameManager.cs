@@ -33,7 +33,7 @@ public class BattleGameManager : MonoBehaviour
         // -------------------- Set up the player's characters --------------------
 
         this.playerCharacterList = new List<PlayerCharacter>();
-        this.playerCharacter.Initialize(DatabaseManager.Instance.GetCharacterDataById("C1"), this.playerContainer, this.opponentContainer );
+        this.playerCharacter.Initialize( DatabaseManager.Instance.GetCharacterDataById( "C1" ), this.playerContainer, this.opponentContainer );
         this.playerCharacterList.Add( this.playerCharacter );
 
         // ------------------------------------------------------------------------
@@ -41,7 +41,7 @@ public class BattleGameManager : MonoBehaviour
         // -------------------- Set up the enemy's characters --------------------
 
         this.enemyCharacterList = new List<EnemyCharacter>();
-        this.enemyCharacter.Initialize(DatabaseManager.Instance.GetCharacterDataById("E1"), this.opponentContainer, this.playerContainer );
+        this.enemyCharacter.Initialize( DatabaseManager.Instance.GetCharacterDataById( "E1" ), this.opponentContainer, this.playerContainer );
         this.enemyCharacterList.Add( this.enemyCharacter );
 
         // -----------------------------------------------------------------------
@@ -60,10 +60,19 @@ public class BattleGameManager : MonoBehaviour
         this.battleUiManager.SetSelectedGameCharacter( this.playerCharacterList[ 0 ] );
         this.battleUiManager.ShowSkillSelectionPanel();
         this.battleUiManager.ShowSkillSlotListPanel();
+
+        this.battleAnimationManager.ChangeToBackgroundPartB();
+        this.playerContainer.SetActive( true );
+        this.opponentContainer.SetActive( true );
+        this.playerCharacter.PlayCharacterAnimation( "Prepare" );
+        this.enemyCharacter.PlayCharacterAnimation( "Idle" );
     }
 
     private void OnExecutionPhaseStarted()
     {
+        this.playerCharacter.PlayCharacterAnimation( "Idle" );
+        this.enemyCharacter.PlayCharacterAnimation( "Idle" );
+
         this.battleUiManager.HideSkillSelectionPanel();
         this.battleUiManager.ShowATLSlotListPanel( this.battleFlowManager.GetCurrentRound().GetFlowATLs() );
         this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( true );
