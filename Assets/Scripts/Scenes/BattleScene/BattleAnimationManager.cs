@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using Skill = DatabaseManager.Skill;
+using Subskill = DatabaseManager.Subskill;
 
 public class BattleAnimationManager : MonoBehaviour
 {
@@ -16,7 +18,9 @@ public class BattleAnimationManager : MonoBehaviour
     public IEnumerator RunBattleAnimation( BattleFlowATL battleFlowATL )
     {
         GameCharacter _attacker = battleFlowATL.GetSelectedCharacter();
-        DatabaseManager.Skill _skill = battleFlowATL.GetSelectedSkill();
+        GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
+        Skill _skill = battleFlowATL.GetSelectedSkill();
+        Subskill _subskill = DatabaseManager.Instance.GetSubskill( _skill.GetId(), 1 );
 
         string _animationType = "";
         string _characterPartA = "";
@@ -42,7 +46,7 @@ public class BattleAnimationManager : MonoBehaviour
         }
 
         _attacker.GetSortingGroup().sortingOrder = 2;
-        battleFlowATL.GetAttackTarget().GetSortingGroup().sortingOrder = 1;
+        _attackTarget.GetSortingGroup().sortingOrder = 1;
 
         if (_attacker is PlayerCharacter)
         {
@@ -90,12 +94,20 @@ public class BattleAnimationManager : MonoBehaviour
             yield return StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartB ) );
         }
 
+        _attackTarget.MinusRemainingHealthPoint( _subskill.AttackDamage );
+
         if (_skillEffectPartB != NO_ANIMATION)
         {
             yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartB ) );
         }
 
-        yield return StartCoroutine( PlayCharacterAnimation( battleFlowATL.GetAttackTarget(), GETTING_HIT_ANIMATION_NAME ) );
+        yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
+
+        if (_attackTarget.GetRemainingHealthPoint() <= 0)
+        {
+            _attackTarget.gameObject.SetActive( false );
+            yield break;
+        }
 
         _attacker.GetOwnContainer().SetActive( false );
         _attacker.GetCharacterAnimator().gameObject.SetActive( true );

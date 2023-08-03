@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class BattleFlowRound
 {
@@ -34,6 +35,13 @@ public class BattleFlowRound
         {
             BattleFlowATL _atl = new BattleFlowATL( ( _isPlayer ) ? this.battleFlowManager.GetNextPlayerCharacter() : this.battleFlowManager.GetNextEnemyCharacter() );
             _atl.SetAttackTarget( ( _isPlayer ) ? this.battleFlowManager.GetNextEnemyCharacter() : this.battleFlowManager.GetNextPlayerCharacter() );
+
+            if (_atl.GetSelectedCharacter() is EnemyCharacter)
+            {
+                DatabaseManager.Skill[] _skills = _atl.GetSelectedCharacter().GetSkills();
+                _atl.SetSelectedSkill( _skills[ Random.Range( 0, _skills.Length ) ] );
+            }
+
             _atlList.Add( _atl );
 
             _isPlayer = !( _isPlayer );
