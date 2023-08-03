@@ -9,8 +9,10 @@ public class SkillSelectionPanel : MonoBehaviour
     [SerializeField] private SkillSelectionTab backendSkillSelectionTab = null;
 
     [Header("SkillTabButtons")]
-    [SerializeField] private RectTransform activeSkillSelectionTabButton = null;
-    [SerializeField] private RectTransform backendSkillSelectionTabButton = null;
+    [SerializeField] private Button activeSkillSelectionTabButton = null;
+    [SerializeField] private Button backendSkillSelectionTabButton = null;
+    [SerializeField] private Image activeSkillSelectionTabColor = null;
+    [SerializeField] private Image backendSkillSelectionTabColor = null;
 
     [Header("SkillTabInteractionColor")]
     [SerializeField] private Color normalColor;
@@ -36,8 +38,8 @@ public class SkillSelectionPanel : MonoBehaviour
     {
         this.backendSkillSelectionTab.gameObject.SetActive(false);
 
-        this.activeSkillSelectionTabButton.GetComponent<Button>().onClick.AddListener(OnActiveSkillTabClick);
-        this.backendSkillSelectionTabButton.GetComponent<Button>().onClick.AddListener(OnPassiveSkillClick);
+        this.activeSkillSelectionTabButton.onClick.AddListener(OnActiveSkillTabClick);
+        this.backendSkillSelectionTabButton.onClick.AddListener(OnPassiveSkillClick);
     }
 
     // Categorize and display all the skill that the character have based on skill category
@@ -45,19 +47,19 @@ public class SkillSelectionPanel : MonoBehaviour
     {
         this.selectedGameCharacter = selectedGameCharacter;
 
-        DatabaseManager.Skill[] _characterSkills = this.selectedGameCharacter.GetSkills();
-        List<DatabaseManager.Skill> _activeSkillList = new List<DatabaseManager.Skill>();
-        List<DatabaseManager.Skill> _backendSkillList = new List<DatabaseManager.Skill>();
+        CharacterSkill[] _characterSkills = this.selectedGameCharacter.GetSkills();
+        List<CharacterSkill> _activeSkillList = new List<CharacterSkill>();
+        List<CharacterSkill> _backendSkillList = new List<CharacterSkill>();
 
         for (int i = 0; i < _characterSkills.Length; i++)
         {
-            DatabaseManager.Skill _characterSkill = _characterSkills[i];
+            CharacterSkill _characterSkill = _characterSkills[i];
 
-            if (_characterSkill.GetSkillType() == DatabaseManager.Skill.SkillType.active)
+            if (_characterSkill.GetSkillData().GetSkillType() == DatabaseManager.Skill.SkillType.active)
             {
                 _activeSkillList.Add(_characterSkill);
             }
-            else if (_characterSkill.GetSkillType() == DatabaseManager.Skill.SkillType.backend)
+            else if (_characterSkill.GetSkillData().GetSkillType() == DatabaseManager.Skill.SkillType.backend)
             {
                 _backendSkillList.Add(_characterSkill);
             }
@@ -76,7 +78,7 @@ public class SkillSelectionPanel : MonoBehaviour
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
-        if (skillSelectionBox.GetCharacterSkill().GetSkillType() == DatabaseManager.Skill.SkillType.active)
+        if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == DatabaseManager.Skill.SkillType.active)
         {
             if (this.selectedActiveSkillList.Count < 3)
             {
@@ -89,7 +91,7 @@ public class SkillSelectionPanel : MonoBehaviour
                 skillSelectionBox.MarkDeselected();
             }
         }
-        else if (skillSelectionBox.GetCharacterSkill().GetSkillType() == DatabaseManager.Skill.SkillType.backend)
+        else if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == DatabaseManager.Skill.SkillType.backend)
         {
             if (this.selectedBackendSkillList.Count < 3)
             {
@@ -146,8 +148,8 @@ public class SkillSelectionPanel : MonoBehaviour
         this.activeSkillSelectionTab.gameObject.SetActive(true);
         this.backendSkillSelectionTab.gameObject.SetActive(false);
 
-        this.activeSkillSelectionTabButton.GetComponent<Image>().color = this.selectedColor;
-        this.backendSkillSelectionTabButton.GetComponent<Image>().color = this.normalColor;
+        this.activeSkillSelectionTabColor.color = this.selectedColor;
+        this.backendSkillSelectionTabColor.color = this.normalColor;
 
         this.backendSkillSelectionTab.HideSkillInfoPanel();
     }
@@ -158,8 +160,8 @@ public class SkillSelectionPanel : MonoBehaviour
         this.activeSkillSelectionTab.gameObject.SetActive(false);
         this.backendSkillSelectionTab.gameObject.SetActive(true);
 
-        this.activeSkillSelectionTabButton.GetComponent<Image>().color = this.normalColor;
-        this.backendSkillSelectionTabButton.GetComponent<Image>().color = this.selectedColor;
+        this.activeSkillSelectionTabColor.color = this.normalColor;
+        this.backendSkillSelectionTabColor.color = this.selectedColor;
 
         this.activeSkillSelectionTab.HideSkillInfoPanel();
     }

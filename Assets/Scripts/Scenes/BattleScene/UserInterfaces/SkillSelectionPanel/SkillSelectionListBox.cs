@@ -19,7 +19,7 @@ public class SkillSelectionListBox : MonoBehaviour
         this.skillSelectionBoxPrefabObject = this.skillSelectionBoxPrefab.gameObject;
     }
 
-    public void Show(DatabaseManager.Skill[] characterSkills)
+    public void Show(CharacterSkill[] characterSkills)
     {
         if (this.skillSelectionBoxList == null)
         {

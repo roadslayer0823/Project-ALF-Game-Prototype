@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Subskill = DatabaseManager.Subskill;
 
 public class SkillInfoBox : MonoBehaviour
 {
@@ -11,11 +12,12 @@ public class SkillInfoBox : MonoBehaviour
     [Header("SkillInfoDetails")]
     [SerializeField] private Image skillPortrait;
     [SerializeField] private TextMeshProUGUI skillType;
-    [SerializeField] private TextMeshProUGUI skillName;
-    [SerializeField] private TextMeshProUGUI skillStatusBoostValue;
-    [SerializeField] private TextMeshProUGUI skillLoadValue;
+    [SerializeField] private TextMeshProUGUI displayName;
+    [SerializeField] private TextMeshProUGUI attackDamage;
+    [SerializeField] private TextMeshProUGUI statePointCost;
+    [SerializeField] private TextMeshProUGUI skillDescription;
 
-    public void Show(DatabaseManager.Skill characterSkill)
+    public void Show(CharacterSkill characterSkill)
     {
         this.skillInformation.gameObject.SetActive(true);
         SetupSkillInfomation(characterSkill);
@@ -26,9 +28,11 @@ public class SkillInfoBox : MonoBehaviour
         this.skillInformation.gameObject.SetActive(false);
     }
 
-    private void SetupSkillInfomation(DatabaseManager.Skill characterSkill)
+    private void SetupSkillInfomation(CharacterSkill characterSkill)
     {
-        this.skillType.SetText("[" + characterSkill.GetSkillType().ToString() + "]");
-        this.skillName.SetText(characterSkill.GetDisplayName());
+        this.skillType.SetText("[" + characterSkill.GetSkillData().GetSkillType().ToString() + "]");
+        this.displayName.SetText(characterSkill.GetSkillData().GetDisplayName());
+        this.attackDamage.SetText(characterSkill.GetSubskillByLevel(3).GetAttackDamage().ToString());
+        this.statePointCost.SetText(characterSkill.GetSubskillByLevel(3).GetStatePointCost().ToString());
     }
 }

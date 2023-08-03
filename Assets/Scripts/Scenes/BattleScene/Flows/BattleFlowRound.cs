@@ -38,7 +38,7 @@ public class BattleFlowRound
 
             if (_atl.GetSelectedCharacter() is EnemyCharacter)
             {
-                DatabaseManager.Skill[] _skills = _atl.GetSelectedCharacter().GetSkills();
+                CharacterSkill[] _skills = _atl.GetSelectedCharacter().GetSkills();
                 _atl.SetSelectedSkill( _skills[ Random.Range( 0, _skills.Length ) ] );
             }
 

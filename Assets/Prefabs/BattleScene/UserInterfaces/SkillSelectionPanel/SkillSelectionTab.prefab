@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2105010955824859806}
   - component: {fileID: 916990371823929039}
   m_Layer: 5
-  m_Name: SkillLoad
+  m_Name: StatePointCost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u8D1F\u8377\u5A01\u529B"
+  m_text: "\u72C0\u614B\u503C\u9EDE\u6578"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
   m_sharedMaterial: {fileID: -8331989788932644591, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
@@ -189,7 +189,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8bf8cb49d54494b65b26dd92b06837a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemHeight: -205
   skillSelectionBoxContainer: {fileID: 929896806740624366}
   skillSelectionBoxPrefab: {fileID: 3436927454122306116, guid: 81b2af1036ddf403e9e1fcbd496ba4ff, type: 3}
   containerContent: {fileID: 753415734133809005}
@@ -339,9 +338,10 @@ MonoBehaviour:
   skillInformation: {fileID: 6568565640919302411}
   skillPortrait: {fileID: 5076721660942583898}
   skillType: {fileID: 6045989707172890192}
-  skillName: {fileID: 8872307289537047387}
-  skillStatusBoostValue: {fileID: 2009537845378419568}
-  skillLoadValue: {fileID: 8601711330666135456}
+  displayName: {fileID: 8872307289537047387}
+  attackDamage: {fileID: 2009537845378419568}
+  statePointCost: {fileID: 8601711330666135456}
+  skillDescription: {fileID: 3636231722594869172}
 --- !u!222 &1044420057264491373
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -392,7 +392,7 @@ GameObject:
   - component: {fileID: 3286429632483663840}
   - component: {fileID: 2009537845378419568}
   m_Layer: 5
-  m_Name: BoostValue
+  m_Name: AttackDamageValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -605,7 +605,7 @@ GameObject:
   - component: {fileID: 1654616438588993510}
   - component: {fileID: 4396152923110901664}
   m_Layer: 5
-  m_Name: SkillStatusBoost
+  m_Name: AttackDamage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -660,7 +660,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u72B6\u6001\u63D0\u5347"
+  m_text: "\u653B\u64CA\u50B7\u5BB3"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
   m_sharedMaterial: {fileID: -8331989788932644591, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
@@ -822,7 +822,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 52.35
+  m_fontSize: 54.3
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -999,7 +999,7 @@ GameObject:
   - component: {fileID: 1576365455462973794}
   - component: {fileID: 8601711330666135456}
   m_Layer: 5
-  m_Name: LoadValue
+  m_Name: StatePointCostValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1134,7 +1134,7 @@ GameObject:
   - component: {fileID: 4278268937638818626}
   - component: {fileID: 8872307289537047387}
   m_Layer: 5
-  m_Name: SkillNameText
+  m_Name: DisplayNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
