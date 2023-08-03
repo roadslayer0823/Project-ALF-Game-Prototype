@@ -382,10 +382,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5459260374809095460}
     m_Modifications:
-    - target: {fileID: 753415734133809005, guid: be42383b28f1248dca855ac668a32226, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 929896807347168621, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -473,10 +469,6 @@ PrefabInstance:
     - target: {fileID: 929896807347168622, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_Name
       value: ActiveSkillSelectionTab
-      objectReference: {fileID: 0}
-    - target: {fileID: 5395172928961972319, guid: be42383b28f1248dca855ac668a32226, type: 3}
-      propertyPath: m_fontSize
-      value: 54.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be42383b28f1248dca855ac668a32226, type: 3}

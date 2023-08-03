@@ -13,7 +13,7 @@ public class BattleFlowATL
     private ATLSlot atlSlot = null;
     private bool isATLSlotExecuted = false;
 
-    private DatabaseManager.Skill selectedSkill = null;
+    private CharacterSkill selectedSkill = null;
 
     public BattleFlowATL( GameCharacter selectedCharacter )
     {
@@ -28,7 +28,7 @@ public class BattleFlowATL
 
         if (this.selectedSkill != null)
         {
-            this.atlSlot.SetSkillName(this.selectedSkill.GetDisplayName());
+            this.atlSlot.SetSkillName(this.selectedSkill.GetSkillData().GetDisplayName());
         }
     }
 
@@ -48,12 +48,12 @@ public class BattleFlowATL
         return this.selectedCharacter;
     }
 
-    public void SetSelectedSkill(DatabaseManager.Skill selectedSkill)
+    public void SetSelectedSkill(CharacterSkill selectedSkill)
     {
         this.selectedSkill = selectedSkill;
     }
 
-    public DatabaseManager.Skill GetSelectedSkill()
+    public CharacterSkill GetSelectedSkill()
     {
         return this.selectedSkill;
     }

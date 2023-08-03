@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
-using static DatabaseManager;
+using Skill = DatabaseManager.Skill;
+using Character = DatabaseManager.Character;
 
 public class GameCharacter : MonoBehaviour
 {
@@ -15,9 +16,9 @@ public class GameCharacter : MonoBehaviour
     protected float remainingHealthPoint = 0.0f;
     protected float maximumStatePoint = 0.0f;
     protected float remainingStatePoint = 0.0f;
-    protected Skill[] skills = null;
-    protected List<Skill> selectedActiveSkillList = null;
-    protected List<Skill> selectedBackendSkillList = null;
+    protected CharacterSkill[] skills = null;
+    protected List<CharacterSkill> selectedActiveSkillList = null;
+    protected List<CharacterSkill> selectedBackendSkillList = null;
     protected GameObject ownContainer = null;
     protected GameObject opponentContainer = null;
 
@@ -35,16 +36,16 @@ public class GameCharacter : MonoBehaviour
         this.maximumStatePoint = characterData.GetMaximumStatePoint();
         this.remainingStatePoint = this.maximumStatePoint;
 
-        List<Skill> _skillList = new List<Skill>();
+        List<CharacterSkill> _skillList = new List<CharacterSkill>();
         string[] _skillIdArray = characterData.GetSkillIdArray();
         for (int i = 0; i < _skillIdArray.Length; i++)
         {
-            _skillList.Add(DatabaseManager.Instance.GetSkillDataById(_skillIdArray[i]) );
+            _skillList.Add(new CharacterSkill(DatabaseManager.Instance.GetSkillDataById(_skillIdArray[i])));
         }
 
         this.skills = _skillList.ToArray();
-        this.selectedActiveSkillList = new List<Skill>();
-        this.selectedBackendSkillList = new List<Skill>();
+        this.selectedActiveSkillList = new List<CharacterSkill>();
+        this.selectedBackendSkillList = new List<CharacterSkill>();
 
         this.ownContainer = ownContainer;
         this.opponentContainer = opponentContainer;
@@ -76,33 +77,33 @@ public class GameCharacter : MonoBehaviour
         this.onCharacterInfoUpdated?.Invoke();
     }
 
-    public void AddSelectedSkill(Skill skill)
+    public void AddSelectedSkill(CharacterSkill characterSkill)
     {
-        if (skill.GetSkillType() == Skill.SkillType.active)
+        if (characterSkill.GetSkillData().GetSkillType() == Skill.SkillType.active)
         {
             if (this.selectedActiveSkillList.Count < GameConfiguration.BATTLE_MAXIMUM_SELECTED_ACTIVE_SKILLS)
             {
-                this.selectedActiveSkillList.Add(skill);
+                this.selectedActiveSkillList.Add(characterSkill);
             }
         }
         else
         {
             if (this.selectedBackendSkillList.Count < GameConfiguration.BATTLE_MAXIMUM_SELECTED_BACKEND_SKILLS)
             {
-                this.selectedBackendSkillList.Add(skill);
+                this.selectedBackendSkillList.Add(characterSkill);
             }
         }
     }
 
-    public void RemoveSelectedSkill(Skill skill)
+    public void RemoveSelectedSkill(CharacterSkill characterSkill)
     {
-        if (skill.GetSkillType() == Skill.SkillType.active)
+        if (characterSkill.GetSkillData().GetSkillType() == Skill.SkillType.active)
         {
-            this.selectedActiveSkillList.Remove(skill);
+            this.selectedActiveSkillList.Remove(characterSkill);
         }
         else
         {
-            this.selectedBackendSkillList.Remove(skill);
+            this.selectedBackendSkillList.Remove(characterSkill);
         }
     }
 
@@ -166,22 +167,22 @@ public class GameCharacter : MonoBehaviour
         return this.remainingStatePoint;
     }
 
-    public Skill[] GetSkills()
+    public CharacterSkill[] GetSkills()
     {
         return skills;
     }
 
-    public List<Skill> GetSelectedActiveSkillList()
+    public List<CharacterSkill> GetSelectedActiveSkillList()
     {
         return this.selectedActiveSkillList;
     }
 
-    public void SetSelectedActiveSkillList(List<Skill> selectedActiveSkillList)
+    public void SetSelectedActiveSkillList(List<CharacterSkill> selectedActiveSkillList)
     {
         this.selectedActiveSkillList = selectedActiveSkillList;
     }
 
-    public List<Skill> GetSelectedBackendSkillList()
+    public List<CharacterSkill> GetSelectedBackendSkillList()
     {
         return this.selectedBackendSkillList;
     }

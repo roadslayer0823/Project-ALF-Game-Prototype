@@ -312,20 +312,6 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.subskillList;
     }
 
-    public Subskill GetSubskill( string skillId, int level )
-    {
-        for (int i = 0; i < subskillList.Count; i++)
-        {
-            Subskill _subskill = subskillList[ i ];
-            if (_subskill.SkillId == skillId && _subskill.Level == level)
-            {
-                return _subskill;
-            }
-        }
-
-        return null;
-    }
-
     // Inner classes declaration
 #region Inner Classes
     [Serializable]
@@ -483,6 +469,79 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("effects")]
         [HideInInspector] public string EffectsString;
         public int[] Effects;
+
+        #region Getter
+        public string GetId()
+        {
+            return Id;
+        }
+
+        public string GetSkillId()
+        {
+            return SkillId;
+        }
+
+        public int GetLevel()
+        {
+            return Level;
+        }
+
+        public string GetDerivedSkillId()
+        {
+            return DerivedSkillId;
+        }
+
+        public int GetStatePointCost()
+        {
+            return StatePointCost;
+        }
+
+        public int GetAttackDamage()
+        {
+            return AttackDamage;
+        }
+
+        public int GetDefense()
+        {
+            return Defense;
+        }
+
+        public int GetStrength()
+        {
+            return Strength;
+        }
+
+        public EffectArea GetEffectArea()
+        {
+            return effectArea;
+        }
+
+        public EffectType GetEffectType()
+        {
+            return effectType;
+        }
+
+        public bool GetIsAttackingSkill()
+        {
+            return IsAttackingSkill;
+        }
+
+        public bool GetIsInterceptable()
+        {
+            return IsInterceptable;
+        }
+
+        public int GetStressResistance()
+        {
+            return StressResistance;
+        }
+
+        public int[] GetEffects()
+        {
+            return Effects;
+        }
+
+        #endregion
     }
 
     [Serializable]

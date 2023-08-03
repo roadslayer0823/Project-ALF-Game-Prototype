@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
 public class BattleAnimationManager : MonoBehaviour
@@ -19,8 +18,8 @@ public class BattleAnimationManager : MonoBehaviour
     {
         GameCharacter _attacker = battleFlowATL.GetSelectedCharacter();
         GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
-        Skill _skill = battleFlowATL.GetSelectedSkill();
-        Subskill _subskill = DatabaseManager.Instance.GetSubskill( _skill.GetId(), 1 );
+        CharacterSkill _skill = battleFlowATL.GetSelectedSkill();
+        Subskill _subskill = _skill.GetSubskillByLevel(1);
 
         string _animationType = "";
         string _characterPartA = "";

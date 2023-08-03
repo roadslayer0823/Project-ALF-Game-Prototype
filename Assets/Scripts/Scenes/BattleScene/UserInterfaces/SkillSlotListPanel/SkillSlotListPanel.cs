@@ -14,7 +14,7 @@ public class SkillSlotListPanel : MonoBehaviour
     private Vector2 currentSwipe = new Vector2();
 
     private RectTransform rectTransform = null;
-    private List<DatabaseManager.Skill> selectedSkills = null;
+    private List<CharacterSkill> selectedSkills = null;
 
     private Action onSkillSlotSwipedCallback = null;
 
@@ -42,7 +42,7 @@ public class SkillSlotListPanel : MonoBehaviour
         {
             this.selectedGameCharacter = gameCharacter;
 
-            this.selectedSkills = new List<DatabaseManager.Skill>(gameCharacter.GetSelectedActiveSkillList());
+            this.selectedSkills = new List<CharacterSkill>(gameCharacter.GetSelectedActiveSkillList());
 
             if (this.selectedSkills.Count > skillSlots.Length)
             {
@@ -60,7 +60,7 @@ public class SkillSlotListPanel : MonoBehaviour
         base.gameObject.SetActive( false );
     }
 
-    private void InsertIntoSkillSlot(List<DatabaseManager.Skill> selectedSkills)
+    private void InsertIntoSkillSlot(List<CharacterSkill> selectedSkills)
     {
         ClearSkillSlots();
 
@@ -121,9 +121,9 @@ public class SkillSlotListPanel : MonoBehaviour
 
     public void SwipeLeft()
     {
-        DatabaseManager.Skill tempSlot;
+        CharacterSkill tempSlot;
 
-        List<DatabaseManager.Skill> skillList = this.selectedGameCharacter.GetSelectedActiveSkillList();
+        List<CharacterSkill> skillList = this.selectedGameCharacter.GetSelectedActiveSkillList();
 
         int i = 0;
         tempSlot = skillList[i];
@@ -141,9 +141,9 @@ public class SkillSlotListPanel : MonoBehaviour
 
     private void SwipeRight()
     {
-        DatabaseManager.Skill tempSlot;
+        CharacterSkill tempSlot;
 
-        List<DatabaseManager.Skill> skillList = this.selectedGameCharacter.GetSelectedActiveSkillList();
+        List<CharacterSkill> skillList = this.selectedGameCharacter.GetSelectedActiveSkillList();
 
         int i = skillList.Count - 1;
         tempSlot = skillList[i];
