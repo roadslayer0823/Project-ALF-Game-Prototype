@@ -52,13 +52,13 @@ public class GameCharacter : MonoBehaviour
 
     public void AddRemainingHealthPoint( float amount )
     {
-        this.remainingHealthPoint += amount;
+        this.remainingHealthPoint = Mathf.Clamp( this.remainingHealthPoint + amount, 0, this.maximumHealthPoint );
         this.onCharacterInfoUpdated?.Invoke();
     }
 
     public void MinusRemainingHealthPoint( float amount )
     {
-        this.remainingHealthPoint -= amount;
+        this.remainingHealthPoint = Mathf.Clamp( this.remainingHealthPoint - amount, 0, this.maximumHealthPoint );
         this.onCharacterInfoUpdated?.Invoke();
     }
 
@@ -136,7 +136,7 @@ public class GameCharacter : MonoBehaviour
 
     public void SetOnCharacterInfoUpdated( Action onCharacterInfoUpdated )
     {
-        this.onCharacterInfoUpdated = onCharacterInfoUpdated;
+        this.onCharacterInfoUpdated += onCharacterInfoUpdated;
     }
 
     public string GetId()
@@ -149,9 +149,19 @@ public class GameCharacter : MonoBehaviour
         return this.maximumHealthPoint;
     }
 
-    public float GetMaximumActionPoint()
+    public float GetRemainingHealthPoint()
+    {
+        return this.remainingHealthPoint;
+    }
+
+    public float GetMaximumStatePoint()
     {
         return this.maximumStatePoint;
+    }
+
+    public float GetRemainingStatePoint()
+    {
+        return this.remainingStatePoint;
     }
 
     public Skill[] GetSkills()

@@ -312,6 +312,20 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.subskillList;
     }
 
+    public Subskill GetSubskill( string skillId, int level )
+    {
+        for (int i = 0; i < subskillList.Count; i++)
+        {
+            Subskill _subskill = subskillList[ i ];
+            if (_subskill.SkillId == skillId && _subskill.Level == level)
+            {
+                return _subskill;
+            }
+        }
+
+        return null;
+    }
+
     // Inner classes declaration
 #region Inner Classes
     [Serializable]
