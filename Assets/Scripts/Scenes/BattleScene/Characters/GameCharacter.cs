@@ -48,6 +48,8 @@ public class GameCharacter : MonoBehaviour
 
         this.ownContainer = ownContainer;
         this.opponentContainer = opponentContainer;
+
+        this.onCharacterInfoUpdated?.Invoke();
     }
 
     public void AddRemainingHealthPoint( float amount )
@@ -58,13 +60,13 @@ public class GameCharacter : MonoBehaviour
 
     public void MinusRemainingHealthPoint( float amount )
     {
-        this.remainingHealthPoint = Mathf.Clamp( this.remainingHealthPoint - amount, 0, this.maximumHealthPoint );
+        this.remainingHealthPoint -= amount;
         this.onCharacterInfoUpdated?.Invoke();
     }
 
     public void AddRemainingStatePoint( float amount )
     {
-        this.remainingStatePoint += amount;
+        this.remainingStatePoint = Mathf.Clamp( this.remainingStatePoint + amount, 0, this.maximumStatePoint );
         this.onCharacterInfoUpdated?.Invoke();
     }
 

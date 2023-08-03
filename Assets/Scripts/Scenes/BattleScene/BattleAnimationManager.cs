@@ -137,12 +137,12 @@ public class BattleAnimationManager : MonoBehaviour
         this.isAnimationEventTriggered = true;
     }
 
-    private void ChangeToBackgroundPartA()
+    public void ChangeToBackgroundPartA()
     {
         this.background.sprite = this.backgroundPartA;
     }
 
-    private void ChangeToBackgroundPartB()
+    public void ChangeToBackgroundPartB()
     {
         this.background.sprite = this.backgroundPartB;
     }

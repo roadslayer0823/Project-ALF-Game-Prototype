@@ -53,10 +53,12 @@ SpriteAtlas:
   - {fileID: 21300000, guid: caf42a76758b94c269178a5ea9aba398, type: 3}
   - {fileID: 21300000, guid: ce21f657a50994a77afd0b8bd1a8f443, type: 3}
   - {fileID: 21300000, guid: da1cc05cb9b3b45d4b97167dfbecdd9c, type: 3}
+  - {fileID: 21300000, guid: f2e573dd8e09b4926ae67190a7cf7469, type: 3}
   m_PackedSpriteNamesToIndex:
   - 01
   - 02
   - 02
+  - ariku back
   m_RenderDataMap: {}
   m_Tag: Ariku
   m_IsVariant: 0
