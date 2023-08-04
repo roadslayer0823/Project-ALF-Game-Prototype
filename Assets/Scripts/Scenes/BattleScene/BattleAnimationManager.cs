@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using Subskill = DatabaseManager.Subskill;
+using SkillAnimation = DatabaseManager.SkillAnimation;
 
 public class BattleAnimationManager : MonoBehaviour
 {
@@ -25,31 +26,15 @@ public class BattleAnimationManager : MonoBehaviour
     {
         GameCharacter _attacker = battleFlowATL.GetSelectedCharacter();
         GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
-        CharacterSkill _skill = battleFlowATL.GetSelectedSkill();
-        Subskill _subskill = _skill.GetSubskillByLevel(1);
+        CharacterSkill _characterSkill = battleFlowATL.GetSelectedSkill();
+        Subskill _subskill = _characterSkill.GetSubskillByLevel(1);
+        SkillAnimation _skillAnimation = _characterSkill.GetSkillAnimation(_subskill.GetId());
 
-        string _animationType = "";
-        string _characterPartA = "";
-        string _characterPartB = "";
-        string _skillEffectPartA = "";
-        string _skillEffectPartB = "";
-
-        if (_attacker is PlayerCharacter)
-        {
-            _animationType = "ranged";
-            _characterPartA = "Attack";
-            _characterPartB = NO_ANIMATION;
-            _skillEffectPartA = "Fireball_Part_A";
-            _skillEffectPartB = "Fireball_Part_B";
-        }
-        else if (_attacker is EnemyCharacter)
-        {
-            _animationType = "melee";
-            _characterPartA = "Attack_Part_A";
-            _characterPartB = "Attack_Part_B";
-            _skillEffectPartA = NO_ANIMATION;
-            _skillEffectPartB = "HittingEffect";
-        }
+        string _animationType = _skillAnimation.GetAnimationType().ToString();
+        string _characterPartA = _skillAnimation.GetCharacterPartA();
+        string _characterPartB = _skillAnimation.GetCharacterPartB();
+        string _skillEffectPartA = _skillAnimation.GetSkillEffectPartA();
+        string _skillEffectPartB = _skillAnimation.GetSkillEffectPartB();
 
         _attacker.GetSortingGroup().sortingOrder = 2;
         _attackTarget.GetSortingGroup().sortingOrder = 1;

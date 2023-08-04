@@ -312,6 +312,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.subskillList;
     }
 
+    public List<SkillAnimation> GetSkillAnimationList()
+    {
+        return this.skillAnimationList;
+    }
+
     // Inner classes declaration
 #region Inner Classes
     [Serializable]
@@ -574,7 +579,45 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
         [JsonProperty("skill_effect_part_b")]
         public string SkillEffectPartB;
+
+        #region Getter
+        public string GetId()
+        {
+            return Id;
+        }
+
+        public string GetSubskillId()
+        {
+            return SubskillId;
+        }
+
+        public AnimationType GetAnimationType()
+        {
+            return animationType;
+        }
+
+        public string GetCharacterPartA()
+        {
+            return CharacterPartA;
+        }
+
+        public string GetCharacterPartB()
+        {
+            return CharacterPartB;
+        }
+
+        public string GetSkillEffectPartA()
+        {
+            return SkillEffectPartA;
+        }
+
+        public string GetSkillEffectPartB()
+        {
+            return SkillEffectPartB;
+        }
+
+        #endregion
     }
 
-#endregion
+    #endregion
 }
