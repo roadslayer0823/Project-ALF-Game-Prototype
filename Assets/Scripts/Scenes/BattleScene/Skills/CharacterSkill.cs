@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
+using SkillAnimation = DatabaseManager.SkillAnimation;
+using static DatabaseManager;
 
 public class CharacterSkill
 {
@@ -55,6 +57,21 @@ public class CharacterSkill
                 {
                     return subskill;
                 }
+            }
+        }
+
+        return null;
+    }
+
+    public SkillAnimation GetSkillAnimation(string subskillId)
+    {
+        List<SkillAnimation> _skillAniationList = DatabaseManager.Instance.GetSkillAnimationList();
+
+        foreach (SkillAnimation skillAnimation in _skillAniationList)
+        {
+            if (skillAnimation.GetSubskillId() == subskillId)
+            {
+                return skillAnimation;
             }
         }
 
