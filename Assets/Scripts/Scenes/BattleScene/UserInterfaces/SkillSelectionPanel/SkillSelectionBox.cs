@@ -10,14 +10,19 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     [SerializeField] private float boxHeight = 150f;
 
     [Header("")]
+    [SerializeField] private RectTransform rectTransform;
     [SerializeField] private TextMeshProUGUI skillNameText;
     [SerializeField] private TextMeshProUGUI skillTypeText;
     [SerializeField] private TextMeshProUGUI selectionText;
+    [SerializeField] private TextMeshProUGUI skillLevelText;
     [SerializeField] private Button selectionButton;
+    [SerializeField] private Button minusLevelButton;
+    [SerializeField] private Button plusLevelButton;
 
     private SkillSelectionListBox skillSelectionListBox = null;
     private CharacterSkill characterSkill = null;
     private bool isSelected = false;
+    private int skillLevel = 1;
 
     public void Initialize(SkillSelectionListBox skillSelectionListBox, CharacterSkill characterSkill)
     {
@@ -31,6 +36,8 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         SetupSkillSelectionBox();
 
         this.selectionButton.onClick.AddListener(OnSelectionButtonClick);
+        this.minusLevelButton.onClick.AddListener(OnMinusLevelButtonClick);
+        this.plusLevelButton.onClick.AddListener(OnPlusLevelButtonClick);
     }
 
     public void ClickToToggle()
@@ -104,16 +111,40 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     // Set the skill data that needed to display into TMP.
     private void SetupSkillSelectionBox()
     {
-        RectTransform rectTransform = GetComponent<RectTransform>();
-        rectTransform.sizeDelta = new Vector2(0, this.boxHeight);
+        this.rectTransform.sizeDelta = new Vector2(0, this.boxHeight);
 
         this.skillNameText.SetText(characterSkill.GetSkillData().GetDisplayName());
         this.skillTypeText.SetText("[" + characterSkill.GetSkillData().GetSkillType().ToString() + "]");
+
+        UpdateCharacterSkillLevel(this.skillLevel);
     }
 
     // Callback function for selection button
     private void OnSelectionButtonClick()
     {
         ClickToToggle();
+    }
+
+    private void OnMinusLevelButtonClick()
+    {
+        this.skillLevel = Math.Clamp(this.skillLevel - 1, 1, characterSkill.GetSubskillList().Count);
+
+        this.characterSkill.SetSelectedSkillLevel(this.skillLevel);
+        UpdateCharacterSkillLevel(this.skillLevel);
+    }
+
+    private void OnPlusLevelButtonClick()
+    {
+        this.skillLevel = Math.Clamp(this.skillLevel + 1, 1, characterSkill.GetSubskillList().Count);
+
+        this.characterSkill.SetSelectedSkillLevel(this.skillLevel);
+        UpdateCharacterSkillLevel(this.skillLevel);
+    }
+
+    private void UpdateCharacterSkillLevel(int skillLevel)
+    {
+        this.skillLevelText.SetText(characterSkill.GetSubskillByLevel(skillLevel).GetLevel().ToString());
+
+        this.skillSelectionListBox.ShowSelectedSkillInfo(this);
     }
 }

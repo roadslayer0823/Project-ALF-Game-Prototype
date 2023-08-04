@@ -27,7 +27,7 @@ public class BattleAnimationManager : MonoBehaviour
         GameCharacter _attacker = battleFlowATL.GetSelectedCharacter();
         GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
         CharacterSkill _characterSkill = battleFlowATL.GetSelectedSkill();
-        Subskill _subskill = _characterSkill.GetSubskillByLevel(1);
+        Subskill _subskill = _characterSkill.GetSubskillByLevel(_characterSkill.GetSelectedSkillLevel());
         SkillAnimation _skillAnimation = _characterSkill.GetSkillAnimation(_subskill.GetId());
 
         string _animationType = _skillAnimation.GetAnimationType().ToString();
