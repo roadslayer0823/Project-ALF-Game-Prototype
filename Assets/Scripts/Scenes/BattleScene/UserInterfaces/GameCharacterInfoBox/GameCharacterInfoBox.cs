@@ -9,6 +9,7 @@ public class GameCharacterInfoBox : MonoBehaviour
 
     void Awake()
     {
+        this.selectedCharacter.SetGameCharacterInfoBox( this );
         this.selectedCharacter.SetOnCharacterInfoUpdated( UpdateDisplayInfo );
     }
 

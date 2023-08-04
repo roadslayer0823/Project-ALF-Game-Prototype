@@ -9,6 +9,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
     [SerializeField] private PlayerActionPanel playerActionPanel = null;
     [SerializeField] private CharacterInfoPanel characterInfoPanel = null;
+    [SerializeField] private BattleResultPanel battleResultPanel = null;
 
     private BattleGameManager battleGameManager = null;
     private GameCharacter selectedGameCharacter = null;
@@ -133,6 +134,20 @@ public class BattleUiManager : MonoBehaviour
     public CharacterInfoPanel GetCharacterInfoPanel()
     {
         return this.characterInfoPanel;
+    }
+
+#endregion
+
+#region Battle Result Panel
+
+    public void ShowVictoryResult()
+    {
+        this.battleResultPanel.ShowVictory();
+    }
+
+    public void ShowDefeatResult()
+    {
+        this.battleResultPanel.ShowDefeat();
     }
 
 #endregion

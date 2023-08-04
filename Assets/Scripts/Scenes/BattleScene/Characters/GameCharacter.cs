@@ -21,6 +21,7 @@ public class GameCharacter : MonoBehaviour
     protected List<CharacterSkill> selectedBackendSkillList = null;
     protected GameObject ownContainer = null;
     protected GameObject opponentContainer = null;
+    protected GameCharacterInfoBox gameCharacterInfoBox = null;
 
     protected Action<string> onCharacterAnimationTriggeredCallback = null;
     protected Action<string> onSkillEffectAnimationTriggeredCallback = null;
@@ -137,9 +138,26 @@ public class GameCharacter : MonoBehaviour
         }
     }
 
+    public void SetGameCharacterInfoBox( GameCharacterInfoBox gameCharacterInfoBox )
+    {
+        this.gameCharacterInfoBox = gameCharacterInfoBox;
+    }
+
     public void SetOnCharacterInfoUpdated( Action onCharacterInfoUpdated )
     {
         this.onCharacterInfoUpdated += onCharacterInfoUpdated;
+    }
+
+    public void ShowCharacterObject()
+    {
+        this.characterAnimator.gameObject.SetActive( true );
+        this.gameCharacterInfoBox.gameObject.SetActive( true );
+    }
+
+    public void HideCharacterObject()
+    {
+        this.characterAnimator.gameObject.SetActive( false );
+        this.gameCharacterInfoBox.gameObject.SetActive( false );
     }
 
     public string GetId()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using Subskill = DatabaseManager.Subskill;
@@ -9,10 +10,16 @@ public class BattleAnimationManager : MonoBehaviour
     [SerializeField] private Sprite backgroundPartB = null;
 
     private bool isAnimationEventTriggered = false;
+    private Action<bool> onBattleEndedCallback = null;
 
     private const string NO_ANIMATION = "-";
     private const string IDLE_ANIMATION_NAME = "Idle";
     private const string GETTING_HIT_ANIMATION_NAME = "GettingHit";
+
+    public void Initialize( Action<bool> onBattleEndedCallback )
+    {
+        this.onBattleEndedCallback = onBattleEndedCallback;
+    }
 
     public IEnumerator RunBattleAnimation( BattleFlowATL battleFlowATL )
     {
@@ -57,7 +64,7 @@ public class BattleAnimationManager : MonoBehaviour
         }
 
         _attacker.GetOwnContainer().SetActive( true );
-        _attacker.GetCharacterAnimator().gameObject.SetActive( true );
+        _attacker.ShowCharacterObject();
         _attacker.GetOpponentContainer().SetActive( false );
         yield return new WaitForSeconds( 0.1f );
 
@@ -74,7 +81,7 @@ public class BattleAnimationManager : MonoBehaviour
         // Hide the attacker for Part B if the attacker's animation type is ranged.
         if (_animationType == "ranged")
         {
-            _attacker.GetCharacterAnimator().gameObject.SetActive( false );
+            _attacker.HideCharacterObject();
         }
 
         if (_attacker is PlayerCharacter)
@@ -105,11 +112,15 @@ public class BattleAnimationManager : MonoBehaviour
         if (_attackTarget.GetRemainingHealthPoint() <= 0)
         {
             _attackTarget.gameObject.SetActive( false );
+
+            bool _isVictory = ( _attackTarget is EnemyCharacter );
+            this.onBattleEndedCallback?.Invoke( _isVictory );
+
             yield break;
         }
 
         _attacker.GetOwnContainer().SetActive( false );
-        _attacker.GetCharacterAnimator().gameObject.SetActive( true );
+        _attacker.ShowCharacterObject();
         _attacker.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
     }
 

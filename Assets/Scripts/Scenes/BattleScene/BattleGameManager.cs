@@ -29,6 +29,7 @@ public class BattleGameManager : MonoBehaviour
     {
         this.battleUiManager.Initialize( this );
         this.battleFlowManager.Initialize( this, OnPreparationPhaseStarted, OnExecutionPhaseStarted, OnExecutionPhaseFinished );
+        this.battleAnimationManager.Initialize( OnBattleEnded );
 
         // -------------------- Set up the player's characters --------------------
 
@@ -85,6 +86,18 @@ public class BattleGameManager : MonoBehaviour
         this.battleUiManager.HideATLSlotListPanel();
         this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( false );
         this.battleFlowManager.StartNewRound();
+    }
+
+    private void OnBattleEnded( bool isVictory )
+    {
+        if (isVictory)
+        {
+            this.battleUiManager.ShowVictoryResult();
+        }
+        else
+        {
+            this.battleUiManager.ShowDefeatResult();
+        }
     }
 
     public List<PlayerCharacter> GetPlayerCharacterList()
