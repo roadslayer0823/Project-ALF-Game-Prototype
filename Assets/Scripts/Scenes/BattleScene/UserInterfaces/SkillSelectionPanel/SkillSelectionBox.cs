@@ -143,7 +143,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     private void UpdateCharacterSkillLevel(int skillLevel)
     {
-        this.skillLevelText.SetText(characterSkill.GetSubskillByLevel(skillLevel).GetLevel().ToString());
+        this.skillLevelText.SetText(skillLevel.ToString());
 
         this.skillSelectionListBox.ShowSelectedSkillInfo(this);
     }

@@ -32,7 +32,7 @@ public class SkillInfoBox : MonoBehaviour
     private void SetupSkillInfomation(CharacterSkill characterSkill)
     {
         Skill _skillData = characterSkill.GetSkillData();
-        Subskill _subskillData = characterSkill.GetSubskillByLevel(characterSkill.GetSelectedSkillLevel());
+        Subskill _subskillData = characterSkill.GetSubskillData();
 
         this.skillType.SetText("[" + _skillData.GetSkillType().ToString() + "]");
         this.displayName.SetText(_skillData.GetDisplayName());
