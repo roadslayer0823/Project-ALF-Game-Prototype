@@ -18,7 +18,12 @@ public class GameCharacterInfoBox : MonoBehaviour
         float _remainingHealthPoint = this.selectedCharacter.GetRemainingHealthPoint();
         float _maximumHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
 
-        this.healthPointLabel.text = _remainingHealthPoint + " / " + _maximumHealthPoint;
+        if (_remainingHealthPoint < 0)
+        {
+            _remainingHealthPoint = 0;
+        }
+
+        this.healthPointLabel.text = Mathf.CeilToInt( _remainingHealthPoint ) + " / " + Mathf.CeilToInt( _maximumHealthPoint );
 
         float _percentage = _remainingHealthPoint / _maximumHealthPoint;
         if (_percentage > 0)
