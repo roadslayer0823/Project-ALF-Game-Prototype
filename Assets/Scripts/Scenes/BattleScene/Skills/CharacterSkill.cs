@@ -4,12 +4,12 @@ using UnityEngine;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 using SkillAnimation = DatabaseManager.SkillAnimation;
-using static DatabaseManager;
 
 public class CharacterSkill
 {
     private Skill skillData = null;
     private List<Subskill> subskillList = null;
+    private int selectedSkillLevel = 1;
 
     public CharacterSkill( Skill skillData)
     {
@@ -41,11 +41,11 @@ public class CharacterSkill
         return this.subskillList;
     }
 
-    public Subskill GetSubskillByLevel(int level)
+    public Subskill GetSubskillData()
     {
         int _maxLevel = this.subskillList.Count;
 
-        if (level > _maxLevel)
+        if (this.selectedSkillLevel > _maxLevel)
         {
             return this.subskillList[_maxLevel - 1];
         }
@@ -53,7 +53,7 @@ public class CharacterSkill
         {
             foreach (Subskill subskill in this.subskillList)
             {
-                if (subskill.GetLevel() == level)
+                if (subskill.GetLevel() == this.selectedSkillLevel)
                 {
                     return subskill;
                 }
@@ -76,5 +76,15 @@ public class CharacterSkill
         }
 
         return null;
+    }
+
+    public int GetSelectedSkillLevel()
+    {
+        return this.selectedSkillLevel;
+    }
+
+    public void SetSelectedSkillLevel(int selectedSkillLevel)
+    {
+        this.selectedSkillLevel = selectedSkillLevel;
     }
 }

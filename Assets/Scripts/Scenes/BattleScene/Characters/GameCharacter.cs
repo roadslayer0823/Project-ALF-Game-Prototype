@@ -12,6 +12,7 @@ public class GameCharacter : MonoBehaviour
     [SerializeField] private Animator skillEffectAnimator = null;
 
     protected string id = null;
+    protected string characterName = null;
     protected float maximumHealthPoint = 0.0f;
     protected float remainingHealthPoint = 0.0f;
     protected float maximumStatePoint = 0.0f;
@@ -32,6 +33,7 @@ public class GameCharacter : MonoBehaviour
         base.gameObject.name = "Character: " + characterData.GetDisplayName();
 
         this.id = characterData.GetId();
+        this.characterName = characterData.GetDisplayName();
         this.maximumHealthPoint = characterData.GetMaximumHealthPoint();
         this.remainingHealthPoint = this.maximumHealthPoint;
         this.maximumStatePoint = characterData.GetMaximumStatePoint();
@@ -163,6 +165,11 @@ public class GameCharacter : MonoBehaviour
     public string GetId()
     {
         return this.id;
+    }
+
+    public string GetCharacterName()
+    {
+        return this.characterName;
     }
 
     public float GetMaximumHealthPoint()

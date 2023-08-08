@@ -425,6 +425,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("level")]
         public int Level;
 
+        [JsonProperty("repulse_skill_id")]
+        public string RepulseSkillId;
+
         [JsonProperty("derived_skill_id")]
         public string DerivedSkillId;
 
@@ -489,6 +492,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public int GetLevel()
         {
             return Level;
+        }
+
+        public string GetRepulseSkillId()
+        {
+            return RepulseSkillId;
         }
 
         public string GetDerivedSkillId()
