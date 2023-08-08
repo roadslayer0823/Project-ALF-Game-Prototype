@@ -27,8 +27,15 @@ public class CharacterInfoPanel : MonoBehaviour
 
     public void UpdateDisplayInfo()
     {
-        this.healthPointValueText.SetText(this.selectedCharacter.GetRemainingHealthPoint().ToString());
-        this.healthPointBar.fillAmount = this.selectedCharacter.GetRemainingHealthPoint() / this.selectedCharacter.GetMaximumHealthPoint();
+        float _remainingHealthPoint = this.selectedCharacter.GetRemainingHealthPoint();
+
+        if (_remainingHealthPoint < 0)
+        {
+            _remainingHealthPoint = 0;
+        }
+
+        this.healthPointValueText.SetText( _remainingHealthPoint.ToString());
+        this.healthPointBar.fillAmount = _remainingHealthPoint / this.selectedCharacter.GetMaximumHealthPoint();
         this.statePointBar.fillAmount = this.selectedCharacter.GetRemainingStatePoint() / this.selectedCharacter.GetMaximumStatePoint();
     }
 }
