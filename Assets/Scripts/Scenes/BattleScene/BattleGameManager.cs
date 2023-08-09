@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,7 +27,7 @@ public class BattleGameManager : MonoBehaviour
     void Start()
     {
         this.battleUiManager.Initialize( this );
-        this.battleFlowManager.Initialize( this, OnPreparationPhaseStarted, OnExecutionPhaseStarted, OnExecutionPhaseFinished );
+        this.battleFlowManager.Initialize( this, OnPreparationPhaseStarted, OnExecutionPhaseStarted, OnExecutionPhaseFinished, OnNewATLStarted );
         this.battleAnimationManager.Initialize( OnBattleEnded );
 
         // -------------------- Set up the player's characters --------------------
@@ -90,6 +89,11 @@ public class BattleGameManager : MonoBehaviour
         this.battleFlowManager.StartNewRound();
     }
 
+    public void OnNewATLStarted()
+    {
+        this.battleUiManager.DisablePlayerActionPanelButtons();
+    }
+
     private void OnCharacterEventTriggered( string eventName, GameCharacter gameCharacter )
     {
         if (gameCharacter is PlayerCharacter)
@@ -104,13 +108,18 @@ public class BattleGameManager : MonoBehaviour
 
                 case BattleAnimationManager.ON_DEFEND_PART_A:
 
-                    this.battleUiManager.UpdatePlayerActionPanelButtons( canRepulse: true, canDefend: true, canEvade: true, canCounter: false );
+                    this.battleUiManager.UpdatePlayerActionPanelButtons(
+                        canRepulse: ( battleFlowManager.GetCurrentRound().GetNextATL( gameCharacter ) != null ),
+                        canDefend: true,
+                        canEvade: true,
+                        canCounter: false
+                        );
 
                     break;
 
                 case BattleAnimationManager.ON_DEFEND_PART_A_CUTOFF:
 
-                    this.battleUiManager.UpdatePlayerActionPanelButtons( canRepulse: false, canDefend: false, canEvade: false, canCounter: false );
+                    this.battleUiManager.DisablePlayerActionPanelButtons();
 
                     break;
             }

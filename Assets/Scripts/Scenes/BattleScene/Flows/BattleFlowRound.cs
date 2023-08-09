@@ -77,33 +77,85 @@ public class BattleFlowRound
 
     private IEnumerator RunATLFlow()
     {
-        BattleFlowATL _currentATL = GetCurrentATL();
+        BattleFlowATL _currentATL = null;
 
-        while (_currentATL != null)
+        do
         {
-            BattleFlowATL currentBattleFlowATL = this.flowATLs[this.flowATLIndex];
-            ATLSlot currentATLSlot = currentBattleFlowATL.GetATLSlot();
+            _currentATL = GetCurrentATL();
 
-            currentATLSlot.ShowSelectionHighlight();
-            currentBattleFlowATL.SetIsATLSlotExecuted(true);
+            if (_currentATL == null)
+            {
+                break;
+            }
 
-            yield return battleFlowManager.StartCoroutine( this.battleFlowManager.RunBattleAnimation( _currentATL ) );
+            this.battleFlowManager.OnNewATLStarted();
 
-            currentATLSlot.MarkATLSlotColorInactive();
-            currentATLSlot.HideSelectionHighlight();
+            ATLSlot _currentATLSlot = _currentATL.GetATLSlot();
+            _currentATLSlot.ShowSelectionHighlight();
+            _currentATL.SetIsATLSlotExecuted( true );
 
-            if (this.flowATLs[this.flowATLIndex].CheckIsPlayer())
+            yield return battleFlowManager.StartCoroutine( this.battleFlowManager.RunBattleAnimation( this, _currentATL ) );
+
+            _currentATL = GetCurrentATL();
+
+            if (_currentATL == null)
+            {
+                break;
+            }
+
+            _currentATLSlot = _currentATL.GetATLSlot();
+            _currentATLSlot.MarkATLSlotColorInactive();
+            _currentATLSlot.HideSelectionHighlight();
+
+            if (_currentATL.CheckIsPlayer())
             {
                 // Auto swipe left the Skill Slot
-                currentATLSlot.onATLSlotExecutedCallback();
-                currentATLSlot.onSkillSlotSwipedCallback();
+                _currentATLSlot.onATLSlotExecutedCallback();
+                _currentATLSlot.onSkillSlotSwipedCallback();
             }
 
             this.flowATLIndex++;
-            _currentATL = GetCurrentATL();
         }
+        while ( true );
 
         SetCurrentPhase( PhaseType.ExecutionDone );
+    }
+
+    public void GoToTargetATL( BattleFlowATL targetATL )
+    {
+        ATLSlot _currentATLSlot = GetCurrentATL().GetATLSlot();
+        _currentATLSlot.MarkATLSlotColorInactive();
+        _currentATLSlot.HideSelectionHighlight();
+
+        bool _hasTargetATL = false;
+        BattleFlowATL _currentATL = null;
+
+        do
+        {
+            _currentATL = GetCurrentATL();
+
+            if (_currentATL == null)
+            {
+                break;
+            }
+
+            if (_currentATL == targetATL)
+            {
+                _hasTargetATL = true;
+                _currentATL.GetATLSlot().ShowSelectionHighlight();
+                break;
+            }
+            else
+            {
+                this.flowATLIndex++;
+            }
+        }
+        while ( true );
+
+        if (!_hasTargetATL)
+        {
+            SetCurrentPhase( PhaseType.ExecutionDone );
+        }
     }
 
     public int GetRoundNumber()
@@ -122,6 +174,34 @@ public class BattleFlowRound
         {
             return this.flowATLs[ this.flowATLIndex ];
         }
+
+        return null;
+    }
+
+    public BattleFlowATL GetNextATL( GameCharacter gameCharacter )
+    {
+        BattleFlowATL _nextATL = null;
+        int _index = this.flowATLIndex;
+
+        do
+        {
+            _index++;
+
+            if (_index < this.flowATLs.Length)
+            {
+                _nextATL = this.flowATLs[ _index ];
+            }
+            else
+            {
+                break;
+            }
+
+            if (_nextATL.GetSelectedCharacter() == gameCharacter)
+            {
+                return _nextATL;
+            }
+        }
+        while ( true );
 
         return null;
     }

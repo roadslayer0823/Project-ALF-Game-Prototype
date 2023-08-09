@@ -16,6 +16,7 @@ public class BattleFlowManager : MonoBehaviour
     private Action onPreparationPhaseStartedCallback = null;
     private Action onExecutionPhaseStartedCallback = null;
     private Action onExecutionPhaseFinishedCallback = null;
+    private Action onNewATLStartedCallback = null;
 
     public enum PhaseType
     {
@@ -24,12 +25,13 @@ public class BattleFlowManager : MonoBehaviour
         GameEnded
     }
 
-    public void Initialize( BattleGameManager battleGameManager, Action onPreparationPhaseStartedCallback, Action onExecutionPhaseStartedCallback, Action onExecutionPhaseFinishedCallback )
+    public void Initialize( BattleGameManager battleGameManager, Action onPreparationPhaseStartedCallback, Action onExecutionPhaseStartedCallback, Action onExecutionPhaseFinishedCallback, Action onNewATLStartedCallback )
     {
         this.battleGameManager = battleGameManager;
         this.onPreparationPhaseStartedCallback = onPreparationPhaseStartedCallback;
         this.onExecutionPhaseStartedCallback = onExecutionPhaseStartedCallback;
         this.onExecutionPhaseFinishedCallback = onExecutionPhaseFinishedCallback;
+        this.onNewATLStartedCallback = onNewATLStartedCallback;
     }
 
     public void StartGame()
@@ -54,9 +56,9 @@ public class BattleFlowManager : MonoBehaviour
         this.isPlayerFirst = !( this.isPlayerFirst );
     }
 
-    public IEnumerator RunBattleAnimation( BattleFlowATL battleFlowATL )
+    public IEnumerator RunBattleAnimation( BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )
     {
-        yield return StartCoroutine( battleGameManager.GetBattleAnimationManager().RunBattleAnimation( battleFlowATL ) );
+        yield return StartCoroutine( battleGameManager.GetBattleAnimationManager().RunBattleAnimation( battleFlowRound, battleFlowATL ) );
     }
 
     private void OnCurrentRoundPhaseChanged( BattleFlowRound.PhaseType phaseType )
@@ -102,6 +104,11 @@ public class BattleFlowManager : MonoBehaviour
 
                 break;
         }
+    }
+
+    public void OnNewATLStarted()
+    {
+        onNewATLStartedCallback?.Invoke();
     }
 
     public PlayerCharacter GetNextPlayerCharacter()
