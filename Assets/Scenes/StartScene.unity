@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isCheckingForUpdatesEnabled: 0
-  databaseSpreadsheetId: 1apb8snjkgf0ZExhw6XkpbTNncPU52ak_jBs9yNvapLY
+  databaseSpreadsheetId: 1Rr22TG1FVoW9WHuv7ZHm-qsdoB5-ri7bltzw6_GNXoE
   versionSheetName: Versions
   characterSheetName: Characters
   skillSheetName: Skills

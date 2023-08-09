@@ -3,6 +3,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Skill = DatabaseManager.Skill;
+using Subskill = DatabaseManager.Subskill;
 
 public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 {
@@ -113,8 +115,19 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     {
         this.rectTransform.sizeDelta = new Vector2(0, this.boxHeight);
 
-        this.skillNameText.SetText(characterSkill.GetSkillData().GetDisplayName());
-        this.skillTypeText.SetText("[" + characterSkill.GetSkillData().GetSkillType().ToString() + "]");
+        Skill _skillData = characterSkill.GetSkillData();
+        Subskill _subskillData = characterSkill.GetSubskillData();
+
+        this.skillNameText.SetText(_skillData.GetGroupName());
+
+        if (_subskillData.GetPrefix().ToString() == "-")
+        {
+            this.skillTypeText.SetText("");
+        }
+        else
+        {
+            this.skillTypeText.SetText("[" + _subskillData.GetPrefix().ToString() + "]");
+        }
 
         UpdateCharacterSkillLevel(this.skillLevel);
     }
