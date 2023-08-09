@@ -20,17 +20,32 @@ public class GameCharacter : MonoBehaviour
     protected CharacterSkill[] skills = null;
     protected List<CharacterSkill> selectedActiveSkillList = null;
     protected List<CharacterSkill> selectedBackendSkillList = null;
+    protected CharacterActionType currentCharacterActionType = CharacterActionType.None;
+
     protected GameObject ownContainer = null;
     protected GameObject opponentContainer = null;
     protected GameCharacterInfoBox gameCharacterInfoBox = null;
 
+    protected Action<string,GameCharacter> onEventTriggeredCallback = null;
     protected Action<string> onCharacterAnimationTriggeredCallback = null;
     protected Action<string> onSkillEffectAnimationTriggeredCallback = null;
     protected Action onCharacterInfoUpdated = null;
 
-    public void Initialize( Character characterData, GameObject ownContainer, GameObject opponentContainer )
+    public enum CharacterActionType
+    {
+        None,
+        Repulse,
+        Defend,
+        Evade,
+        Counter
+    }
+
+    public void Initialize( Character characterData, GameObject ownContainer, GameObject opponentContainer, Action<string,GameCharacter> onEventTriggeredCallback = null )
     {
         base.gameObject.name = "Character: " + characterData.GetDisplayName();
+        this.ownContainer = ownContainer;
+        this.opponentContainer = opponentContainer;
+        this.onEventTriggeredCallback = onEventTriggeredCallback;
 
         this.id = characterData.GetId();
         this.characterName = characterData.GetDisplayName();
@@ -49,9 +64,6 @@ public class GameCharacter : MonoBehaviour
         this.skills = _skillList.ToArray();
         this.selectedActiveSkillList = new List<CharacterSkill>();
         this.selectedBackendSkillList = new List<CharacterSkill>();
-
-        this.ownContainer = ownContainer;
-        this.opponentContainer = opponentContainer;
 
         this.onCharacterInfoUpdated?.Invoke();
     }
@@ -162,6 +174,11 @@ public class GameCharacter : MonoBehaviour
         this.gameCharacterInfoBox.gameObject.SetActive( false );
     }
 
+    public void TriggerEvent( string eventName )
+    {
+        this.onEventTriggeredCallback?.Invoke( eventName, this );
+    }
+
     public string GetId()
     {
         return this.id;
@@ -225,6 +242,16 @@ public class GameCharacter : MonoBehaviour
     public Animator GetSkillEffectAnimator()
     {
         return this.skillEffectAnimator;
+    }
+
+    public void SetCurrentCharacterActionType( CharacterActionType currentCharacterActionType )
+    {
+        this.currentCharacterActionType = currentCharacterActionType;
+    }
+
+    public CharacterActionType GetCurrentCharacterActionType()
+    {
+        return this.currentCharacterActionType;
     }
 
     public GameObject GetOwnContainer()

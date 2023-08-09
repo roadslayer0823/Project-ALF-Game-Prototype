@@ -34,7 +34,7 @@ public class BattleGameManager : MonoBehaviour
         // -------------------- Set up the player's characters --------------------
 
         this.playerCharacterList = new List<PlayerCharacter>();
-        this.playerCharacter.Initialize( DatabaseManager.Instance.GetCharacterDataById( "C1" ), this.playerContainer, this.opponentContainer );
+        this.playerCharacter.Initialize( DatabaseManager.Instance.GetCharacterDataById( "C1" ), this.playerContainer, this.opponentContainer, OnCharacterEventTriggered );
         this.playerCharacterList.Add( this.playerCharacter );
 
         // ------------------------------------------------------------------------
@@ -61,6 +61,7 @@ public class BattleGameManager : MonoBehaviour
         this.battleUiManager.SetSelectedGameCharacter( this.playerCharacterList[ 0 ] );
         this.battleUiManager.ShowSkillSelectionPanel();
         this.battleUiManager.ShowSkillSlotListPanel();
+        this.battleUiManager.ShowPreparationSection();
 
         this.battleAnimationManager.ChangeToBackgroundPartB();
         this.playerContainer.SetActive( true );
@@ -71,6 +72,7 @@ public class BattleGameManager : MonoBehaviour
 
     private void OnExecutionPhaseStarted()
     {
+        this.battleUiManager.ShowBattleSection();
         this.playerCharacter.PlayCharacterAnimation( "Idle" );
         this.enemyCharacter.PlayCharacterAnimation( "Idle" );
 
@@ -86,6 +88,33 @@ public class BattleGameManager : MonoBehaviour
         this.battleUiManager.HideATLSlotListPanel();
         this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( false );
         this.battleFlowManager.StartNewRound();
+    }
+
+    private void OnCharacterEventTriggered( string eventName, GameCharacter gameCharacter )
+    {
+        if (gameCharacter is PlayerCharacter)
+        {
+            switch ( eventName )
+            {
+                case BattleAnimationManager.SET_CHARACTER:
+
+                    this.battleUiManager.UpdatePlayerActionPanelCharacter( gameCharacter );
+
+                    break;
+
+                case BattleAnimationManager.ON_DEFEND_PART_A:
+
+                    this.battleUiManager.UpdatePlayerActionPanelButtons( canRepulse: true, canDefend: true, canEvade: true, canCounter: false );
+
+                    break;
+
+                case BattleAnimationManager.ON_DEFEND_PART_A_CUTOFF:
+
+                    this.battleUiManager.UpdatePlayerActionPanelButtons( canRepulse: false, canDefend: false, canEvade: false, canCounter: false );
+
+                    break;
+            }
+        }
     }
 
     private void OnBattleEnded( bool isVictory )

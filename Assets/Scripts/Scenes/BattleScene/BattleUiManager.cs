@@ -122,6 +122,67 @@ public class BattleUiManager : MonoBehaviour
 
 #region Player Action Panel
 
+    public void ShowPreparationSection()
+    {
+        this.playerActionPanel.ShowPreparationSection();
+        this.playerActionPanel.HideBattleSection();
+    }
+
+    public void ShowBattleSection()
+    {
+        this.playerActionPanel.DisableRepulseButton();
+        this.playerActionPanel.DisableDefendButton();
+        this.playerActionPanel.DisableEvadeButton();
+        this.playerActionPanel.DisableCounterButton();
+
+        this.playerActionPanel.ShowBattleSection();
+        this.playerActionPanel.HidePreparationSection();
+    }
+
+    public void UpdatePlayerActionPanelCharacter( GameCharacter gameCharacter )
+    {
+        this.playerActionPanel.SetSelectedGameCharacter( gameCharacter );
+    }
+
+    public void UpdatePlayerActionPanelButtons( bool canRepulse, bool canDefend, bool canEvade, bool canCounter )
+    {
+        if (canRepulse)
+        {
+            this.playerActionPanel.EnableRepulseButton();
+        }
+        else
+        {
+            this.playerActionPanel.DisableRepulseButton();
+        }
+
+        if (canDefend)
+        {
+            this.playerActionPanel.EnableDefendButton();
+        }
+        else
+        {
+            this.playerActionPanel.DisableDefendButton();
+        }
+
+        if (canEvade)
+        {
+            this.playerActionPanel.EnableEvadeButton();
+        }
+        else
+        {
+            this.playerActionPanel.DisableEvadeButton();
+        }
+
+        if (canCounter)
+        {
+            this.playerActionPanel.EnableCounterButton();
+        }
+        else
+        {
+            this.playerActionPanel.DisableCounterButton();
+        }
+    }
+
     public void OnExecuteButtonClicked()
     {
         this.battleGameManager.StartExecution();
