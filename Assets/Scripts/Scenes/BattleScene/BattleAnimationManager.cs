@@ -152,6 +152,10 @@ public class BattleAnimationManager : MonoBehaviour
                     BattleLogicManager.ExecuteSkillOnHittingTarget( _characterSkill, _attacker, _attackTarget );
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
                 }
+                else
+                {
+                    yield return new WaitForSeconds( 0.5f );
+                }
 
                 break;
         }
