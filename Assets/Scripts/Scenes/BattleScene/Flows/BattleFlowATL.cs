@@ -24,11 +24,11 @@ public class BattleFlowATL
     {
         ClearATLSlotInfo();
 
-        this.atlSlot.SetOwnerName(CheckIsPlayer() ? "Player" : "Enemy");
+        this.atlSlot.SetOwnerName(this.selectedCharacter.GetCharacterName());
 
         if (this.selectedSkill != null)
         {
-            this.atlSlot.SetSkillName(this.selectedSkill.GetSkillData().GetDisplayName());
+            this.atlSlot.SetSkillName(this.selectedSkill.GetSkillData().GetGroupName());
         }
     }
 

@@ -98,6 +98,11 @@ public class SkillSlotListPanel : MonoBehaviour
             //save ended touch 2d point
             this.mouseReleasePosition = Input.mousePosition;
 
+            if (!RectTransformUtility.RectangleContainsScreenPoint(this.rectTransform, this.mouseReleasePosition))
+            {
+                return;
+            }
+
             //create vector from the two points
             this.currentSwipe = new Vector2(this.mouseReleasePosition.x - this.mousePressPosition.x, this.mouseReleasePosition.y - this.mousePressPosition.y);
 
@@ -162,5 +167,13 @@ public class SkillSlotListPanel : MonoBehaviour
     public void SetIsSkillSlotListScrollable( bool isSkillSlotListScrollable )
     {
         this.isSkillSlotListScrollable = isSkillSlotListScrollable;
+    }
+
+    // To reset back the selected skill sequence based on last round selection. 
+    public void ResetLastRoundSelectedActiveSkill()
+    {
+        this.selectedGameCharacter.SetSelectedActiveSkillList(this.selectedSkills);
+
+        InsertIntoSkillSlot(this.selectedSkills);
     }
 }
