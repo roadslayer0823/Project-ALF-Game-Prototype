@@ -9,6 +9,7 @@ public class BattleAnimationManager : MonoBehaviour
     [SerializeField] private SpriteRenderer background = null;
     [SerializeField] private Sprite backgroundPartA = null;
     [SerializeField] private Sprite backgroundPartB = null;
+    [SerializeField] private Animator skillEffectAnimator = null;
 
     private bool isAnimationEventTriggered = false;
     private Action<bool> onBattleEndedCallback = null;
@@ -27,7 +28,7 @@ public class BattleAnimationManager : MonoBehaviour
         this.onBattleEndedCallback = onBattleEndedCallback;
     }
 
-    public IEnumerator RunBattleAnimation( BattleFlowATL battleFlowATL )
+    public IEnumerator RunBattleAnimation( BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )
     {
         GameCharacter _attacker = battleFlowATL.GetSelectedCharacter();
         GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
@@ -41,7 +42,7 @@ public class BattleAnimationManager : MonoBehaviour
         string _skillEffectPartA = _skillAnimation.GetSkillEffectPartA();
         string _skillEffectPartB = _skillAnimation.GetSkillEffectPartB();
 
-        _attacker.GetSortingGroup().sortingOrder = 2;
+        _attacker.GetSortingGroup().sortingOrder = 3;
         _attackTarget.GetSortingGroup().sortingOrder = 1;
 
         _attacker.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.None );
@@ -101,11 +102,11 @@ public class BattleAnimationManager : MonoBehaviour
             ChangeToBackgroundPartA();
         }
 
+        _attacker.GetOpponentContainer().SetActive( true );
+
         switch ( _attackTarget.GetCurrentCharacterActionType() )
         {
             case GameCharacter.CharacterActionType.None:
-
-                _attacker.GetOpponentContainer().SetActive( true );
 
                 if (_characterPartB != NO_ANIMATION)
                 {
@@ -124,6 +125,21 @@ public class BattleAnimationManager : MonoBehaviour
                 break;
 
             case GameCharacter.CharacterActionType.Repulse:
+
+                BattleFlowATL _nextATL = battleFlowRound.GetNextATL( _attackTarget );
+                battleFlowRound.GoToTargetATL( _nextATL );
+
+                if (_characterPartB != NO_ANIMATION)
+                {
+                    StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartB + "_Repulse" ) );
+                }
+
+                yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, "Repulse" ) );
+                yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, "Repulse" ) );
+                yield return StartCoroutine( PlaySkillEffectAnimation( "Repulse" ) );
+                _attacker.MinusRemainingHealthPoint( _nextATL.GetSelectedSkill().GetSubskillData().AttackDamage );
+                yield return StartCoroutine( PlayCharacterAnimation( _attacker, "GettingHit_Repulse_Right" ) );
+
                 break;
         }
 
@@ -132,6 +148,15 @@ public class BattleAnimationManager : MonoBehaviour
             _attackTarget.gameObject.SetActive( false );
 
             bool _isVictory = ( _attackTarget is EnemyCharacter );
+            this.onBattleEndedCallback?.Invoke( _isVictory );
+
+            yield break;
+        }
+        else if (_attacker.GetRemainingHealthPoint() <= 0)
+        {
+            _attacker.gameObject.SetActive( false );
+
+            bool _isVictory = ( _attacker is EnemyCharacter );
             this.onBattleEndedCallback?.Invoke( _isVictory );
 
             yield break;
@@ -154,6 +179,12 @@ public class BattleAnimationManager : MonoBehaviour
         yield return StartCoroutine( WaitForAnimationEventTriggered() );
     }
 
+    private IEnumerator PlaySkillEffectAnimation( string animationName )
+    {
+        skillEffectAnimator.Play( animationName );
+        yield return StartCoroutine( WaitForAnimationEventTriggered() );
+    }
+
     private IEnumerator WaitForAnimationEventTriggered()
     {
         this.isAnimationEventTriggered = false;
@@ -166,7 +197,7 @@ public class BattleAnimationManager : MonoBehaviour
         gameCharacter.TriggerEvent( ON_DEFEND_PART_A_CUTOFF );
     }
 
-    private void OnAnimationEventTriggered( string parameterValue )
+    public void OnAnimationEventTriggered( string parameterValue )
     {
         this.isAnimationEventTriggered = true;
     }

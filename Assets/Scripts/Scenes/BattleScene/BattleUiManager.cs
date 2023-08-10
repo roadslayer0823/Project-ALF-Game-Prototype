@@ -183,6 +183,11 @@ public class BattleUiManager : MonoBehaviour
         }
     }
 
+    public void DisablePlayerActionPanelButtons()
+    {
+        UpdatePlayerActionPanelButtons( false, false, false, false );
+    }
+
     public void OnExecuteButtonClicked()
     {
         this.battleGameManager.StartExecution();
