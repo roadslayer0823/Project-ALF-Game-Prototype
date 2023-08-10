@@ -479,5 +479,6 @@ MonoBehaviour:
   ownerName: {fileID: 534886260458961345}
   skillName: {fileID: 3138436514421739075}
   slotBackground: {fileID: 4523396926552939195}
-  activeATLSlotColor: {r: 0.41176474, g: 0.48627454, b: 0.7803922, a: 1}
+  playerActiveATLSlotColor: {r: 0.4117647, g: 0.4862745, b: 0.78039217, a: 1}
+  enemyActiveATLSlotColor: {r: 0.8018868, g: 0.23073156, b: 0.23073156, a: 1}
   inactiveATLSlotColor: {r: 0.21960786, g: 0.27058825, b: 0.47058827, a: 1}

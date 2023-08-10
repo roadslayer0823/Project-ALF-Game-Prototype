@@ -11,7 +11,8 @@ public class ATLSlot : MonoBehaviour
     [SerializeField] private Image slotBackground = null;
 
     [Header("ATL slot color")]
-    [SerializeField] private Color activeATLSlotColor = new Color();
+    [SerializeField] private Color playerActiveATLSlotColor = new Color();
+    [SerializeField] private Color enemyActiveATLSlotColor = new Color();
     [SerializeField] private Color inactiveATLSlotColor = new Color();
 
     private BattleFlowATL battleFlowATL = null;
@@ -25,15 +26,19 @@ public class ATLSlot : MonoBehaviour
         this.onATLSlotExecutedCallback = onATLSlotExecutedCallback;
     }
 
-    private void OnEnable()
-    {
-        slotBackground.color = activeATLSlotColor;
-    }
-
     public void Show( BattleFlowATL flowATL )
     {
         this.battleFlowATL = flowATL;
         base.gameObject.SetActive( true );
+
+        if (battleFlowATL.CheckIsPlayer())
+        {
+            slotBackground.color = playerActiveATLSlotColor;
+        }
+        else
+        {
+            slotBackground.color = enemyActiveATLSlotColor;
+        }
     }
 
     public void Hide()
