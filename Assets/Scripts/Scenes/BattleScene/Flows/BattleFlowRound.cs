@@ -109,6 +109,8 @@ public class BattleFlowRound
 
             if (_currentATL.CheckIsPlayer())
             {
+                // TODO: Check if the current slot skill is same with the current atl, if not same then dont swipe
+
                 // Auto swipe left the Skill Slot
                 _currentATLSlot.onATLSlotExecutedCallback();
                 _currentATLSlot.onSkillSlotSwipedCallback();

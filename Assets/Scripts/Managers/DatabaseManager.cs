@@ -382,8 +382,8 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("id")]
         public string Id;
 
-        [JsonProperty("display_name")]
-        public string DisplayName;
+        [JsonProperty("group_name")]
+        public string GroupName;
 
         [JsonProperty("skill_type")]
         [HideInInspector] public string SkillTypeString;
@@ -391,7 +391,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         {
             active,
             backend,
-            derived
+            repulse,
+            derived,
+            counter
         }
         public SkillType skillType;
 
@@ -401,9 +403,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
             return Id;
         }
 
-        public string GetDisplayName()
+        public string GetGroupName()
         {
-            return DisplayName;
+            return GroupName;
         }
 
         public SkillType GetSkillType()
@@ -419,11 +421,23 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("id")]
         public string Id;
 
+        [JsonProperty("reference")]
+        public string Reference;
+
         [JsonProperty("skill_id")]
         public string SkillId;
 
         [JsonProperty("level")]
         public int Level;
+
+        [JsonProperty("feature_id")]
+        public int FeatureId;
+
+        [JsonProperty("prefix")]
+        public string Prefix;
+
+        [JsonProperty("display_name")]
+        public string DisplayName;
 
         [JsonProperty("repulse_skill_id")]
         public string RepulseSkillId;
@@ -431,17 +445,29 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("derived_skill_id")]
         public string DerivedSkillId;
 
-        [JsonProperty("state_point_cost")]
-        public int StatePointCost;
+        [JsonProperty("counter_skill_id")]
+        public string CounterSkillId;
 
         [JsonProperty("attack_damage")]
         public int AttackDamage;
 
-        [JsonProperty("defense")]
-        public int Defense;
+        [JsonProperty("max_state_point_up")]
+        public int MaxStatePointUp;
+
+        [JsonProperty("state_point_cost")]
+        public int StatePointCost;
+
+        [JsonProperty("stress_damage")]
+        public int StressDamage;
 
         [JsonProperty("strength")]
         public int Strength;
+
+        [JsonProperty("accuracy")]
+        public int Accuracy;
+
+        [JsonProperty("evasion")]
+        public int Evasion;
 
         [JsonProperty("effect_area")]
         [HideInInspector] public string EffectAreaString;
@@ -484,6 +510,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
             return Id;
         }
 
+        public string GetReference()
+        {
+            return Reference;
+        }
+
         public string GetSkillId()
         {
             return SkillId;
@@ -492,6 +523,21 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public int GetLevel()
         {
             return Level;
+        }
+
+        public int GetFeatureId()
+        {
+            return FeatureId;
+        }
+
+        public string GetPrefix()
+        {
+            return Prefix;
+        }
+
+        public string GetDisplayName()
+        {
+            return DisplayName;
         }
 
         public string GetRepulseSkillId()
@@ -504,9 +550,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
             return DerivedSkillId;
         }
 
-        public int GetStatePointCost()
+        public string GetCounterSkillId()
         {
-            return StatePointCost;
+            return CounterSkillId;
         }
 
         public int GetAttackDamage()
@@ -514,14 +560,34 @@ public class DatabaseManager : Singleton<DatabaseManager>
             return AttackDamage;
         }
 
-        public int GetDefense()
+        public int GetMaxStatePointUp()
         {
-            return Defense;
+            return MaxStatePointUp;
+        }
+
+        public int GetStatePointCost()
+        {
+            return StatePointCost;
+        }
+
+        public int GetStressDamage()
+        {
+            return StressDamage;
         }
 
         public int GetStrength()
         {
             return Strength;
+        }
+
+        public int GetAccuracy()
+        {
+            return Accuracy;
+        }
+
+        public int GetEvasion()
+        {
+            return Evasion;
         }
 
         public EffectArea GetEffectArea()
