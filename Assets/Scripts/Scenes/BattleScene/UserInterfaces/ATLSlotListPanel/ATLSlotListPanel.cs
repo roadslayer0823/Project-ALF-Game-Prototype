@@ -50,9 +50,16 @@ public class ATLSlotListPanel : MonoBehaviour
                 continue;
             }
 
+            int totalSelectedSkill = flowATL.GetSelectedCharacter().GetSelectedActiveSkillList().Count;
+
             //Check and assign the character selected skill into correct atl slot
-            if (flowATL.CheckIsPlayer() && playerSkillCounter < flowATL.GetSelectedCharacter().GetSelectedActiveSkillList().Count)
+            if (flowATL.CheckIsPlayer())
             {
+                if (playerSkillCounter >= totalSelectedSkill)
+                {
+                    playerSkillCounter = 0;
+                }
+
                 flowATL.SetSelectedSkill(flowATL.GetSelectedCharacter().GetSelectedActiveSkillList()[playerSkillCounter]);
                 playerSkillCounter++;
             }

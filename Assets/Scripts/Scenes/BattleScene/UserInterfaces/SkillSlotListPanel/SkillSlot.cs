@@ -13,7 +13,7 @@ public class SkillSlot : MonoBehaviour
     {
         this.selectedSkill = selectedSkill;
 
-        SetSkillSlotText(selectedSkill.GetSkillData().GetGroupName());
+        SetSkillSlotText(selectedSkill.GetSubskillData().GetDisplayName());
     }
 
     public CharacterSkill GetSelectedSkill()
