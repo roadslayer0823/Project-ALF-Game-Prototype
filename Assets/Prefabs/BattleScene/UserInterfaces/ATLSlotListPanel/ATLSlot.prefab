@@ -481,4 +481,5 @@ MonoBehaviour:
   slotBackground: {fileID: 4523396926552939195}
   playerActiveATLSlotColor: {r: 0.4117647, g: 0.4862745, b: 0.78039217, a: 1}
   enemyActiveATLSlotColor: {r: 0.8018868, g: 0.23073156, b: 0.23073156, a: 1}
-  inactiveATLSlotColor: {r: 0.21960786, g: 0.27058825, b: 0.47058827, a: 1}
+  playerInactiveATLSlotColor: {r: 0.21960784, g: 0.27058825, b: 0.47058824, a: 1}
+  enemyInactiveATLSlotColor: {r: 0.3773585, g: 0.19045925, b: 0.19045925, a: 1}

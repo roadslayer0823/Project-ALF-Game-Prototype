@@ -87,6 +87,7 @@ public class BattleGameManager : MonoBehaviour
         this.battleUiManager.HideATLSlotListPanel();
         this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( false );
         this.battleUiManager.GetSkillSlotListPanel().ResetLastRoundSelectedActiveSkill();
+        this.battleUiManager.CheckWhetherToEnableExecuteButton();
         this.battleFlowManager.StartNewRound();
     }
 

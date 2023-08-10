@@ -13,7 +13,8 @@ public class ATLSlot : MonoBehaviour
     [Header("ATL slot color")]
     [SerializeField] private Color playerActiveATLSlotColor = new Color();
     [SerializeField] private Color enemyActiveATLSlotColor = new Color();
-    [SerializeField] private Color inactiveATLSlotColor = new Color();
+    [SerializeField] private Color playerInactiveATLSlotColor = new Color();
+    [SerializeField] private Color enemyInactiveATLSlotColor = new Color();
 
     private BattleFlowATL battleFlowATL = null;
 
@@ -58,7 +59,14 @@ public class ATLSlot : MonoBehaviour
 
     public void MarkATLSlotColorInactive()
     {
-        slotBackground.color = inactiveATLSlotColor;
+        if (battleFlowATL.CheckIsPlayer())
+        {
+            slotBackground.color = playerInactiveATLSlotColor;
+        }
+        else
+        {
+            slotBackground.color = enemyInactiveATLSlotColor;
+        }
     }
 
     public void SetOwnerName(string ownerName)
