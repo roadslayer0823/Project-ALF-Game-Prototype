@@ -118,8 +118,7 @@ public class BattleAnimationManager : MonoBehaviour
                     yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartB ) );
                 }
 
-                _attackTarget.MinusRemainingHealthPoint( _subskill.AttackDamage );
-
+                BattleLogicManager.ExecuteSkill( _characterSkill, _attacker, _attackTarget );
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
 
                 break;
@@ -137,13 +136,13 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, "Repulse" ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, "Repulse" ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( "Repulse" ) );
-                _attacker.MinusRemainingHealthPoint( _nextATL.GetSelectedSkill().GetSubskillData().AttackDamage );
+                BattleLogicManager.ExecuteSkill( _nextATL.GetSelectedSkill(), _attackTarget, _attacker );
                 yield return StartCoroutine( PlayCharacterAnimation( _attacker, "GettingHit_Repulse_Right" ) );
 
                 break;
         }
 
-        if (_attackTarget.GetRemainingHealthPoint() <= 0)
+        if (BattleLogicManager.IsGameCharacterDead( _attackTarget ))
         {
             _attackTarget.gameObject.SetActive( false );
 
@@ -152,7 +151,7 @@ public class BattleAnimationManager : MonoBehaviour
 
             yield break;
         }
-        else if (_attacker.GetRemainingHealthPoint() <= 0)
+        else if (BattleLogicManager.IsGameCharacterDead( _attacker ))
         {
             _attacker.gameObject.SetActive( false );
 
