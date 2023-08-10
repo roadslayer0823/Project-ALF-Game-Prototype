@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
 public class SkillInfoBox : MonoBehaviour
@@ -31,7 +30,6 @@ public class SkillInfoBox : MonoBehaviour
 
     private void SetupSkillInfomation(CharacterSkill characterSkill)
     {
-        Skill _skillData = characterSkill.GetSkillData();
         Subskill _subskillData = characterSkill.GetSubskillData();
 
         if (_subskillData.GetPrefix().ToString() == "-")
@@ -42,7 +40,7 @@ public class SkillInfoBox : MonoBehaviour
         {
             this.skillType.SetText("[" + _subskillData.GetPrefix().ToString() + "]");
         }
-        this.displayName.SetText(_skillData.GetGroupName());
+        this.displayName.SetText(_subskillData.GetDisplayName());
         this.attackDamage.SetText(_subskillData.GetAttackDamage().ToString());
         this.statePointCost.SetText(_subskillData.GetStatePointCost().ToString());
     }

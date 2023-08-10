@@ -3,7 +3,6 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
 public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
@@ -35,7 +34,9 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     private void Start()
     {
-        SetupSkillSelectionBox();
+        this.rectTransform.sizeDelta = new Vector2(0, this.boxHeight);
+
+        UpdateSkillSelectionBoxData();
 
         this.selectionButton.onClick.AddListener(OnSelectionButtonClick);
         this.minusLevelButton.onClick.AddListener(OnMinusLevelButtonClick);
@@ -111,14 +112,11 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     }
 
     // Set the skill data that needed to display into TMP.
-    private void SetupSkillSelectionBox()
+    private void UpdateSkillSelectionBoxData()
     {
-        this.rectTransform.sizeDelta = new Vector2(0, this.boxHeight);
-
-        Skill _skillData = characterSkill.GetSkillData();
         Subskill _subskillData = characterSkill.GetSubskillData();
 
-        this.skillNameText.SetText(_skillData.GetGroupName());
+        this.skillNameText.SetText(_subskillData.GetDisplayName());
 
         if (_subskillData.GetPrefix().ToString() == "-")
         {
@@ -128,8 +126,6 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         {
             this.skillTypeText.SetText("[" + _subskillData.GetPrefix().ToString() + "]");
         }
-
-        UpdateCharacterSkillLevel(this.skillLevel);
     }
 
     // Callback function for selection button
@@ -156,8 +152,14 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     private void UpdateCharacterSkillLevel(int skillLevel)
     {
+        if (this.isSelected)
+        {
+            Deselect();
+        }
+
         this.skillLevelText.SetText(skillLevel.ToString());
 
         this.skillSelectionListBox.ShowSelectedSkillInfo(this);
+        UpdateSkillSelectionBoxData();
     }
 }
