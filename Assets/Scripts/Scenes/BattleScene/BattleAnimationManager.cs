@@ -17,6 +17,7 @@ public class BattleAnimationManager : MonoBehaviour
     private const string NO_ANIMATION = "-";
     private const string IDLE_ANIMATION_NAME = "Idle";
     private const string GETTING_HIT_ANIMATION_NAME = "GettingHit";
+    private const string REPULSE_ANIMATION_NAME = "Repulse";
     private const string ANIMATION_TYPE_IS_RANGED = "ranged";
 
     public const string SET_CHARACTER = "set-character";
@@ -62,6 +63,7 @@ public class BattleAnimationManager : MonoBehaviour
         _attacker.GetOpponentContainer().SetActive( false );
         yield return new WaitForSeconds( 0.1f );
 
+        BattleLogicManager.ExecuteSkillOnUse( _characterSkill, _attacker, _attackTarget );
         _attackTarget.TriggerEvent( SET_CHARACTER );
 
         float _attackAnimationLength = 0;
@@ -75,7 +77,7 @@ public class BattleAnimationManager : MonoBehaviour
         }
 
         _attackTarget.TriggerEvent( ON_DEFEND_PART_A );
-        StartCoroutine( CountdownForAttackPartA( _attackAnimationLength * GameConfiguration.ACTION_CUTOFF_TIME_PERCENTAGE, _attackTarget ) );
+        StartCoroutine( CountdownForAttackPartA( _attackAnimationLength * GameConfiguration.Battle.ACTION_CUTOFF_TIME_PERCENTAGE, _attackTarget ) );
 
         if (_characterPartA != NO_ANIMATION)
         {
@@ -118,26 +120,38 @@ public class BattleAnimationManager : MonoBehaviour
                     yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartB ) );
                 }
 
-                BattleLogicManager.ExecuteSkill( _characterSkill, _attacker, _attackTarget );
+                BattleLogicManager.ExecuteSkillOnHittingTarget( _characterSkill, _attacker, _attackTarget );
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
 
                 break;
 
             case GameCharacter.CharacterActionType.Repulse:
 
+                BattleLogicManager.ExecuteSkillOnUse( _characterSkill, _attackTarget, _attacker );
+
                 BattleFlowATL _nextATL = battleFlowRound.GetNextATL( _attackTarget );
                 battleFlowRound.GoToTargetATL( _nextATL );
 
                 if (_characterPartB != NO_ANIMATION)
                 {
-                    StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartB + "_Repulse" ) );
+                    StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartB + "_"+ REPULSE_ANIMATION_NAME ) );
                 }
 
-                yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, "Repulse" ) );
-                yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, "Repulse" ) );
-                yield return StartCoroutine( PlaySkillEffectAnimation( "Repulse" ) );
-                BattleLogicManager.ExecuteSkill( _nextATL.GetSelectedSkill(), _attackTarget, _attacker );
-                yield return StartCoroutine( PlayCharacterAnimation( _attacker, "GettingHit_Repulse_Right" ) );
+                yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
+                yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
+                yield return StartCoroutine( PlaySkillEffectAnimation( REPULSE_ANIMATION_NAME ) );
+
+                int _randomNumber = UnityEngine.Random.Range( 0, 3 );
+                if (_randomNumber == 1)
+                {
+                    BattleLogicManager.ExecuteSkillOnHittingTarget( _nextATL.GetSelectedSkill(), _attackTarget, _attacker );
+                    yield return StartCoroutine( PlayCharacterAnimation( _attacker, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
+                }
+                else if (_randomNumber == 2)
+                {
+                    BattleLogicManager.ExecuteSkillOnHittingTarget( _characterSkill, _attacker, _attackTarget );
+                    yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
+                }
 
                 break;
         }

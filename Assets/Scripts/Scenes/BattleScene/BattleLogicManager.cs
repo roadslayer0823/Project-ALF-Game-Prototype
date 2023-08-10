@@ -2,7 +2,12 @@ using UnityEngine;
 
 public class BattleLogicManager
 {
-    public static void ExecuteSkill( CharacterSkill skill, GameCharacter caster, GameCharacter target )
+    public static void ExecuteSkillOnUse( CharacterSkill skill, GameCharacter caster, GameCharacter target )
+    {
+        caster.MinusRemainingStatePoint( skill.GetSubskillData().StatePointCost * 5 );
+    }
+
+    public static void ExecuteSkillOnHittingTarget( CharacterSkill skill, GameCharacter caster, GameCharacter target )
     {
         int _attackDamage = GetCurrentAttackDamage( skill );
         if (_attackDamage > 0)

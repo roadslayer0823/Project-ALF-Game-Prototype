@@ -31,7 +31,7 @@ public class BattleFlowRound
         List<BattleFlowATL> _atlList = new List<BattleFlowATL>();
         bool _isPlayer = isPlayerFirst;
 
-        for (int i = 0; i < GameConfiguration.NUMBER_OF_ATL_SLOTS; i++)
+        for (int i = 0; i < GameConfiguration.Battle.NUMBER_OF_ATL_SLOTS; i++)
         {
             BattleFlowATL _atl = new BattleFlowATL( ( _isPlayer ) ? this.battleFlowManager.GetNextPlayerCharacter() : this.battleFlowManager.GetNextEnemyCharacter() );
             _atl.SetAttackTarget( ( _isPlayer ) ? this.battleFlowManager.GetNextEnemyCharacter() : this.battleFlowManager.GetNextPlayerCharacter() );

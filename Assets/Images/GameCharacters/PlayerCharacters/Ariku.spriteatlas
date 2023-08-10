@@ -57,7 +57,7 @@ SpriteAtlas:
   m_PackedSpriteNamesToIndex:
   - 01
   - 02
-  - 02
+  - 03
   - ariku back
   m_RenderDataMap: {}
   m_Tag: Ariku
