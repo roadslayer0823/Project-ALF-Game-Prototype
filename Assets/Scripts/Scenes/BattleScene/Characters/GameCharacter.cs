@@ -37,7 +37,8 @@ public class GameCharacter : MonoBehaviour
         Repulse,
         Defend,
         Evade,
-        Counter
+        Counter,
+        Derive
     }
 
     public void Initialize( Character characterData, GameObject ownContainer, GameObject opponentContainer, Action<string,GameCharacter> onEventTriggeredCallback = null )

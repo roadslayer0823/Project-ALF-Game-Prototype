@@ -130,11 +130,7 @@ public class BattleUiManager : MonoBehaviour
 
     public void ShowBattleSection()
     {
-        this.playerActionPanel.DisableRepulseButton();
-        this.playerActionPanel.DisableDefendButton();
-        this.playerActionPanel.DisableEvadeButton();
-        this.playerActionPanel.DisableCounterButton();
-
+        DisablePlayerActionPanelButtons();
         this.playerActionPanel.ShowBattleSection();
         this.playerActionPanel.HidePreparationSection();
     }
@@ -144,15 +140,16 @@ public class BattleUiManager : MonoBehaviour
         this.playerActionPanel.SetSelectedGameCharacter( gameCharacter );
     }
 
-    public void UpdatePlayerActionPanelButtons( bool canRepulse, bool canDefend, bool canEvade, bool canCounter )
+    public void UpdatePlayerActionPanelButtons( bool canRepulse, bool canDefend, bool canEvade, bool canCounter, bool canDerive )
     {
         if (canRepulse)
         {
             this.playerActionPanel.EnableRepulseButton();
+            this.playerActionPanel.DisableDeriveButton( false );
         }
         else
         {
-            this.playerActionPanel.DisableRepulseButton();
+            this.playerActionPanel.DisableRepulseButton( true );
         }
 
         if (canDefend)
@@ -181,11 +178,21 @@ public class BattleUiManager : MonoBehaviour
         {
             this.playerActionPanel.DisableCounterButton();
         }
+
+        if (canDerive)
+        {
+            this.playerActionPanel.EnableDeriveButton();
+            this.playerActionPanel.DisableRepulseButton( false );
+        }
+        else
+        {
+            this.playerActionPanel.DisableDeriveButton( false );
+        }
     }
 
     public void DisablePlayerActionPanelButtons()
     {
-        UpdatePlayerActionPanelButtons( false, false, false, false );
+        UpdatePlayerActionPanelButtons( false, false, false, false, false );
     }
 
     public void OnExecuteButtonClicked()

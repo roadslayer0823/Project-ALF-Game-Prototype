@@ -127,7 +127,8 @@ public class BattleGameManager : MonoBehaviour
                         canRepulse: ( battleFlowManager.GetCurrentRound().GetNextATL( gameCharacter ) != null ),
                         canDefend: true,
                         canEvade: true,
-                        canCounter: false
+                        canCounter: false,
+                        canDerive: false
                         );
 
                     break;
@@ -135,6 +136,18 @@ public class BattleGameManager : MonoBehaviour
                 case BattleAnimationManager.ON_DEFEND_PART_A_CUTOFF:
 
                     this.battleUiManager.DisablePlayerActionPanelButtons();
+
+                    break;
+
+                case BattleAnimationManager.ON_REPULSE_WIN:
+
+                    this.battleUiManager.UpdatePlayerActionPanelButtons(
+                        canRepulse: false,
+                        canDefend: false,
+                        canEvade: false,
+                        canCounter: false,
+                        canDerive: true
+                        );
 
                     break;
             }

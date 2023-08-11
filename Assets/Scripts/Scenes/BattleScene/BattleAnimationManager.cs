@@ -18,11 +18,13 @@ public class BattleAnimationManager : MonoBehaviour
     private const string IDLE_ANIMATION_NAME = "Idle";
     private const string GETTING_HIT_ANIMATION_NAME = "GettingHit";
     private const string REPULSE_ANIMATION_NAME = "Repulse";
+    private const string DERIVE_ANIMATION_NAME = "Derive";
     private const string ANIMATION_TYPE_IS_RANGED = "ranged";
 
     public const string SET_CHARACTER = "set-character";
     public const string ON_DEFEND_PART_A = "on-defend-part-a";
     public const string ON_DEFEND_PART_A_CUTOFF = "on-defend-part-a-cutoff";
+    public const string ON_REPULSE_WIN = "on-repulse-win";
 
     public void Initialize( Action<bool> onBattleEndedCallback )
     {
@@ -130,7 +132,7 @@ public class BattleAnimationManager : MonoBehaviour
                 BattleLogicManager.ExecuteSkillOnUse( _characterSkill, _attackTarget, _attacker );
 
                 BattleFlowATL _nextATL = battleFlowRound.GetNextATL( _attackTarget );
-                battleFlowRound.GoToTargetATL( _nextATL );
+                battleFlowRound.GoToTargetATL( _nextATL, false );
 
                 if (_characterPartB != NO_ANIMATION)
                 {
@@ -141,20 +143,47 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( REPULSE_ANIMATION_NAME ) );
 
+                GameCharacter _winner = null;
+                GameCharacter _loser = null;
+                CharacterSkill _derivedSkill = null;
                 int _randomNumber = UnityEngine.Random.Range( 0, 3 );
                 if (_randomNumber == 1)
                 {
+                    _winner = _attackTarget;
+                    _winner.TriggerEvent( ON_REPULSE_WIN );
                     BattleLogicManager.ExecuteSkillOnHittingTarget( _nextATL.GetSelectedSkill(), _attackTarget, _attacker );
                     yield return StartCoroutine( PlayCharacterAnimation( _attacker, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
+
+                    _derivedSkill = _nextATL.GetSelectedSkill();
+                    _loser = _attacker;
                 }
                 else if (_randomNumber == 2)
                 {
+                    _winner = _attacker;
+                    _winner.TriggerEvent( ON_REPULSE_WIN );
                     BattleLogicManager.ExecuteSkillOnHittingTarget( _characterSkill, _attacker, _attackTarget );
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
+
+                    _derivedSkill = _characterSkill;
+                    _loser = _attackTarget;
                 }
                 else
                 {
                     yield return new WaitForSeconds( 0.5f );
+                }
+
+                if (_winner != null)
+                {
+                    if (_winner.GetCurrentCharacterActionType() == GameCharacter.CharacterActionType.Derive)
+                    {
+                        _nextATL = battleFlowRound.GetNextATL( _winner );
+                        battleFlowRound.GoToTargetATL( _nextATL, false );
+
+                        yield return StartCoroutine( PlayCharacterAnimation( _winner, DERIVE_ANIMATION_NAME ) );
+                        yield return StartCoroutine( PlaySkillEffectAnimation( REPULSE_ANIMATION_NAME ) );
+                        BattleLogicManager.ExecuteSkillOnHittingTarget( _derivedSkill, _winner, _loser );
+                        yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
+                    }
                 }
 
                 break;

@@ -123,12 +123,8 @@ public class BattleFlowRound
         SetCurrentPhase( PhaseType.ExecutionDone );
     }
 
-    public void GoToTargetATL( BattleFlowATL targetATL )
+    public void GoToTargetATL( BattleFlowATL targetATL, bool isEndable )
     {
-        ATLSlot _currentATLSlot = GetCurrentATL().GetATLSlot();
-        _currentATLSlot.MarkATLSlotColorInactive();
-        _currentATLSlot.HideSelectionHighlight();
-
         bool _hasTargetATL = false;
         BattleFlowATL _currentATL = null;
 
@@ -149,12 +145,16 @@ public class BattleFlowRound
             }
             else
             {
+                ATLSlot _currentATLSlot = _currentATL.GetATLSlot();
+                _currentATLSlot.MarkATLSlotColorInactive();
+                _currentATLSlot.HideSelectionHighlight();
+
                 this.flowATLIndex++;
             }
         }
         while ( true );
 
-        if (!_hasTargetATL)
+        if (!_hasTargetATL && isEndable)
         {
             SetCurrentPhase( PhaseType.ExecutionDone );
         }
