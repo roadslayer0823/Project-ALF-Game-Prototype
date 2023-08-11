@@ -3,30 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
-using SkillAnimation = DatabaseManager.SkillAnimation;
 
 public class CharacterSkill
 {
     private Skill skillData = null;
-    private List<Subskill> subskillList = null;
+    private List<CharacterSubskill> characterSubskillList = null;
     private int selectedSkillLevel = 1;
 
     public CharacterSkill( Skill skillData)
     {
         this.skillData = skillData;
-        SetupSubskillList(skillData.GetId());
+        SetupCharacterSubskillList(skillData.Id);
     }
 
-    private void SetupSubskillList(string skillId)
+    private void SetupCharacterSubskillList(string skillId)
     {
         List<Subskill> _subskillList = DatabaseManager.Instance.GetSubskillList();
-        this.subskillList = new List<Subskill>();
+        this.characterSubskillList = new List<CharacterSubskill>();
 
         foreach (Subskill subskill in _subskillList)
         {
-            if (subskill.GetSkillId() == skillId)
+            if (subskill.SkillId == skillId)
             {
-                this.subskillList.Add(subskill);
+                this.characterSubskillList.Add(new CharacterSubskill(subskill));
             }
         }
     }
@@ -36,51 +35,31 @@ public class CharacterSkill
         return this.skillData;
     }
 
-    public List<Subskill> GetSubskillList()
+    public List<CharacterSubskill> GetCharacterSubskillList()
     {
-        return this.subskillList;
+        return this.characterSubskillList;
     }
 
-    public Subskill GetSubskillData()
+    public CharacterSubskill GetCharacterSubskillData()
     {
-        int _maxLevel = this.subskillList.Count;
+        int _maxLevel = this.characterSubskillList.Count;
 
         if (this.selectedSkillLevel > _maxLevel)
         {
-            return this.subskillList[_maxLevel - 1];
+            return this.characterSubskillList[_maxLevel - 1];
         }
         else
         {
-            foreach (Subskill subskill in this.subskillList)
+            foreach (CharacterSubskill characterSubskill in this.characterSubskillList)
             {
-                if (subskill.GetLevel() == this.selectedSkillLevel)
+                if (characterSubskill.GetSubskillData().Level == this.selectedSkillLevel)
                 {
-                    return subskill;
+                    return characterSubskill;
                 }
             }
         }
 
         return null;
-    }
-
-    public SkillAnimation GetSkillAnimation(string subskillId)
-    {
-        List<SkillAnimation> _skillAniationList = DatabaseManager.Instance.GetSkillAnimationList();
-
-        foreach (SkillAnimation skillAnimation in _skillAniationList)
-        {
-            if (skillAnimation.GetSubskillId() == subskillId)
-            {
-                return skillAnimation;
-            }
-        }
-
-        return null;
-    }
-
-    public int GetSelectedSkillLevel()
-    {
-        return this.selectedSkillLevel;
     }
 
     public void SetSelectedSkillLevel(int selectedSkillLevel)

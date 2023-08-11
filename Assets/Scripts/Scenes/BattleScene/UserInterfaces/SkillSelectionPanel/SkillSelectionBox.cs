@@ -114,17 +114,17 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     // Set the skill data that needed to display into TMP.
     private void UpdateSkillSelectionBoxData()
     {
-        Subskill _subskillData = characterSkill.GetSubskillData();
+        Subskill _subskillData = characterSkill.GetCharacterSubskillData().GetSubskillData();
 
-        this.skillNameText.SetText(_subskillData.GetDisplayName());
+        this.skillNameText.SetText(_subskillData.DisplayName);
 
-        if (_subskillData.GetPrefix().ToString() == "-")
+        if (_subskillData.Prefix.ToString() == "-")
         {
             this.skillTypeText.SetText("");
         }
         else
         {
-            this.skillTypeText.SetText("[" + _subskillData.GetPrefix().ToString() + "]");
+            this.skillTypeText.SetText("[" + _subskillData.Prefix.ToString() + "]");
         }
     }
 
@@ -136,7 +136,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     private void OnMinusLevelButtonClick()
     {
-        this.skillLevel = Math.Clamp(this.skillLevel - 1, 1, characterSkill.GetSubskillList().Count);
+        this.skillLevel = Math.Clamp(this.skillLevel - 1, 1, characterSkill.GetCharacterSubskillList().Count);
 
         this.characterSkill.SetSelectedSkillLevel(this.skillLevel);
         UpdateCharacterSkillLevel(this.skillLevel);
@@ -144,7 +144,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     private void OnPlusLevelButtonClick()
     {
-        this.skillLevel = Math.Clamp(this.skillLevel + 1, 1, characterSkill.GetSubskillList().Count);
+        this.skillLevel = Math.Clamp(this.skillLevel + 1, 1, characterSkill.GetCharacterSubskillList().Count);
 
         this.characterSkill.SetSelectedSkillLevel(this.skillLevel);
         UpdateCharacterSkillLevel(this.skillLevel);
