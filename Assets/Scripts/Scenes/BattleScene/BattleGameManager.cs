@@ -146,11 +146,14 @@ public class BattleGameManager : MonoBehaviour
                         canDefend: false,
                         canEvade: false,
                         canCounter: false,
-                        canDerive: true
+                        canDerive: battleFlowManager.GetCurrentRound().GetCurrentATL()?.GetSelectedSkill()?.GetCharacterSubskillData().GetRepulseSkill()?.GetCharacterSubskillData().GetDerivedSkill() != null
                         );
 
                     break;
             }
+        }
+        else if (gameCharacter is EnemyCharacter)
+        {
         }
     }
 

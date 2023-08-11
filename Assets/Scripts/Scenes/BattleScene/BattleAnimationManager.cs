@@ -134,9 +134,11 @@ public class BattleAnimationManager : MonoBehaviour
                 BattleFlowATL _nextATL = battleFlowRound.GetNextATL( _attackTarget );
                 battleFlowRound.GoToTargetATL( _nextATL, false );
 
+                CharacterSkill _repulseSkill = _nextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill();
+
                 if (_characterPartB != NO_ANIMATION)
                 {
-                    StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartB + "_"+ REPULSE_ANIMATION_NAME ) );
+                    StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartB + "_" + REPULSE_ANIMATION_NAME ) );
                 }
 
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
@@ -151,10 +153,10 @@ public class BattleAnimationManager : MonoBehaviour
                 {
                     _winner = _attackTarget;
                     _winner.TriggerEvent( ON_REPULSE_WIN );
-                    BattleLogicManager.ExecuteSkillOnHittingTarget( _nextATL.GetSelectedSkill(), _attackTarget, _attacker );
+                    BattleLogicManager.ExecuteSkillOnHittingTarget( _repulseSkill, _attackTarget, _attacker );
                     yield return StartCoroutine( PlayCharacterAnimation( _attacker, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
 
-                    _derivedSkill = _nextATL.GetSelectedSkill();
+                    _derivedSkill = _repulseSkill.GetCharacterSubskillData().GetDerivedSkill();
                     _loser = _attacker;
                 }
                 else if (_randomNumber == 2)
@@ -164,7 +166,7 @@ public class BattleAnimationManager : MonoBehaviour
                     BattleLogicManager.ExecuteSkillOnHittingTarget( _characterSkill, _attacker, _attackTarget );
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
 
-                    _derivedSkill = _characterSkill;
+                    _derivedSkill = _characterSkill.GetCharacterSubskillData().GetDerivedSkill();
                     _loser = _attackTarget;
                 }
                 else

@@ -17,7 +17,6 @@ public class CharacterSkill
     {
         this.skillData = skillData;
         this.owner = owner;
-        //SetupCharacterSubskillList(skillData.Id);
     }
 
     public void SetupCharacterSubskillList()
