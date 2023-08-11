@@ -13,11 +13,6 @@ public class BattleFlowManager : MonoBehaviour
     private int playerCharacterIndex = 0;
     private int enemyCharacterIndex = 0;
 
-    private Action onPreparationPhaseStartedCallback = null;
-    private Action onExecutionPhaseStartedCallback = null;
-    private Action onExecutionPhaseFinishedCallback = null;
-    private Action onNewATLStartedCallback = null;
-
     public enum PhaseType
     {
         None,
@@ -25,13 +20,9 @@ public class BattleFlowManager : MonoBehaviour
         GameEnded
     }
 
-    public void Initialize( BattleGameManager battleGameManager, Action onPreparationPhaseStartedCallback, Action onExecutionPhaseStartedCallback, Action onExecutionPhaseFinishedCallback, Action onNewATLStartedCallback )
+    public void Initialize( BattleGameManager battleGameManager )
     {
         this.battleGameManager = battleGameManager;
-        this.onPreparationPhaseStartedCallback = onPreparationPhaseStartedCallback;
-        this.onExecutionPhaseStartedCallback = onExecutionPhaseStartedCallback;
-        this.onExecutionPhaseFinishedCallback = onExecutionPhaseFinishedCallback;
-        this.onNewATLStartedCallback = onNewATLStartedCallback;
     }
 
     public void StartGame()
@@ -49,6 +40,7 @@ public class BattleFlowManager : MonoBehaviour
             _roundNumber = this.currentRound.GetRoundNumber();
         }
 
+        this.battleGameManager.OnNewRoundStarted();
         this.currentRound = new BattleFlowRound( this, _roundNumber + 1, this.isPlayerFirst, OnCurrentRoundPhaseChanged );
         this.currentRound.SetCurrentPhase( BattleFlowRound.PhaseType.Preparation );
 
@@ -67,40 +59,19 @@ public class BattleFlowManager : MonoBehaviour
         {
             case BattleFlowRound.PhaseType.Preparation:
 
-                if (this.onPreparationPhaseStartedCallback != null)
-                {
-                    this.onPreparationPhaseStartedCallback();
-                }
-                else
-                {
-                    Debug.Log( "The value for 'onPreparationPhaseStartedCallback' is not assigned." );
-                }
+                this.battleGameManager.OnPreparationPhaseStarted();
 
                 break;
 
             case BattleFlowRound.PhaseType.Execution:
 
-                if (this.onExecutionPhaseStartedCallback != null)
-                {
-                    this.onExecutionPhaseStartedCallback();
-                }
-                else
-                {
-                    Debug.Log( "The value for 'onExecutionPhaseStartedCallback' is not assigned." );
-                }
+                this.battleGameManager.OnExecutionPhaseStarted();
 
                 break;
 
             case BattleFlowRound.PhaseType.ExecutionDone:
 
-                if (this.onExecutionPhaseFinishedCallback != null)
-                {
-                    this.onExecutionPhaseFinishedCallback();
-                }
-                else
-                {
-                    Debug.Log( "The value for 'onExecutionPhaseFinishedCallback' is not assigned." );
-                }
+                this.battleGameManager.OnExecutionPhaseFinished();
 
                 break;
         }
@@ -108,7 +79,7 @@ public class BattleFlowManager : MonoBehaviour
 
     public void OnNewATLStarted()
     {
-        onNewATLStartedCallback?.Invoke();
+        this.battleGameManager.OnNewATLStarted();
     }
 
     public PlayerCharacter GetNextPlayerCharacter()

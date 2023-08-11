@@ -92,6 +92,12 @@ public class GameCharacter : MonoBehaviour
         this.onCharacterInfoUpdated?.Invoke();
     }
 
+    public void SetRemainingStatePointToMaximum()
+    {
+        this.remainingStatePoint = this.maximumStatePoint;
+        this.onCharacterInfoUpdated?.Invoke();
+    }
+
     public void AddSelectedSkill(CharacterSkill characterSkill)
     {
         if (characterSkill.GetSkillData().GetSkillType() == Skill.SkillType.active)

@@ -27,7 +27,7 @@ public class BattleGameManager : MonoBehaviour
     void Start()
     {
         this.battleUiManager.Initialize( this );
-        this.battleFlowManager.Initialize( this, OnPreparationPhaseStarted, OnExecutionPhaseStarted, OnExecutionPhaseFinished, OnNewATLStarted );
+        this.battleFlowManager.Initialize( this );
         this.battleAnimationManager.Initialize( OnBattleEnded );
 
         // -------------------- Set up the player's characters --------------------
@@ -55,7 +55,7 @@ public class BattleGameManager : MonoBehaviour
         this.battleFlowManager.GetCurrentRound().SetCurrentPhase( BattleFlowRound.PhaseType.Execution );
     }
 
-    private void OnPreparationPhaseStarted()
+    public void OnPreparationPhaseStarted()
     {
         this.battleUiManager.SetSelectedGameCharacter( this.playerCharacterList[ 0 ] );
         this.battleUiManager.ShowSkillSelectionPanel();
@@ -69,7 +69,7 @@ public class BattleGameManager : MonoBehaviour
         this.enemyCharacter.PlayCharacterAnimation( "Idle" );
     }
 
-    private void OnExecutionPhaseStarted()
+    public void OnExecutionPhaseStarted()
     {
         this.battleUiManager.ShowBattleSection();
         this.playerCharacter.PlayCharacterAnimation( "Idle" );
@@ -81,7 +81,7 @@ public class BattleGameManager : MonoBehaviour
         this.battleFlowManager.GetCurrentRound().StartRunningATL();
     }
 
-    private void OnExecutionPhaseFinished()
+    public void OnExecutionPhaseFinished()
     {
         this.battleUiManager.HideSkillSlotListPanel();
         this.battleUiManager.HideATLSlotListPanel();
@@ -89,6 +89,19 @@ public class BattleGameManager : MonoBehaviour
         this.battleUiManager.GetSkillSlotListPanel().ResetLastRoundSelectedActiveSkill();
         this.battleUiManager.CheckWhetherToEnableExecuteButton();
         this.battleFlowManager.StartNewRound();
+    }
+
+    public void OnNewRoundStarted()
+    {
+        for (int i = 0; i < this.playerCharacterList.Count; i++)
+        {
+            this.playerCharacterList[ i ].SetRemainingStatePointToMaximum();
+        }
+
+        for (int i = 0; i < this.enemyCharacterList.Count; i++)
+        {
+            this.enemyCharacterList[ i ].SetRemainingStatePointToMaximum();
+        }
     }
 
     public void OnNewATLStarted()
