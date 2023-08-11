@@ -59,10 +59,16 @@ public class GameCharacter : MonoBehaviour
         string[] _skillIdArray = characterData.SkillIdArray;
         for (int i = 0; i < _skillIdArray.Length; i++)
         {
-            _skillList.Add(new CharacterSkill(DatabaseManager.Instance.GetSkillDataById(_skillIdArray[i])));
+            _skillList.Add(new CharacterSkill(DatabaseManager.Instance.GetSkillDataById(_skillIdArray[i]), this));
         }
 
         this.skills = _skillList.ToArray();
+        for (int i = 0; i < this.skills.Length; i++)
+        {
+            CharacterSkill _characterSkill = this.skills[i];
+            _characterSkill.SetupCharacterSubskillList();
+        }
+
         this.selectedActiveSkillList = new List<CharacterSkill>();
         this.selectedBackendSkillList = new List<CharacterSkill>();
 

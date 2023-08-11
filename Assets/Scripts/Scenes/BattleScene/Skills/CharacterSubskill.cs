@@ -5,14 +5,16 @@ using Subskill = DatabaseManager.Subskill;
 
 public class CharacterSubskill
 {
+    GameCharacter owner = null;
     Subskill subskill = null;
-    Subskill repulseSkill = null;
-    Subskill derivedSkill = null;
-    Subskill counterSkill = null;
+    CharacterSkill repulseSkill = null;
+    CharacterSkill derivedSkill = null;
+    CharacterSkill counterSkill = null;
 
-    public CharacterSubskill(Subskill subskillData)
+    public CharacterSubskill(Subskill subskillData, GameCharacter owner)
     {
         this.subskill = subskillData;
+        this.owner = owner;
 
         SetRepulseSkill();
         SetDerivedSkill();
@@ -30,12 +32,12 @@ public class CharacterSubskill
         }
         else
         {
-            List<Subskill> _subskillList = DatabaseManager.Instance.GetSubskillList();
-            for (int i = 0; i < _subskillList.Count; i++)
+            CharacterSkill[] _characterSkill = owner.GetSkills();
+            for (int i = 0; i < _characterSkill.Length; i++)
             {
-                Subskill _repulseSkill = _subskillList[i];
+                CharacterSkill _repulseSkill = _characterSkill[i];
 
-                if (_repulseSkillId == _repulseSkill.SkillId)
+                if (_repulseSkillId == _repulseSkill.GetSkillData().Id)
                 {
                     this.repulseSkill = _repulseSkill;
                     break;
@@ -55,12 +57,12 @@ public class CharacterSubskill
         }
         else
         {
-            List<Subskill> _subskillList = DatabaseManager.Instance.GetSubskillList();
-            for (int i = 0; i < _subskillList.Count; i++)
+            CharacterSkill[] _characterSkill = owner.GetSkills();
+            for (int i = 0; i < _characterSkill.Length; i++)
             {
-                Subskill _derivedSkill = _subskillList[i];
+                CharacterSkill _derivedSkill = _characterSkill[i];
 
-                if (_derivedSkillId == _derivedSkill.SkillId)
+                if (_derivedSkillId == _derivedSkill.GetSkillData().Id)
                 {
                     this.derivedSkill = _derivedSkill;
                     break;
@@ -80,12 +82,12 @@ public class CharacterSubskill
         }
         else
         {
-            List<Subskill> _subskillList = DatabaseManager.Instance.GetSubskillList();
-            for (int i = 0; i < _subskillList.Count; i++)
+            CharacterSkill[] _characterSkill = owner.GetSkills();
+            for (int i = 0; i < _characterSkill.Length; i++)
             {
-                Subskill _counterSkill = _subskillList[i];
+                CharacterSkill _counterSkill = _characterSkill[i];
 
-                if (_counterSkillId == _counterSkill.SkillId)
+                if (_counterSkillId == _counterSkill.GetSkillData().Id)
                 {
                     this.counterSkill = _counterSkill;
                     break;
@@ -99,17 +101,17 @@ public class CharacterSubskill
         return this.subskill;
     }
 
-    public Subskill GetRepulseSkill()
+    public CharacterSkill GetRepulseSkill()
     {
         return this.repulseSkill;
     }
 
-    public Subskill GetDerivedSkill()
+    public CharacterSkill GetDerivedSkill()
     {
         return this.derivedSkill;
     }
 
-    public Subskill GetCounterSkill()
+    public CharacterSkill GetCounterSkill()
     {
         return this.counterSkill;
     }
