@@ -30,18 +30,18 @@ public class SkillInfoBox : MonoBehaviour
 
     private void SetupSkillInfomation(CharacterSkill characterSkill)
     {
-        Subskill _subskillData = characterSkill.GetSubskillData();
+        Subskill _subskillData = characterSkill.GetCharacterSubskillData().GetSubskillData();
 
-        if (_subskillData.GetPrefix().ToString() == "-")
+        if (_subskillData.Prefix.ToString() == "-")
         {
             this.skillType.SetText("");
         }
         else
         {
-            this.skillType.SetText("[" + _subskillData.GetPrefix().ToString() + "]");
+            this.skillType.SetText("[" + _subskillData.Prefix.ToString() + "]");
         }
-        this.displayName.SetText(_subskillData.GetDisplayName());
-        this.attackDamage.SetText(_subskillData.GetAttackDamage().ToString());
-        this.statePointCost.SetText(_subskillData.GetStatePointCost().ToString());
+        this.displayName.SetText(_subskillData.DisplayName);
+        this.attackDamage.SetText(_subskillData.AttackDamage.ToString());
+        this.statePointCost.SetText(_subskillData.StatePointCost.ToString());
     }
 }

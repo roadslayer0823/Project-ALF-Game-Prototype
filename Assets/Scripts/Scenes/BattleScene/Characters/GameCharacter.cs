@@ -43,20 +43,20 @@ public class GameCharacter : MonoBehaviour
 
     public void Initialize( Character characterData, GameObject ownContainer, GameObject opponentContainer, Action<string,GameCharacter> onEventTriggeredCallback = null )
     {
-        base.gameObject.name = "Character: " + characterData.GetDisplayName();
+        base.gameObject.name = "Character: " + characterData.DisplayName;
         this.ownContainer = ownContainer;
         this.opponentContainer = opponentContainer;
         this.onEventTriggeredCallback = onEventTriggeredCallback;
 
-        this.id = characterData.GetId();
-        this.characterName = characterData.GetDisplayName();
-        this.maximumHealthPoint = characterData.GetMaximumHealthPoint();
+        this.id = characterData.Id;
+        this.characterName = characterData.DisplayName;
+        this.maximumHealthPoint = characterData.MaximumHealthPoint;
         this.remainingHealthPoint = this.maximumHealthPoint;
-        this.maximumStatePoint = characterData.GetMaximumStatePoint();
+        this.maximumStatePoint = characterData.MaximumStatePoint;
         this.remainingStatePoint = this.maximumStatePoint;
 
         List<CharacterSkill> _skillList = new List<CharacterSkill>();
-        string[] _skillIdArray = characterData.GetSkillIdArray();
+        string[] _skillIdArray = characterData.SkillIdArray;
         for (int i = 0; i < _skillIdArray.Length; i++)
         {
             _skillList.Add(new CharacterSkill(DatabaseManager.Instance.GetSkillDataById(_skillIdArray[i])));
@@ -101,7 +101,7 @@ public class GameCharacter : MonoBehaviour
 
     public void AddSelectedSkill(CharacterSkill characterSkill)
     {
-        if (characterSkill.GetSkillData().GetSkillType() == Skill.SkillType.active)
+        if (characterSkill.GetSkillData().skillType == Skill.SkillType.active)
         {
             if (this.selectedActiveSkillList.Count < GameConfiguration.Battle.MAXIMUM_SELECTED_ACTIVE_SKILLS)
             {
@@ -119,7 +119,7 @@ public class GameCharacter : MonoBehaviour
 
     public void RemoveSelectedSkill(CharacterSkill characterSkill)
     {
-        if (characterSkill.GetSkillData().GetSkillType() == Skill.SkillType.active)
+        if (characterSkill.GetSkillData().skillType == Skill.SkillType.active)
         {
             this.selectedActiveSkillList.Remove(characterSkill);
         }

@@ -13,12 +13,14 @@ public class DatabaseManager : Singleton<DatabaseManager>
     [Header("Google Spreadsheet")]
     [SerializeField] private string databaseSpreadsheetId = "";
     [SerializeField] private string versionSheetName = "";
+    [SerializeField] private string configurationSheetName = "";
     [SerializeField] private string characterSheetName = "";
     [SerializeField] private string skillSheetName = "";
     [SerializeField] private string subskillSheetName = "";
     [SerializeField] private string skillAnimationSheetName = "";
 
     private List<Version> versionList = new List<Version>();
+    private List<Configuration> configurationList = new List<Configuration>();
     private List<Character> characterList = new List<Character>();
     private List<Skill> skillList = new List<Skill>();
     private List<Subskill> subskillList = new List<Subskill>();
@@ -41,17 +43,20 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 StartCoroutine(CheckDatabaseVersion(_versionJsonData));
             }
 
+            string _configurationJsonData = PlayerPrefsManager.LoadConfigurationDatabase();
             string _characterJsonData = PlayerPrefsManager.LoadCharacterDatabase();
             string _skillJsonData = PlayerPrefsManager.LoadSkillDatabase();
             string _subskillJsonData = PlayerPrefsManager.LoadSubskillDatabase();
             string _skillAnimationJsonData = PlayerPrefsManager.LoadSkillAnimationDatabase();
 
-            if (!string.IsNullOrEmpty(_versionJsonData)
+            if (!string.IsNullOrEmpty( _versionJsonData )
+                && !string.IsNullOrEmpty( _configurationJsonData )
                 && !string.IsNullOrEmpty( _characterJsonData )
                 && !string.IsNullOrEmpty( _skillJsonData )
                 && !string.IsNullOrEmpty( _subskillJsonData )
-                && !string.IsNullOrEmpty(_skillAnimationJsonData))
+                && !string.IsNullOrEmpty( _skillAnimationJsonData ) )
             {
+                ProcessJsonData<Configuration>(_configurationJsonData, this.configurationSheetName);
                 ProcessJsonData<Character>( _characterJsonData, this.characterSheetName );
                 ProcessJsonData<Skill>( _skillJsonData, this.skillSheetName );
                 ProcessJsonData<Subskill>( _subskillJsonData, this.subskillSheetName );
@@ -88,7 +93,12 @@ public class DatabaseManager : Singleton<DatabaseManager>
                     if (previousDatabaseVersion.SheetName == latestDatabaseVersion.SheetName
                         && previousDatabaseVersion.VersionNumber < latestDatabaseVersion.VersionNumber)
                     {
-                        if (latestDatabaseVersion.SheetName == this.characterSheetName)
+                        if (latestDatabaseVersion.SheetName == this.configurationSheetName)
+                        {
+                            StartCoroutine(GetJsonData<Configuration>(this.configurationSheetName));
+                            Debug.Log("Update: " + this.configurationSheetName);
+                        }
+                        else if (latestDatabaseVersion.SheetName == this.characterSheetName)
                         {
                             StartCoroutine(GetJsonData<Character>(this.characterSheetName));
                             Debug.Log("Update: " + this.characterSheetName);
@@ -117,6 +127,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
     private void LoadAllData()
     {
         StartCoroutine(GetJsonData<Version>(this.versionSheetName));
+        StartCoroutine(GetJsonData<Configuration>(this.configurationSheetName));
         StartCoroutine(GetJsonData<Character>(this.characterSheetName));
         StartCoroutine(GetJsonData<Skill>(this.skillSheetName));
         StartCoroutine(GetJsonData<Subskill>(this.subskillSheetName));
@@ -153,6 +164,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         }
 
         if (this.versionList != null
+            && this.configurationList != null
             && this.characterList != null
             && this.skillList != null
             && this.subskillList != null
@@ -174,6 +186,17 @@ public class DatabaseManager : Singleton<DatabaseManager>
             this.versionList = dataList as List<Version>;
 
             PlayerPrefsManager.SaveVersionDatabase(jsonData);
+        }
+        else if (sheetName == this.configurationSheetName)
+        {
+            this.configurationList = dataList as List<Configuration>;
+
+            foreach (Configuration configuration in this.configurationList)
+            {
+                configuration.categoryType = (Configuration.Category)Enum.Parse(typeof(Configuration.Category), configuration.CategoryString);
+            }
+
+            PlayerPrefsManager.SaveConfigurationDatabase(jsonData);
         }
         else if (sheetName == this.characterSheetName)
         {
@@ -267,34 +290,54 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return arrayString;
     }
 
-    // Return correspond skill data based on skill id
-    public Skill GetSkillDataById(string id)
+    // Return correspond character data based on character id
+    public Character GetCharacterDataById(string id)
     {
-        for (int i = 0; i < skillList.Count; i++)
+        for (int i = 0; i < characterList.Count; i++)
         {
-            Skill skillData = skillList[i];
-            if (skillData.GetId() == id)
+            Character _characterData = characterList[i];
+            if (_characterData.Id == id)
             {
-                return skillData;
+                return _characterData;
             }
         }
 
         return null;
     }
 
-    // Return correspond character data based on character id
-    public Character GetCharacterDataById(string id)
+    // Return correspond skill data based on skill id
+    public Skill GetSkillDataById(string id)
     {
-        for (int i = 0; i < characterList.Count; i++)
+        for (int i = 0; i < skillList.Count; i++)
         {
-            Character characterData = characterList[i];
-            if (characterData.GetId() == id)
+            Skill _skillData = skillList[i];
+            if (_skillData.Id == id)
             {
-                return characterData;
+                return _skillData;
             }
         }
 
         return null;
+    }
+
+    // Return correspond skill animation data based on subskill id
+    public SkillAnimation GetSkillAnimation(string subskillId)
+    {
+        for (int i = 0; i < this.skillAnimationList.Count; i++)
+        {
+            SkillAnimation _skillAnimation = this.skillAnimationList[i];
+            if (_skillAnimation.SubskillId == subskillId)
+            {
+                return _skillAnimation;
+            }
+        }
+
+        return null;
+    }
+
+    public List<Configuration> GetConfigurationList()
+    {
+        return this.configurationList;
     }
 
     public List<Character> GetCharacterList()
@@ -323,70 +366,61 @@ public class DatabaseManager : Singleton<DatabaseManager>
     public class Version
     {
         [JsonProperty("sheet_name")]
-        public string SheetName;
+        public string SheetName { get; private set; }
 
         [JsonProperty("version")]
-        public int VersionNumber;
+        public int VersionNumber { get; private set; }
+    }
+
+    [Serializable]
+    public class Configuration
+    {
+        [JsonProperty("category")]
+        public string CategoryString { get; private set; }
+        public enum Category
+        {
+            battle
+        }
+        public Category categoryType;
+
+        [JsonProperty("key")]
+        public string Key { get; private set; }
+
+        [JsonProperty("value")]
+        public float Value { get; private set; }
     }
 
     [Serializable]
     public class Character
     {
         [JsonProperty("id")]
-        public string Id;
+        public string Id { get; private set; }
 
         [JsonProperty("display_name")]
-        public string DisplayName;
+        public string DisplayName { get; private set; }
 
         [JsonProperty("maximum_health_point")]
-        public int MaximumHealthPoint;
+        public int MaximumHealthPoint { get; private set; }
 
         [JsonProperty("maximum_state_point")]
-        public int MaximumStatePoint;
+        public int MaximumStatePoint { get; private set; }
 
         [JsonProperty("skill_id_array")]
-        [HideInInspector] public string SkillIdArrayString;
+        [HideInInspector] public string SkillIdArrayString { get; private set; }
         public string[] SkillIdArray;
-
-        #region Getter
-        public string GetId()
-        {
-            return Id;
-        }
-
-        public string GetDisplayName()
-        {
-            return DisplayName;
-        }
-
-        public int GetMaximumHealthPoint()
-        {
-            return MaximumHealthPoint;
-        }
-
-        public int GetMaximumStatePoint()
-        {
-            return MaximumStatePoint;
-        }
-
-        public string[] GetSkillIdArray()
-        {
-            return SkillIdArray;
-        }
-        #endregion
     }
 
     [Serializable]
     public class Skill
     {
         [JsonProperty("id")]
-        public string Id;
+        public string Id { get; private set; }
 
         [JsonProperty("group_name")]
-        public string GroupName;
+        public string GroupName { get; private set; }
 
         [JsonProperty("skill_type")]
-        [HideInInspector] public string SkillTypeString;
+        [HideInInspector] public string SkillTypeString { get; private set; }
         public enum SkillType
         {
             active,
@@ -396,81 +430,64 @@ public class DatabaseManager : Singleton<DatabaseManager>
             counter
         }
         public SkillType skillType;
-
-        #region Getter
-        public string GetId()
-        {
-            return Id;
-        }
-
-        public string GetGroupName()
-        {
-            return GroupName;
-        }
-
-        public SkillType GetSkillType()
-        {
-            return skillType;
-        }
-        #endregion
     }
 
     [Serializable]
     public class Subskill
     {
         [JsonProperty("id")]
-        public string Id;
+        public string Id { get; private set; }
 
         [JsonProperty("reference")]
-        public string Reference;
+        public string Reference { get; private set; }
 
         [JsonProperty("skill_id")]
-        public string SkillId;
+        public string SkillId { get; private set; }
 
         [JsonProperty("level")]
-        public int Level;
+        public int Level { get; private set; }
 
         [JsonProperty("feature_id")]
-        public int FeatureId;
+        public int FeatureId { get; private set; }
 
         [JsonProperty("prefix")]
-        public string Prefix;
+        public string Prefix { get; private set; }
 
         [JsonProperty("display_name")]
-        public string DisplayName;
+        public string DisplayName { get; private set; }
 
         [JsonProperty("repulse_skill_id")]
-        public string RepulseSkillId;
+        public string RepulseSkillId { get; private set; }
 
         [JsonProperty("derived_skill_id")]
-        public string DerivedSkillId;
+        public string DerivedSkillId { get; private set; }
 
         [JsonProperty("counter_skill_id")]
-        public string CounterSkillId;
+        public string CounterSkillId { get; private set; }
 
         [JsonProperty("attack_damage")]
-        public int AttackDamage;
+        public int AttackDamage { get; private set; }
 
         [JsonProperty("max_state_point_up")]
-        public int MaxStatePointUp;
+        public int MaxStatePointUp { get; private set; }
 
         [JsonProperty("state_point_cost")]
-        public int StatePointCost;
+        public int StatePointCost { get; private set; }
 
         [JsonProperty("stress_damage")]
-        public int StressDamage;
+        public int StressDamage { get; private set; }
 
         [JsonProperty("strength")]
-        public int Strength;
+        public int Strength { get; private set; }
 
         [JsonProperty("accuracy")]
-        public int Accuracy;
+        public int Accuracy { get; private set; }
 
         [JsonProperty("evasion")]
-        public int Evasion;
+        public int Evasion { get; private set; }
 
         [JsonProperty("effect_area")]
-        [HideInInspector] public string EffectAreaString;
+        [HideInInspector] public string EffectAreaString { get; private set; }
         public enum EffectArea
         {
             none,
@@ -480,7 +497,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public EffectArea effectArea;
 
         [JsonProperty("effect_type")]
-        [HideInInspector] public string EffectTypeString;
+        [HideInInspector] public string EffectTypeString { get; private set; }
         public enum EffectType
         {
             none,
@@ -490,150 +507,32 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public EffectType effectType;
 
         [JsonProperty("is_attacking_skill")]
-        [HideInInspector] public string IsAttackingSkillString;
+        [HideInInspector] public string IsAttackingSkillString { get; private set; }
         public bool IsAttackingSkill;
 
         [JsonProperty("is_interceptable")]
-        [HideInInspector] public string IsInterceptableString;
+        [HideInInspector] public string IsInterceptableString { get; private set; }
         public bool IsInterceptable;
 
         [JsonProperty("stress_resistance")]
-        public int StressResistance;
+        public int StressResistance { get; private set; }
 
         [JsonProperty("effects")]
-        [HideInInspector] public string EffectsString;
+        [HideInInspector] public string EffectsString { get; private set; }
         public int[] Effects;
-
-        #region Getter
-        public string GetId()
-        {
-            return Id;
-        }
-
-        public string GetReference()
-        {
-            return Reference;
-        }
-
-        public string GetSkillId()
-        {
-            return SkillId;
-        }
-
-        public int GetLevel()
-        {
-            return Level;
-        }
-
-        public int GetFeatureId()
-        {
-            return FeatureId;
-        }
-
-        public string GetPrefix()
-        {
-            return Prefix;
-        }
-
-        public string GetDisplayName()
-        {
-            return DisplayName;
-        }
-
-        public string GetRepulseSkillId()
-        {
-            return RepulseSkillId;
-        }
-
-        public string GetDerivedSkillId()
-        {
-            return DerivedSkillId;
-        }
-
-        public string GetCounterSkillId()
-        {
-            return CounterSkillId;
-        }
-
-        public int GetAttackDamage()
-        {
-            return AttackDamage;
-        }
-
-        public int GetMaxStatePointUp()
-        {
-            return MaxStatePointUp;
-        }
-
-        public int GetStatePointCost()
-        {
-            return StatePointCost;
-        }
-
-        public int GetStressDamage()
-        {
-            return StressDamage;
-        }
-
-        public int GetStrength()
-        {
-            return Strength;
-        }
-
-        public int GetAccuracy()
-        {
-            return Accuracy;
-        }
-
-        public int GetEvasion()
-        {
-            return Evasion;
-        }
-
-        public EffectArea GetEffectArea()
-        {
-            return effectArea;
-        }
-
-        public EffectType GetEffectType()
-        {
-            return effectType;
-        }
-
-        public bool GetIsAttackingSkill()
-        {
-            return IsAttackingSkill;
-        }
-
-        public bool GetIsInterceptable()
-        {
-            return IsInterceptable;
-        }
-
-        public int GetStressResistance()
-        {
-            return StressResistance;
-        }
-
-        public int[] GetEffects()
-        {
-            return Effects;
-        }
-
-        #endregion
     }
 
     [Serializable]
     public class SkillAnimation
     {
         [JsonProperty("id")]
-        public string Id;
+        public string Id { get; private set; }
 
         [JsonProperty("subskill_id")]
-        public string SubskillId;
+        public string SubskillId { get; private set; }
 
         [JsonProperty("animation_type")]
-        [HideInInspector] public string AnimationTypeString;
+        [HideInInspector] public string AnimationTypeString { get; private set; }
         public enum AnimationType
         {
             none,
@@ -643,54 +542,16 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public AnimationType animationType;
 
         [JsonProperty("character_part_a")]
-        public string CharacterPartA;
+        public string CharacterPartA { get; private set; }
 
         [JsonProperty("character_part_b")]
-        public string CharacterPartB;
+        public string CharacterPartB { get; private set; }
 
         [JsonProperty("skill_effect_part_a")]
-        public string SkillEffectPartA;
+        public string SkillEffectPartA { get; private set; }
 
         [JsonProperty("skill_effect_part_b")]
-        public string SkillEffectPartB;
-
-        #region Getter
-        public string GetId()
-        {
-            return Id;
-        }
-
-        public string GetSubskillId()
-        {
-            return SubskillId;
-        }
-
-        public AnimationType GetAnimationType()
-        {
-            return animationType;
-        }
-
-        public string GetCharacterPartA()
-        {
-            return CharacterPartA;
-        }
-
-        public string GetCharacterPartB()
-        {
-            return CharacterPartB;
-        }
-
-        public string GetSkillEffectPartA()
-        {
-            return SkillEffectPartA;
-        }
-
-        public string GetSkillEffectPartB()
-        {
-            return SkillEffectPartB;
-        }
-
-        #endregion
+        public string SkillEffectPartB { get; private set; }
     }
 
     #endregion

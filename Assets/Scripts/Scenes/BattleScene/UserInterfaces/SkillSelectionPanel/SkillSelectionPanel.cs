@@ -55,11 +55,11 @@ public class SkillSelectionPanel : MonoBehaviour
         {
             CharacterSkill _characterSkill = _characterSkills[i];
 
-            if (_characterSkill.GetSkillData().GetSkillType() == DatabaseManager.Skill.SkillType.active)
+            if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
             {
                 _activeSkillList.Add(_characterSkill);
             }
-            else if (_characterSkill.GetSkillData().GetSkillType() == DatabaseManager.Skill.SkillType.backend)
+            else if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend)
             {
                 _backendSkillList.Add(_characterSkill);
             }
@@ -78,7 +78,7 @@ public class SkillSelectionPanel : MonoBehaviour
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
-        if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == DatabaseManager.Skill.SkillType.active)
+        if (skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
         {
             if (this.selectedActiveSkillList.Count < 3)
             {
@@ -91,7 +91,7 @@ public class SkillSelectionPanel : MonoBehaviour
                 skillSelectionBox.MarkDeselected();
             }
         }
-        else if (skillSelectionBox.GetCharacterSkill().GetSkillData().GetSkillType() == DatabaseManager.Skill.SkillType.backend)
+        else if (skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend)
         {
             if (this.selectedBackendSkillList.Count < 3)
             {

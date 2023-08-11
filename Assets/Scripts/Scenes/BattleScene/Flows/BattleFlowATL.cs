@@ -28,7 +28,7 @@ public class BattleFlowATL
 
         if (this.selectedSkill != null)
         {
-            this.atlSlot.SetSkillName(this.selectedSkill.GetSubskillData().GetDisplayName());
+            this.atlSlot.SetSkillName(this.selectedSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
         }
     }
 

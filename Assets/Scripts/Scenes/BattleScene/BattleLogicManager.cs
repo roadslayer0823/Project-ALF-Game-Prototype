@@ -4,7 +4,7 @@ public class BattleLogicManager
 {
     public static void ExecuteSkillOnUse( CharacterSkill skill, GameCharacter caster, GameCharacter target )
     {
-        caster.MinusRemainingStatePoint( skill.GetSubskillData().StatePointCost * 5 );
+        caster.MinusRemainingStatePoint( skill.GetCharacterSubskillData().GetSubskillData().StatePointCost * 5 );
     }
 
     public static void ExecuteSkillOnHittingTarget( CharacterSkill skill, GameCharacter caster, GameCharacter target )
@@ -18,7 +18,7 @@ public class BattleLogicManager
 
     public static int GetCurrentAttackDamage( CharacterSkill skill )
     {
-        return skill.GetSubskillData().AttackDamage * 10;
+        return skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * 10;
     }
 
     public static bool IsGameCharacterDead( GameCharacter gameCharacter )
