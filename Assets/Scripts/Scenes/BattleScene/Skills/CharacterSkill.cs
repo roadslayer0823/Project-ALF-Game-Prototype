@@ -6,26 +6,30 @@ using Subskill = DatabaseManager.Subskill;
 
 public class CharacterSkill
 {
+    private GameCharacter owner = null;
     private Skill skillData = null;
     private List<CharacterSubskill> characterSubskillList = null;
     private int selectedSkillLevel = 1;
 
-    public CharacterSkill( Skill skillData)
+    public Skill Skill { get; }
+
+    public CharacterSkill( Skill skillData, GameCharacter owner)
     {
         this.skillData = skillData;
-        SetupCharacterSubskillList(skillData.Id);
+        this.owner = owner;
+        //SetupCharacterSubskillList(skillData.Id);
     }
 
-    private void SetupCharacterSubskillList(string skillId)
+    public void SetupCharacterSubskillList()
     {
         List<Subskill> _subskillList = DatabaseManager.Instance.GetSubskillList();
         this.characterSubskillList = new List<CharacterSubskill>();
 
         foreach (Subskill subskill in _subskillList)
         {
-            if (subskill.SkillId == skillId)
+            if (subskill.SkillId == this.skillData.Id)
             {
-                this.characterSubskillList.Add(new CharacterSubskill(subskill));
+                this.characterSubskillList.Add(new CharacterSubskill(subskill, owner));
             }
         }
     }
