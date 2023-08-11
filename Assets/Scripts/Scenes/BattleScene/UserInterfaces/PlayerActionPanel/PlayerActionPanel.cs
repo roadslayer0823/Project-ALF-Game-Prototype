@@ -11,6 +11,7 @@ public class PlayerActionPanel : MonoBehaviour
     [SerializeField] private Button defendButton = null;
     [SerializeField] private Button evadeButton = null;
     [SerializeField] private Button counterButton = null;
+    [SerializeField] private Button deriveButton = null;
 
     private GameCharacter selectedGameCharacter = null;
     private Action onExecuteButtonClickedCallback = null;
@@ -41,7 +42,7 @@ public class PlayerActionPanel : MonoBehaviour
 
     public void ClickOnRepulseButton()
     {
-        DisableRepulseButton();
+        DisableRepulseButton( true );
         selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Repulse );
     }
 
@@ -61,6 +62,12 @@ public class PlayerActionPanel : MonoBehaviour
     {
         DisableCounterButton();
         selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Counter );
+    }
+
+    public void ClickOnDeriveButton()
+    {
+        DisableDeriveButton( true );
+        selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Derive );
     }
 
     public void ShowPreparationSection()
@@ -98,8 +105,9 @@ public class PlayerActionPanel : MonoBehaviour
         this.repulseButton.interactable = true;
     }
 
-    public void DisableRepulseButton()
+    public void DisableRepulseButton( bool isShown )
     {
+        this.repulseButton.gameObject.SetActive( isShown );
         this.repulseButton.interactable = false;
     }
 
@@ -131,5 +139,17 @@ public class PlayerActionPanel : MonoBehaviour
     public void DisableCounterButton()
     {
         this.counterButton.interactable = false;
+    }
+
+    public void EnableDeriveButton()
+    {
+        this.deriveButton.gameObject.SetActive( true );
+        this.deriveButton.interactable = true;
+    }
+
+    public void DisableDeriveButton( bool isShown )
+    {
+        this.deriveButton.gameObject.SetActive( isShown );
+        this.deriveButton.interactable = false;
     }
 }
