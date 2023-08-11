@@ -239,6 +239,7 @@ MonoBehaviour:
   isCheckingForUpdatesEnabled: 0
   databaseSpreadsheetId: 1Rr22TG1FVoW9WHuv7ZHm-qsdoB5-ri7bltzw6_GNXoE
   versionSheetName: Versions
+  configurationSheetName: Configurations
   characterSheetName: Characters
   skillSheetName: Skills
   subskillSheetName: Subskills

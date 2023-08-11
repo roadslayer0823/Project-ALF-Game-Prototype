@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerPrefsManager
 {
     private const string VERSION_DATABASE = "version_database";
+    private const string CONFIGURATION_DATABASE = "configuration_database";
     private const string CHARACTER_DATABASE = "character_database";
     private const string SKILL_DATABASE = "skill_database";
     private const string SUBSKILL_DATABASE = "subskill_database";
@@ -16,6 +17,16 @@ public class PlayerPrefsManager
     public static string LoadVersionDatabase()
     {
         return PlayerPrefs.GetString(VERSION_DATABASE, "");
+    }
+
+    public static void SaveConfigurationDatabase(string jsonData)
+    {
+        PlayerPrefs.SetString(CONFIGURATION_DATABASE, jsonData);
+    }
+
+    public static string LoadConfigurationDatabase()
+    {
+        return PlayerPrefs.GetString(CONFIGURATION_DATABASE, "");
     }
 
     public static void SaveCharacterDatabase( string jsonData )

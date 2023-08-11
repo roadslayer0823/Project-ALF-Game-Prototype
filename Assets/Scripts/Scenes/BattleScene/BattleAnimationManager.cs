@@ -34,14 +34,14 @@ public class BattleAnimationManager : MonoBehaviour
         GameCharacter _attacker = battleFlowATL.GetSelectedCharacter();
         GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
         CharacterSkill _characterSkill = battleFlowATL.GetSelectedSkill();
-        Subskill _subskill = _characterSkill.GetSubskillData();
-        SkillAnimation _skillAnimation = _characterSkill.GetSkillAnimation( _subskill.GetId() );
+        CharacterSubskill _characterSubskill = _characterSkill.GetCharacterSubskillData();
+        SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _characterSubskill.GetSubskillData().Id );
 
-        string _animationType = _skillAnimation.GetAnimationType().ToString();
-        string _characterPartA = _skillAnimation.GetCharacterPartA();
-        string _characterPartB = _skillAnimation.GetCharacterPartB();
-        string _skillEffectPartA = _skillAnimation.GetSkillEffectPartA();
-        string _skillEffectPartB = _skillAnimation.GetSkillEffectPartB();
+        string _animationType = _skillAnimation.animationType.ToString();
+        string _characterPartA = _skillAnimation.CharacterPartA;
+        string _characterPartB = _skillAnimation.CharacterPartB;
+        string _skillEffectPartA = _skillAnimation.SkillEffectPartA;
+        string _skillEffectPartB = _skillAnimation.SkillEffectPartB;
 
         _attacker.GetSortingGroup().sortingOrder = 3;
         _attackTarget.GetSortingGroup().sortingOrder = 1;
