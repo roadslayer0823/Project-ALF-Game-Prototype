@@ -75,6 +75,10 @@ public class GameCharacter : MonoBehaviour
         this.onCharacterInfoUpdated?.Invoke();
     }
 
+    public virtual void OnBattleFlowATLInitialized( BattleFlowATL battleFlowATL )
+    {
+    }
+
     public void AddRemainingHealthPoint( float amount )
     {
         this.remainingHealthPoint = Mathf.Clamp( this.remainingHealthPoint + amount, 0, this.maximumHealthPoint );

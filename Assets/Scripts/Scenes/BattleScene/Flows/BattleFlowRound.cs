@@ -35,24 +35,7 @@ public class BattleFlowRound
         {
             BattleFlowATL _atl = new BattleFlowATL( ( _isPlayer ) ? this.battleFlowManager.GetNextPlayerCharacter() : this.battleFlowManager.GetNextEnemyCharacter() );
             _atl.SetAttackTarget( ( _isPlayer ) ? this.battleFlowManager.GetNextEnemyCharacter() : this.battleFlowManager.GetNextPlayerCharacter() );
-
-            if (_atl.GetSelectedCharacter() is EnemyCharacter)
-            {
-                CharacterSkill[] _skills = _atl.GetSelectedCharacter().GetSkills();
-
-                List<CharacterSkill> _activeSkillList = new List<CharacterSkill>();
-                for (int j = 0; j < _skills.Length; j++)
-                {
-                    CharacterSkill _skill = _skills[ j ];
-                    if (_skill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
-                    {
-                        _activeSkillList.Add( _skill );
-                    }
-                }
-
-                _atl.SetSelectedSkill( _activeSkillList[ Random.Range( 0, _activeSkillList.Count ) ] );
-            }
-
+            _atl.GetSelectedCharacter().OnBattleFlowATLInitialized( _atl );
             _atlList.Add( _atl );
 
             _isPlayer = !( _isPlayer );
