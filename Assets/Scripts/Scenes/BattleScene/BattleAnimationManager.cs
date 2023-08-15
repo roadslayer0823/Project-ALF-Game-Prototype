@@ -67,13 +67,15 @@ public class BattleAnimationManager : MonoBehaviour
         _attacker.GetOwnContainer().SetActive( true );
         _attacker.ShowCharacterObject();
         _attacker.GetOpponentContainer().SetActive( false );
+
         yield return new WaitForSeconds( 0.1f );
 
+        _attacker.SetCurrentSkill( _attackerSkill, _attackTarget );
         BattleLogicManager.ExecuteSkillOnUse( _attackerSkill, _attacker, _attackTarget );
         _attacker.TriggerEvent( AnimationEvent.SetCharacter );
         _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
-
         _attackTarget.TriggerEvent( AnimationEvent.OnDefendPartA );
+
         StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartA, _skillEffectPartA ) * GameConfiguration.Battle.ACTION_CUTOFF_TIME_PERCENTAGE,
                                                  _attackTarget, AnimationEvent.OnDefendPartA_Cutoff ) );
 
@@ -103,7 +105,6 @@ public class BattleAnimationManager : MonoBehaviour
         }
 
         _attacker.GetOpponentContainer().SetActive( true );
-        _attacker.SetCurrentSkill( _attackerSkill );
         _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
         StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartB, _skillEffectPartB ) * GameConfiguration.Battle.ACTION_CUTOFF_TIME_PERCENTAGE,
                                                  _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
@@ -175,13 +176,13 @@ public class BattleAnimationManager : MonoBehaviour
                 {
                     if (_winner == _attacker)
                     {
-                        _winner.SetCurrentSkill( _attackerSkill );
                         _loser = _attackTarget;
+                        _winner.SetCurrentSkill( _attackerSkill, _loser );
                     }
                     else if (_winner == _attackTarget)
                     {
-                        _winner.SetCurrentSkill( _repulseSkill );
                         _loser = _attacker;
+                        _winner.SetCurrentSkill( _repulseSkill, _loser );
                     }
 
                     _winner.TriggerEvent( AnimationEvent.OnRepulseWin );

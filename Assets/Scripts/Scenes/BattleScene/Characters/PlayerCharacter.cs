@@ -32,7 +32,8 @@ public class PlayerCharacter : GameCharacter
             case AnimationEvent.OnDefendPartA:
 
                 _battleUiManager.UpdatePlayerActionPanelButtons(
-                    canRepulse: ( _battleFlowManager.GetCurrentRound().GetNextATL( this ) != null ),
+                    canRepulse: ( base.GetCurrentAttacker().GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().IsInterceptable
+                                  && _battleFlowManager.GetCurrentRound().GetNextATL( this ) != null ),
                     canDefend: true,
                     canEvade: true,
                     canCounter: false,

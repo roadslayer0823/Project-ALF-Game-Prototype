@@ -22,7 +22,6 @@ public class GameCharacter : MonoBehaviour
     protected List<CharacterSkill> selectedActiveSkillList = null;
     protected List<CharacterSkill> selectedBackendSkillList = null;
     protected CharacterActionType currentCharacterActionType = CharacterActionType.None;
-    protected CharacterSkill currentSkill = null;
 
     protected GameObject ownContainer = null;
     protected GameObject opponentContainer = null;
@@ -32,6 +31,9 @@ public class GameCharacter : MonoBehaviour
     protected Action<string> onCharacterAnimationTriggeredCallback = null;
     protected Action<string> onSkillEffectAnimationTriggeredCallback = null;
     protected Action onCharacterInfoUpdated = null;
+
+    private CharacterSkill currentSkill = null;
+    private GameCharacter currentAttacker = null;
 
     public enum CharacterActionType
     {
@@ -277,14 +279,29 @@ public class GameCharacter : MonoBehaviour
         return this.currentCharacterActionType;
     }
 
-    public void SetCurrentSkill( CharacterSkill currentSkill )
+    public void SetCurrentSkill( CharacterSkill currentSkill, GameCharacter attackTarget = null )
     {
         this.currentSkill = currentSkill;
+
+        if (attackTarget != null)
+        {
+            attackTarget.SetCurrentAttacker( this );
+        }
     }
 
     public CharacterSkill GetCurrentSkill()
     {
         return this.currentSkill;
+    }
+
+    public void SetCurrentAttacker( GameCharacter currentAttacker )
+    {
+        this.currentAttacker = currentAttacker;
+    }
+
+    public GameCharacter GetCurrentAttacker()
+    {
+        return this.currentAttacker;
     }
 
     public GameObject GetOwnContainer()
