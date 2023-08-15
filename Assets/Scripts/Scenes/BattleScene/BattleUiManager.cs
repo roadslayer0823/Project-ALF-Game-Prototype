@@ -128,9 +128,10 @@ public class BattleUiManager : MonoBehaviour
         this.playerActionPanel.HideBattleSection();
     }
 
-    public void ShowBattleSection()
+    public void ShowBattleSection( GameCharacter gameCharacter )
     {
         DisablePlayerActionPanelButtons();
+        this.playerActionPanel.ShowSkillActionButtons( gameCharacter.GetSelectedBackendSkillList().ToArray() );
         this.playerActionPanel.ShowBattleSection();
         this.playerActionPanel.HidePreparationSection();
     }
@@ -140,59 +141,15 @@ public class BattleUiManager : MonoBehaviour
         this.playerActionPanel.SetSelectedGameCharacter( gameCharacter );
     }
 
-    public void UpdatePlayerActionPanelButtons( bool canRepulse, bool canDefend, bool canEvade, bool canCounter, bool canDerive )
+    public void UpdatePlayerActionPanelButtons( PlayerActionPanel.QTEActionType actionType, bool canDefend, bool canEvade )
     {
-        if (canRepulse)
-        {
-            this.playerActionPanel.EnableRepulseButton();
-            this.playerActionPanel.DisableDeriveButton( false );
-        }
-        else
-        {
-            this.playerActionPanel.DisableRepulseButton( true );
-        }
-
-        if (canDefend)
-        {
-            this.playerActionPanel.EnableDefendButton();
-        }
-        else
-        {
-            this.playerActionPanel.DisableDefendButton();
-        }
-
-        if (canEvade)
-        {
-            this.playerActionPanel.EnableEvadeButton();
-        }
-        else
-        {
-            this.playerActionPanel.DisableEvadeButton();
-        }
-
-        if (canCounter)
-        {
-            this.playerActionPanel.EnableCounterButton();
-        }
-        else
-        {
-            this.playerActionPanel.DisableCounterButton();
-        }
-
-        if (canDerive)
-        {
-            this.playerActionPanel.EnableDeriveButton();
-            this.playerActionPanel.DisableRepulseButton( false );
-        }
-        else
-        {
-            this.playerActionPanel.DisableDeriveButton( false );
-        }
+        this.playerActionPanel.ShowQTEActionButton( actionType );
+        this.playerActionPanel.UpdateSkillActionButtons( canDefend, canEvade );
     }
 
     public void DisablePlayerActionPanelButtons()
     {
-        UpdatePlayerActionPanelButtons( false, false, false, false, false );
+        UpdatePlayerActionPanelButtons( PlayerActionPanel.QTEActionType.None, false, false );
     }
 
     public void OnExecuteButtonClicked()

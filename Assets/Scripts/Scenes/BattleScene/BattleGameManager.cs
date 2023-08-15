@@ -57,7 +57,7 @@ public class BattleGameManager : MonoBehaviour
 
     public void OnPreparationPhaseStarted()
     {
-        this.battleUiManager.SetSelectedGameCharacter( this.playerCharacterList[ 0 ] );
+        this.battleUiManager.SetSelectedGameCharacter( this.playerCharacter );
         this.battleUiManager.ShowSkillSelectionPanel();
         this.battleUiManager.ShowSkillSlotListPanel();
         this.battleUiManager.ShowPreparationSection();
@@ -71,7 +71,7 @@ public class BattleGameManager : MonoBehaviour
 
     public void OnExecutionPhaseStarted()
     {
-        this.battleUiManager.ShowBattleSection();
+        this.battleUiManager.ShowBattleSection( this.playerCharacter );
         this.playerCharacter.PlayCharacterAnimation( "Idle" );
         this.enemyCharacter.PlayCharacterAnimation( "Idle" );
 

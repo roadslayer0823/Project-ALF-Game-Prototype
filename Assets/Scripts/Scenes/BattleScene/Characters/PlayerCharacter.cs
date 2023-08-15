@@ -1,5 +1,6 @@
 using UnityEngine;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
+using QTEActionType = PlayerActionPanel.QTEActionType;
 
 public class PlayerCharacter : GameCharacter
 {
@@ -20,11 +21,10 @@ public class PlayerCharacter : GameCharacter
             case AnimationEvent.OnRepulseWin:
 
                 _battleUiManager.UpdatePlayerActionPanelButtons(
-                    canRepulse: false,
+                    actionType: ( base.GetCurrentSkill().GetCharacterSubskillData().GetDerivedSkill() != null )
+                                ? QTEActionType.Derive : QTEActionType.None,
                     canDefend: false,
-                    canEvade: false,
-                    canCounter: false,
-                    canDerive: base.GetCurrentSkill().GetCharacterSubskillData().GetDerivedSkill() != null
+                    canEvade: false
                     );
 
                 break;
@@ -32,12 +32,11 @@ public class PlayerCharacter : GameCharacter
             case AnimationEvent.OnDefendPartA:
 
                 _battleUiManager.UpdatePlayerActionPanelButtons(
-                    canRepulse: ( base.GetCurrentAttacker().GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().IsInterceptable
-                                  && _battleFlowManager.GetCurrentRound().GetNextATL( this ) != null ),
+                    actionType: ( base.GetCurrentAttacker().GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().IsInterceptable
+                                  && _battleFlowManager.GetCurrentRound().GetNextATL( this ) != null )
+                                  ? QTEActionType.Repulse : QTEActionType.None,
                     canDefend: true,
-                    canEvade: true,
-                    canCounter: false,
-                    canDerive: false
+                    canEvade: true
                     );
 
                 break;
