@@ -20,10 +20,16 @@ public class BattleAnimationManager : MonoBehaviour
     private const string DERIVE_ANIMATION_NAME = "Derive";
     private const string ANIMATION_TYPE_IS_RANGED = "ranged";
 
-    public const string SET_CHARACTER = "set-character";
-    public const string ON_DEFEND_PART_A = "on-defend-part-a";
-    public const string ON_DEFEND_PART_A_CUTOFF = "on-defend-part-a-cutoff";
-    public const string ON_REPULSE_WIN = "on-repulse-win";
+    public enum AnimationEvent
+    {
+        None,
+        SetCharacter,
+        OnAttackPartB,
+        OnAttackPartB_Cutoff,
+        OnDefendPartA,
+        OnDefendPartA_Cutoff,
+        OnRepulseWin
+    }
 
     public void Initialize( Action<bool> onBattleEndedCallback )
     {
@@ -64,20 +70,12 @@ public class BattleAnimationManager : MonoBehaviour
         yield return new WaitForSeconds( 0.1f );
 
         BattleLogicManager.ExecuteSkillOnUse( _attackerSkill, _attacker, _attackTarget );
-        _attackTarget.TriggerEvent( SET_CHARACTER );
+        _attacker.TriggerEvent( AnimationEvent.SetCharacter );
+        _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
 
-        float _attackAnimationLength = 0;
-        if (_characterPartA != NO_ANIMATION)
-        {
-            _attackAnimationLength += _attacker.GetCharacterAnimator().GetAnimationClip( _characterPartA ).length;
-        }
-        if (_skillEffectPartA != NO_ANIMATION)
-        {
-            _attackAnimationLength += _attacker.GetSkillEffectAnimator().GetAnimationClip( _skillEffectPartA ).length;
-        }
-
-        _attackTarget.TriggerEvent( ON_DEFEND_PART_A );
-        StartCoroutine( CountdownForAttackPartA( _attackAnimationLength * GameConfiguration.Battle.ACTION_CUTOFF_TIME_PERCENTAGE, _attackTarget ) );
+        _attackTarget.TriggerEvent( AnimationEvent.OnDefendPartA );
+        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartA, _skillEffectPartA ) * GameConfiguration.Battle.ACTION_CUTOFF_TIME_PERCENTAGE,
+                                                 _attackTarget, AnimationEvent.OnDefendPartA_Cutoff ) );
 
         if (_characterPartA != NO_ANIMATION)
         {
@@ -105,6 +103,12 @@ public class BattleAnimationManager : MonoBehaviour
         }
 
         _attacker.GetOpponentContainer().SetActive( true );
+        _attacker.SetCurrentSkill( _attackerSkill );
+        _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
+        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartB, _skillEffectPartB ) * GameConfiguration.Battle.ACTION_CUTOFF_TIME_PERCENTAGE,
+                                                 _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
+
+        CharacterSkill _derivedSkill = null;
 
         switch ( _attackTarget.GetCurrentCharacterActionType() )
         {
@@ -122,6 +126,25 @@ public class BattleAnimationManager : MonoBehaviour
 
                 BattleLogicManager.ExecuteSkillOnHittingTarget( _attackerSkill, _attacker, _attackTarget );
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
+
+                if (_attacker.GetCurrentCharacterActionType() == GameCharacter.CharacterActionType.Derive)
+                {
+                    _derivedSkill = _attackerSkill.GetCharacterSubskillData().GetDerivedSkill();
+                    battleFlowRound.GoToTargetATL( battleFlowRound.GetNextATL( _attacker ), false );
+
+                    if (_characterPartB != NO_ANIMATION)
+                    {
+                        yield return StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartB ) );
+                    }
+
+                    if (_skillEffectPartB != NO_ANIMATION)
+                    {
+                        yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartB ) );
+                    }
+
+                    BattleLogicManager.ExecuteSkillOnHittingTarget( _derivedSkill, _attacker, _attackTarget );
+                    yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
+                }
 
                 break;
 
@@ -146,27 +169,26 @@ public class BattleAnimationManager : MonoBehaviour
                 GameCharacter _winner = BattleLogicManager.GetWinnerByComparingSkillAttributes( BattleLogicManager.SkillAttribute.Strength,
                                                                                                 _attacker, _attackerSkill,
                                                                                                 _attackTarget, _repulseSkill );
-                CharacterSkill _winnerSkill = null;
                 GameCharacter _loser = null;
-                CharacterSkill _derivedSkill = null;
+
                 if (_winner != null)
                 {
                     if (_winner == _attacker)
                     {
-                        _winnerSkill = _attackerSkill;
+                        _winner.SetCurrentSkill( _attackerSkill );
                         _loser = _attackTarget;
                     }
                     else if (_winner == _attackTarget)
                     {
-                        _winnerSkill = _repulseSkill;
+                        _winner.SetCurrentSkill( _repulseSkill );
                         _loser = _attacker;
                     }
 
-                    _winner.TriggerEvent( ON_REPULSE_WIN );
-                    BattleLogicManager.ExecuteSkillOnHittingTarget( _winnerSkill, _winner, _loser );
+                    _winner.TriggerEvent( AnimationEvent.OnRepulseWin );
+                    BattleLogicManager.ExecuteSkillOnHittingTarget( _winner.GetCurrentSkill(), _winner, _loser );
                     yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
 
-                    _derivedSkill = _winnerSkill.GetCharacterSubskillData().GetDerivedSkill();
+                    _derivedSkill = _winner.GetCurrentSkill().GetCharacterSubskillData().GetDerivedSkill();
                 }
                 else
                 {
@@ -236,10 +258,25 @@ public class BattleAnimationManager : MonoBehaviour
         yield return new WaitUntil( () => this.isAnimationEventTriggered );
     }
 
-    private IEnumerator CountdownForAttackPartA( float delay, GameCharacter gameCharacter )
+    private float GetAttackAnimationLength( GameCharacter attacker, string characterAnimationName, string skillEffectAnimationName )
+    {
+        float _attackAnimationLength = 0;
+        if (characterAnimationName != NO_ANIMATION)
+        {
+            _attackAnimationLength += attacker.GetCharacterAnimator().GetAnimationClip( characterAnimationName ).length;
+        }
+        if (skillEffectAnimationName != NO_ANIMATION)
+        {
+            _attackAnimationLength += attacker.GetSkillEffectAnimator().GetAnimationClip( skillEffectAnimationName ).length;
+        }
+
+        return _attackAnimationLength;
+    }
+
+    private IEnumerator CountdownForEventCutoff( float delay, GameCharacter gameCharacter, AnimationEvent animationEvent )
     {
         yield return new WaitForSeconds( delay );
-        gameCharacter.TriggerEvent( ON_DEFEND_PART_A_CUTOFF );
+        gameCharacter.TriggerEvent( animationEvent );
     }
 
     public void OnAnimationEventTriggered( string parameterValue )

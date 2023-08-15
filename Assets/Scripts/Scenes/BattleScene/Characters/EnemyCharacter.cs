@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using AnimationEvent = BattleAnimationManager.AnimationEvent;
 
 public class EnemyCharacter : GameCharacter
 {
@@ -18,6 +19,35 @@ public class EnemyCharacter : GameCharacter
             }
 
             battleFlowATL.SetSelectedSkill( _activeSkillList[ Random.Range( 0, _activeSkillList.Count ) ] );
+        }
+    }
+
+    public override void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
+    {
+        switch ( animationEvent )
+        {
+            case AnimationEvent.SetCharacter:
+                break;
+
+            case AnimationEvent.OnAttackPartB:
+            case AnimationEvent.OnRepulseWin:
+
+                if (base.GetCurrentSkill().GetCharacterSubskillData().GetDerivedSkill() != null)
+                {
+                    base.SetCurrentCharacterActionType( CharacterActionType.Derive );
+                }
+
+                break;
+
+            case AnimationEvent.OnDefendPartA:
+
+                //base.SetCurrentCharacterActionType( CharacterActionType.Repulse );
+
+                break;
+
+            case AnimationEvent.OnAttackPartB_Cutoff:
+            case AnimationEvent.OnDefendPartA_Cutoff:
+                break;
         }
     }
 }

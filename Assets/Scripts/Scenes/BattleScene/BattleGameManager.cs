@@ -41,7 +41,7 @@ public class BattleGameManager : MonoBehaviour
         // -------------------- Set up the enemy's characters --------------------
 
         this.enemyCharacterList = new List<EnemyCharacter>();
-        this.enemyCharacter.Initialize( DatabaseManager.Instance.GetCharacterDataById( "E1" ), this.opponentContainer, this.playerContainer );
+        this.enemyCharacter.Initialize( DatabaseManager.Instance.GetCharacterDataById( "E1" ), this.opponentContainer, this.playerContainer, OnCharacterEventTriggered );
         this.enemyCharacterList.Add( this.enemyCharacter );
 
         // -----------------------------------------------------------------------
@@ -109,55 +109,9 @@ public class BattleGameManager : MonoBehaviour
         this.battleUiManager.DisablePlayerActionPanelButtons();
     }
 
-    private void OnCharacterEventTriggered( string eventName, GameCharacter gameCharacter )
+    private void OnCharacterEventTriggered( BattleAnimationManager.AnimationEvent animationEvent, GameCharacter gameCharacter )
     {
-        if (gameCharacter is PlayerCharacter)
-        {
-            switch ( eventName )
-            {
-                case BattleAnimationManager.SET_CHARACTER:
-
-                    this.battleUiManager.UpdatePlayerActionPanelCharacter( gameCharacter );
-
-                    break;
-
-                case BattleAnimationManager.ON_DEFEND_PART_A:
-
-                    this.battleUiManager.UpdatePlayerActionPanelButtons(
-                        canRepulse: ( battleFlowManager.GetCurrentRound().GetNextATL( gameCharacter ) != null ),
-                        canDefend: true,
-                        canEvade: true,
-                        canCounter: false,
-                        canDerive: false
-                        );
-
-                    break;
-
-                case BattleAnimationManager.ON_DEFEND_PART_A_CUTOFF:
-
-                    this.battleUiManager.DisablePlayerActionPanelButtons();
-
-                    break;
-
-                case BattleAnimationManager.ON_REPULSE_WIN:
-
-                    this.battleUiManager.UpdatePlayerActionPanelButtons(
-                        canRepulse: false,
-                        canDefend: false,
-                        canEvade: false,
-                        canCounter: false,
-                        canDerive: battleFlowManager.GetCurrentRound().GetCurrentATL()?
-                                   .GetSelectedSkill()?.GetCharacterSubskillData()
-                                   .GetRepulseSkill()?.GetCharacterSubskillData()
-                                   .GetDerivedSkill() != null
-                        );
-
-                    break;
-            }
-        }
-        else if (gameCharacter is EnemyCharacter)
-        {
-        }
+        gameCharacter.OnEventTriggered( this, animationEvent );
     }
 
     private void OnBattleEnded( bool isVictory )
@@ -180,6 +134,16 @@ public class BattleGameManager : MonoBehaviour
     public List<EnemyCharacter> GetEnemyCharacterList()
     {
         return this.enemyCharacterList;
+    }
+
+    public BattleUiManager GetBattleUiManager()
+    {
+        return this.battleUiManager;
+    }
+
+    public BattleFlowManager GetBattleFlowManager()
+    {
+        return this.battleFlowManager;
     }
 
     public BattleAnimationManager GetBattleAnimationManager()

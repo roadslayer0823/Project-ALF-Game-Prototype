@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using Skill = DatabaseManager.Skill;
 using Character = DatabaseManager.Character;
+using AnimationEvent = BattleAnimationManager.AnimationEvent;
 
 public class GameCharacter : MonoBehaviour
 {
@@ -21,12 +22,13 @@ public class GameCharacter : MonoBehaviour
     protected List<CharacterSkill> selectedActiveSkillList = null;
     protected List<CharacterSkill> selectedBackendSkillList = null;
     protected CharacterActionType currentCharacterActionType = CharacterActionType.None;
+    protected CharacterSkill currentSkill = null;
 
     protected GameObject ownContainer = null;
     protected GameObject opponentContainer = null;
     protected GameCharacterInfoBox gameCharacterInfoBox = null;
 
-    protected Action<string,GameCharacter> onEventTriggeredCallback = null;
+    protected Action<AnimationEvent,GameCharacter> onEventTriggeredCallback = null;
     protected Action<string> onCharacterAnimationTriggeredCallback = null;
     protected Action<string> onSkillEffectAnimationTriggeredCallback = null;
     protected Action onCharacterInfoUpdated = null;
@@ -41,7 +43,7 @@ public class GameCharacter : MonoBehaviour
         Derive
     }
 
-    public void Initialize( Character characterData, GameObject ownContainer, GameObject opponentContainer, Action<string,GameCharacter> onEventTriggeredCallback = null )
+    public void Initialize( Character characterData, GameObject ownContainer, GameObject opponentContainer, Action<AnimationEvent,GameCharacter> onEventTriggeredCallback = null )
     {
         base.gameObject.name = "Character: " + characterData.DisplayName;
         this.ownContainer = ownContainer;
@@ -76,6 +78,10 @@ public class GameCharacter : MonoBehaviour
     }
 
     public virtual void OnBattleFlowATLInitialized( BattleFlowATL battleFlowATL )
+    {
+    }
+
+    public virtual void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
     {
     }
 
@@ -142,13 +148,13 @@ public class GameCharacter : MonoBehaviour
     public void PlayCharacterAnimation( string animationName, Action<string> onAnimationTriggeredCallback = null )
     {
         this.onCharacterAnimationTriggeredCallback = onAnimationTriggeredCallback;
-        this.characterAnimator.Play( animationName );
+        this.characterAnimator.Play( animationName, 0, 0.0f );
     }
 
     public void PlaySkillEffectAnimation( string animationName, Action<string> onAnimationTriggeredCallback = null )
     {
         this.onSkillEffectAnimationTriggeredCallback = onAnimationTriggeredCallback;
-        this.skillEffectAnimator.Play( animationName );
+        this.skillEffectAnimator.Play( animationName, 0, 0.0f );
     }
 
     public void OnCharacterAnimationTriggered( string parameterValue )
@@ -191,9 +197,9 @@ public class GameCharacter : MonoBehaviour
         this.gameCharacterInfoBox.gameObject.SetActive( false );
     }
 
-    public void TriggerEvent( string eventName )
+    public void TriggerEvent( AnimationEvent animationEvent )
     {
-        this.onEventTriggeredCallback?.Invoke( eventName, this );
+        this.onEventTriggeredCallback?.Invoke( animationEvent, this );
     }
 
     public string GetId()
@@ -269,6 +275,16 @@ public class GameCharacter : MonoBehaviour
     public CharacterActionType GetCurrentCharacterActionType()
     {
         return this.currentCharacterActionType;
+    }
+
+    public void SetCurrentSkill( CharacterSkill currentSkill )
+    {
+        this.currentSkill = currentSkill;
+    }
+
+    public CharacterSkill GetCurrentSkill()
+    {
+        return this.currentSkill;
     }
 
     public GameObject GetOwnContainer()
