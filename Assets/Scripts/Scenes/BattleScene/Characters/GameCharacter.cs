@@ -18,6 +18,8 @@ public class GameCharacter : MonoBehaviour
     protected float remainingHealthPoint = 0.0f;
     protected float maximumStatePoint = 0.0f;
     protected float remainingStatePoint = 0.0f;
+    protected float maximumStressValue = 0.0f;
+    protected float currentStressValue = 0.0f;
     protected CharacterSkill[] skills = null;
     protected List<CharacterSkill> selectedActiveSkillList = null;
     protected List<CharacterSkill> selectedBackendSkillList = null;
@@ -110,6 +112,24 @@ public class GameCharacter : MonoBehaviour
     public void SetRemainingStatePointToMaximum()
     {
         this.remainingStatePoint = this.maximumStatePoint;
+        this.onCharacterInfoUpdated?.Invoke();
+    }
+
+    public void AddMaximumStatePoint( float amount )
+    {
+        this.maximumStatePoint += amount;
+        this.onCharacterInfoUpdated?.Invoke();
+    }
+
+    public void AddCurrentStressValue( float amount )
+    {
+        this.currentStressValue = Mathf.Clamp( this.currentStressValue + amount, 0, this.maximumStressValue );
+        this.onCharacterInfoUpdated?.Invoke();
+    }
+
+    public void MinusCurrentStressValue( float amount )
+    {
+        this.currentStressValue -= amount;
         this.onCharacterInfoUpdated?.Invoke();
     }
 
@@ -228,6 +248,16 @@ public class GameCharacter : MonoBehaviour
     public float GetRemainingStatePoint()
     {
         return this.remainingStatePoint;
+    }
+
+    public float GetMaximumStressValue()
+    {
+        return this.maximumStressValue;
+    }
+
+    public float GetCurrentStressValue()
+    {
+        return this.currentStressValue;
     }
 
     public CharacterSkill[] GetSkills()

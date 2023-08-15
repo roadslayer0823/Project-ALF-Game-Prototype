@@ -1,4 +1,5 @@
 using UnityEngine;
+using Subskill = DatabaseManager.Subskill;
 
 public class BattleLogicManager
 {
@@ -12,21 +13,26 @@ public class BattleLogicManager
 
     public static void ExecuteSkillOnUse( CharacterSkill skill, GameCharacter caster, GameCharacter target )
     {
-        caster.MinusRemainingStatePoint( skill.GetCharacterSubskillData().GetSubskillData().StatePointCost * 5 );
+        Subskill _subskill = skill.GetCharacterSubskillData().GetSubskillData();
+        caster.MinusRemainingStatePoint( _subskill.StatePointCost * GameConfiguration.Battle.Instance.GetStatePointCostMultiplier() );
+        caster.AddMaximumStatePoint( _subskill.MaxStatePointUp * GameConfiguration.Battle.Instance.GetMaxStatePointUpMultiplier() );
     }
 
     public static void ExecuteSkillOnHittingTarget( CharacterSkill skill, GameCharacter caster, GameCharacter target )
     {
-        int _attackDamage = GetCurrentAttackDamage( skill );
+        float _attackDamage = GetCurrentAttackDamage( skill );
         if (_attackDamage > 0)
         {
             target.MinusRemainingHealthPoint( _attackDamage );
         }
+
+        Subskill _subskill = skill.GetCharacterSubskillData().GetSubskillData();
+        target.AddCurrentStressValue( _subskill.StressDamage * GameConfiguration.Battle.Instance.GetStressDamageMultiplier() );
     }
 
-    public static int GetCurrentAttackDamage( CharacterSkill skill )
+    public static float GetCurrentAttackDamage( CharacterSkill skill )
     {
-        return skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * 10;
+        return ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * GameConfiguration.Battle.Instance.GetAttackDamageMultiplier() );
     }
 
     public static GameCharacter GetWinnerByComparingSkillAttributes( SkillAttribute skillAttribute,

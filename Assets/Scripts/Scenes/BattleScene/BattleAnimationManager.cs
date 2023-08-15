@@ -132,6 +132,7 @@ public class BattleAnimationManager : MonoBehaviour
                 {
                     _derivedSkill = _attackerSkill.GetCharacterSubskillData().GetDerivedSkill();
                     battleFlowRound.GoToTargetATL( battleFlowRound.GetNextATL( _attacker ), false );
+                    BattleLogicManager.ExecuteSkillOnUse( _derivedSkill, _attacker, _attackTarget );
 
                     if (_characterPartB != NO_ANIMATION)
                     {
@@ -151,12 +152,11 @@ public class BattleAnimationManager : MonoBehaviour
 
             case GameCharacter.CharacterActionType.Repulse:
 
-                BattleLogicManager.ExecuteSkillOnUse( _attackerSkill, _attackTarget, _attacker );
-
                 BattleFlowATL _attackTargetNextATL = battleFlowRound.GetNextATL( _attackTarget );
                 battleFlowRound.GoToTargetATL( _attackTargetNextATL, false );
 
                 CharacterSkill _repulseSkill = _attackTargetNextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill();
+                BattleLogicManager.ExecuteSkillOnUse( _repulseSkill, _attackTarget, _attacker );
 
                 if (_characterPartB != NO_ANIMATION)
                 {
@@ -201,6 +201,7 @@ public class BattleAnimationManager : MonoBehaviour
                     if (_winner.GetCurrentCharacterActionType() == GameCharacter.CharacterActionType.Derive)
                     {
                         battleFlowRound.GoToTargetATL( battleFlowRound.GetNextATL( _winner ), false );
+                        BattleLogicManager.ExecuteSkillOnUse( _derivedSkill, _winner, _loser );
                         yield return StartCoroutine( PlayCharacterAnimation( _winner, DERIVE_ANIMATION_NAME ) );
                         yield return StartCoroutine( PlaySkillEffectAnimation( REPULSE_ANIMATION_NAME ) );
                         BattleLogicManager.ExecuteSkillOnHittingTarget( _derivedSkill, _winner, _loser );
