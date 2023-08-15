@@ -28,7 +28,10 @@ public class EnemyCharacter : GameCharacter
         while (_activeSkillList.Count > 0 && _numberOfSelectedActiveSkills > 0)
         {
             int _randomIndex = Random.Range( 0, _activeSkillList.Count );
-            base.AddSelectedSkill( _activeSkillList[ _randomIndex ] );
+            CharacterSkill _activeSkill = _activeSkillList[ _randomIndex ];
+            _activeSkill.SetSelectedSkillLevel( Random.Range( 1, _activeSkill.GetMaximumSkillLevel() + 1 ) );
+            base.AddSelectedSkill( _activeSkill );
+
             _activeSkillList.RemoveAt( _randomIndex );
             _numberOfSelectedActiveSkills--;
         }
@@ -37,7 +40,10 @@ public class EnemyCharacter : GameCharacter
         while (_backendSkillList.Count > 0 && _numberOfSelectedBackendSkills > 0)
         {
             int _randomIndex = Random.Range( 0, _backendSkillList.Count );
-            base.AddSelectedSkill( _backendSkillList[ _randomIndex ] );
+            CharacterSkill _backendSkill = _backendSkillList[ _randomIndex ];
+            _backendSkill.SetSelectedSkillLevel( Random.Range( 1, _backendSkill.GetMaximumSkillLevel() + 1 ) );
+            base.AddSelectedSkill( _backendSkill );
+
             _backendSkillList.RemoveAt( _randomIndex );
             _numberOfSelectedBackendSkills--;
         }

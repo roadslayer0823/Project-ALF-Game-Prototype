@@ -70,6 +70,11 @@ public class CharacterSkill
         this.selectedSkillLevel = selectedSkillLevel;
     }
 
+    public int GetMaximumSkillLevel()
+    {
+        return this.characterSubskillList.Count;
+    }
+
     public bool IsSkillAvailable( bool canDefend, bool canEvade )
     {
         Subskill _subskill = GetCharacterSubskillData().GetSubskillData();
