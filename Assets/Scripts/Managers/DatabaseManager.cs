@@ -233,6 +233,8 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 subskill.effectArea = (Subskill.EffectArea)Enum.Parse(typeof(Subskill.EffectArea), subskill.EffectAreaString);
                 subskill.effectType = (Subskill.EffectType)Enum.Parse(typeof(Subskill.EffectType), subskill.EffectTypeString);
                 subskill.IsAttackingSkill = bool.Parse(subskill.IsAttackingSkillString);
+                subskill.IsDefendingSkill = bool.Parse(subskill.IsDefendingSkillString);
+                subskill.IsEvadingSkill = bool.Parse(subskill.IsEvadingSkillString);
                 subskill.IsInterceptable = bool.Parse(subskill.IsInterceptableString);
                 subskill.Effects = ConvertStringToIntArray(subskill.EffectsString);
             }
@@ -513,6 +515,14 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("is_attacking_skill")]
         [HideInInspector] public string IsAttackingSkillString { get; private set; }
         public bool IsAttackingSkill;
+
+        [JsonProperty("is_defending_skill")]
+        [HideInInspector] public string IsDefendingSkillString { get; private set; }
+        public bool IsDefendingSkill;
+
+        [JsonProperty("is_evading_skill")]
+        [HideInInspector] public string IsEvadingSkillString { get; private set; }
+        public bool IsEvadingSkill;
 
         [JsonProperty("is_interceptable")]
         [HideInInspector] public string IsInterceptableString { get; private set; }
