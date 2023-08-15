@@ -24,6 +24,8 @@ public class EnemyCharacter : GameCharacter
 
     public override void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
     {
+        BattleFlowManager _battleFlowManager = battleGameManager.GetBattleFlowManager();
+
         switch ( animationEvent )
         {
             case AnimationEvent.SetCharacter:
@@ -41,7 +43,11 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnDefendPartA:
 
-                //base.SetCurrentCharacterActionType( CharacterActionType.Repulse );
+                if (base.GetCurrentAttacker().GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().IsInterceptable
+                    && _battleFlowManager.GetCurrentRound().GetNextATL( this ) != null)
+                {
+                    //base.SetCurrentCharacterActionType( CharacterActionType.Repulse );
+                }
 
                 break;
 

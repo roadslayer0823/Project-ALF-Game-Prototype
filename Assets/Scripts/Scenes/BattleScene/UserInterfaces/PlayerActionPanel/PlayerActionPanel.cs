@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,13 +9,20 @@ public class PlayerActionPanel : MonoBehaviour
     [SerializeField] private GameObject battleSection = null;
     [SerializeField] private Button executeButton = null;
     [SerializeField] private Button repulseButton = null;
-    [SerializeField] private Button defendButton = null;
-    [SerializeField] private Button evadeButton = null;
-    [SerializeField] private Button counterButton = null;
     [SerializeField] private Button deriveButton = null;
+    [SerializeField] private Button counterButton = null;
+    [SerializeField] private SkillActionButton[] skillActionButtons = new SkillActionButton[ 0 ];
 
     private GameCharacter selectedGameCharacter = null;
     private Action onExecuteButtonClickedCallback = null;
+
+    public enum QTEActionType
+    {
+        None,
+        Repulse,
+        Derive,
+        Counter
+    }
 
     public void Initialize( Action onExecuteButtonClickedCallback )
     {
@@ -42,32 +50,20 @@ public class PlayerActionPanel : MonoBehaviour
 
     public void ClickOnRepulseButton()
     {
-        DisableRepulseButton( true );
-        selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Repulse );
-    }
-
-    public void ClickOnDefendButton()
-    {
-        DisableDefendButton();
-        selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Defend );
-    }
-
-    public void ClickOnEvadeButton()
-    {
-        DisableEvadeButton();
-        selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Evade );
-    }
-
-    public void ClickOnCounterButton()
-    {
-        DisableCounterButton();
-        selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Counter );
+        HideQTEActionButton();
+        this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Repulse );
     }
 
     public void ClickOnDeriveButton()
     {
-        DisableDeriveButton( true );
-        selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Derive );
+        HideQTEActionButton();
+        this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Derive );
+    }
+
+    public void ClickOnCounterButton()
+    {
+        HideQTEActionButton();
+        this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Counter );
     }
 
     public void ShowPreparationSection()
@@ -100,56 +96,76 @@ public class PlayerActionPanel : MonoBehaviour
         this.executeButton.interactable = false;
     }
 
-    public void EnableRepulseButton()
+    public void ShowQTEActionButton( QTEActionType actionType )
     {
-        this.repulseButton.interactable = true;
+        HideQTEActionButton();
+
+        switch ( actionType )
+        {
+            case QTEActionType.Repulse:
+
+                this.repulseButton.gameObject.SetActive( true );
+
+                break;
+
+            case QTEActionType.Derive:
+
+                this.deriveButton.gameObject.SetActive( true );
+
+                break;
+
+            case QTEActionType.Counter:
+
+                this.counterButton.gameObject.SetActive( true );
+
+                break;
+        }
     }
 
-    public void DisableRepulseButton( bool isShown )
+    public void HideQTEActionButton()
     {
-        this.repulseButton.gameObject.SetActive( isShown );
-        this.repulseButton.interactable = false;
+        this.repulseButton.gameObject.SetActive( false );
+        this.deriveButton.gameObject.SetActive( false );
+        this.counterButton.gameObject.SetActive( false );
     }
 
-    public void EnableDefendButton()
+    public void ShowSkillActionButtons( CharacterSkill[] skills )
     {
-        this.defendButton.interactable = true;
+        HideSkillActionButtons();
+
+        for (int i = 0; i < skills.Length; i++)
+        {
+            if (i < this.skillActionButtons.Length)
+            {
+                SkillActionButton _skillActionButton = this.skillActionButtons[ i ];
+                _skillActionButton.SetSelectedSkill( skills[ i ] );
+                _skillActionButton.gameObject.SetActive( true );
+            }
+        }
     }
 
-    public void DisableDefendButton()
+    public void HideSkillActionButtons()
     {
-        this.defendButton.interactable = false;
+        for (int i = 0; i < this.skillActionButtons.Length; i++)
+        {
+            this.skillActionButtons[ i ].gameObject.SetActive( false );
+        }
     }
 
-    public void EnableEvadeButton()
+    public void UpdateSkillActionButtons( bool canDefend, bool canEvade )
     {
-        this.evadeButton.interactable = true;
-    }
-
-    public void DisableEvadeButton()
-    {
-        this.evadeButton.interactable = false;
-    }
-
-    public void EnableCounterButton()
-    {
-        this.counterButton.interactable = true;
-    }
-
-    public void DisableCounterButton()
-    {
-        this.counterButton.interactable = false;
-    }
-
-    public void EnableDeriveButton()
-    {
-        this.deriveButton.gameObject.SetActive( true );
-        this.deriveButton.interactable = true;
-    }
-
-    public void DisableDeriveButton( bool isShown )
-    {
-        this.deriveButton.gameObject.SetActive( isShown );
-        this.deriveButton.interactable = false;
+        for (int i = 0; i < this.skillActionButtons.Length; i++)
+        {
+            SkillActionButton _skillActionButton = this.skillActionButtons[ i ];
+            CharacterSkill _skill = _skillActionButton.GetSelectedSkill();
+            if (canDefend || canEvade)
+            {
+                _skillActionButton.EnableActionButton();
+            }
+            else
+            {
+                _skillActionButton.DisableActionButton();
+            }
+        }
     }
 }
