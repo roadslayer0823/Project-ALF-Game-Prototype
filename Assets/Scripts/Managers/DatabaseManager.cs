@@ -191,10 +191,14 @@ public class DatabaseManager : Singleton<DatabaseManager>
         {
             this.configurationList = dataList as List<Configuration>;
 
-            foreach (Configuration configuration in this.configurationList)
+            for (int i = 0; i < this.configurationList.Count; i++)
             {
+                Configuration configuration = this.configurationList[i];
+
                 configuration.categoryType = (Configuration.Category)Enum.Parse(typeof(Configuration.Category), configuration.CategoryString);
             }
+
+            GameConfiguration.Battle.Instance.SetupBattleConfigurationValue(this.configurationList);
 
             PlayerPrefsManager.SaveConfigurationDatabase(jsonData);
         }
