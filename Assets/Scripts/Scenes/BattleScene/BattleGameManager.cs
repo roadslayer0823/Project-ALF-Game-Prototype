@@ -67,6 +67,7 @@ public class BattleGameManager : MonoBehaviour
         this.opponentContainer.SetActive( true );
         this.playerCharacter.PlayCharacterAnimation( "Prepare" );
         this.enemyCharacter.PlayCharacterAnimation( "Idle" );
+        this.enemyCharacter.InitializeSelectedSkills();
     }
 
     public void OnExecutionPhaseStarted()

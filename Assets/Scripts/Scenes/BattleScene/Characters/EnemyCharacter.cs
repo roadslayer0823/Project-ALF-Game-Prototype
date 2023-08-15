@@ -1,24 +1,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
+using SkillType = DatabaseManager.Skill.SkillType;
 
 public class EnemyCharacter : GameCharacter
 {
-    public override void OnBattleFlowATLInitialized( BattleFlowATL battleFlowATL )
+    public void InitializeSelectedSkills()
     {
-        if (battleFlowATL.GetSelectedCharacter() == this)
-        {
-            List<CharacterSkill> _activeSkillList = new List<CharacterSkill>();
-            for (int i = 0; i < base.skills.Length; i++)
-            {
-                CharacterSkill _skill = base.skills[ i ];
-                if (_skill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
-                {
-                    _activeSkillList.Add( _skill );
-                }
-            }
+        List<CharacterSkill> _activeSkillList = new List<CharacterSkill>();
+        List<CharacterSkill> _backendSkillList = new List<CharacterSkill>();
 
-            battleFlowATL.SetSelectedSkill( _activeSkillList[ Random.Range( 0, _activeSkillList.Count ) ] );
+        for (int i = 0; i < base.skills.Length; i++)
+        {
+            CharacterSkill _skill = base.skills[ i ];
+            SkillType _skillType = _skill.GetSkillData().skillType;
+            if (_skillType == SkillType.active)
+            {
+                _activeSkillList.Add( _skill );
+            }
+            else if (_skillType == SkillType.backend)
+            {
+                _backendSkillList.Add( _skill );
+            }
+        }
+
+        int _numberOfSelectedActiveSkills = Random.Range( 1, GameConfiguration.Battle.Instance.GetMaximumSelectedActiveSkills() );
+        while (_activeSkillList.Count > 0 && _numberOfSelectedActiveSkills > 0)
+        {
+            int _randomIndex = Random.Range( 0, _activeSkillList.Count );
+            base.AddSelectedSkill( _activeSkillList[ _randomIndex ] );
+            _activeSkillList.RemoveAt( _randomIndex );
+            _numberOfSelectedActiveSkills--;
+        }
+
+        int _numberOfSelectedBackendSkills = Random.Range( 1, GameConfiguration.Battle.Instance.GetMaximumSelectedBackendSkills() );
+        while (_backendSkillList.Count > 0 && _numberOfSelectedBackendSkills > 0)
+        {
+            int _randomIndex = Random.Range( 0, _backendSkillList.Count );
+            base.AddSelectedSkill( _backendSkillList[ _randomIndex ] );
+            _backendSkillList.RemoveAt( _randomIndex );
+            _numberOfSelectedBackendSkills--;
         }
     }
 

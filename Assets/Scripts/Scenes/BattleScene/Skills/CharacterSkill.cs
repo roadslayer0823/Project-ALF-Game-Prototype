@@ -69,4 +69,12 @@ public class CharacterSkill
     {
         this.selectedSkillLevel = selectedSkillLevel;
     }
+
+    public bool IsSkillAvailable( bool canDefend, bool canEvade )
+    {
+        Subskill _subskill = GetCharacterSubskillData().GetSubskillData();
+
+        return ( ( canDefend && _subskill.IsDefendingSkill )
+               || ( canEvade && _subskill.IsEvadingSkill ) );
+    }
 }

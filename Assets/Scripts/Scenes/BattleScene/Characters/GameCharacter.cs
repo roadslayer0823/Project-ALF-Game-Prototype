@@ -79,10 +79,6 @@ public class GameCharacter : MonoBehaviour
         this.onCharacterInfoUpdated?.Invoke();
     }
 
-    public virtual void OnBattleFlowATLInitialized( BattleFlowATL battleFlowATL )
-    {
-    }
-
     public virtual void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
     {
     }

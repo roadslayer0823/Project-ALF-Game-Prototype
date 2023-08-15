@@ -158,7 +158,7 @@ public class PlayerActionPanel : MonoBehaviour
         {
             SkillActionButton _skillActionButton = this.skillActionButtons[ i ];
             CharacterSkill _skill = _skillActionButton.GetSelectedSkill();
-            if (canDefend || canEvade)
+            if (_skill != null && _skill.IsSkillAvailable( canDefend, canEvade ))
             {
                 _skillActionButton.EnableActionButton();
             }

@@ -41,30 +41,32 @@ public class ATLSlotListPanel : MonoBehaviour
 
     public void OnSkillSlotUpdated()
     {
-        int playerSkillCounter = 0;
+        Dictionary<GameCharacter,int> _characterSkillCounterDictionary = new Dictionary<GameCharacter,int>();
 
-        foreach (BattleFlowATL flowATL in this.battleFlowATLs)
+        for (int i = 0; i < this.battleFlowATLs.Length; i++)
         {
-            if (flowATL.GetIsATLSlotExecuted())
+            BattleFlowATL _battleFlowATL = this.battleFlowATLs[ i ];
+
+            if (_battleFlowATL.GetIsATLSlotExecuted())
             {
                 continue;
             }
 
-            int totalSelectedSkill = flowATL.GetSelectedCharacter().GetSelectedActiveSkillList().Count;
-
-            //Check and assign the character selected skill into correct atl slot
-            if (flowATL.CheckIsPlayer())
+            GameCharacter _character = _battleFlowATL.GetSelectedCharacter();
+            int _totalActiveSkills = _character.GetSelectedActiveSkillList().Count;
+            int _skillCounter = 0;
+            if (_characterSkillCounterDictionary.ContainsKey( _character ))
             {
-                if (playerSkillCounter >= totalSelectedSkill)
-                {
-                    playerSkillCounter = 0;
-                }
-
-                flowATL.SetSelectedSkill(flowATL.GetSelectedCharacter().GetSelectedActiveSkillList()[playerSkillCounter]);
-                playerSkillCounter++;
+                _skillCounter = _characterSkillCounterDictionary[ _character ] % _totalActiveSkills;
+                _characterSkillCounterDictionary[ _character ] = _skillCounter + 1;
+            }
+            else
+            {
+                _characterSkillCounterDictionary.Add( _character, 1 );
             }
 
-            flowATL.UpdateATLSlotInfo();
+            _battleFlowATL.SetSelectedSkill( _battleFlowATL.GetSelectedCharacter().GetSelectedActiveSkillList()[ _skillCounter ] );
+            _battleFlowATL.UpdateATLSlotInfo();
         }
     }
 }

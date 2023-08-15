@@ -35,7 +35,6 @@ public class BattleFlowRound
         {
             BattleFlowATL _atl = new BattleFlowATL( ( _isPlayer ) ? this.battleFlowManager.GetNextPlayerCharacter() : this.battleFlowManager.GetNextEnemyCharacter() );
             _atl.SetAttackTarget( ( _isPlayer ) ? this.battleFlowManager.GetNextEnemyCharacter() : this.battleFlowManager.GetNextPlayerCharacter() );
-            _atl.GetSelectedCharacter().OnBattleFlowATLInitialized( _atl );
             _atlList.Add( _atl );
 
             _isPlayer = !( _isPlayer );

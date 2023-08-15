@@ -18,7 +18,6 @@ public class BattleFlowATL
     public BattleFlowATL( GameCharacter selectedCharacter )
     {
         this.selectedCharacter = selectedCharacter;
-        this.selectedCharacter.OnBattleFlowATLInitialized( this );
     }
 
     public void UpdateATLSlotInfo()
