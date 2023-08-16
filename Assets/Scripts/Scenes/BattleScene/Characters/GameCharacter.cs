@@ -60,6 +60,8 @@ public class GameCharacter : MonoBehaviour
         this.currentHealthPoint = this.maximumHealthPoint;
         this.maximumStatePoint = characterData.MaximumStatePoint;
         this.currentStatePoint = this.maximumStatePoint;
+        this.maximumStressValue = characterData.MaximumStressValue;
+        this.currentStressValue = 0.0f;
 
         List<CharacterSkill> _skillList = new List<CharacterSkill>();
         string[] _skillIdArray = characterData.SkillIdArray;

@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNameText: {fileID: 4831810232744341099}
-  stressRepresentationText: {fileID: 1523146511363696338}
+  breakRepresentationText: {fileID: 1523146511363696338}
   stressPercentageText: {fileID: 242291604420663411}
   healthPointValueText: {fileID: 1829709615552850130}
   statePointValueText: {fileID: 2696551832952397439}
@@ -321,12 +321,12 @@ GameObject:
   - component: {fileID: 9091882291555685610}
   - component: {fileID: 1523146511363696338}
   m_Layer: 5
-  m_Name: StressRepresentationText
+  m_Name: BreakRepresentationText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2152695539169117308
 RectTransform:
   m_ObjectHideFlags: 0

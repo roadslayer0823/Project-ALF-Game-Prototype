@@ -7,7 +7,7 @@ using TMPro;
 public class CharacterInfoPanel : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI playerNameText = null;
-    [SerializeField] private TextMeshProUGUI stressRepresentationText = null;
+    [SerializeField] private TextMeshProUGUI breakRepresentationText = null;
     [SerializeField] private TextMeshProUGUI stressPercentageText = null;
     [SerializeField] private TextMeshProUGUI healthPointValueText = null;
     [SerializeField] private TextMeshProUGUI statePointValueText = null;
@@ -28,6 +28,7 @@ public class CharacterInfoPanel : MonoBehaviour
 
     public void UpdateDisplayInfo()
     {
+        // Health Point
         float _maximumHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
         float _currentHealthPoint = this.selectedCharacter.GetCurrentHealthPoint();
 
@@ -38,10 +39,26 @@ public class CharacterInfoPanel : MonoBehaviour
         this.healthPointValueText.SetText( _currentHealthPoint.ToString() + " / " + _maximumHealthPoint);
         this.healthPointBar.fillAmount = _currentHealthPoint / _maximumHealthPoint;
 
+        // State Point
         float _maximumStatePoint = this.selectedCharacter.GetMaximumStatePoint();
         float _currentStatePoint = this.selectedCharacter.GetCurrentStatePoint();
 
         this.statePointValueText.SetText(_currentStatePoint + " / " + _maximumStatePoint);
         this.statePointBar.fillAmount = _currentStatePoint / _maximumStatePoint;
+
+        // Stress Value
+        float _currentStressValue = this.selectedCharacter.GetCurrentStressValue();
+
+        this.stressPercentageText.SetText(_currentStressValue + "%");
+        this.stressPercentageBar.fillAmount = _currentStressValue / 100;
+
+        if (_currentStressValue >= 100)
+        {
+            this.breakRepresentationText.gameObject.SetActive(true);
+        }
+        else
+        {
+            this.breakRepresentationText.gameObject.SetActive(false);
+        }
     }
 }
