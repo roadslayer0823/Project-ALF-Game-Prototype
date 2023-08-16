@@ -411,6 +411,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("maximum_state_point")]
         public int MaximumStatePoint { get; private set; }
 
+        [JsonProperty("maximum_stress_value")]
+        public int MaximumStressValue { get; private set; }
+
         [JsonProperty("skill_id_array")]
         [HideInInspector] public string SkillIdArrayString { get; private set; }
         public string[] SkillIdArray;
@@ -519,6 +522,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("is_defending_skill")]
         [HideInInspector] public string IsDefendingSkillString { get; private set; }
         public bool IsDefendingSkill;
+
+        [JsonProperty("failed_defense_damage_rate")]
+        public float FailedDefenseDamageRate { get; private set; }
 
         [JsonProperty("is_evading_skill")]
         [HideInInspector] public string IsEvadingSkillString { get; private set; }
