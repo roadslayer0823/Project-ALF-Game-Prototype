@@ -163,9 +163,13 @@ public class BattleAnimationManager : MonoBehaviour
                     StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartB + "_" + REPULSE_ANIMATION_NAME ) );
                 }
 
+                if (_skillEffectPartB != NO_ANIMATION)
+                {
+                    StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartB + "_" + REPULSE_ANIMATION_NAME ) );
+                }
+
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
-                yield return StartCoroutine( PlaySkillEffectAnimation( REPULSE_ANIMATION_NAME ) );
 
                 GameCharacter _winner = BattleLogicManager.GetWinnerByComparingSkillAttributes( BattleLogicManager.SkillAttribute.Strength,
                                                                                                 _attacker, _attackerSkill,
@@ -187,7 +191,8 @@ public class BattleAnimationManager : MonoBehaviour
 
                     _winner.TriggerEvent( AnimationEvent.OnRepulseWin );
                     BattleLogicManager.ExecuteSkillOnHittingTarget( _winner.GetCurrentSkill(), _winner, _loser );
-                    yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
+                    yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
+                                                                                 + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ) ) );
 
                     _derivedSkill = _winner.GetCurrentSkill().GetCharacterSubskillData().GetDerivedSkill();
                 }

@@ -8,6 +8,7 @@ public class PlayerCharacter : GameCharacter
     {
         BattleUiManager _battleUiManager = battleGameManager.GetBattleUiManager();
         BattleFlowManager _battleFlowManager = battleGameManager.GetBattleFlowManager();
+        BattleFlowATL _nextATL = _battleFlowManager.GetCurrentRound().GetNextATL( this );
 
         switch ( animationEvent )
         {
@@ -33,7 +34,8 @@ public class PlayerCharacter : GameCharacter
 
                 _battleUiManager.UpdatePlayerActionPanelButtons(
                     actionType: ( base.GetCurrentAttacker().GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().IsInterceptable
-                                  && _battleFlowManager.GetCurrentRound().GetNextATL( this ) != null )
+                                  && _nextATL != null
+                                  && _nextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill() != null )
                                   ? QTEActionType.Repulse : QTEActionType.None,
                     canDefend: true,
                     canEvade: true
