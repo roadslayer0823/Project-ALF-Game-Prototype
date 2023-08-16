@@ -96,12 +96,12 @@ public class BattleGameManager : MonoBehaviour
     {
         for (int i = 0; i < this.playerCharacterList.Count; i++)
         {
-            this.playerCharacterList[ i ].SetRemainingStatePointToMaximum();
+            this.playerCharacterList[ i ].SetCurrentStatePointToMaximum();
         }
 
         for (int i = 0; i < this.enemyCharacterList.Count; i++)
         {
-            this.enemyCharacterList[ i ].SetRemainingStatePointToMaximum();
+            this.enemyCharacterList[ i ].SetCurrentStatePointToMaximum();
         }
     }
 

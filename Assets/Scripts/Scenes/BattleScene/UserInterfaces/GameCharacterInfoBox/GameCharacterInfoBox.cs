@@ -15,17 +15,17 @@ public class GameCharacterInfoBox : MonoBehaviour
 
     public void UpdateDisplayInfo()
     {
-        float _remainingHealthPoint = this.selectedCharacter.GetRemainingHealthPoint();
+        float _currentHealthPoint = this.selectedCharacter.GetCurrentHealthPoint();
         float _maximumHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
 
-        if (_remainingHealthPoint < 0)
+        if (_currentHealthPoint < 0)
         {
-            _remainingHealthPoint = 0;
+            _currentHealthPoint = 0;
         }
 
-        this.healthPointLabel.text = Mathf.CeilToInt( _remainingHealthPoint ) + " / " + Mathf.CeilToInt( _maximumHealthPoint );
+        this.healthPointLabel.text = Mathf.CeilToInt( _currentHealthPoint ) + " / " + Mathf.CeilToInt( _maximumHealthPoint );
 
-        float _percentage = _remainingHealthPoint / _maximumHealthPoint;
+        float _percentage = _currentHealthPoint / _maximumHealthPoint;
         if (_percentage > 0)
         {
             this.healthPointFiller.size = new Vector2( _percentage * 10.0f, this.healthPointFiller.size.y );
