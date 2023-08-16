@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using SkillAnimation = DatabaseManager.SkillAnimation;
+using RangeType = DatabaseManager.Subskill.RangeType;
 
 public class BattleAnimationManager : MonoBehaviour
 {
@@ -44,7 +45,7 @@ public class BattleAnimationManager : MonoBehaviour
         CharacterSkill _attackerSkill = battleFlowATL.GetSelectedSkill();
         SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackerSkill.GetCharacterSubskillData().GetSubskillData().Id );
 
-        string _animationType = battleFlowATL.GetSelectedSkill().GetCharacterSubskillData().GetSubskillData().SkillRange.ToString();
+        RangeType _rangeType = battleFlowATL.GetSelectedSkill().GetCharacterSubskillData().GetSubskillData().Range;
         string _characterPartA = _skillAnimation.CharacterPartA;
         string _characterPartB = _skillAnimation.CharacterPartB;
         string _skillEffectPartA = _skillAnimation.SkillEffectPartA;
@@ -90,8 +91,8 @@ public class BattleAnimationManager : MonoBehaviour
             yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartA ) );
         }
 
-        // Hide the attacker for Part B if the attacker's animation type is ranged.
-        if (_animationType == ANIMATION_TYPE_IS_RANGED)
+        // Hide the attacker for Part B if the attacker's range type is ranged.
+        if (_rangeType == RangeType.ranged)
         {
             _attacker.HideCharacterObject();
         }
@@ -202,7 +203,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     _winner.TriggerEvent( AnimationEvent.OnRepulseWin );
 
-                    if (_animationType != ANIMATION_TYPE_IS_RANGED)
+                    if (_rangeType == RangeType.melee)
                     {
                         BattleLogicManager.ExecuteSkillOnHittingTarget( _winner.GetCurrentSkill(), _winner, _loser );
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"

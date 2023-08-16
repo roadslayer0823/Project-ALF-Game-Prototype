@@ -230,9 +230,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
             foreach (Subskill subskill in this.subskillList)
             {
-                subskill.SkillRange = (Subskill.Range)Enum.Parse(typeof(Subskill.Range), subskill.RangeString);
-                subskill.effectArea = (Subskill.EffectArea)Enum.Parse(typeof(Subskill.EffectArea), subskill.EffectAreaString);
-                subskill.effectType = (Subskill.EffectType)Enum.Parse(typeof(Subskill.EffectType), subskill.EffectTypeString);
+                subskill.Range = (Subskill.RangeType)Enum.Parse(typeof(Subskill.RangeType), subskill.RangeString);
+                subskill.EffectArea = (Subskill.EffectAreaEnum)Enum.Parse(typeof(Subskill.EffectAreaEnum), subskill.EffectAreaString);
+                subskill.EffectType = (Subskill.EffectTypeEnum)Enum.Parse(typeof(Subskill.EffectTypeEnum), subskill.EffectTypeString);
                 subskill.IsAttackingSkill = bool.Parse(subskill.IsAttackingSkillString);
                 subskill.IsDefendingSkill = bool.Parse(subskill.IsDefendingSkillString);
                 subskill.IsEvadingSkill = bool.Parse(subskill.IsEvadingSkillString);
@@ -472,12 +472,12 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
         [JsonProperty("range")]
         [HideInInspector] public string RangeString { get; private set; }
-        public enum Range
+        public enum RangeType
         {
             ranged,
             melee
         }
-        public Range SkillRange;
+        public RangeType Range;
 
         [JsonProperty("attack_damage")]
         public int AttackDamage { get; private set; }
@@ -502,23 +502,23 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
         [JsonProperty("effect_area")]
         [HideInInspector] public string EffectAreaString { get; private set; }
-        public enum EffectArea
+        public enum EffectAreaEnum
         {
             none,
             target_one,
             target_all
         }
-        public EffectArea effectArea;
+        public EffectAreaEnum EffectArea;
 
         [JsonProperty("effect_type")]
         [HideInInspector] public string EffectTypeString { get; private set; }
-        public enum EffectType
+        public enum EffectTypeEnum
         {
             none,
             basic,
             wide
         }
-        public EffectType effectType;
+        public EffectTypeEnum EffectType;
 
         [JsonProperty("is_attacking_skill")]
         [HideInInspector] public string IsAttackingSkillString { get; private set; }
