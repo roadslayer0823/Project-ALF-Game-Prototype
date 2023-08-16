@@ -23,6 +23,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     private SkillSelectionListBox skillSelectionListBox = null;
     private CharacterSkill characterSkill = null;
     private bool isSelected = false;
+    private bool isSkillLevelChanged = false;
     private int skillLevel = 1;
 
     public void Initialize(SkillSelectionListBox skillSelectionListBox, CharacterSkill characterSkill)
@@ -63,6 +64,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     public void Deselect()
     {
+        this.isSkillLevelChanged = false;
         this.isSelected = false;
         this.skillSelectionListBox.OnSkillDeselected( this );
     }
@@ -105,6 +107,11 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    public bool CheckIsSkillLevelChanged()
+    {
+        return this.isSkillLevelChanged;
+    }
+
     // To mark the selected skill back to deselected if it failed to add into the SelectedSkillList.
     public void MarkDeselected()
     {
@@ -138,7 +145,6 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     {
         this.skillLevel = Math.Clamp(this.skillLevel - 1, 1, characterSkill.GetCharacterSubskillList().Count);
 
-        this.characterSkill.SetSelectedSkillLevel(this.skillLevel);
         UpdateCharacterSkillLevel(this.skillLevel);
     }
 
@@ -146,15 +152,18 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     {
         this.skillLevel = Math.Clamp(this.skillLevel + 1, 1, characterSkill.GetCharacterSubskillList().Count);
 
-        this.characterSkill.SetSelectedSkillLevel(this.skillLevel);
         UpdateCharacterSkillLevel(this.skillLevel);
     }
 
     private void UpdateCharacterSkillLevel(int skillLevel)
     {
+        this.characterSkill.SetSelectedSkillLevel(this.skillLevel);
+
+        // If the skill is currently selected
         if (this.isSelected)
         {
-            Deselect();
+            this.isSkillLevelChanged = true;
+            Select();
         }
 
         this.skillLevelText.SetText(skillLevel.ToString());

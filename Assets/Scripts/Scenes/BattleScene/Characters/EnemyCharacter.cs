@@ -24,7 +24,7 @@ public class EnemyCharacter : GameCharacter
             }
         }
 
-        int _numberOfSelectedActiveSkills = Random.Range( 1, GameConfiguration.Battle.Instance.GetMaximumSelectedActiveSkills() );
+        int _numberOfSelectedActiveSkills = Random.Range( 1, GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills() );
         while (_activeSkillList.Count > 0 && _numberOfSelectedActiveSkills > 0)
         {
             int _randomIndex = Random.Range( 0, _activeSkillList.Count );
@@ -36,7 +36,7 @@ public class EnemyCharacter : GameCharacter
             _numberOfSelectedActiveSkills--;
         }
 
-        int _numberOfSelectedBackendSkills = Random.Range( 1, GameConfiguration.Battle.Instance.GetMaximumSelectedBackendSkills() );
+        int _numberOfSelectedBackendSkills = Random.Range( 1, GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills() );
         while (_backendSkillList.Count > 0 && _numberOfSelectedBackendSkills > 0)
         {
             int _randomIndex = Random.Range( 0, _backendSkillList.Count );

@@ -198,7 +198,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 configuration.categoryType = (Configuration.Category)Enum.Parse(typeof(Configuration.Category), configuration.CategoryString);
             }
 
-            GameConfiguration.Battle.Instance.SetupBattleConfigurationValue(this.configurationList);
+            GameConfiguration.Instance.GetBattleConfiguration().SetupBattleConfigurationValue(this.configurationList);
 
             PlayerPrefsManager.SaveConfigurationDatabase(jsonData);
         }
@@ -230,6 +230,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
             foreach (Subskill subskill in this.subskillList)
             {
+                subskill.SkillRange = (Subskill.Range)Enum.Parse(typeof(Subskill.Range), subskill.RangeString);
                 subskill.effectArea = (Subskill.EffectArea)Enum.Parse(typeof(Subskill.EffectArea), subskill.EffectAreaString);
                 subskill.effectType = (Subskill.EffectType)Enum.Parse(typeof(Subskill.EffectType), subskill.EffectTypeString);
                 subskill.IsAttackingSkill = bool.Parse(subskill.IsAttackingSkillString);
@@ -244,11 +245,6 @@ public class DatabaseManager : Singleton<DatabaseManager>
         else if (sheetName == this.skillAnimationSheetName)
         {
             this.skillAnimationList = dataList as List<SkillAnimation>;
-
-            foreach (SkillAnimation skillAnimation in this.skillAnimationList)
-            {
-                skillAnimation.animationType = (SkillAnimation.AnimationType)Enum.Parse(typeof(SkillAnimation.AnimationType), skillAnimation.AnimationTypeString);
-            }
 
             PlayerPrefsManager.SaveSkillAnimationDatabase(jsonData);
         }
@@ -411,6 +407,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("maximum_state_point")]
         public int MaximumStatePoint { get; private set; }
 
+        [JsonProperty("maximum_stress_value")]
+        public int MaximumStressValue { get; private set; }
+
         [JsonProperty("skill_id_array")]
         [HideInInspector] public string SkillIdArrayString { get; private set; }
         public string[] SkillIdArray;
@@ -471,6 +470,15 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("counter_skill_id")]
         public string CounterSkillId { get; private set; }
 
+        [JsonProperty("range")]
+        [HideInInspector] public string RangeString { get; private set; }
+        public enum Range
+        {
+            ranged,
+            melee
+        }
+        public Range SkillRange;
+
         [JsonProperty("attack_damage")]
         public int AttackDamage { get; private set; }
 
@@ -520,6 +528,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [HideInInspector] public string IsDefendingSkillString { get; private set; }
         public bool IsDefendingSkill;
 
+        [JsonProperty("failed_defense_damage_rate")]
+        public float FailedDefenseDamageRate { get; private set; }
+
         [JsonProperty("is_evading_skill")]
         [HideInInspector] public string IsEvadingSkillString { get; private set; }
         public bool IsEvadingSkill;
@@ -544,16 +555,6 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
         [JsonProperty("subskill_id")]
         public string SubskillId { get; private set; }
-
-        [JsonProperty("animation_type")]
-        [HideInInspector] public string AnimationTypeString { get; private set; }
-        public enum AnimationType
-        {
-            none,
-            melee,
-            ranged
-        }
-        public AnimationType animationType;
 
         [JsonProperty("character_part_a")]
         public string CharacterPartA { get; private set; }

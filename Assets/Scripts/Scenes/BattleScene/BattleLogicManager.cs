@@ -14,8 +14,8 @@ public class BattleLogicManager
     public static void ExecuteSkillOnUse( CharacterSkill skill, GameCharacter caster, GameCharacter target )
     {
         Subskill _subskill = skill.GetCharacterSubskillData().GetSubskillData();
-        caster.MinusRemainingStatePoint( _subskill.StatePointCost * GameConfiguration.Battle.Instance.GetStatePointCostMultiplier() );
-        caster.AddMaximumStatePoint( _subskill.MaxStatePointUp * GameConfiguration.Battle.Instance.GetMaxStatePointUpMultiplier() );
+        caster.MinusCurrentStatePoint( _subskill.StatePointCost * GameConfiguration.Instance.GetBattleConfiguration().GetStatePointCostMultiplier() );
+        caster.AddMaximumStatePoint( _subskill.MaxStatePointUp * GameConfiguration.Instance.GetBattleConfiguration().GetMaxStatePointUpMultiplier() );
     }
 
     public static void ExecuteSkillOnHittingTarget( CharacterSkill skill, GameCharacter caster, GameCharacter target )
@@ -23,16 +23,16 @@ public class BattleLogicManager
         float _attackDamage = GetCurrentAttackDamage( skill );
         if (_attackDamage > 0)
         {
-            target.MinusRemainingHealthPoint( _attackDamage );
+            target.MinusCurrentHealthPoint( _attackDamage );
         }
 
         Subskill _subskill = skill.GetCharacterSubskillData().GetSubskillData();
-        target.AddCurrentStressValue( _subskill.StressDamage * GameConfiguration.Battle.Instance.GetStressDamageMultiplier() );
+        target.AddCurrentStressValue( _subskill.StressDamage * GameConfiguration.Instance.GetBattleConfiguration().GetStressDamageMultiplier() );
     }
 
     public static float GetCurrentAttackDamage( CharacterSkill skill )
     {
-        return ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * GameConfiguration.Battle.Instance.GetAttackDamageMultiplier() );
+        return ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * GameConfiguration.Instance.GetBattleConfiguration().GetAttackDamageMultiplier() );
     }
 
     public static GameCharacter GetWinnerByComparingSkillAttributes( SkillAttribute skillAttribute,
@@ -65,6 +65,6 @@ public class BattleLogicManager
 
     public static bool IsGameCharacterDead( GameCharacter gameCharacter )
     {
-        return ( gameCharacter.GetRemainingHealthPoint() <= 0 );
+        return ( gameCharacter.GetCurrentHealthPoint() <= 0 );
     }
 }

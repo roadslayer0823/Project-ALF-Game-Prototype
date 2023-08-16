@@ -78,7 +78,7 @@ public class SkillSelectionPanel : MonoBehaviour
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
-        if (skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+        if (skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.active && !skillSelectionBox.CheckIsSkillLevelChanged())
         {
             if (this.selectedActiveSkillList.Count < 3)
             {

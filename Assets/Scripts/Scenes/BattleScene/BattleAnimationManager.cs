@@ -44,7 +44,7 @@ public class BattleAnimationManager : MonoBehaviour
         CharacterSkill _attackerSkill = battleFlowATL.GetSelectedSkill();
         SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackerSkill.GetCharacterSubskillData().GetSubskillData().Id );
 
-        string _animationType = _skillAnimation.animationType.ToString();
+        string _animationType = battleFlowATL.GetSelectedSkill().GetCharacterSubskillData().GetSubskillData().SkillRange.ToString();
         string _characterPartA = _skillAnimation.CharacterPartA;
         string _characterPartB = _skillAnimation.CharacterPartB;
         string _skillEffectPartA = _skillAnimation.SkillEffectPartA;
@@ -77,7 +77,7 @@ public class BattleAnimationManager : MonoBehaviour
         _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
         _attackTarget.TriggerEvent( AnimationEvent.OnDefendPartA );
 
-        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartA, _skillEffectPartA ) * GameConfiguration.Battle.Instance.GetActionCutoffTimePercentage(),
+        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartA, _skillEffectPartA ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
                                                  _attackTarget, AnimationEvent.OnDefendPartA_Cutoff ) );
 
         if (_characterPartA != NO_ANIMATION)
@@ -107,7 +107,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         _attacker.GetOpponentContainer().SetActive( true );
         _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
-        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartB, _skillEffectPartB ) * GameConfiguration.Battle.Instance.GetActionCutoffTimePercentage(),
+        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartB, _skillEffectPartB ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
                                                  _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
         CharacterSkill _derivedSkill = null;

@@ -15,9 +15,9 @@ public class GameCharacter : MonoBehaviour
     protected string id = null;
     protected string characterName = null;
     protected float maximumHealthPoint = 0.0f;
-    protected float remainingHealthPoint = 0.0f;
+    protected float currentHealthPoint = 0.0f;
     protected float maximumStatePoint = 0.0f;
-    protected float remainingStatePoint = 0.0f;
+    protected float currentStatePoint = 0.0f;
     protected float maximumStressValue = 0.0f;
     protected float currentStressValue = 0.0f;
     protected CharacterSkill[] skills = null;
@@ -57,9 +57,11 @@ public class GameCharacter : MonoBehaviour
         this.id = characterData.Id;
         this.characterName = characterData.DisplayName;
         this.maximumHealthPoint = characterData.MaximumHealthPoint;
-        this.remainingHealthPoint = this.maximumHealthPoint;
+        this.currentHealthPoint = this.maximumHealthPoint;
         this.maximumStatePoint = characterData.MaximumStatePoint;
-        this.remainingStatePoint = this.maximumStatePoint;
+        this.currentStatePoint = this.maximumStatePoint;
+        this.maximumStressValue = characterData.MaximumStressValue;
+        this.currentStressValue = 0.0f;
 
         List<CharacterSkill> _skillList = new List<CharacterSkill>();
         string[] _skillIdArray = characterData.SkillIdArray;
@@ -85,33 +87,33 @@ public class GameCharacter : MonoBehaviour
     {
     }
 
-    public void AddRemainingHealthPoint( float amount )
+    public void AddCurrentHealthPoint( float amount )
     {
-        this.remainingHealthPoint = Mathf.Clamp( this.remainingHealthPoint + amount, 0, this.maximumHealthPoint );
+        this.currentHealthPoint = Mathf.Clamp( this.currentHealthPoint + amount, 0, this.maximumHealthPoint );
         this.onCharacterInfoUpdated?.Invoke();
     }
 
-    public void MinusRemainingHealthPoint( float amount )
+    public void MinusCurrentHealthPoint( float amount )
     {
-        this.remainingHealthPoint -= amount;
+        this.currentHealthPoint -= amount;
         this.onCharacterInfoUpdated?.Invoke();
     }
 
-    public void AddRemainingStatePoint( float amount )
+    public void AddCurrentStatePoint( float amount )
     {
-        this.remainingStatePoint = Mathf.Clamp( this.remainingStatePoint + amount, 0, this.maximumStatePoint );
+        this.currentStatePoint = Mathf.Clamp( this.currentStatePoint + amount, 0, this.maximumStatePoint );
         this.onCharacterInfoUpdated?.Invoke();
     }
 
-    public void MinusRemainingStatePoint( float amount )
+    public void MinusCurrentStatePoint( float amount )
     {
-        this.remainingStatePoint -= amount;
+        this.currentStatePoint -= amount;
         this.onCharacterInfoUpdated?.Invoke();
     }
 
-    public void SetRemainingStatePointToMaximum()
+    public void SetCurrentStatePointToMaximum()
     {
-        this.remainingStatePoint = this.maximumStatePoint;
+        this.currentStatePoint = this.maximumStatePoint;
         this.onCharacterInfoUpdated?.Invoke();
     }
 
@@ -137,14 +139,14 @@ public class GameCharacter : MonoBehaviour
     {
         if (characterSkill.GetSkillData().skillType == Skill.SkillType.active)
         {
-            if (this.selectedActiveSkillList.Count < GameConfiguration.Battle.Instance.GetMaximumSelectedActiveSkills())
+            if (this.selectedActiveSkillList.Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills())
             {
                 this.selectedActiveSkillList.Add(characterSkill);
             }
         }
         else
         {
-            if (this.selectedBackendSkillList.Count < GameConfiguration.Battle.Instance.GetMaximumSelectedBackendSkills())
+            if (this.selectedBackendSkillList.Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills())
             {
                 this.selectedBackendSkillList.Add(characterSkill);
             }
@@ -235,9 +237,9 @@ public class GameCharacter : MonoBehaviour
         return this.maximumHealthPoint;
     }
 
-    public float GetRemainingHealthPoint()
+    public float GetCurrentHealthPoint()
     {
-        return this.remainingHealthPoint;
+        return this.currentHealthPoint;
     }
 
     public float GetMaximumStatePoint()
@@ -245,9 +247,9 @@ public class GameCharacter : MonoBehaviour
         return this.maximumStatePoint;
     }
 
-    public float GetRemainingStatePoint()
+    public float GetCurrentStatePoint()
     {
-        return this.remainingStatePoint;
+        return this.currentStatePoint;
     }
 
     public float GetMaximumStressValue()

@@ -53,7 +53,11 @@ public class BattleUiManager : MonoBehaviour
 
     public void OnSkillSelectedFromSkillSelectionPanel( SkillSelectionBox skillSelectionBox )
     {
-        this.selectedGameCharacter.AddSelectedSkill( skillSelectionBox.GetCharacterSkill() );
+        if (!skillSelectionBox.CheckIsSkillLevelChanged())
+        {
+            this.selectedGameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
+        }
+        
         UpdateSkillSlotListPanel( this.selectedGameCharacter );
         CheckWhetherToEnableExecuteButton();
     }
