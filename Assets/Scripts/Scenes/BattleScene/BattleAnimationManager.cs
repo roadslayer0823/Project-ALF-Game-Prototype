@@ -76,7 +76,7 @@ public class BattleAnimationManager : MonoBehaviour
         _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
         _attackTarget.TriggerEvent( AnimationEvent.OnDefendPartA );
 
-        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartA, _skillEffectPartA ) * GameConfiguration.Battle.Instance.GetActionCutoffTimePercentage(),
+        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartA, _skillEffectPartA ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
                                                  _attackTarget, AnimationEvent.OnDefendPartA_Cutoff ) );
 
         if (_characterPartA != NO_ANIMATION)
@@ -106,7 +106,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         _attacker.GetOpponentContainer().SetActive( true );
         _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
-        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartB, _skillEffectPartB ) * GameConfiguration.Battle.Instance.GetActionCutoffTimePercentage(),
+        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartB, _skillEffectPartB ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
                                                  _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
         CharacterSkill _derivedSkill = null;

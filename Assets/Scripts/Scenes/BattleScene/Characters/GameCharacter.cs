@@ -137,14 +137,14 @@ public class GameCharacter : MonoBehaviour
     {
         if (characterSkill.GetSkillData().skillType == Skill.SkillType.active)
         {
-            if (this.selectedActiveSkillList.Count < GameConfiguration.Battle.Instance.GetMaximumSelectedActiveSkills())
+            if (this.selectedActiveSkillList.Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills())
             {
                 this.selectedActiveSkillList.Add(characterSkill);
             }
         }
         else
         {
-            if (this.selectedBackendSkillList.Count < GameConfiguration.Battle.Instance.GetMaximumSelectedBackendSkills())
+            if (this.selectedBackendSkillList.Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills())
             {
                 this.selectedBackendSkillList.Add(characterSkill);
             }

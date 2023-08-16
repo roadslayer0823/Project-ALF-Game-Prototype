@@ -31,7 +31,7 @@ public class BattleFlowRound
         List<BattleFlowATL> _atlList = new List<BattleFlowATL>();
         bool _isPlayer = isPlayerFirst;
 
-        for (int i = 0; i < GameConfiguration.Battle.Instance.GetNumberOfATLSlots(); i++)
+        for (int i = 0; i < GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots(); i++)
         {
             BattleFlowATL _atl = new BattleFlowATL( ( _isPlayer ) ? this.battleFlowManager.GetNextPlayerCharacter() : this.battleFlowManager.GetNextEnemyCharacter() );
             _atl.SetAttackTarget( ( _isPlayer ) ? this.battleFlowManager.GetNextEnemyCharacter() : this.battleFlowManager.GetNextPlayerCharacter() );
@@ -102,8 +102,6 @@ public class BattleFlowRound
 
             if (_currentATL.CheckIsPlayer())
             {
-                // TODO: Check if the current slot skill is same with the current atl, if not same then dont swipe
-
                 // Auto swipe left the Skill Slot
                 _currentATLSlot.onATLSlotExecutedCallback();
                 _currentATLSlot.onSkillSlotSwipedCallback();

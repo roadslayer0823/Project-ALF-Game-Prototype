@@ -1,12 +1,20 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static GameConfiguration;
 using Configuration = DatabaseManager.Configuration;
 
-public class GameConfiguration
+public class GameConfiguration : Singleton<GameConfiguration>
 {
+    private Battle battleConfiguration = new Battle();
+
+    public Battle GetBattleConfiguration()
+    {
+        return this.battleConfiguration;
+    }
+
     // Battle
-    public class Battle : Singleton<Battle>
+    public class Battle 
     {
         private int numberOfATLSlots = 0;
         private int maximumSelectedActiveSkills = 0;

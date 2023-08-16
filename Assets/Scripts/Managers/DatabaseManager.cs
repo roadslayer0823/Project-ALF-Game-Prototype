@@ -198,7 +198,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 configuration.categoryType = (Configuration.Category)Enum.Parse(typeof(Configuration.Category), configuration.CategoryString);
             }
 
-            GameConfiguration.Battle.Instance.SetupBattleConfigurationValue(this.configurationList);
+            GameConfiguration.Instance.GetBattleConfiguration().SetupBattleConfigurationValue(this.configurationList);
 
             PlayerPrefsManager.SaveConfigurationDatabase(jsonData);
         }
