@@ -16,6 +16,7 @@ public class BattleGameManager : MonoBehaviour
 
     private List<PlayerCharacter> playerCharacterList = null;
     private List<EnemyCharacter> enemyCharacterList = null;
+    private bool hasBattleEnded = false;
 
     void Awake()
     {
@@ -117,6 +118,8 @@ public class BattleGameManager : MonoBehaviour
 
     private void OnBattleEnded( bool isVictory )
     {
+        this.hasBattleEnded = true;
+
         if (isVictory)
         {
             this.battleUiManager.ShowVictoryResult();
@@ -150,5 +153,10 @@ public class BattleGameManager : MonoBehaviour
     public BattleAnimationManager GetBattleAnimationManager()
     {
         return this.battleAnimationManager;
+    }
+
+    public bool GetHasBattleEnded()
+    {
+        return this.hasBattleEnded;
     }
 }

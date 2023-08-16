@@ -50,7 +50,7 @@ public class BattleFlowManager : MonoBehaviour
 
     public IEnumerator RunBattleAnimation( BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )
     {
-        yield return StartCoroutine( battleGameManager.GetBattleAnimationManager().RunBattleAnimation( battleFlowRound, battleFlowATL ) );
+        yield return StartCoroutine( battleGameManager.GetBattleAnimationManager().RunBattleAnimation( this.battleGameManager, battleFlowRound, battleFlowATL ) );
     }
 
     private void OnCurrentRoundPhaseChanged( BattleFlowRound.PhaseType phaseType )

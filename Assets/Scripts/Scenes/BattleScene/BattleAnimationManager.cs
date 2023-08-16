@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using SkillAnimation = DatabaseManager.SkillAnimation;
 
@@ -36,7 +37,7 @@ public class BattleAnimationManager : MonoBehaviour
         this.onBattleEndedCallback = onBattleEndedCallback;
     }
 
-    public IEnumerator RunBattleAnimation( BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )
+    public IEnumerator RunBattleAnimation( BattleGameManager battleGameManager, BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )
     {
         GameCharacter _attacker = battleFlowATL.GetSelectedCharacter();
         GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
@@ -128,6 +129,11 @@ public class BattleAnimationManager : MonoBehaviour
                 BattleLogicManager.ExecuteSkillOnHittingTarget( _attackerSkill, _attacker, _attackTarget );
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
 
+                if (CheckHasBattleEnded( battleGameManager ))
+                {
+                    yield break;
+                }
+
                 if (_attacker.GetCurrentCharacterActionType() == GameCharacter.CharacterActionType.Derive)
                 {
                     _derivedSkill = _attackerSkill.GetCharacterSubskillData().GetDerivedSkill();
@@ -146,6 +152,11 @@ public class BattleAnimationManager : MonoBehaviour
 
                     BattleLogicManager.ExecuteSkillOnHittingTarget( _derivedSkill, _attacker, _attackTarget );
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
+
+                    if (CheckHasBattleEnded( battleGameManager ))
+                    {
+                        yield break;
+                    }
                 }
 
                 break;
@@ -190,9 +201,18 @@ public class BattleAnimationManager : MonoBehaviour
                     }
 
                     _winner.TriggerEvent( AnimationEvent.OnRepulseWin );
-                    BattleLogicManager.ExecuteSkillOnHittingTarget( _winner.GetCurrentSkill(), _winner, _loser );
-                    yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
-                                                                                 + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ) ) );
+
+                    if (_animationType != ANIMATION_TYPE_IS_RANGED)
+                    {
+                        BattleLogicManager.ExecuteSkillOnHittingTarget( _winner.GetCurrentSkill(), _winner, _loser );
+                        yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
+                                                                                     + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ) ) );
+                    }
+
+                    if (CheckHasBattleEnded( battleGameManager ))
+                    {
+                        yield break;
+                    }
 
                     _derivedSkill = _winner.GetCurrentSkill().GetCharacterSubskillData().GetDerivedSkill();
                 }
@@ -211,29 +231,15 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( PlaySkillEffectAnimation( REPULSE_ANIMATION_NAME ) );
                         BattleLogicManager.ExecuteSkillOnHittingTarget( _derivedSkill, _winner, _loser );
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
+
+                        if (CheckHasBattleEnded( battleGameManager ))
+                        {
+                            yield break;
+                        }
                     }
                 }
 
                 break;
-        }
-
-        if (BattleLogicManager.IsGameCharacterDead( _attackTarget ))
-        {
-            _attackTarget.gameObject.SetActive( false );
-
-            bool _isVictory = ( _attackTarget is EnemyCharacter );
-            this.onBattleEndedCallback?.Invoke( _isVictory );
-
-            yield break;
-        }
-        else if (BattleLogicManager.IsGameCharacterDead( _attacker ))
-        {
-            _attacker.gameObject.SetActive( false );
-
-            bool _isVictory = ( _attacker is EnemyCharacter );
-            this.onBattleEndedCallback?.Invoke( _isVictory );
-
-            yield break;
         }
 
         _attacker.GetOwnContainer().SetActive( false );
@@ -263,6 +269,48 @@ public class BattleAnimationManager : MonoBehaviour
     {
         this.isAnimationEventTriggered = false;
         yield return new WaitUntil( () => this.isAnimationEventTriggered );
+    }
+
+    private bool CheckHasBattleEnded( BattleGameManager battleGameManager )
+    {
+        bool _hasPlayerCharacterSurvived = false;
+        bool _hasEnemyCharacterSurvived = false;
+        List<PlayerCharacter> _playerCharacterList = battleGameManager.GetPlayerCharacterList();
+        List<EnemyCharacter> _enemyCharacterList = battleGameManager.GetEnemyCharacterList();
+
+        for (int i = 0; i < _playerCharacterList.Count; i++)
+        {
+            if (!BattleLogicManager.IsGameCharacterDead( _playerCharacterList[i]))
+            {
+                _hasPlayerCharacterSurvived = true;
+                break;
+            }
+        }
+
+        for (int i = 0; i < _enemyCharacterList.Count; i++)
+        {
+            if (!BattleLogicManager.IsGameCharacterDead( _enemyCharacterList[ i ] ))
+            {
+                _hasEnemyCharacterSurvived = true;
+                break;
+            }
+        }
+
+        // Victory
+        if (_hasPlayerCharacterSurvived && !_hasEnemyCharacterSurvived)
+        {
+            this.onBattleEndedCallback?.Invoke( true );
+            return true;
+        }
+
+        // Defeat
+        if (!_hasPlayerCharacterSurvived && _hasEnemyCharacterSurvived)
+        {
+            this.onBattleEndedCallback?.Invoke( false );
+            return true;
+        }
+
+        return false;
     }
 
     private float GetAttackAnimationLength( GameCharacter attacker, string characterAnimationName, string skillEffectAnimationName )

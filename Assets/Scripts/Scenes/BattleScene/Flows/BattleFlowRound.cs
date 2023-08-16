@@ -89,6 +89,11 @@ public class BattleFlowRound
 
             yield return battleFlowManager.StartCoroutine( this.battleFlowManager.RunBattleAnimation( this, _currentATL ) );
 
+            if (this.battleFlowManager.GetBattleGameManager().GetHasBattleEnded())
+            {
+                yield break;
+            }
+
             _currentATL = GetCurrentATL();
 
             if (_currentATL == null)
