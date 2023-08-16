@@ -230,6 +230,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
             foreach (Subskill subskill in this.subskillList)
             {
+                subskill.SkillRange = (Subskill.Range)Enum.Parse(typeof(Subskill.Range), subskill.RangeString);
                 subskill.effectArea = (Subskill.EffectArea)Enum.Parse(typeof(Subskill.EffectArea), subskill.EffectAreaString);
                 subskill.effectType = (Subskill.EffectType)Enum.Parse(typeof(Subskill.EffectType), subskill.EffectTypeString);
                 subskill.IsAttackingSkill = bool.Parse(subskill.IsAttackingSkillString);
@@ -244,11 +245,6 @@ public class DatabaseManager : Singleton<DatabaseManager>
         else if (sheetName == this.skillAnimationSheetName)
         {
             this.skillAnimationList = dataList as List<SkillAnimation>;
-
-            foreach (SkillAnimation skillAnimation in this.skillAnimationList)
-            {
-                skillAnimation.animationType = (SkillAnimation.AnimationType)Enum.Parse(typeof(SkillAnimation.AnimationType), skillAnimation.AnimationTypeString);
-            }
 
             PlayerPrefsManager.SaveSkillAnimationDatabase(jsonData);
         }
@@ -474,6 +470,15 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("counter_skill_id")]
         public string CounterSkillId { get; private set; }
 
+        [JsonProperty("range")]
+        [HideInInspector] public string RangeString { get; private set; }
+        public enum Range
+        {
+            ranged,
+            melee
+        }
+        public Range SkillRange;
+
         [JsonProperty("attack_damage")]
         public int AttackDamage { get; private set; }
 
@@ -550,16 +555,6 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
         [JsonProperty("subskill_id")]
         public string SubskillId { get; private set; }
-
-        [JsonProperty("animation_type")]
-        [HideInInspector] public string AnimationTypeString { get; private set; }
-        public enum AnimationType
-        {
-            none,
-            melee,
-            ranged
-        }
-        public AnimationType animationType;
 
         [JsonProperty("character_part_a")]
         public string CharacterPartA { get; private set; }

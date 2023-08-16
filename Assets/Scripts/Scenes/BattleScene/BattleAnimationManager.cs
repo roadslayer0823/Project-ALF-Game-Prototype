@@ -43,7 +43,7 @@ public class BattleAnimationManager : MonoBehaviour
         CharacterSkill _attackerSkill = battleFlowATL.GetSelectedSkill();
         SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackerSkill.GetCharacterSubskillData().GetSubskillData().Id );
 
-        string _animationType = _skillAnimation.animationType.ToString();
+        string _animationType = battleFlowATL.GetSelectedSkill().GetCharacterSubskillData().GetSubskillData().SkillRange.ToString();
         string _characterPartA = _skillAnimation.CharacterPartA;
         string _characterPartB = _skillAnimation.CharacterPartB;
         string _skillEffectPartA = _skillAnimation.SkillEffectPartA;
