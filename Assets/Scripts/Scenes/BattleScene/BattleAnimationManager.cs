@@ -20,7 +20,6 @@ public class BattleAnimationManager : MonoBehaviour
     private const string GETTING_HIT_ANIMATION_NAME = "GettingHit";
     private const string REPULSE_ANIMATION_NAME = "Repulse";
     private const string DERIVE_ANIMATION_NAME = "Derive";
-    private const string ANIMATION_TYPE_IS_RANGED = "ranged";
 
     public enum AnimationEvent
     {
@@ -41,6 +40,12 @@ public class BattleAnimationManager : MonoBehaviour
     public IEnumerator RunBattleAnimation( BattleGameManager battleGameManager, BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )
     {
         GameCharacter _attacker = battleFlowATL.GetSelectedCharacter();
+
+        if (_attacker.GetIsInBreakStatus())
+        {
+            yield break;
+        }
+
         GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
         CharacterSkill _attackerSkill = battleFlowATL.GetSelectedSkill();
         SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackerSkill.GetCharacterSubskillData().GetSubskillData().Id );

@@ -50,15 +50,7 @@ public class CharacterInfoPanel : MonoBehaviour
         float _currentStressValue = this.selectedCharacter.GetCurrentStressValue();
 
         this.stressPercentageText.SetText(_currentStressValue + "%");
-        this.stressPercentageBar.fillAmount = _currentStressValue / 100;
-
-        if (_currentStressValue >= 100)
-        {
-            this.breakRepresentationText.gameObject.SetActive(true);
-        }
-        else
-        {
-            this.breakRepresentationText.gameObject.SetActive(false);
-        }
+        this.stressPercentageBar.fillAmount = _currentStressValue * 0.01f;
+        this.breakRepresentationText.gameObject.SetActive( this.selectedCharacter.GetIsInBreakStatus() );
     }
 }

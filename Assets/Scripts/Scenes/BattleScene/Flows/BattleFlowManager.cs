@@ -80,6 +80,7 @@ public class BattleFlowManager : MonoBehaviour
     public void OnNewATLStarted()
     {
         this.battleGameManager.OnNewATLStarted();
+        this.currentRound.GetCurrentATL().GetSelectedCharacter().MinusBreakStatusRemainingATLs();
     }
 
     public PlayerCharacter GetNextPlayerCharacter()

@@ -20,7 +20,7 @@ public class BattleLogicManager
 
     public static void ExecuteSkillOnHittingTarget( CharacterSkill skill, GameCharacter caster, GameCharacter target )
     {
-        float _attackDamage = GetCurrentAttackDamage( skill );
+        float _attackDamage = GetCurrentAttackDamage( skill, caster, target );
         if (_attackDamage > 0)
         {
             target.MinusCurrentHealthPoint( _attackDamage );
@@ -30,9 +30,10 @@ public class BattleLogicManager
         target.AddCurrentStressValue( _subskill.StressDamage * GameConfiguration.Instance.GetBattleConfiguration().GetStressDamageMultiplier() );
     }
 
-    public static float GetCurrentAttackDamage( CharacterSkill skill )
+    public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target )
     {
-        return ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * GameConfiguration.Instance.GetBattleConfiguration().GetAttackDamageMultiplier() );
+        return ( ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * GameConfiguration.Instance.GetBattleConfiguration().GetAttackDamageMultiplier() )
+                 * ( ( target.GetIsInBreakStatus() ) ? GameConfiguration.Instance.GetBattleConfiguration().GetBreakDamageMultiplier() : 1.0f ) );
     }
 
     public static GameCharacter GetWinnerByComparingSkillAttributes( SkillAttribute skillAttribute,
@@ -61,6 +62,11 @@ public class BattleLogicManager
         }
 
         return _winner;
+    }
+
+    public static bool IsGameCharacterInBreakStatus( GameCharacter gameCharacter )
+    {
+        return ( gameCharacter.GetCurrentStressValue() >= gameCharacter.GetMaximumStressValue() );
     }
 
     public static bool IsGameCharacterDead( GameCharacter gameCharacter )

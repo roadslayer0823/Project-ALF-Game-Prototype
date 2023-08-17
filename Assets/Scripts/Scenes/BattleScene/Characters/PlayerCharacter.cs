@@ -22,8 +22,7 @@ public class PlayerCharacter : GameCharacter
             case AnimationEvent.OnRepulseWin:
 
                 _battleUiManager.UpdatePlayerActionPanelButtons(
-                    actionType: ( base.GetCurrentSkill().GetCharacterSubskillData().GetDerivedSkill() != null )
-                                ? QTEActionType.Derive : QTEActionType.None,
+                    actionType: ( base.IsAbleToDerive()) ? QTEActionType.Derive : QTEActionType.None,
                     canDefend: false,
                     canEvade: false
                     );
@@ -33,10 +32,7 @@ public class PlayerCharacter : GameCharacter
             case AnimationEvent.OnDefendPartA:
 
                 _battleUiManager.UpdatePlayerActionPanelButtons(
-                    actionType: ( base.GetCurrentAttacker().GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().IsInterceptable
-                                  && _nextATL != null
-                                  && _nextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill() != null )
-                                  ? QTEActionType.Repulse : QTEActionType.None,
+                    actionType: ( base.IsAbleToRepulse( _nextATL ) ) ? QTEActionType.Repulse : QTEActionType.None,
                     canDefend: true,
                     canEvade: true
                     );

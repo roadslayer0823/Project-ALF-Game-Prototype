@@ -81,11 +81,11 @@ public class BattleFlowRound
                 break;
             }
 
+            _currentATL.SetIsATLSlotExecuted( true );
             this.battleFlowManager.OnNewATLStarted();
 
             ATLSlot _currentATLSlot = _currentATL.GetATLSlot();
             _currentATLSlot.ShowSelectionHighlight();
-            _currentATL.SetIsATLSlotExecuted( true );
 
             yield return battleFlowManager.StartCoroutine( this.battleFlowManager.RunBattleAnimation( this, _currentATL ) );
 
@@ -132,6 +132,9 @@ public class BattleFlowRound
             {
                 break;
             }
+
+            _currentATL.SetIsATLSlotExecuted( true );
+            this.battleFlowManager.OnNewATLStarted();
 
             if (_currentATL == targetATL)
             {

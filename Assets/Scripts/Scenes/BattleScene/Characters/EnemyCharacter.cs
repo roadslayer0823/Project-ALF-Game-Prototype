@@ -62,7 +62,7 @@ public class EnemyCharacter : GameCharacter
             case AnimationEvent.OnAttackPartB:
             case AnimationEvent.OnRepulseWin:
 
-                if (base.GetCurrentSkill().GetCharacterSubskillData().GetDerivedSkill() != null)
+                if (base.IsAbleToDerive())
                 {
                     base.SetCurrentCharacterActionType( CharacterActionType.Derive );
                 }
@@ -71,9 +71,7 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnDefendPartA:
 
-                if (base.GetCurrentAttacker().GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().IsInterceptable
-                    && _nextATL != null
-                    && _nextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill() != null)
+                if (base.IsAbleToRepulse( _nextATL ))
                 {
                     base.SetCurrentCharacterActionType( CharacterActionType.Repulse );
                 }

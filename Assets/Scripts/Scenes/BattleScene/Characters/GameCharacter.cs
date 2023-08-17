@@ -36,6 +36,7 @@ public class GameCharacter : MonoBehaviour
 
     private CharacterSkill currentSkill = null;
     private GameCharacter currentAttacker = null;
+    private int breakStatusRemainingATLs = 0;
 
     public enum CharacterActionType
     {
@@ -89,7 +90,7 @@ public class GameCharacter : MonoBehaviour
 
     public void AddCurrentHealthPoint( float amount )
     {
-        this.currentHealthPoint = Mathf.Clamp( this.currentHealthPoint + amount, 0, this.maximumHealthPoint );
+        this.currentHealthPoint = Mathf.Clamp( this.currentHealthPoint + amount, 0.0f, this.maximumHealthPoint );
         this.onCharacterInfoUpdated?.Invoke();
     }
 
@@ -101,7 +102,7 @@ public class GameCharacter : MonoBehaviour
 
     public void AddCurrentStatePoint( float amount )
     {
-        this.currentStatePoint = Mathf.Clamp( this.currentStatePoint + amount, 0, this.maximumStatePoint );
+        this.currentStatePoint = Mathf.Clamp( this.currentStatePoint + amount, 0.0f, this.maximumStatePoint );
         this.onCharacterInfoUpdated?.Invoke();
     }
 
@@ -125,7 +126,17 @@ public class GameCharacter : MonoBehaviour
 
     public void AddCurrentStressValue( float amount )
     {
-        this.currentStressValue = Mathf.Clamp( this.currentStressValue + amount, 0, this.maximumStressValue );
+        if (!GetIsInBreakStatus())
+        {
+            this.currentStressValue += amount;
+
+            if (BattleLogicManager.IsGameCharacterInBreakStatus( this ))
+            {
+                this.currentStressValue = this.maximumStressValue;
+                this.breakStatusRemainingATLs = 2;
+            }
+        }
+
         this.onCharacterInfoUpdated?.Invoke();
     }
 
@@ -133,6 +144,20 @@ public class GameCharacter : MonoBehaviour
     {
         this.currentStressValue -= amount;
         this.onCharacterInfoUpdated?.Invoke();
+    }
+
+    public void MinusBreakStatusRemainingATLs()
+    {
+        if (this.breakStatusRemainingATLs > 0)
+        {
+            this.breakStatusRemainingATLs--;
+
+            if (!GetIsInBreakStatus())
+            {
+                this.currentStressValue = 0.0f;
+                this.onCharacterInfoUpdated?.Invoke();
+            }
+        }
     }
 
     public void AddSelectedSkill(CharacterSkill characterSkill)
@@ -220,6 +245,46 @@ public class GameCharacter : MonoBehaviour
     public void TriggerEvent( AnimationEvent animationEvent )
     {
         this.onEventTriggeredCallback?.Invoke( animationEvent, this );
+    }
+
+    public bool IsAbleToRepulse( BattleFlowATL nextATL )
+    {
+        if (this.GetIsInBreakStatus())
+        {
+            return false;
+        }
+
+        if (!this.currentAttacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().IsInterceptable)
+        {
+            return false;
+        }
+
+        if (nextATL == null)
+        {
+            return false;
+        }
+
+        if (nextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill() == null)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public bool IsAbleToDerive()
+    {
+        if (this.GetIsInBreakStatus())
+        {
+            return false;
+        }
+
+        if (this.currentSkill.GetCharacterSubskillData().GetDerivedSkill() == null)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public string GetId()
@@ -340,5 +405,10 @@ public class GameCharacter : MonoBehaviour
     public GameObject GetOpponentContainer()
     {
         return this.opponentContainer;
+    }
+
+    public bool GetIsInBreakStatus()
+    {
+        return ( this.breakStatusRemainingATLs > 0 );
     }
 }
