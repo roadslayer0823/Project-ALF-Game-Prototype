@@ -95,14 +95,21 @@ public class BattleGameManager : MonoBehaviour
 
     public void OnNewRoundStarted()
     {
-        for (int i = 0; i < this.playerCharacterList.Count; i++)
-        {
-            this.playerCharacterList[ i ].SetCurrentStatePointToMaximum();
-        }
+        List<GameCharacter> _characters = new List<GameCharacter>();
+        _characters.AddRange( this.playerCharacterList );
+        _characters.AddRange( this.enemyCharacterList );
 
-        for (int i = 0; i < this.enemyCharacterList.Count; i++)
+        for (int i = 0; i < _characters.Count; i++)
         {
-            this.enemyCharacterList[ i ].SetCurrentStatePointToMaximum();
+            GameCharacter _character = _characters[ i ];
+
+            float _currentStatePoint = _character.GetCurrentStatePoint();
+            if (_currentStatePoint < 0)
+            {
+                _character.MinusMaximumStatePoint( Mathf.Abs( _currentStatePoint ) );
+            }
+
+            _character.SetCurrentStatePointToMaximum();
         }
     }
 

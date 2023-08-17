@@ -124,6 +124,19 @@ public class GameCharacter : MonoBehaviour
         this.onCharacterInfoUpdated?.Invoke();
     }
 
+    public void MinusMaximumStatePoint( float amount )
+    {
+        this.maximumStatePoint -= amount;
+
+        float _lowestMaximumStatePoint = GameConfiguration.Instance.GetBattleConfiguration().GetLowestMaximumStatePoint();
+        if (this.maximumStatePoint < _lowestMaximumStatePoint)
+        {
+            this.maximumStatePoint = _lowestMaximumStatePoint;
+        }
+
+        this.onCharacterInfoUpdated?.Invoke();
+    }
+
     public void AddCurrentStressValue( float amount )
     {
         if (!GetIsInBreakStatus())
