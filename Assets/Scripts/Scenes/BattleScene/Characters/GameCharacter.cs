@@ -262,6 +262,13 @@ public class GameCharacter : MonoBehaviour
 
     public bool IsAbleToRepulse( BattleFlowATL nextATL )
     {
+        return IsAbleToRepulse( nextATL, out _ );
+    }
+
+    public bool IsAbleToRepulse( BattleFlowATL nextATL, out CharacterSkill repulseSkill )
+    {
+        repulseSkill = null;
+
         if (this.GetIsInBreakStatus())
         {
             return false;
@@ -277,7 +284,9 @@ public class GameCharacter : MonoBehaviour
             return false;
         }
 
-        if (nextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill() == null)
+        repulseSkill = nextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill();
+
+        if (repulseSkill == null)
         {
             return false;
         }
@@ -287,12 +296,21 @@ public class GameCharacter : MonoBehaviour
 
     public bool IsAbleToDerive()
     {
+        return IsAbleToDerive( out _ );
+    }
+
+    public bool IsAbleToDerive( out CharacterSkill derivedSkill )
+    {
+        derivedSkill = null;
+
         if (this.GetIsInBreakStatus())
         {
             return false;
         }
 
-        if (this.currentSkill.GetCharacterSubskillData().GetDerivedSkill() == null)
+        derivedSkill = this.currentSkill.GetCharacterSubskillData().GetDerivedSkill();
+
+        if (derivedSkill == null)
         {
             return false;
         }

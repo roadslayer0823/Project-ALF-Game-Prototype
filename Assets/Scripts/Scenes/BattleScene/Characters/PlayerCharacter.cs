@@ -21,8 +21,12 @@ public class PlayerCharacter : GameCharacter
             case AnimationEvent.OnAttackPartB:
             case AnimationEvent.OnRepulseWin:
 
+                CharacterSkill _derivedSkill = null;
+                bool _isAbleToDerive = base.IsAbleToDerive( out _derivedSkill );
+
                 _battleUiManager.UpdatePlayerActionPanelButtons(
-                    actionType: ( base.IsAbleToDerive()) ? QTEActionType.Derive : QTEActionType.None,
+                    qteActionType: ( _isAbleToDerive ) ? QTEActionType.Derive : QTEActionType.None,
+                    qteSkill: _derivedSkill,
                     canDefend: false,
                     canEvade: false
                     );
@@ -31,8 +35,12 @@ public class PlayerCharacter : GameCharacter
 
             case AnimationEvent.OnDefendPartA:
 
+                CharacterSkill _repulseSkill = null;
+                bool _isAbleToRepulse = base.IsAbleToRepulse( _nextATL, out _repulseSkill );
+
                 _battleUiManager.UpdatePlayerActionPanelButtons(
-                    actionType: ( base.IsAbleToRepulse( _nextATL ) ) ? QTEActionType.Repulse : QTEActionType.None,
+                    qteActionType: ( _isAbleToRepulse ) ? QTEActionType.Repulse : QTEActionType.None,
+                    qteSkill: _repulseSkill,
                     canDefend: true,
                     canEvade: true
                     );
