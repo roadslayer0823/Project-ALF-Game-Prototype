@@ -9,7 +9,7 @@ public class ATLSlotListPanel : MonoBehaviour
 
     private BattleFlowATL[] battleFlowATLs;
 
-    public void Show( BattleFlowATL[] flowATLs, Action onSkillSlotSwipedCallback, Action onATLSlotExecutedCallback)
+    public void Show( BattleFlowATL[] flowATLs, Action onSkillSlotSwipedCallback, Action onATLSlotExecutedCallback )
     {
         for (int i = 0; i < theATLSlots.Length; i++)
         {
@@ -17,10 +17,11 @@ public class ATLSlotListPanel : MonoBehaviour
 
             if (i < flowATLs.Length)
             {
-                flowATLs[i].SetATLSlot(_altSlot);
-                flowATLs[i].SetIsATLSlotExecuted(false);
-                _altSlot.Initialize(onSkillSlotSwipedCallback, onATLSlotExecutedCallback);
-                _altSlot.Show(flowATLs[i]);
+                BattleFlowATL _flowATL = flowATLs[ i ];
+                _flowATL.SetATLSlot( _altSlot );
+                _flowATL.SetIsATLSlotExecuted( false );
+                _altSlot.Initialize( onSkillSlotSwipedCallback, onATLSlotExecutedCallback );
+                _altSlot.Show( _flowATL );
             }
             else
             {
@@ -46,13 +47,16 @@ public class ATLSlotListPanel : MonoBehaviour
         for (int i = 0; i < this.battleFlowATLs.Length; i++)
         {
             BattleFlowATL _battleFlowATL = this.battleFlowATLs[ i ];
+            GameCharacter _character = _battleFlowATL.GetSelectedCharacter();
 
-            if (_battleFlowATL.GetIsATLSlotExecuted())
+            if (_character is PlayerCharacter)
             {
-                continue;
+                if (_battleFlowATL.GetIsATLSlotExecuted())
+                {
+                    continue;
+                }
             }
 
-            GameCharacter _character = _battleFlowATL.GetSelectedCharacter();
             int _totalActiveSkills = _character.GetSelectedActiveSkillList().Count;
             int _skillCounter = 0;
             if (_characterSkillCounterDictionary.ContainsKey( _character ))

@@ -37,6 +37,19 @@ public class BattleFlowATL
         return this.selectedCharacter is PlayerCharacter;
     }
 
+    public void Finish()
+    {
+        this.atlSlot.MarkATLSlotColorInactive();
+        this.atlSlot.HideSelectionHighlight();
+
+        if (CheckIsPlayer())
+        {
+            // Automatically swipe the Skill Slot leftwards.
+            this.atlSlot.onATLSlotExecutedCallback();
+            this.atlSlot.onSkillSlotSwipedCallback();
+        }
+    }
+
     private void ClearATLSlotInfo()
     {
         this.atlSlot.SetOwnerName("NODATA");

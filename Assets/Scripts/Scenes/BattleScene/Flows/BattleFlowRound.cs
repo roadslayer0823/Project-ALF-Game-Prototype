@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class BattleFlowRound
 {
@@ -101,17 +100,7 @@ public class BattleFlowRound
                 break;
             }
 
-            _currentATLSlot = _currentATL.GetATLSlot();
-            _currentATLSlot.MarkATLSlotColorInactive();
-            _currentATLSlot.HideSelectionHighlight();
-
-            if (_currentATL.CheckIsPlayer())
-            {
-                // Auto swipe left the Skill Slot
-                _currentATLSlot.onATLSlotExecutedCallback();
-                _currentATLSlot.onSkillSlotSwipedCallback();
-            }
-
+            _currentATL.Finish();
             this.flowATLIndex++;
         }
         while ( true );
@@ -144,10 +133,7 @@ public class BattleFlowRound
             }
             else
             {
-                ATLSlot _currentATLSlot = _currentATL.GetATLSlot();
-                _currentATLSlot.MarkATLSlotColorInactive();
-                _currentATLSlot.HideSelectionHighlight();
-
+                _currentATL.Finish();
                 this.flowATLIndex++;
             }
         }
