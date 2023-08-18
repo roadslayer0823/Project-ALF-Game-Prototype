@@ -6,6 +6,11 @@ public class GameCharacterInfoBox : MonoBehaviour
     [SerializeField] private GameCharacter selectedCharacter = null;
     [SerializeField] private SpriteRenderer healthPointFiller = null;
     [SerializeField] private TextMeshPro healthPointLabel = null;
+    [SerializeField] private SpriteRenderer statePointFiller = null;
+    [SerializeField] private TextMeshPro statePointLabel = null;
+    [SerializeField] private SpriteRenderer stressValueFiller = null;
+    [SerializeField] private TextMeshPro stressValueLabel = null;
+    [SerializeField] private TextMeshPro currentSkillInfoLabel = null;
 
     void Awake()
     {
@@ -13,26 +18,58 @@ public class GameCharacterInfoBox : MonoBehaviour
         this.selectedCharacter.SetOnCharacterInfoUpdated( UpdateDisplayInfo );
     }
 
+    public void ShowDisplayInfo()
+    {
+        this.gameObject.SetActive( true );
+    }
+
+    public void HideDisplayInfo()
+    {
+        this.gameObject.SetActive( false );
+    }
+
     public void UpdateDisplayInfo()
     {
-        float _currentHealthPoint = this.selectedCharacter.GetCurrentHealthPoint();
-        float _maximumHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
-
-        if (_currentHealthPoint < 0)
+        if (BattleLogicManager.IsGameCharacterDead( selectedCharacter ))
         {
-            _currentHealthPoint = 0;
+            HideDisplayInfo();
+            return;
         }
 
-        this.healthPointLabel.text = Mathf.CeilToInt( _currentHealthPoint ) + " / " + Mathf.CeilToInt( _maximumHealthPoint );
+        UpdateBar( this.selectedCharacter.GetCurrentHealthPoint(), this.selectedCharacter.GetMaximumHealthPoint(), this.healthPointFiller, this.healthPointLabel );
+        UpdateBar( this.selectedCharacter.GetCurrentStatePoint(), this.selectedCharacter.GetMaximumStatePoint(), this.statePointFiller, this.statePointLabel );
+        UpdateBar( this.selectedCharacter.GetCurrentStressValue(), this.selectedCharacter.GetMaximumStressValue(), this.stressValueFiller, this.stressValueLabel );
 
-        float _percentage = _currentHealthPoint / _maximumHealthPoint;
-        if (_percentage > 0)
+        string _skillInfoString = "";
+        CharacterSkill _characterSkill = this.selectedCharacter.GetCurrentSkill();
+        if (_characterSkill != null)
         {
-            this.healthPointFiller.size = new Vector2( _percentage * 10.0f, this.healthPointFiller.size.y );
+            CharacterSubskill _characterSubskill = _characterSkill.GetCharacterSubskillData();
+            if (_characterSubskill != null)
+            {
+                DatabaseManager.Subskill _subskill = _characterSubskill.GetSubskillData();
+                _skillInfoString = _subskill.DisplayName;
+                _skillInfoString += ( _subskill.Strength > 1 ) ? "\n強度 +" + ( _subskill.Strength - 1 ) : "";
+                _skillInfoString += ( _subskill.Accuracy > 1 ) ? "\n命中 +" + ( _subskill.Accuracy - 1 ) : "";
+                _skillInfoString += ( _subskill.Evasion > 1 ) ? "\n迴避 +" + ( _subskill.Evasion - 1 ) : "";
+            }
         }
-        else
+
+        currentSkillInfoLabel.SetText( _skillInfoString );
+    }
+
+    private void UpdateBar( float currentValue, float maximumValue, SpriteRenderer filler, TextMeshPro label )
+    {
+        float _currentValue = currentValue;
+
+        if (_currentValue < 0)
         {
-            this.gameObject.SetActive( false );
+            _currentValue = 0;
         }
+
+        label.SetText( Mathf.CeilToInt( _currentValue ) + " / " + Mathf.CeilToInt( maximumValue ) );
+
+        float _percentage = currentValue / maximumValue;
+        filler.size = new Vector2( ( _percentage > 0 ) ? _percentage * 10.0f : 0.0f, filler.size.y );
     }
 }

@@ -393,6 +393,8 @@ public class GameCharacter : MonoBehaviour
         {
             attackTarget.SetCurrentAttacker( this );
         }
+
+        this.onCharacterInfoUpdated?.Invoke();
     }
 
     public CharacterSkill GetCurrentSkill()
@@ -423,5 +425,11 @@ public class GameCharacter : MonoBehaviour
     public bool GetIsInBreakStatus()
     {
         return ( this.breakStatusRemainingATLs > 0 );
+    }
+
+    public void Reset()
+    {
+        SetCurrentSkill( null );
+        SetCurrentAttacker( null );
     }
 }
