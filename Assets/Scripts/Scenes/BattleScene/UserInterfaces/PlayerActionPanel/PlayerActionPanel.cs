@@ -2,19 +2,29 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerActionPanel : MonoBehaviour
 {
     [SerializeField] private GameObject preparationSection = null;
     [SerializeField] private GameObject battleSection = null;
     [SerializeField] private Button executeButton = null;
-    [SerializeField] private Button repulseButton = null;
-    [SerializeField] private Button deriveButton = null;
-    [SerializeField] private Button counterButton = null;
     [SerializeField] private SkillActionButton[] skillActionButtons = new SkillActionButton[ 0 ];
+
+    [Header("QTE Button")]
+    [SerializeField] private Button qteButton = null;
+    [SerializeField] private TextMeshProUGUI qteType = null;
+    [SerializeField] private TextMeshProUGUI skillName = null;
+    [SerializeField] private TextMeshProUGUI strengthValue = null;
+    [SerializeField] private TextMeshProUGUI accuracyValue = null;
+    [SerializeField] private TextMeshProUGUI evasionValue = null;
+    [SerializeField] private GameObject strength = null;
+    [SerializeField] private GameObject accuracy = null;
+    [SerializeField] private GameObject evasion = null;
 
     private GameCharacter selectedGameCharacter = null;
     private Action onExecuteButtonClickedCallback = null;
+    private QTEActionType qteActionType = QTEActionType.None;
 
     public enum QTEActionType
     {
@@ -27,6 +37,8 @@ public class PlayerActionPanel : MonoBehaviour
     public void Initialize( Action onExecuteButtonClickedCallback )
     {
         this.onExecuteButtonClickedCallback = onExecuteButtonClickedCallback;
+
+        this.qteButton.onClick.AddListener(OnQTEButtonClick);
     }
 
     public void SetSelectedGameCharacter( GameCharacter selectedGameCharacter )
@@ -45,6 +57,27 @@ public class PlayerActionPanel : MonoBehaviour
         else
         {
             Debug.Log( "The value for 'onExecuteButtonClickedCallback' is not assigned." );
+        }
+    }
+
+    private void OnQTEButtonClick()
+    {
+        switch (this.qteActionType)
+        {
+            case QTEActionType.Repulse:
+
+                ClickOnRepulseButton();
+                break;
+
+            case QTEActionType.Derive:
+
+                ClickOnDeriveButton();
+                break;
+
+            case QTEActionType.Counter:
+
+                ClickOnCounterButton();
+                break;
         }
     }
 
@@ -96,37 +129,79 @@ public class PlayerActionPanel : MonoBehaviour
         this.executeButton.interactable = false;
     }
 
-    public void ShowQTEActionButton( QTEActionType actionType )
+    public void ShowQTEActionButton(QTEActionType qteActionType, CharacterSkill qteSkill)
     {
         HideQTEActionButton();
 
-        switch ( actionType )
+        this.qteActionType = qteActionType;
+        
+        switch (qteActionType)
         {
             case QTEActionType.Repulse:
 
-                this.repulseButton.gameObject.SetActive( true );
-
+                this.qteType.SetText("迎擊");
+                SetupQTEActionButton(qteSkill);
                 break;
 
             case QTEActionType.Derive:
 
-                this.deriveButton.gameObject.SetActive( true );
-
+                this.qteType.SetText("派生");
+                SetupQTEActionButton(qteSkill);
                 break;
 
             case QTEActionType.Counter:
 
-                this.counterButton.gameObject.SetActive( true );
-
+                this.qteType.SetText("反擊");
+                SetupQTEActionButton(qteSkill);
                 break;
         }
     }
 
     public void HideQTEActionButton()
     {
-        this.repulseButton.gameObject.SetActive( false );
-        this.deriveButton.gameObject.SetActive( false );
-        this.counterButton.gameObject.SetActive( false );
+        this.qteButton.gameObject.SetActive(false);
+    }
+
+    private void SetupQTEActionButton(CharacterSkill qteSkill)
+    {
+        this.qteButton.gameObject.SetActive(true);
+
+        CharacterSubskill _characterSubskill = qteSkill.GetCharacterSubskillData();
+        int _strengthValue = _characterSubskill.GetSubskillData().Strength;
+        int _accuracyValue = _characterSubskill.GetSubskillData().Accuracy;
+        int _evasionValue =_characterSubskill.GetSubskillData().Evasion;
+
+        this.skillName.SetText(_characterSubskill.GetSubskillData().DisplayName);
+
+        if (_strengthValue > 1)
+        {
+            this.strength.gameObject.SetActive(true);
+            this.strengthValue.SetText("+" + (_strengthValue - 1).ToString());
+        }
+        else
+        {
+            this.strength.gameObject.SetActive(false);
+        }
+
+        if (_accuracyValue > 1)
+        {
+            this.accuracy.gameObject.SetActive(true);
+            this.accuracyValue.SetText("+" + (_accuracyValue - 1).ToString());
+        }
+        else
+        {
+            this.accuracy.gameObject.SetActive(false);
+        }
+
+        if (_evasionValue > 1)
+        {
+            this.evasion.gameObject.SetActive(true);
+            this.evasionValue.SetText("+" + (_evasionValue - 1).ToString());
+        }
+        else
+        {
+            this.evasion.gameObject.SetActive(false);
+        }
     }
 
     public void ShowSkillActionButtons( CharacterSkill[] skills )

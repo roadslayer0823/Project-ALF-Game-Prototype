@@ -147,7 +147,7 @@ public class BattleUiManager : MonoBehaviour
 
     public void UpdatePlayerActionPanelButtons( PlayerActionPanel.QTEActionType qteActionType, CharacterSkill qteSkill, bool canDefend, bool canEvade )
     {
-        this.playerActionPanel.ShowQTEActionButton( qteActionType );
+        this.playerActionPanel.ShowQTEActionButton( qteActionType, qteSkill );
         this.playerActionPanel.UpdateSkillActionButtons( canDefend, canEvade );
     }
 
