@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DitzeGames.Effects;
 using SkillAnimation = DatabaseManager.SkillAnimation;
 using RangeType = DatabaseManager.Subskill.RangeType;
 
@@ -12,8 +13,15 @@ public class BattleAnimationManager : MonoBehaviour
     [SerializeField] private Sprite backgroundPartB = null;
     [SerializeField] private Animator skillEffectAnimator = null;
 
+    [SerializeField] private Camera targetCamera = null;
+    [SerializeField] private CameraEffects cameraEffect = null;
+
     private bool isAnimationEventTriggered = false;
     private Action<bool> onBattleEndedCallback = null;
+
+    private GameObject targetCameraObject = null;
+    private Vector3 cameraPosition = Vector3.zero;
+    private float cameraOrthographicSize = 0.0f;
 
     private const string NO_ANIMATION = "-";
     private const string IDLE_ANIMATION_NAME = "Idle";
@@ -29,12 +37,17 @@ public class BattleAnimationManager : MonoBehaviour
         OnAttackPartB_Cutoff,
         OnDefendPartA,
         OnDefendPartA_Cutoff,
-        OnRepulseWin
+        OnRepulseWin,
+        OnRepulseWin_Cutoff
     }
 
     public void Initialize( Action<bool> onBattleEndedCallback )
     {
         this.onBattleEndedCallback = onBattleEndedCallback;
+
+        this.targetCameraObject = this.targetCamera.gameObject;
+        this.cameraPosition = this.targetCamera.transform.position;
+        this.cameraOrthographicSize = this.targetCamera.orthographicSize;
     }
 
     public IEnumerator RunBattleAnimation( BattleGameManager battleGameManager, BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )
@@ -83,8 +96,30 @@ public class BattleAnimationManager : MonoBehaviour
         _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
         _attackTarget.TriggerEvent( AnimationEvent.OnDefendPartA );
 
-        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartA, _skillEffectPartA ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
+        StartCoroutine( CountdownForEventCutoff( ( GetAttackAnimationLength( _attacker, _characterPartA, _skillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
                                                  _attackTarget, AnimationEvent.OnDefendPartA_Cutoff ) );
+
+        float _cameraX = 0.0f;
+        float _cameraY = 0.0f;
+        float _cameraSize = 0.0f;
+        if (_attacker is PlayerCharacter)
+        {
+            _cameraX = 2.0f;
+            _cameraY = -1.2f;
+            _cameraSize = 3.5f;
+        }
+        else if (_attacker is EnemyCharacter)
+        {
+            _cameraX = -2.0f;
+            _cameraY = -1.7f;
+            _cameraSize = 4.0f;
+        }
+
+        LeanTween.moveX( this.targetCameraObject, _cameraX, 1.0f ).setEaseOutCirc();
+        LeanTween.moveY( this.targetCameraObject, _cameraY, 1.0f ).setEaseOutCirc();
+        LeanTween.value( this.targetCamera.orthographicSize, _cameraSize, 1.0f ).setEaseOutCirc().setOnUpdate( ( float value ) => { this.targetCamera.orthographicSize = value;  } );
+
+        yield return new WaitForSeconds( 1.0f );
 
         if (_characterPartA != NO_ANIMATION)
         {
@@ -111,9 +146,12 @@ public class BattleAnimationManager : MonoBehaviour
             ChangeToBackgroundPartA();
         }
 
+        this.targetCamera.transform.position = cameraPosition;
+        this.targetCamera.orthographicSize = cameraOrthographicSize;
+
         _attacker.GetOpponentContainer().SetActive( true );
         _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
-        StartCoroutine( CountdownForEventCutoff( GetAttackAnimationLength( _attacker, _characterPartB, _skillEffectPartB ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
+        StartCoroutine( CountdownForEventCutoff( ( GetAttackAnimationLength( _attacker, _characterPartB, _skillEffectPartB ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
                                                  _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
         CharacterSkill _derivedSkill = null;
@@ -133,7 +171,9 @@ public class BattleAnimationManager : MonoBehaviour
                 }
 
                 BattleLogicManager.ExecuteSkillOnHittingTarget( _attackerSkill, _attacker, _attackTarget );
+                cameraEffect.Shake();
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
+                yield return new WaitForSeconds( 1.0f );
 
                 if (CheckHasBattleEnded( battleGameManager ))
                 {
@@ -158,7 +198,9 @@ public class BattleAnimationManager : MonoBehaviour
                     }
 
                     BattleLogicManager.ExecuteSkillOnHittingTarget( _derivedSkill, _attacker, _attackTarget );
+                    cameraEffect.Shake();
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
+                    yield return new WaitForSeconds( 1.0f );
 
                     if (CheckHasBattleEnded( battleGameManager ))
                     {
@@ -207,12 +249,16 @@ public class BattleAnimationManager : MonoBehaviour
                     }
 
                     _winner.TriggerEvent( AnimationEvent.OnRepulseWin );
+                    StartCoroutine( CountdownForEventCutoff( 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
+                                                             _attacker, AnimationEvent.OnRepulseWin_Cutoff ) );
 
                     if (_rangeType == RangeType.melee)
                     {
                         BattleLogicManager.ExecuteSkillOnHittingTarget( _winner.GetCurrentSkill(), _winner, _loser );
+                        cameraEffect.Shake();
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
                                                                                      + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ) ) );
+                        yield return new WaitForSeconds( 1.0f );
                     }
 
                     if (CheckHasBattleEnded( battleGameManager ))
@@ -237,7 +283,9 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( PlayCharacterAnimation( _winner, DERIVE_ANIMATION_NAME ) );
                         yield return StartCoroutine( PlaySkillEffectAnimation( REPULSE_ANIMATION_NAME ) );
                         BattleLogicManager.ExecuteSkillOnHittingTarget( _derivedSkill, _winner, _loser );
+                        cameraEffect.Shake();
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
+                        yield return new WaitForSeconds( 1.0f );
 
                         if (CheckHasBattleEnded( battleGameManager ))
                         {

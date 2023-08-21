@@ -49,6 +49,7 @@ public class PlayerCharacter : GameCharacter
 
             case AnimationEvent.OnAttackPartB_Cutoff:
             case AnimationEvent.OnDefendPartA_Cutoff:
+            case AnimationEvent.OnRepulseWin_Cutoff:
 
                 _battleUiManager.DisablePlayerActionPanelButtons();
 
