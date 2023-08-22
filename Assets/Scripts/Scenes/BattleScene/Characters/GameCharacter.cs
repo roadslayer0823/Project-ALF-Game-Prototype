@@ -42,10 +42,9 @@ public class GameCharacter : MonoBehaviour
     {
         None,
         Repulse,
-        Defend,
-        Evade,
+        Derive,
         Counter,
-        Derive
+        Backend
     }
 
     public void Initialize( Character characterData, GameObject ownContainer, GameObject opponentContainer, Action<AnimationEvent,GameCharacter> onEventTriggeredCallback = null )

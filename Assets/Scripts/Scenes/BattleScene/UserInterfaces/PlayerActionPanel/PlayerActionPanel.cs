@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -38,7 +37,12 @@ public class PlayerActionPanel : MonoBehaviour
     {
         this.onExecuteButtonClickedCallback = onExecuteButtonClickedCallback;
 
-        this.qteButton.onClick.AddListener(OnQTEButtonClick);
+        this.qteButton.onClick.AddListener( OnQTEButtonClicked );
+
+        for (int i = 0; i < this.skillActionButtons.Length; i++)
+        {
+            skillActionButtons[ i ].Initialize( OnSkillActionButtonClicked );
+        }
     }
 
     public void SetSelectedGameCharacter( GameCharacter selectedGameCharacter )
@@ -60,43 +64,30 @@ public class PlayerActionPanel : MonoBehaviour
         }
     }
 
-    private void OnQTEButtonClick()
+    private void OnQTEButtonClicked()
     {
-        switch (this.qteActionType)
+        DisableQTEAndSkillActionButtons();
+
+        switch ( this.qteActionType )
         {
             case QTEActionType.Repulse:
 
-                ClickOnRepulseButton();
+                this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Repulse );
+
                 break;
 
             case QTEActionType.Derive:
 
-                ClickOnDeriveButton();
+                this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Derive );
+
                 break;
 
             case QTEActionType.Counter:
 
-                ClickOnCounterButton();
+                this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Counter );
+
                 break;
         }
-    }
-
-    public void ClickOnRepulseButton()
-    {
-        HideQTEActionButton();
-        this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Repulse );
-    }
-
-    public void ClickOnDeriveButton()
-    {
-        HideQTEActionButton();
-        this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Derive );
-    }
-
-    public void ClickOnCounterButton()
-    {
-        HideQTEActionButton();
-        this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Counter );
     }
 
     public void ShowPreparationSection()
@@ -241,6 +232,24 @@ public class PlayerActionPanel : MonoBehaviour
             {
                 _skillActionButton.DisableActionButton();
             }
+        }
+    }
+
+    private void OnSkillActionButtonClicked( CharacterSkill skill )
+    {
+        DisableQTEAndSkillActionButtons();
+
+        this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Backend );
+        this.selectedGameCharacter.SetCurrentSkill( skill );
+    }
+
+    public void DisableQTEAndSkillActionButtons()
+    {
+        HideQTEActionButton();
+
+        for (int i = 0; i < this.skillActionButtons.Length; i++)
+        {
+            this.skillActionButtons[ i ].DisableActionButton();
         }
     }
 }

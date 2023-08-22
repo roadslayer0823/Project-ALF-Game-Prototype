@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -16,6 +17,12 @@ public class SkillActionButton : MonoBehaviour
     [SerializeField] private GameObject evasion = null;
 
     private CharacterSkill selectedSkill = null;
+    private Action<CharacterSkill> onActionButtonClickedCallback = null;
+
+    public void Initialize( Action<CharacterSkill> onActionButtonClickedCallback )
+    {
+        this.onActionButtonClickedCallback = onActionButtonClickedCallback;
+    }
 
     private void Start()
     {
@@ -103,6 +110,7 @@ public class SkillActionButton : MonoBehaviour
 
     public void ClickOnActionButton()
     {
+        this.onActionButtonClickedCallback?.Invoke( selectedSkill );
     }
 
     public CharacterSkill GetSelectedSkill()

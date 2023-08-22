@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using DitzeGames.Effects;
 using SkillAnimation = DatabaseManager.SkillAnimation;
+using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
 
 public class BattleAnimationManager : MonoBehaviour
@@ -154,6 +155,8 @@ public class BattleAnimationManager : MonoBehaviour
         StartCoroutine( CountdownForEventCutoff( ( GetAttackAnimationLength( _attacker, _characterPartB, _skillEffectPartB ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
                                                  _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
+        GameCharacter _winner = null;
+        GameCharacter _loser = null;
         CharacterSkill _derivedSkill = null;
 
         switch ( _attackTarget.GetCurrentCharacterActionType() )
@@ -232,22 +235,13 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
 
-                GameCharacter _winner = BattleLogicManager.GetWinnerByComparingSkillAttributes( BattleLogicManager.SkillAttribute.Strength,
-                                                                                                _attacker, _attackerSkill,
-                                                                                                _attackTarget, _repulseSkill );
-                GameCharacter _loser = null;
+                BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Repulse,
+                                                                    _attacker, _attackerSkill,
+                                                                    _attackTarget, _repulseSkill,
+                                                                    out _winner, out _loser );
 
                 if (_winner != null)
                 {
-                    if (_winner == _attacker)
-                    {
-                        _loser = _attackTarget;
-                    }
-                    else if (_winner == _attackTarget)
-                    {
-                        _loser = _attacker;
-                    }
-
                     _winner.TriggerEvent( AnimationEvent.OnRepulseWin );
                     StartCoroutine( CountdownForEventCutoff( 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
                                                              _attacker, AnimationEvent.OnRepulseWin_Cutoff ) );
@@ -292,6 +286,32 @@ public class BattleAnimationManager : MonoBehaviour
                             yield break;
                         }
                     }
+                }
+
+                break;
+
+            case GameCharacter.CharacterActionType.Backend:
+
+                CharacterSkill _attackTargetSkill = _attackTarget.GetCurrentSkill();
+                BattleLogicManager.ExecuteSkillOnUse( _attackTargetSkill, _attackTarget, _attacker );
+
+                Subskill _attackTargetSubskillData = _attackTargetSkill.GetCharacterSubskillData().GetSubskillData();
+                _winner = null;
+                _loser = null;
+
+                if (_attackTargetSubskillData.IsDefendingSkill)
+                {
+                    BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Defend,
+                                                                        _attacker, _attackerSkill,
+                                                                        _attackTarget, _attackTargetSkill,
+                                                                        out _winner, out _loser );
+                }
+                else if (_attackTargetSubskillData.IsEvadingSkill)
+                {
+                    BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Evade,
+                                                                        _attacker, _attackerSkill,
+                                                                        _attackTarget, _attackTargetSkill,
+                                                                        out _winner, out _loser );
                 }
 
                 break;

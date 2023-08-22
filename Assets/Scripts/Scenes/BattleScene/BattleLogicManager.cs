@@ -11,6 +11,14 @@ public class BattleLogicManager
         Evasion
     }
 
+    public enum ActionType
+    {
+        None,
+        Repulse,
+        Defend,
+        Evade
+    }
+
     public static void ExecuteSkillOnUse( CharacterSkill skill, GameCharacter caster, GameCharacter target )
     {
         Subskill _subskill = skill.GetCharacterSubskillData().GetSubskillData();
@@ -36,32 +44,99 @@ public class BattleLogicManager
                  * ( ( target.GetIsInBreakStatus() ) ? GameConfiguration.Instance.GetBattleConfiguration().GetBreakDamageMultiplier() : 1.0f ) );
     }
 
-    public static GameCharacter GetWinnerByComparingSkillAttributes( SkillAttribute skillAttribute,
-                                                                     GameCharacter firstCharacter, CharacterSkill firstCharacterSkill,
-                                                                     GameCharacter secondCharacter, CharacterSkill secondCharacterSkill )
+    public static void CompareCharacterSkillAttributes( ActionType actionType,
+                                                        GameCharacter attacker, CharacterSkill attackerSkill,
+                                                        GameCharacter defender, CharacterSkill defenderSkill,
+                                                        out GameCharacter winner, out GameCharacter loser )
     {
-        GameCharacter _winner = null;
+        winner = null;
+        loser = null;
 
-        switch ( skillAttribute )
+        int _attackerSkillStrength = GetSkillAttibuteValue( SkillAttribute.Strength, attackerSkill );
+        int _defenderSkillStrength = GetSkillAttibuteValue( SkillAttribute.Strength, defenderSkill );
+
+        int _attackerSkillAccuracy = GetSkillAttibuteValue( SkillAttribute.Accuracy, attackerSkill );
+        int _defenderSkillEvasion = GetSkillAttibuteValue( SkillAttribute.Evasion, defenderSkill );
+
+        switch ( actionType )
         {
-            case SkillAttribute.Strength:
+            case ActionType.Repulse:
 
-                int _firstCharacterSkillStrength = firstCharacterSkill.GetCharacterSubskillData().GetSubskillData().Strength;
-                int _secondCharacterSkillStrength = secondCharacterSkill.GetCharacterSubskillData().GetSubskillData().Strength;
-
-                if (_firstCharacterSkillStrength > _secondCharacterSkillStrength)
+                if (_attackerSkillStrength > _defenderSkillStrength)
                 {
-                    _winner = firstCharacter;
+                    winner = attacker;
                 }
-                else if (_firstCharacterSkillStrength < _secondCharacterSkillStrength)
+                else if (_attackerSkillStrength < _defenderSkillStrength)
                 {
-                    _winner = secondCharacter;
+                    winner = defender;
+                }
+
+                break;
+
+            case ActionType.Defend:
+
+                if (_defenderSkillStrength >= _attackerSkillStrength)
+                {
+                    winner = defender;
+                }
+                else
+                {
+                    winner = attacker;
+                }
+
+                break;
+
+            case ActionType.Evade:
+
+                if (_defenderSkillEvasion >= _attackerSkillAccuracy)
+                {
+                    winner = defender;
+                }
+                else
+                {
+                    winner = attacker;
                 }
 
                 break;
         }
 
-        return _winner;
+        if (winner == attacker)
+        {
+            loser = defender;
+        }
+        else if (winner == defender)
+        {
+            loser = attacker;
+        }
+    }
+
+    private static int GetSkillAttibuteValue( SkillAttribute skillAttribute, CharacterSkill characterSkill )
+    {
+        int _skillAttributeValue = 0;
+        Subskill _subskillData = characterSkill.GetCharacterSubskillData().GetSubskillData();
+
+        switch ( skillAttribute )
+        {
+            case SkillAttribute.Strength:
+
+                _skillAttributeValue = _subskillData.Strength;
+
+                break;
+
+            case SkillAttribute.Accuracy:
+
+                _skillAttributeValue = _subskillData.Accuracy;
+
+                break;
+
+            case SkillAttribute.Evasion:
+
+                _skillAttributeValue = _subskillData.Evasion;
+
+                break;
+        }
+
+        return _skillAttributeValue;
     }
 
     public static bool IsGameCharacterInBreakStatus( GameCharacter gameCharacter )
