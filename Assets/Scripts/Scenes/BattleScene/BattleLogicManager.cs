@@ -19,44 +19,59 @@ public class BattleLogicManager
         Evade
     }
 
-    public static void ExecuteSkillOnUse( CharacterSkill skill, GameCharacter caster, GameCharacter target )
+    public static void ExecuteCasterSkillOnUse( GameCharacter caster, GameCharacter target )
     {
-        Subskill _subskill = skill.GetCharacterSubskillData().GetSubskillData();
-        caster.MinusCurrentStatePoint( _subskill.StatePointCost * GameConfiguration.Instance.GetBattleConfiguration().GetStatePointCostMultiplier() );
-        caster.AddMaximumStatePoint( _subskill.MaxStatePointUp * GameConfiguration.Instance.GetBattleConfiguration().GetMaxStatePointUpMultiplier() );
+        CharacterSkill _skill = caster.GetCurrentSkill();
+        Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
+        caster.MinusCurrentStatePoint( _subskillData.StatePointCost * GameConfiguration.Instance.GetBattleConfiguration().GetStatePointCostMultiplier() );
+        caster.AddMaximumStatePoint( _subskillData.MaxStatePointUp * GameConfiguration.Instance.GetBattleConfiguration().GetMaxStatePointUpMultiplier() );
     }
 
-    public static void ExecuteSkillOnHittingTarget( CharacterSkill skill, GameCharacter caster, GameCharacter target )
+    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target )
     {
-        float _attackDamage = GetCurrentAttackDamage( skill, caster, target );
+        CharacterSkill _skill = caster.GetCurrentSkill();
+        float _attackDamage = GetCurrentAttackDamage( _skill, caster, target );
         if (_attackDamage > 0)
         {
             target.MinusCurrentHealthPoint( _attackDamage );
         }
 
-        Subskill _subskill = skill.GetCharacterSubskillData().GetSubskillData();
-        target.AddCurrentStressValue( _subskill.StressDamage * GameConfiguration.Instance.GetBattleConfiguration().GetStressDamageMultiplier() );
+        Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
+        target.AddCurrentStressValue( _subskillData.StressDamage * GameConfiguration.Instance.GetBattleConfiguration().GetStressDamageMultiplier() );
     }
 
     public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target )
     {
-        return ( ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * GameConfiguration.Instance.GetBattleConfiguration().GetAttackDamageMultiplier() )
-                 * ( ( target.GetIsInBreakStatus() ) ? GameConfiguration.Instance.GetBattleConfiguration().GetBreakDamageMultiplier() : 1.0f ) );
+        float _attackDamage = ( ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * GameConfiguration.Instance.GetBattleConfiguration().GetAttackDamageMultiplier() )
+                              * ( ( target.GetIsInBreakStatus() ) ? GameConfiguration.Instance.GetBattleConfiguration().GetBreakDamageMultiplier() : 1.0f ) );
+
+        CharacterSkill _targetSkill = target.GetCurrentSkill();
+        if (_targetSkill != null)
+        {
+            Subskill _targetSubskillData = _targetSkill.GetCharacterSubskillData().GetSubskillData();
+            if (_targetSubskillData.IsDefendingSkill)
+            {
+                _attackDamage *= _targetSubskillData.FailedDefenseDamageRate;
+            }
+        }
+
+        return _attackDamage;
     }
 
-    public static void CompareCharacterSkillAttributes( ActionType actionType,
-                                                        GameCharacter attacker, CharacterSkill attackerSkill,
-                                                        GameCharacter defender, CharacterSkill defenderSkill,
+    public static void CompareCharacterSkillAttributes( ActionType actionType, GameCharacter attacker, GameCharacter defender,
                                                         out GameCharacter winner, out GameCharacter loser )
     {
         winner = null;
         loser = null;
 
-        int _attackerSkillStrength = GetSkillAttibuteValue( SkillAttribute.Strength, attackerSkill );
-        int _defenderSkillStrength = GetSkillAttibuteValue( SkillAttribute.Strength, defenderSkill );
+        CharacterSkill _attackerSkill = attacker.GetCurrentSkill();
+        CharacterSkill _defenderSkill = defender.GetCurrentSkill();
 
-        int _attackerSkillAccuracy = GetSkillAttibuteValue( SkillAttribute.Accuracy, attackerSkill );
-        int _defenderSkillEvasion = GetSkillAttibuteValue( SkillAttribute.Evasion, defenderSkill );
+        int _attackerSkillStrength = GetSkillAttibuteValue( SkillAttribute.Strength, _attackerSkill );
+        int _defenderSkillStrength = GetSkillAttibuteValue( SkillAttribute.Strength, _defenderSkill );
+
+        int _attackerSkillAccuracy = GetSkillAttibuteValue( SkillAttribute.Accuracy, _attackerSkill );
+        int _defenderSkillEvasion = GetSkillAttibuteValue( SkillAttribute.Evasion, _defenderSkill );
 
         switch ( actionType )
         {

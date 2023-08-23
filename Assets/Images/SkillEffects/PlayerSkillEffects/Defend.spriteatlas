@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Ariku
+  m_Name: Defend
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -44,23 +44,29 @@ SpriteAtlas:
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
-    - {fileID: 102900000, guid: 253650c3beb7e475b8c1d14467061277, type: 3}
+    - {fileID: 102900000, guid: 69980f46126e04c7db8c5b6171ff7d44, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: caf42a76758b94c269178a5ea9aba398, type: 3}
-  - {fileID: 21300000, guid: ce21f657a50994a77afd0b8bd1a8f443, type: 3}
-  - {fileID: 21300000, guid: 045896889525c4151a87df085935e9a3, type: 3}
-  - {fileID: 21300000, guid: da1cc05cb9b3b45d4b97167dfbecdd9c, type: 3}
-  - {fileID: 21300000, guid: f2e573dd8e09b4926ae67190a7cf7469, type: 3}
+  - {fileID: 21300000, guid: 480bbc90890ca43aa82a8511344e1819, type: 3}
+  - {fileID: 21300000, guid: a08ef07492b0e4a4d8cf626a685dd502, type: 3}
+  - {fileID: 21300000, guid: 362562c7594e94852a958ee4797b2573, type: 3}
+  - {fileID: 21300000, guid: a10c7dabd6123468db6db80cba4560df, type: 3}
+  - {fileID: 21300000, guid: a43098fb91a0d45e1b1fbd1857572861, type: 3}
+  - {fileID: 21300000, guid: f983d83c91cfc4210a80cb69ee792b7d, type: 3}
+  - {fileID: 21300000, guid: e4815d2dd96e04f14b1bd131c389e0bf, type: 3}
+  - {fileID: 21300000, guid: ee4210ce6178c44ccb307a5c56911772, type: 3}
   m_PackedSpriteNamesToIndex:
-  - 01
-  - 02
-  - 02
-  - 03
-  - ariku back
+  - 04
+  - 14
+  - 15
+  - 10
+  - 12
+  - 09
+  - 11
+  - 13
   m_RenderDataMap: {}
-  m_Tag: Ariku
+  m_Tag: Defend
   m_IsVariant: 0

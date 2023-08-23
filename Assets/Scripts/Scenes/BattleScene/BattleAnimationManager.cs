@@ -29,6 +29,7 @@ public class BattleAnimationManager : MonoBehaviour
     private const string GETTING_HIT_ANIMATION_NAME = "GettingHit";
     private const string REPULSE_ANIMATION_NAME = "Repulse";
     private const string DERIVE_ANIMATION_NAME = "Derive";
+    private const string DEFEND_ANIMATION_NAME = "Defend";
 
     public enum AnimationEvent
     {
@@ -92,7 +93,7 @@ public class BattleAnimationManager : MonoBehaviour
         yield return new WaitForSeconds( 0.1f );
 
         _attacker.SetCurrentSkill( _attackerSkill, _attackTarget );
-        BattleLogicManager.ExecuteSkillOnUse( _attackerSkill, _attacker, _attackTarget );
+        BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget );
         _attacker.TriggerEvent( AnimationEvent.SetCharacter );
         _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
         _attackTarget.TriggerEvent( AnimationEvent.OnDefendPartA );
@@ -173,7 +174,7 @@ public class BattleAnimationManager : MonoBehaviour
                     yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartB ) );
                 }
 
-                BattleLogicManager.ExecuteSkillOnHittingTarget( _attackerSkill, _attacker, _attackTarget );
+                BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget );
                 cameraEffect.Shake();
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
                 yield return new WaitForSeconds( 1.0f );
@@ -188,7 +189,7 @@ public class BattleAnimationManager : MonoBehaviour
                     _derivedSkill = _attackerSkill.GetCharacterSubskillData().GetDerivedSkill();
                     battleFlowRound.GoToTargetATL( battleFlowRound.GetNextATL( _attacker ), false );
                     _attacker.SetCurrentSkill( _derivedSkill );
-                    BattleLogicManager.ExecuteSkillOnUse( _derivedSkill, _attacker, _attackTarget );
+                    BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget );
 
                     if (_characterPartB != NO_ANIMATION)
                     {
@@ -200,7 +201,7 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartB ) );
                     }
 
-                    BattleLogicManager.ExecuteSkillOnHittingTarget( _derivedSkill, _attacker, _attackTarget );
+                    BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget );
                     cameraEffect.Shake();
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
                     yield return new WaitForSeconds( 1.0f );
@@ -220,7 +221,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                 CharacterSkill _repulseSkill = _attackTargetNextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill();
                 _attackTarget.SetCurrentSkill( _repulseSkill, _attackTarget );
-                BattleLogicManager.ExecuteSkillOnUse( _repulseSkill, _attackTarget, _attacker );
+                BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker );
 
                 if (_characterPartB != NO_ANIMATION)
                 {
@@ -236,8 +237,7 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
 
                 BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Repulse,
-                                                                    _attacker, _attackerSkill,
-                                                                    _attackTarget, _repulseSkill,
+                                                                    _attacker, _attackTarget,
                                                                     out _winner, out _loser );
 
                 if (_winner != null)
@@ -248,7 +248,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (_rangeType == RangeType.melee)
                     {
-                        BattleLogicManager.ExecuteSkillOnHittingTarget( _winner.GetCurrentSkill(), _winner, _loser );
+                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser );
                         cameraEffect.Shake();
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
                                                                                      + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ) ) );
@@ -273,10 +273,10 @@ public class BattleAnimationManager : MonoBehaviour
                     {
                         battleFlowRound.GoToTargetATL( battleFlowRound.GetNextATL( _winner ), false );
                         _winner.SetCurrentSkill( _derivedSkill );
-                        BattleLogicManager.ExecuteSkillOnUse( _derivedSkill, _winner, _loser );
+                        BattleLogicManager.ExecuteCasterSkillOnUse( _winner, _loser );
                         yield return StartCoroutine( PlayCharacterAnimation( _winner, DERIVE_ANIMATION_NAME ) );
                         yield return StartCoroutine( PlaySkillEffectAnimation( REPULSE_ANIMATION_NAME ) );
-                        BattleLogicManager.ExecuteSkillOnHittingTarget( _derivedSkill, _winner, _loser );
+                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser );
                         cameraEffect.Shake();
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
                         yield return new WaitForSeconds( 1.0f );
@@ -292,8 +292,18 @@ public class BattleAnimationManager : MonoBehaviour
 
             case GameCharacter.CharacterActionType.Backend:
 
+                if (_characterPartB != NO_ANIMATION)
+                {
+                    yield return StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartB ) );
+                }
+
+                if (_skillEffectPartB != NO_ANIMATION)
+                {
+                    yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartB ) );
+                }
+
                 CharacterSkill _attackTargetSkill = _attackTarget.GetCurrentSkill();
-                BattleLogicManager.ExecuteSkillOnUse( _attackTargetSkill, _attackTarget, _attacker );
+                BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker );
 
                 Subskill _attackTargetSubskillData = _attackTargetSkill.GetCharacterSubskillData().GetSubskillData();
                 _winner = null;
@@ -301,16 +311,32 @@ public class BattleAnimationManager : MonoBehaviour
 
                 if (_attackTargetSubskillData.IsDefendingSkill)
                 {
+                    if (_characterPartB != NO_ANIMATION)
+                    {
+                        yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, DEFEND_ANIMATION_NAME ) );
+                    }
+
+                    if (_skillEffectPartB != NO_ANIMATION)
+                    {
+                        yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, DEFEND_ANIMATION_NAME ) );
+                    }
+
                     BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Defend,
-                                                                        _attacker, _attackerSkill,
-                                                                        _attackTarget, _attackTargetSkill,
+                                                                        _attacker, _attackTarget,
                                                                         out _winner, out _loser );
+
+                    if (_loser == _attackTarget)
+                    {
+                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser );
+                        cameraEffect.Shake();
+                        yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME ) );
+                        yield return new WaitForSeconds( 1.0f );
+                    }
                 }
                 else if (_attackTargetSubskillData.IsEvadingSkill)
                 {
                     BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Evade,
-                                                                        _attacker, _attackerSkill,
-                                                                        _attackTarget, _attackTargetSkill,
+                                                                        _attacker, _attackTarget,
                                                                         out _winner, out _loser );
                 }
 
@@ -320,6 +346,7 @@ public class BattleAnimationManager : MonoBehaviour
         _attacker.GetOwnContainer().SetActive( false );
         _attacker.ShowCharacterObject();
         _attacker.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
+        _attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
 
         _attacker.Reset();
         _attackTarget.Reset();
