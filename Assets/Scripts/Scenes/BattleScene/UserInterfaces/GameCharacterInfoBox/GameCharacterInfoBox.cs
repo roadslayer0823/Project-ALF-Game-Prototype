@@ -44,14 +44,15 @@ public class GameCharacterInfoBox : MonoBehaviour
         CharacterSkill _characterSkill = this.selectedCharacter.GetCurrentSkill();
         if (_characterSkill != null)
         {
-            CharacterSubskill _characterSubskill = _characterSkill.GetCharacterSubskillData();
-            if (_characterSubskill != null)
+            CharacterSubskill _characterSubskillData = _characterSkill.GetCharacterSubskillData();
+            if (_characterSubskillData != null)
             {
-                DatabaseManager.Subskill _subskill = _characterSubskill.GetSubskillData();
-                _skillInfoString = _subskill.DisplayName;
-                _skillInfoString += ( _subskill.Strength > 1 ) ? "\n強度 +" + ( _subskill.Strength - 1 ) : "";
-                _skillInfoString += ( _subskill.Accuracy > 1 ) ? "\n命中 +" + ( _subskill.Accuracy - 1 ) : "";
-                _skillInfoString += ( _subskill.Evasion > 1 ) ? "\n迴避 +" + ( _subskill.Evasion - 1 ) : "";
+                DatabaseManager.Subskill _subskillData = _characterSubskillData.GetSubskillData();
+                _skillInfoString = _subskillData.DisplayName;
+                _skillInfoString += ( _subskillData.Strength > 1 ) ? "\n強度 +" + ( _subskillData.Strength - 1 ) : "";
+                _skillInfoString += ( _subskillData.Accuracy > 1 ) ? "\n命中 +" + ( _subskillData.Accuracy - 1 ) : "";
+                _skillInfoString += ( _subskillData.Evasion > 1 ) ? "\n迴避 +" + ( _subskillData.Evasion - 1 ) : "";
+                _skillInfoString += ( _subskillData.EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide ) ? "\n廣角" : "";
             }
         }
 

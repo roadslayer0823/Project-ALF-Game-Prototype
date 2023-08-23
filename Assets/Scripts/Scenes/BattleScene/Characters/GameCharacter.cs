@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Skill = DatabaseManager.Skill;
+using Subskill = DatabaseManager.Subskill;
 using Character = DatabaseManager.Character;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
 
@@ -273,7 +274,8 @@ public class GameCharacter : MonoBehaviour
             return false;
         }
 
-        if (!this.currentAttacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().IsInterceptable)
+        Subskill _attackerSubskillData = this.currentAttacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        if (!_attackerSubskillData.IsInterceptable)
         {
             return false;
         }
@@ -286,6 +288,11 @@ public class GameCharacter : MonoBehaviour
         repulseSkill = nextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill();
 
         if (repulseSkill == null)
+        {
+            return false;
+        }
+
+        if (( int )_attackerSubskillData.EffectType > ( int )repulseSkill.GetCharacterSubskillData().GetSubskillData().EffectType)
         {
             return false;
         }

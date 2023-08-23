@@ -3,14 +3,6 @@ using Subskill = DatabaseManager.Subskill;
 
 public class BattleLogicManager
 {
-    public enum SkillAttribute
-    {
-        None,
-        Strength,
-        Accuracy,
-        Evasion
-    }
-
     public enum ActionType
     {
         None,
@@ -27,13 +19,17 @@ public class BattleLogicManager
         caster.AddMaximumStatePoint( _subskillData.MaxStatePointUp * GameConfiguration.Instance.GetBattleConfiguration().GetMaxStatePointUpMultiplier() );
     }
 
-    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target )
+    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage = true )
     {
         CharacterSkill _skill = caster.GetCurrentSkill();
-        float _attackDamage = GetCurrentAttackDamage( _skill, caster, target );
-        if (_attackDamage > 0)
+
+        if (hasAttackDamage)
         {
-            target.MinusCurrentHealthPoint( _attackDamage );
+            float _attackDamage = GetCurrentAttackDamage( _skill, caster, target );
+            if (_attackDamage > 0)
+            {
+                target.MinusCurrentHealthPoint( _attackDamage );
+            }
         }
 
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
@@ -64,14 +60,17 @@ public class BattleLogicManager
         winner = null;
         loser = null;
 
-        CharacterSkill _attackerSkill = attacker.GetCurrentSkill();
-        CharacterSkill _defenderSkill = defender.GetCurrentSkill();
+        Subskill _attackerSubskillData = attacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        Subskill _defenderSubskillData = defender.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
 
-        int _attackerSkillStrength = GetSkillAttibuteValue( SkillAttribute.Strength, _attackerSkill );
-        int _defenderSkillStrength = GetSkillAttibuteValue( SkillAttribute.Strength, _defenderSkill );
+        int _attackerSkillStrength = _attackerSubskillData.Strength;
+        int _defenderSkillStrength = _defenderSubskillData.Strength;
 
-        int _attackerSkillAccuracy = GetSkillAttibuteValue( SkillAttribute.Accuracy, _attackerSkill );
-        int _defenderSkillEvasion = GetSkillAttibuteValue( SkillAttribute.Evasion, _defenderSkill );
+        int _attackerSkillAccuracy = _attackerSubskillData.Accuracy;
+        int _defenderSkillEvasion = _defenderSubskillData.Evasion;
+
+        int _attackerSkillEffectType = ( int )_attackerSubskillData.EffectType;
+        int _defenderSkillEffectType = ( int )_defenderSubskillData.EffectType;
 
         switch ( actionType )
         {
@@ -90,26 +89,40 @@ public class BattleLogicManager
 
             case ActionType.Defend:
 
-                if (_defenderSkillStrength >= _attackerSkillStrength)
+                if (_attackerSkillEffectType > _defenderSkillEffectType)
                 {
-                    winner = defender;
+                    winner = attacker;
                 }
                 else
                 {
-                    winner = attacker;
+                    if (_defenderSkillStrength >= _attackerSkillStrength)
+                    {
+                        winner = defender;
+                    }
+                    else
+                    {
+                        winner = attacker;
+                    }
                 }
 
                 break;
 
             case ActionType.Evade:
 
-                if (_defenderSkillEvasion >= _attackerSkillAccuracy)
+                if (_attackerSkillEffectType > _defenderSkillEffectType)
                 {
-                    winner = defender;
+                    winner = attacker;
                 }
                 else
                 {
-                    winner = attacker;
+                    if (_defenderSkillEvasion >= _attackerSkillAccuracy)
+                    {
+                        winner = defender;
+                    }
+                    else
+                    {
+                        winner = attacker;
+                    }
                 }
 
                 break;
@@ -123,35 +136,6 @@ public class BattleLogicManager
         {
             loser = attacker;
         }
-    }
-
-    private static int GetSkillAttibuteValue( SkillAttribute skillAttribute, CharacterSkill characterSkill )
-    {
-        int _skillAttributeValue = 0;
-        Subskill _subskillData = characterSkill.GetCharacterSubskillData().GetSubskillData();
-
-        switch ( skillAttribute )
-        {
-            case SkillAttribute.Strength:
-
-                _skillAttributeValue = _subskillData.Strength;
-
-                break;
-
-            case SkillAttribute.Accuracy:
-
-                _skillAttributeValue = _subskillData.Accuracy;
-
-                break;
-
-            case SkillAttribute.Evasion:
-
-                _skillAttributeValue = _subskillData.Evasion;
-
-                break;
-        }
-
-        return _skillAttributeValue;
     }
 
     public static bool IsGameCharacterInBreakStatus( GameCharacter gameCharacter )

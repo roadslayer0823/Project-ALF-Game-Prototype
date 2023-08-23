@@ -75,6 +75,11 @@ public class EnemyCharacter : GameCharacter
                 {
                     base.SetCurrentCharacterActionType( CharacterActionType.Repulse );
                 }
+                else if (Random.value < 0.5f)
+                {
+                    base.SetCurrentCharacterActionType( CharacterActionType.Backend );
+                    base.SetCurrentSkill( base.selectedBackendSkillList[ Random.Range( 0, base.selectedBackendSkillList.Count ) ] );
+                }
 
                 break;
 

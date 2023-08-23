@@ -65,7 +65,7 @@ public class BattleAnimationManager : MonoBehaviour
         CharacterSkill _attackerSkill = battleFlowATL.GetSelectedSkill();
         SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackerSkill.GetCharacterSubskillData().GetSubskillData().Id );
 
-        RangeType _rangeType = battleFlowATL.GetSelectedSkill().GetCharacterSubskillData().GetSubskillData().Range;
+        RangeType _attackerRangeType = battleFlowATL.GetSelectedSkill().GetCharacterSubskillData().GetSubskillData().Range;
         string _characterPartA = _skillAnimation.CharacterPartA;
         string _characterPartB = _skillAnimation.CharacterPartB;
         string _skillEffectPartA = _skillAnimation.SkillEffectPartA;
@@ -134,7 +134,7 @@ public class BattleAnimationManager : MonoBehaviour
         }
 
         // Hide the attacker for Part B if the attacker's range type is ranged.
-        if (_rangeType == RangeType.ranged)
+        if (_attackerRangeType == RangeType.ranged)
         {
             _attacker.HideCharacterObject();
         }
@@ -152,9 +152,6 @@ public class BattleAnimationManager : MonoBehaviour
         this.targetCamera.orthographicSize = cameraOrthographicSize;
 
         _attacker.GetOpponentContainer().SetActive( true );
-        _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
-        StartCoroutine( CountdownForEventCutoff( ( GetAttackAnimationLength( _attacker, _characterPartB, _skillEffectPartB ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
-                                                 _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
         GameCharacter _winner = null;
         GameCharacter _loser = null;
@@ -163,6 +160,10 @@ public class BattleAnimationManager : MonoBehaviour
         switch ( _attackTarget.GetCurrentCharacterActionType() )
         {
             case GameCharacter.CharacterActionType.None:
+
+                _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
+                StartCoroutine( CountdownForEventCutoff( ( GetAttackAnimationLength( _attacker, _characterPartB, _skillEffectPartB ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
+                                                         _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
                 if (_characterPartB != NO_ANIMATION)
                 {
@@ -175,7 +176,7 @@ public class BattleAnimationManager : MonoBehaviour
                 }
 
                 BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget );
-                cameraEffect.Shake();
+                this.cameraEffect.Shake();
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
                 yield return new WaitForSeconds( 1.0f );
 
@@ -186,30 +187,13 @@ public class BattleAnimationManager : MonoBehaviour
 
                 if (_attacker.GetCurrentCharacterActionType() == GameCharacter.CharacterActionType.Derive)
                 {
-                    _derivedSkill = _attackerSkill.GetCharacterSubskillData().GetDerivedSkill();
-                    battleFlowRound.GoToTargetATL( battleFlowRound.GetNextATL( _attacker ), false );
-                    _attacker.SetCurrentSkill( _derivedSkill );
-                    BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget );
+                    yield return StartCoroutine( RunDerivedSkill( _attackerSkill.GetCharacterSubskillData().GetDerivedSkill(),
+                                                                  _attacker, _attackTarget, battleFlowRound ) );
+                }
 
-                    if (_characterPartB != NO_ANIMATION)
-                    {
-                        yield return StartCoroutine( PlayCharacterAnimation( _attacker, _characterPartB ) );
-                    }
-
-                    if (_skillEffectPartB != NO_ANIMATION)
-                    {
-                        yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _skillEffectPartB ) );
-                    }
-
-                    BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget );
-                    cameraEffect.Shake();
-                    yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
-                    yield return new WaitForSeconds( 1.0f );
-
-                    if (CheckHasBattleEnded( battleGameManager ))
-                    {
-                        yield break;
-                    }
+                if (CheckHasBattleEnded( battleGameManager ))
+                {
+                    yield break;
                 }
 
                 break;
@@ -246,10 +230,10 @@ public class BattleAnimationManager : MonoBehaviour
                     StartCoroutine( CountdownForEventCutoff( 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
                                                              _attacker, AnimationEvent.OnRepulseWin_Cutoff ) );
 
-                    if (_rangeType == RangeType.melee)
+                    if (_attackerRangeType == RangeType.melee)
                     {
                         BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser );
-                        cameraEffect.Shake();
+                        this.cameraEffect.Shake();
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
                                                                                      + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ) ) );
                         yield return new WaitForSeconds( 1.0f );
@@ -277,7 +261,7 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( PlayCharacterAnimation( _winner, DERIVE_ANIMATION_NAME ) );
                         yield return StartCoroutine( PlaySkillEffectAnimation( REPULSE_ANIMATION_NAME ) );
                         BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser );
-                        cameraEffect.Shake();
+                        this.cameraEffect.Shake();
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_Right" ) );
                         yield return new WaitForSeconds( 1.0f );
 
@@ -325,12 +309,34 @@ public class BattleAnimationManager : MonoBehaviour
                                                                         _attacker, _attackTarget,
                                                                         out _winner, out _loser );
 
-                    if (_loser == _attackTarget)
+                    bool _isAttackerWinner = ( _winner == _attacker );
+                    BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _isAttackerWinner );
+
+                    if (_isAttackerWinner)
                     {
-                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser );
-                        cameraEffect.Shake();
+                        _attacker.TriggerEvent( AnimationEvent.OnRepulseWin );
+                        StartCoroutine( CountdownForEventCutoff( 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
+                                                                 _attacker, AnimationEvent.OnRepulseWin_Cutoff ) );
+
+                        this.cameraEffect.Shake();
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME ) );
                         yield return new WaitForSeconds( 1.0f );
+
+                        if (CheckHasBattleEnded( battleGameManager ))
+                        {
+                            yield break;
+                        }
+
+                        if (_attacker.GetCurrentCharacterActionType() == GameCharacter.CharacterActionType.Derive)
+                        {
+                            yield return StartCoroutine( RunDerivedSkill( _attackerSkill.GetCharacterSubskillData().GetDerivedSkill(),
+                                                                          _attacker, _attackTarget, battleFlowRound ) );
+                        }
+
+                        if (CheckHasBattleEnded( battleGameManager ))
+                        {
+                            yield break;
+                        }
                     }
                 }
                 else if (_attackTargetSubskillData.IsEvadingSkill)
@@ -350,6 +356,32 @@ public class BattleAnimationManager : MonoBehaviour
 
         _attacker.Reset();
         _attackTarget.Reset();
+    }
+
+    private IEnumerator RunDerivedSkill( CharacterSkill derivedSkill, GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound battleFlowRound )
+    {
+        battleFlowRound.GoToTargetATL( battleFlowRound.GetNextATL( attacker ), false );
+        attacker.SetCurrentSkill( derivedSkill );
+        BattleLogicManager.ExecuteCasterSkillOnUse( attacker, attackTarget );
+
+        SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( derivedSkill.GetCharacterSubskillData().GetSubskillData().Id );
+        string _characterPartB = _skillAnimation.CharacterPartB;
+        string _skillEffectPartB = _skillAnimation.SkillEffectPartB;
+
+        if (_characterPartB != NO_ANIMATION)
+        {
+            yield return StartCoroutine( PlayCharacterAnimation( attacker, _characterPartB ) );
+        }
+
+        if (_skillEffectPartB != NO_ANIMATION)
+        {
+            yield return StartCoroutine( PlaySkillEffectAnimation( attacker, _skillEffectPartB ) );
+        }
+
+        BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget );
+        this.cameraEffect.Shake();
+        yield return StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME ) );
+        yield return new WaitForSeconds( 1.0f );
     }
 
     private IEnumerator PlayCharacterAnimation( GameCharacter gameCharacter, string animationName )

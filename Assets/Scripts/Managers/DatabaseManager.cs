@@ -514,9 +514,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [HideInInspector] public string EffectTypeString { get; private set; }
         public enum EffectTypeEnum
         {
-            none,
-            basic,
-            wide
+            none = 0,
+            basic = 1,
+            wide = 2
         }
         public EffectTypeEnum EffectType;
 
