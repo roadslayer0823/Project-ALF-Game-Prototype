@@ -36,10 +36,12 @@ public class BattleAnimationManager : MonoBehaviour
         SetCharacter,
         OnAttackPartB,
         OnAttackPartB_Cutoff,
-        OnDefendPartA,
-        OnDefendPartA_Cutoff,
+        OnDefensePartA,
+        OnDefensePartA_Cutoff,
         OnRepulseWin,
-        OnRepulseWin_Cutoff
+        OnRepulseWin_Cutoff,
+        OnDefenseWin,
+        OnDefenseWin_Cutoff
     }
 
     public void Initialize( Action<bool> onBattleEndedCallback )
@@ -95,32 +97,12 @@ public class BattleAnimationManager : MonoBehaviour
         BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget );
         _attacker.TriggerEvent( AnimationEvent.SetCharacter );
         _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
-        _attackTarget.TriggerEvent( AnimationEvent.OnDefendPartA );
+        _attackTarget.TriggerEvent( AnimationEvent.OnDefensePartA );
 
         StartCoroutine( CountdownForEventCutoff( ( GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
-                                                 _attackTarget, AnimationEvent.OnDefendPartA_Cutoff ) );
+                                                 _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
 
-        float _cameraX = 0.0f;
-        float _cameraY = 0.0f;
-        float _cameraSize = 0.0f;
-        if (_attacker is PlayerCharacter)
-        {
-            _cameraX = 2.0f;
-            _cameraY = -1.2f;
-            _cameraSize = 3.5f;
-        }
-        else if (_attacker is EnemyCharacter)
-        {
-            _cameraX = -2.0f;
-            _cameraY = -1.7f;
-            _cameraSize = 4.0f;
-        }
-
-        LeanTween.moveX( this.targetCameraObject, _cameraX, 1.0f ).setEaseOutCirc();
-        LeanTween.moveY( this.targetCameraObject, _cameraY, 1.0f ).setEaseOutCirc();
-        LeanTween.value( this.targetCamera.orthographicSize, _cameraSize, 1.0f ).setEaseOutCirc().setOnUpdate( ( float value ) => { this.targetCamera.orthographicSize = value;  } );
-
-        yield return new WaitForSeconds( 1.0f );
+        yield return StartCoroutine( ZoomInCameraToTarget( _attacker, 1.0f ) );
 
         if (_attackerCharacterPartA != NO_ANIMATION)
         {
@@ -301,41 +283,20 @@ public class BattleAnimationManager : MonoBehaviour
 
                 if (_attackTargetSubskillData.IsDefendingSkill)
                 {
-                    if (_attackTargetBackendSkillAnimationCharacterPartA != NO_ANIMATION)
-                    {
-                        yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA ) );
-                    }
-
-                    if (_attackTargetBackendSkillAnimationSkillEffectPartA != NO_ANIMATION)
-                    {
-                        yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, _attackTargetBackendSkillAnimationSkillEffectPartA ) );
-                    }
-
                     BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Defend,
                                                                         _attacker, _attackTarget,
                                                                         out _winner, out _loser );
                 }
                 else if (_attackTargetSubskillData.IsEvadingSkill)
                 {
-                    if (_attackTargetBackendSkillAnimationCharacterPartA != NO_ANIMATION)
-                    {
-                        yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA ) );
-                    }
-
-                    if (_attackTargetBackendSkillAnimationSkillEffectPartA != NO_ANIMATION)
-                    {
-                        yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, _attackTargetBackendSkillAnimationSkillEffectPartA ) );
-                    }
-
                     BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Evade,
                                                                         _attacker, _attackTarget,
                                                                         out _winner, out _loser );
                 }
 
-                bool _isAttackerWinner = ( _winner == _attacker );
-                BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _isAttackerWinner );
+                BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _winner == _attacker );
 
-                if (_isAttackerWinner)
+                if (_winner == _attacker)
                 {
                     _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
                     StartCoroutine( CountdownForEventCutoff( 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
@@ -359,6 +320,69 @@ public class BattleAnimationManager : MonoBehaviour
                     if (CheckHasBattleEnded( battleGameManager ))
                     {
                         yield break;
+                    }
+                }
+                else if (_winner == _attackTarget)
+                {
+                    _attackTarget.TriggerEvent( AnimationEvent.OnDefenseWin );
+                    StartCoroutine( CountdownForEventCutoff( ( GetAttackAnimationLength( _attacker, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBackendSkillAnimationSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
+                                                             _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
+
+                    if (_attackTargetBackendSkillAnimationCharacterPartA != NO_ANIMATION)
+                    {
+                        yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA ) );
+                    }
+
+                    if (_attackTargetBackendSkillAnimationSkillEffectPartA != NO_ANIMATION)
+                    {
+                        yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, _attackTargetBackendSkillAnimationSkillEffectPartA ) );
+                    }
+
+                    yield return new WaitForSeconds( 1.0f );
+
+                    if (_winner.GetCurrentCharacterActionType() == GameCharacter.CharacterActionType.Counter)
+                    {
+                        _winner.SetCurrentSkill( _winner.GetCurrentSkill().GetCharacterSubskillData().GetCounterSkill() );
+                        BattleLogicManager.ExecuteCasterSkillOnUse( _winner, _loser );
+
+                        RangeType _winnerRangeType = _winner.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range;
+                        if (_winnerRangeType == RangeType.melee)
+                        {
+                            if (_winner is PlayerCharacter)
+                            {
+                                ChangeToBackgroundPartB();
+                            }
+                            else if (_winner is EnemyCharacter)
+                            {
+                                ChangeToBackgroundPartA();
+                            }
+
+                            _winner.GetSortingGroup().sortingOrder = 3;
+                            _loser.GetSortingGroup().sortingOrder = 1;
+                            _loser.ShowCharacterObject();
+                        }
+
+                        yield return StartCoroutine( PlayCharacterAnimation( _winner, DERIVE_ANIMATION_NAME ) );
+
+                        if (_winnerRangeType == RangeType.melee)
+                        {
+                            yield return StartCoroutine( PlaySkillEffectAnimation( _winner, "HittingEffect" ) );
+                        }
+                        else
+                        {
+                            yield return StartCoroutine( PlaySkillEffectAnimation( REPULSE_ANIMATION_NAME ) );
+                        }
+
+                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser );
+                        this.cameraEffect.Shake();
+                        yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
+                                                                                     + ( ( _winner is PlayerCharacter ) ? "Left" : "Right" ) ) );
+                        yield return new WaitForSeconds( 1.0f );
+
+                        if (CheckHasBattleEnded( battleGameManager ))
+                        {
+                            yield break;
+                        }
                     }
                 }
 
@@ -422,6 +446,40 @@ public class BattleAnimationManager : MonoBehaviour
     {
         this.isAnimationEventTriggered = false;
         yield return new WaitUntil( () => this.isAnimationEventTriggered );
+    }
+
+    private IEnumerator ZoomInCameraToTarget( GameCharacter target, float duration )
+    {
+        float _cameraX = 0.0f;
+        float _cameraY = 0.0f;
+        float _cameraSize = 0.0f;
+        if (target is PlayerCharacter)
+        {
+            _cameraX = 2.0f;
+            _cameraY = -1.2f;
+            _cameraSize = 3.5f;
+        }
+        else if (target is EnemyCharacter)
+        {
+            _cameraX = -2.0f;
+            _cameraY = -1.7f;
+            _cameraSize = 4.0f;
+        }
+
+        LeanTween.moveX( this.targetCameraObject, _cameraX, duration ).setEaseOutCirc();
+        LeanTween.moveY( this.targetCameraObject, _cameraY, duration ).setEaseOutCirc();
+        LeanTween.value( this.targetCamera.orthographicSize, _cameraSize, duration ).setEaseOutCirc().setOnUpdate( ( float value ) => { this.targetCamera.orthographicSize = value; } );
+
+        yield return new WaitForSeconds( duration );
+    }
+
+    private IEnumerator ZoomOutCameraToOriginal( float duration )
+    {
+        LeanTween.moveX( this.targetCameraObject, cameraPosition.x, duration ).setEaseOutCirc();
+        LeanTween.moveY( this.targetCameraObject, cameraPosition.y, duration ).setEaseOutCirc();
+        LeanTween.value( this.targetCamera.orthographicSize, cameraOrthographicSize, duration ).setEaseOutCirc().setOnUpdate( ( float value ) => { this.targetCamera.orthographicSize = value; } );
+
+        yield return new WaitForSeconds( duration );
     }
 
     private bool CheckHasBattleEnded( BattleGameManager battleGameManager )

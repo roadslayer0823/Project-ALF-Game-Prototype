@@ -324,6 +324,30 @@ public class GameCharacter : MonoBehaviour
         return true;
     }
 
+    public bool IsAbleToCounter()
+    {
+        return IsAbleToCounter( out _ );
+    }
+
+    public bool IsAbleToCounter( out CharacterSkill counterSkill )
+    {
+        counterSkill = null;
+
+        if (this.GetIsInBreakStatus())
+        {
+            return false;
+        }
+
+        counterSkill = this.currentSkill.GetCharacterSubskillData().GetCounterSkill();
+
+        if (counterSkill == null)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public string GetId()
     {
         return this.id;

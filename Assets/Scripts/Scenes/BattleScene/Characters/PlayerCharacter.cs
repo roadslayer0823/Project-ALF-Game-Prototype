@@ -33,7 +33,7 @@ public class PlayerCharacter : GameCharacter
 
                 break;
 
-            case AnimationEvent.OnDefendPartA:
+            case AnimationEvent.OnDefensePartA:
 
                 CharacterSkill _repulseSkill = null;
                 bool _isAbleToRepulse = base.IsAbleToRepulse( _nextATL, out _repulseSkill );
@@ -47,9 +47,24 @@ public class PlayerCharacter : GameCharacter
 
                 break;
 
+            case AnimationEvent.OnDefenseWin:
+
+                CharacterSkill _counterSkill = null;
+                bool _isAbleToCounter = base.IsAbleToCounter( out _counterSkill );
+
+                _battleUiManager.UpdatePlayerActionPanelButtons(
+                    qteActionType: ( _isAbleToCounter ) ? QTEActionType.Counter : QTEActionType.None,
+                    qteSkill: _counterSkill,
+                    canDefend: false,
+                    canEvade: false
+                    );
+
+                break;
+
             case AnimationEvent.OnAttackPartB_Cutoff:
-            case AnimationEvent.OnDefendPartA_Cutoff:
+            case AnimationEvent.OnDefensePartA_Cutoff:
             case AnimationEvent.OnRepulseWin_Cutoff:
+            case AnimationEvent.OnDefenseWin_Cutoff:
 
                 _battleUiManager.DisablePlayerActionPanelButtons();
 

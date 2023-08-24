@@ -69,13 +69,13 @@ public class EnemyCharacter : GameCharacter
 
                 break;
 
-            case AnimationEvent.OnDefendPartA:
+            case AnimationEvent.OnDefensePartA:
 
-                if (base.IsAbleToRepulse( _nextATL ))
+                if (base.IsAbleToRepulse( _nextATL ) && Random.value < 0.8f)
                 {
                     base.SetCurrentCharacterActionType( CharacterActionType.Repulse );
                 }
-                else if (Random.value < 0.5f)
+                else if (Random.value < 0.8f)
                 {
                     base.SetCurrentCharacterActionType( CharacterActionType.Backend );
                     base.SetCurrentSkill( base.selectedBackendSkillList[ Random.Range( 0, base.selectedBackendSkillList.Count ) ] );
@@ -83,8 +83,14 @@ public class EnemyCharacter : GameCharacter
 
                 break;
 
+            case AnimationEvent.OnDefenseWin:
+
+                base.SetCurrentCharacterActionType( CharacterActionType.Counter );
+
+                break;
+
             case AnimationEvent.OnAttackPartB_Cutoff:
-            case AnimationEvent.OnDefendPartA_Cutoff:
+            case AnimationEvent.OnDefensePartA_Cutoff:
             case AnimationEvent.OnRepulseWin_Cutoff:
                 break;
         }
