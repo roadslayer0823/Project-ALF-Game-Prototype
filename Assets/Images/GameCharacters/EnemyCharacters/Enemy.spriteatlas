@@ -50,6 +50,7 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 7cc86720997be43e9a9205205e4fe3a6, type: 3}
   - {fileID: 21300000, guid: 6bb730e04b9704352b40de9fd2ad09f3, type: 3}
   - {fileID: 21300000, guid: 58d0a0625497646909d5b54437e65a37, type: 3}
   - {fileID: 21300000, guid: a088f26267752457e92f87bd6b1f03b3, type: 3}
@@ -65,7 +66,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: e13430cd8bf2a441889552529823059e, type: 3}
   - {fileID: 21300000, guid: 88be76dd0eccc493e99d613f5650b91b, type: 3}
   - {fileID: 21300000, guid: 601c7f6ef20514264847143d1c32b449, type: 3}
+  - {fileID: 21300000, guid: fffc625f408074ed4a139a07f7d37a84, type: 3}
+  - {fileID: 21300000, guid: f87efd7f290a1425fb104fa7558a4fed, type: 3}
   m_PackedSpriteNamesToIndex:
+  - 03
   - 04
   - 04
   - 02
@@ -81,6 +85,8 @@ SpriteAtlas:
   - 01
   - 02
   - 06
+  - 04
+  - 02
   m_RenderDataMap: {}
   m_Tag: Enemy
   m_IsVariant: 0

@@ -453,6 +453,7 @@ public class GameCharacter : MonoBehaviour
 
     public void Reset()
     {
+        currentCharacterActionType = CharacterActionType.None;
         SetCurrentSkill( null );
         SetCurrentAttacker( null );
     }
