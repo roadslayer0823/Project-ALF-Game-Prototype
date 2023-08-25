@@ -15,8 +15,12 @@ public class SkillSelectionListBox : MonoBehaviour
 
     private List<SkillSelectionBox> repulseSkillSelectionBoxList = null;
     private List<SkillSelectionBox> derivedSkillSelectionBoxList = null;
+    private List<SkillSelectionBox> counterSkillSelectionBoxList = null;
     private CharacterSkill lastSelectedCharacterSkill = null;
-    private bool isLastSelectedSkillChanged = false;
+    private CharacterSkill lastSelectedRepulseSkill = null;
+    private CharacterSkill lastSelectedDerivedSkill = null;
+    private CharacterSkill lastSelectedCounterSkill = null;
+    private bool isLastSelectedCharacterSkillChanged = false;
 
     public void Initialize( SkillSelectionTab skillSelectionTab )
     {
@@ -39,6 +43,7 @@ public class SkillSelectionListBox : MonoBehaviour
 
         HideRepulseSkillList();
         HideDerivedSkillList();
+        HideCounterSkillList();
     }
 
     // Hide main list for the active and backend character skill 
@@ -79,6 +84,7 @@ public class SkillSelectionListBox : MonoBehaviour
 
         HideCharacterSkillList();
         HideDerivedSkillList();
+        HideCounterSkillList();
     }
 
     // Hide the repulse skill list
@@ -119,6 +125,7 @@ public class SkillSelectionListBox : MonoBehaviour
 
         HideCharacterSkillList();
         HideRepulseSkillList();
+        HideCounterSkillList();
     }
 
     // Hide the derived skill list
@@ -136,14 +143,58 @@ public class SkillSelectionListBox : MonoBehaviour
         }
     }
 
+    // Show the counter skill list based on the last selected skill
+    public void ShowCounterSkillList()
+    {
+        if (this.lastSelectedCharacterSkill == null)
+        {
+            this.containerContent.gameObject.SetActive(false);
+            return;
+        }
+        else
+        {
+            this.containerContent.gameObject.SetActive(true);
+        }
+
+        SetupCounterSkillSelectionBoxList();
+
+        for (int i = 0; i < this.counterSkillSelectionBoxList.Count; i++)
+        {
+            SkillSelectionBox _skillSelectionBox = this.counterSkillSelectionBoxList[i];
+            _skillSelectionBox.gameObject.SetActive(true);
+        }
+
+        HideCharacterSkillList();
+        HideRepulseSkillList();
+        HideDerivedSkillList();
+        //XXXX
+    }
+
+    // Hide the counter skill list
+    private void HideCounterSkillList()
+    {
+        if (this.counterSkillSelectionBoxList == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < this.counterSkillSelectionBoxList.Count; i++)
+        {
+            SkillSelectionBox _skillSelectionBox = this.counterSkillSelectionBoxList[i];
+            _skillSelectionBox.gameObject.SetActive(false);
+        }
+    }
+
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
         skillSelectionTab.OnSkillSelected( skillSelectionBox );
+        ShowSelectedSkillInfo(skillSelectionBox);
     }
 
     public void OnSkillDeselected( SkillSelectionBox skillSelectionBox )
     {
         skillSelectionTab.OnSkillDeselected( skillSelectionBox );
+        ShowSelectedSkillInfo(skillSelectionBox);
     }
 
     public void ShowSelectedSkillInfo(SkillSelectionBox skillSelectionBox)
@@ -159,8 +210,22 @@ public class SkillSelectionListBox : MonoBehaviour
             // To make sure the new selected character skill is only in attack tab.
             if (this.skillSelectionTab.GetSkillInfoTab() == SkillSelectionPanel.SkillInfoTab.attack)
             {
-                this.isLastSelectedSkillChanged = true;
+                this.isLastSelectedCharacterSkillChanged = true;
                 this.lastSelectedCharacterSkill = skillSelectionBox.GetCharacterSkill();
+                this.lastSelectedRepulseSkill = null;
+                this.lastSelectedDerivedSkill = null;
+            }
+            else if (this.skillSelectionTab.GetSkillInfoTab() == SkillSelectionPanel.SkillInfoTab.repulse)
+            {
+                this.lastSelectedRepulseSkill = skillSelectionBox.GetCharacterSkill();
+            }
+            else if (this.skillSelectionTab.GetSkillInfoTab() == SkillSelectionPanel.SkillInfoTab.derived)
+            {
+                this.lastSelectedDerivedSkill = skillSelectionBox.GetCharacterSkill();
+            }
+            else if (this.skillSelectionTab.GetSkillInfoTab() == SkillSelectionPanel.SkillInfoTab.counter)
+            {
+                this.lastSelectedCounterSkill = skillSelectionBox.GetCharacterSkill();
             }
         }
     }
@@ -186,7 +251,7 @@ public class SkillSelectionListBox : MonoBehaviour
 
     private void SetupRepulseSkillSelectionBoxList()
     {
-        if (this.repulseSkillSelectionBoxList == null || this.isLastSelectedSkillChanged)
+        if (this.repulseSkillSelectionBoxList == null || this.isLastSelectedCharacterSkillChanged)
         {
             this.repulseSkillSelectionBoxList = new List<SkillSelectionBox>();
 
@@ -202,14 +267,14 @@ public class SkillSelectionListBox : MonoBehaviour
 
                 this.repulseSkillSelectionBoxList.Add(skillSelectionBox);
 
-                this.isLastSelectedSkillChanged = false;
+                this.isLastSelectedCharacterSkillChanged = false;
             }
         }
     }
 
     private void SetupDerivedSkillSelectionBoxList()
     {
-        if (this.derivedSkillSelectionBoxList == null || this.isLastSelectedSkillChanged)
+        if (this.derivedSkillSelectionBoxList == null || this.isLastSelectedCharacterSkillChanged)
         {
             this.derivedSkillSelectionBoxList = new List<SkillSelectionBox>();
 
@@ -225,7 +290,30 @@ public class SkillSelectionListBox : MonoBehaviour
 
                 this.derivedSkillSelectionBoxList.Add(skillSelectionBox);
 
-                this.isLastSelectedSkillChanged = false;
+                this.isLastSelectedCharacterSkillChanged = false;
+            }
+        }
+    }
+
+    private void SetupCounterSkillSelectionBoxList()
+    {
+        if (this.counterSkillSelectionBoxList == null || this.isLastSelectedCharacterSkillChanged)
+        {
+            this.counterSkillSelectionBoxList = new List<SkillSelectionBox>();
+
+            // TODO: Replace with array of counter skill, use for loop
+            CharacterSkill _counterSkill = this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetCounterSkill();
+
+            if (_counterSkill != null)
+            {
+                GameObject skillSelectionBoxObj = Instantiate(this.skillSelectionBoxPrefabObject, this.containerContent, false);
+
+                SkillSelectionBox skillSelectionBox = skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
+                skillSelectionBox.Initialize(this, _counterSkill);
+
+                this.counterSkillSelectionBoxList.Add(skillSelectionBox);
+
+                this.isLastSelectedCharacterSkillChanged = false;
             }
         }
     }
@@ -233,5 +321,20 @@ public class SkillSelectionListBox : MonoBehaviour
     public CharacterSkill GetLastSelectedCharacterSkill()
     {
         return this.lastSelectedCharacterSkill;
+    }
+
+    public CharacterSkill GetLastSelectedRepulseSkill()
+    {
+        return this.lastSelectedRepulseSkill;
+    }
+
+    public CharacterSkill GetLastSelectedDerivedSkill()
+    {
+        return this.lastSelectedDerivedSkill;
+    }
+
+    public CharacterSkill GetLastSelectedCounterSkill()
+    {
+        return this.lastSelectedCounterSkill;
     }
 }

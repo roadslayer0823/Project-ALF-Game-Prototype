@@ -12,9 +12,11 @@ public class SkillSelectionPanel : MonoBehaviour
     [SerializeField] private Button attackSkillSelectionTabButton = null;
     [SerializeField] private Button repulseSkillSelectionTabButton = null;
     [SerializeField] private Button derivedSkillSelectionTabButton = null;
+    [SerializeField] private Button counterSkillSelectionTabButton = null;
     [SerializeField] private Image attackSkillSelectionTabBackgroundImage = null;
     [SerializeField] private Image repulseSkillSelectionTabBackgroundImage = null;
     [SerializeField] private Image derivedSkillSelectionTabBackgroundImage = null;
+    [SerializeField] private Image counterSkillSelectionTabBackgroundImage = null;
 
     [Header("SkillTabInteractionColor")]
     [SerializeField] private Color selectedTabColor = new Color();
@@ -29,15 +31,16 @@ public class SkillSelectionPanel : MonoBehaviour
 
     private SkillInfoTab skillInfoTab = SkillInfoTab.none;
     private SkillSelectionUIPanel skillSelectionPanel = SkillSelectionUIPanel.none;
-    List<CharacterSkill> activeSkillList = new List<CharacterSkill>();
-    List<CharacterSkill> backendSkillList = new List<CharacterSkill>();
+    private List<CharacterSkill> activeSkillList = new List<CharacterSkill>();
+    private List<CharacterSkill> backendSkillList = new List<CharacterSkill>();
 
     public enum SkillInfoTab
     {
         none,
         attack,
         repulse,
-        derived
+        derived,
+        counter
     }
 
     public enum SkillSelectionUIPanel
@@ -60,6 +63,7 @@ public class SkillSelectionPanel : MonoBehaviour
         this.attackSkillSelectionTabButton.onClick.AddListener(ShowAttackSkillTab);
         this.repulseSkillSelectionTabButton.onClick.AddListener(ShowRepulseSkillTab);
         this.derivedSkillSelectionTabButton.onClick.AddListener(ShowDerivedSkillTab);
+        this.counterSkillSelectionTabButton.onClick.AddListener(ShowCounterSkillTab);
     }
 
     // Categorize and display all the skill that the character have based on skill category
@@ -233,12 +237,24 @@ public class SkillSelectionPanel : MonoBehaviour
         ChangeSkillSelectionTab();
     }
 
+    // Callback function for the "counterSkillSelectionTabButton"
+    private void ShowCounterSkillTab()
+    {
+        UnselectAllTab();
+
+        this.skillInfoTab = SkillInfoTab.counter;
+        this.counterSkillSelectionTabBackgroundImage.color = this.selectedTabColor;
+
+        ChangeSkillSelectionTab();
+    }
+
     // Change all the tabs background to unselected.
     private void UnselectAllTab()
     {
         this.attackSkillSelectionTabBackgroundImage.color = this.unselectedTabColor;
         this.repulseSkillSelectionTabBackgroundImage.color = this.unselectedTabColor;
         this.derivedSkillSelectionTabBackgroundImage.color = this.unselectedTabColor;
+        this.counterSkillSelectionTabBackgroundImage.color = this.unselectedTabColor;
     }
 
     // Switch between active skill panel and backend skill panel
@@ -247,10 +263,20 @@ public class SkillSelectionPanel : MonoBehaviour
         if (this.skillSelectionPanel == SkillSelectionUIPanel.active)
         {
             this.activeSkillSelectionPanel.ShowSelectedSkillInfo(null);
+
+            this.attackSkillSelectionTabButton.gameObject.SetActive(true);
+            this.repulseSkillSelectionTabButton.gameObject.SetActive(true);
+            this.derivedSkillSelectionTabButton.gameObject.SetActive(true);
+            this.counterSkillSelectionTabButton.gameObject.SetActive(false);
         }
         else if (this.skillSelectionPanel == SkillSelectionUIPanel.backend)
         {
             this.backendSkillSelectionPanel.ShowSelectedSkillInfo(null);
+
+            this.attackSkillSelectionTabButton.gameObject.SetActive(true);
+            this.repulseSkillSelectionTabButton.gameObject.SetActive(false);
+            this.derivedSkillSelectionTabButton.gameObject.SetActive(false);
+            this.counterSkillSelectionTabButton.gameObject.SetActive(true);
         }
 
         ShowAttackSkillTab();
@@ -288,12 +314,23 @@ public class SkillSelectionPanel : MonoBehaviour
         else if (this.skillInfoTab == SkillInfoTab.repulse)
         {
             _skillSelectionPanel.ShowRepulseSkillList();
-            _skillSelectionPanel.ShowSelectedSkillInfo(null);
+
+            // Show back the last selected skill info from attack tab when switch back to the repulse tab.
+            _skillSelectionPanel.ShowSelectedSkillInfo(_skillSelectionPanel.GetLastSelectedRepulseSkill());
         }
         else if (this.skillInfoTab == SkillInfoTab.derived)
         {
             _skillSelectionPanel.ShowDerivedSkillList();
-            _skillSelectionPanel.ShowSelectedSkillInfo(null);
+
+            // Show back the last selected skill info from attack tab when switch back to the derived tab.
+            _skillSelectionPanel.ShowSelectedSkillInfo(_skillSelectionPanel.GetLastSelectedDerivedSkill());
+        }
+        else if (this.skillInfoTab == SkillInfoTab.counter)
+        {
+            _skillSelectionPanel.ShowCounterSkillList();
+
+            // Show back the last selected skill info from attack tab when switch back to the counter tab.
+            _skillSelectionPanel.ShowSelectedSkillInfo(_skillSelectionPanel.GetLastSelectedCounterSkill());
         }
     }
 

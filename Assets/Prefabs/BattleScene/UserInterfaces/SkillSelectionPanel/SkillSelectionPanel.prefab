@@ -57,9 +57,11 @@ MonoBehaviour:
   attackSkillSelectionTabButton: {fileID: 8015979577208796029}
   repulseSkillSelectionTabButton: {fileID: 8063163667737907253}
   derivedSkillSelectionTabButton: {fileID: 5800599887510065705}
+  counterSkillSelectionTabButton: {fileID: 4407842364316574515}
   attackSkillSelectionTabBackgroundImage: {fileID: 1899391260004626004}
   repulseSkillSelectionTabBackgroundImage: {fileID: 8562688838882046534}
   derivedSkillSelectionTabBackgroundImage: {fileID: 7854587797262424435}
+  counterSkillSelectionTabBackgroundImage: {fileID: 3197091826157577507}
   selectedTabColor: {r: 0.5803922, g: 0.6431373, b: 1, a: 0.39215687}
   unselectedTabColor: {r: 0.44705883, g: 0.4862745, b: 0.62352943, a: 0.5019608}
 --- !u!1001 &317417582073872088
@@ -381,6 +383,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3197091826157577507 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 860974266632333582, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+  m_PrefabInstance: {fileID: 2858819958902754349}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4407842364316574515 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1911598674592657182, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+  m_PrefabInstance: {fileID: 2858819958902754349}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &5800599887510065705 stripped

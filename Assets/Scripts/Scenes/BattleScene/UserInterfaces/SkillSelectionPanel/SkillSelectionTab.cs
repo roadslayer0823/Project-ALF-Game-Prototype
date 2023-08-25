@@ -35,6 +35,11 @@ public class SkillSelectionTab : MonoBehaviour
         this.skillSelectionListBox.ShowDerivedSkillList();
     }
 
+    public void ShowCounterSkillList()
+    {
+        this.skillSelectionListBox.ShowCounterSkillList();
+    }
+
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
         this.skillSelectionPanel.OnSkillSelected( skillSelectionBox );
@@ -74,5 +79,20 @@ public class SkillSelectionTab : MonoBehaviour
     public CharacterSkill GetLastSelectedCharacterSkill()
     {
         return this.skillSelectionListBox.GetLastSelectedCharacterSkill();
+    }
+
+    public CharacterSkill GetLastSelectedRepulseSkill()
+    {
+        return this.skillSelectionListBox.GetLastSelectedRepulseSkill();
+    }
+
+    public CharacterSkill GetLastSelectedDerivedSkill()
+    {
+        return this.skillSelectionListBox.GetLastSelectedDerivedSkill();
+    }
+
+    public CharacterSkill GetLastSelectedCounterSkill()
+    {
+        return this.skillSelectionListBox.GetLastSelectedCounterSkill();
     }
 }
