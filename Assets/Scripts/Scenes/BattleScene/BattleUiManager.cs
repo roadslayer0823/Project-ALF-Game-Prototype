@@ -18,7 +18,7 @@ public class BattleUiManager : MonoBehaviour
     {
         this.battleGameManager = battleGameManager;
         this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
-        this.playerActionPanel.Initialize( OnExecuteButtonClicked );
+        this.playerActionPanel.Initialize( OnExecuteButtonClicked, OnActiveSkillButtonClicked, OnBackendSkillButtonClicked );
         this.skillSlotListPanel.Initialize(OnSkillSlotSwiped);
     }
 
@@ -129,6 +129,7 @@ public class BattleUiManager : MonoBehaviour
     public void ShowPreparationSection()
     {
         this.playerActionPanel.ShowPreparationSection();
+        OnActiveSkillButtonClicked();
         this.playerActionPanel.HideBattleSection();
     }
 
@@ -161,9 +162,23 @@ public class BattleUiManager : MonoBehaviour
         this.battleGameManager.StartExecution();
     }
 
-#endregion
+    private void OnActiveSkillButtonClicked()
+    {
+        this.skillSelectionPanel.ShowActiveSkillSelectionPanel();
+        this.playerActionPanel.DisableActiveSkillButton();
+        this.playerActionPanel.EnableBackendSkillButton();
+    }
 
-#region Character Info Panel
+    private void OnBackendSkillButtonClicked()
+    {
+        this.skillSelectionPanel.ShowBackendSkillSelectionPanel();
+        this.playerActionPanel.EnableActiveSkillButton();
+        this.playerActionPanel.DisableBackendSkillButton();
+    }
+
+    #endregion
+
+    #region Character Info Panel
 
     public CharacterInfoPanel GetCharacterInfoPanel()
     {

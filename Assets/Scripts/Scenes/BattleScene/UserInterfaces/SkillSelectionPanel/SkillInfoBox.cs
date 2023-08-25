@@ -23,10 +23,16 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI accuracy;
     [SerializeField] private TextMeshProUGUI evasion;
 
-    public void Show(CharacterSkill characterSkill)
+    public void Show(CharacterSubskill characterSubskill)
     {
+        if (characterSubskill == null)
+        {
+            Hide();
+            return;
+        }
+
         this.skillInformation.gameObject.SetActive(true);
-        SetupSkillInfomation(characterSkill);
+        SetupSkillInfomation(characterSubskill);
     }
 
     public void Hide()
@@ -34,9 +40,9 @@ public class SkillInfoBox : MonoBehaviour
         this.skillInformation.gameObject.SetActive(false);
     }
 
-    private void SetupSkillInfomation(CharacterSkill characterSkill)
+    private void SetupSkillInfomation(CharacterSubskill characterSubskill)
     {
-        Subskill _subskillData = characterSkill.GetCharacterSubskillData().GetSubskillData();
+        Subskill _subskillData = characterSubskill.GetSubskillData();
 
         if (_subskillData.Prefix.ToString() == "-")
         {

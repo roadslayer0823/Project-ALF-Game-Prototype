@@ -5,18 +5,20 @@ using UnityEngine.UI;
 
 public class SkillSelectionPanel : MonoBehaviour
 {
-    [SerializeField] private SkillSelectionTab activeSkillSelectionTab = null;
-    [SerializeField] private SkillSelectionTab backendSkillSelectionTab = null;
+    [SerializeField] private SkillSelectionTab activeSkillSelectionPanel = null;
+    [SerializeField] private SkillSelectionTab backendSkillSelectionPanel = null;
 
     [Header("SkillTabButtons")]
-    [SerializeField] private Button activeSkillSelectionTabButton = null;
-    [SerializeField] private Button backendSkillSelectionTabButton = null;
-    [SerializeField] private Image activeSkillSelectionTabColor = null;
-    [SerializeField] private Image backendSkillSelectionTabColor = null;
+    [SerializeField] private Button attackSkillSelectionTabButton = null;
+    [SerializeField] private Button repulseSkillSelectionTabButton = null;
+    [SerializeField] private Button derivedSkillSelectionTabButton = null;
+    [SerializeField] private Image attackSkillSelectionTabBackgroundImage = null;
+    [SerializeField] private Image repulseSkillSelectionTabBackgroundImage = null;
+    [SerializeField] private Image derivedSkillSelectionTabBackgroundImage = null;
 
     [Header("SkillTabInteractionColor")]
-    [SerializeField] private Color normalColor;
-    [SerializeField] private Color selectedColor;
+    [SerializeField] private Color selectedTabColor = new Color();
+    [SerializeField] private Color unselectedTabColor = new Color();
 
     private Action<SkillSelectionBox> onSkillSelectedCallback = null;
     private Action<SkillSelectionBox> onSkillDeselectedCallback = null;
@@ -25,21 +27,39 @@ public class SkillSelectionPanel : MonoBehaviour
     private List<SkillSelectionBox> selectedActiveSkillList = new List<SkillSelectionBox>();
     private List<SkillSelectionBox> selectedBackendSkillList = new List<SkillSelectionBox>();
 
+    private SkillInfoTab skillInfoTab = SkillInfoTab.none;
+    private SkillSelectionUIPanel skillSelectionPanel = SkillSelectionUIPanel.none;
+    List<CharacterSkill> activeSkillList = new List<CharacterSkill>();
+    List<CharacterSkill> backendSkillList = new List<CharacterSkill>();
+
+    public enum SkillInfoTab
+    {
+        none,
+        attack,
+        repulse,
+        derived
+    }
+
+    public enum SkillSelectionUIPanel
+    {
+        none,
+        active,
+        backend
+    }
+
     public void Initialize( Action<SkillSelectionBox> onSkillSelectedCallback, Action<SkillSelectionBox> onSkillDeselectedCallback )
     {
         this.onSkillSelectedCallback = onSkillSelectedCallback;
         this.onSkillDeselectedCallback = onSkillDeselectedCallback;
 
-        this.activeSkillSelectionTab.Initialize( this );
-        this.backendSkillSelectionTab.Initialize( this );
-    }
+        this.activeSkillSelectionPanel.Initialize( this );
+        this.backendSkillSelectionPanel.Initialize( this );
 
-    private void Start()
-    {
-        this.backendSkillSelectionTab.gameObject.SetActive(false);
+        this.backendSkillSelectionPanel.gameObject.SetActive(false);
 
-        this.activeSkillSelectionTabButton.onClick.AddListener(OnActiveSkillTabClick);
-        this.backendSkillSelectionTabButton.onClick.AddListener(OnPassiveSkillClick);
+        this.attackSkillSelectionTabButton.onClick.AddListener(ShowAttackSkillTab);
+        this.repulseSkillSelectionTabButton.onClick.AddListener(ShowRepulseSkillTab);
+        this.derivedSkillSelectionTabButton.onClick.AddListener(ShowDerivedSkillTab);
     }
 
     // Categorize and display all the skill that the character have based on skill category
@@ -48,8 +68,6 @@ public class SkillSelectionPanel : MonoBehaviour
         this.selectedGameCharacter = selectedGameCharacter;
 
         CharacterSkill[] _characterSkills = this.selectedGameCharacter.GetSkills();
-        List<CharacterSkill> _activeSkillList = new List<CharacterSkill>();
-        List<CharacterSkill> _backendSkillList = new List<CharacterSkill>();
 
         for (int i = 0; i < _characterSkills.Length; i++)
         {
@@ -57,18 +75,20 @@ public class SkillSelectionPanel : MonoBehaviour
 
             if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
             {
-                _activeSkillList.Add(_characterSkill);
+                activeSkillList.Add(_characterSkill);
             }
             else if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend)
             {
-                _backendSkillList.Add(_characterSkill);
+                backendSkillList.Add(_characterSkill);
             }
         }
 
-        this.activeSkillSelectionTab.Show(_activeSkillList.ToArray());
-        this.backendSkillSelectionTab.Show(_backendSkillList.ToArray());
+        this.activeSkillSelectionPanel.ShowCharacterSkillList(activeSkillList.ToArray());
+        this.backendSkillSelectionPanel.ShowCharacterSkillList(backendSkillList.ToArray());
 
         base.gameObject.SetActive(true);
+
+        ShowActiveSkillSelectionPanel();
     }
 
     public void Hide()
@@ -91,7 +111,7 @@ public class SkillSelectionPanel : MonoBehaviour
                 skillSelectionBox.MarkDeselected();
             }
         }
-        else if (skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend)
+        else if (skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend && !skillSelectionBox.CheckIsSkillLevelChanged())
         {
             if (this.selectedBackendSkillList.Count < 3)
             {
@@ -143,27 +163,29 @@ public class SkillSelectionPanel : MonoBehaviour
     }
 
     // Callback function for the ActiveSkillTabButton
-    private void OnActiveSkillTabClick()
+    public void ShowActiveSkillSelectionPanel()
     {
-        this.activeSkillSelectionTab.gameObject.SetActive(true);
-        this.backendSkillSelectionTab.gameObject.SetActive(false);
+        this.skillSelectionPanel = SkillSelectionUIPanel.active;
 
-        this.activeSkillSelectionTabColor.color = this.selectedColor;
-        this.backendSkillSelectionTabColor.color = this.normalColor;
+        this.activeSkillSelectionPanel.gameObject.SetActive(true);
+        this.backendSkillSelectionPanel.gameObject.SetActive(false);
 
-        this.backendSkillSelectionTab.HideSkillInfoPanel();
+        this.backendSkillSelectionPanel.HideSkillInfoPanel();
+
+        ChangeSkillSelectionPanel();
     }
 
     // Callback funtion for the PassiveSkillTabButton
-    private void OnPassiveSkillClick()
+    public void ShowBackendSkillSelectionPanel()
     {
-        this.activeSkillSelectionTab.gameObject.SetActive(false);
-        this.backendSkillSelectionTab.gameObject.SetActive(true);
+        this.skillSelectionPanel = SkillSelectionUIPanel.backend;
 
-        this.activeSkillSelectionTabColor.color = this.normalColor;
-        this.backendSkillSelectionTabColor.color = this.selectedColor;
+        this.activeSkillSelectionPanel.gameObject.SetActive(false);
+        this.backendSkillSelectionPanel.gameObject.SetActive(true);
 
-        this.activeSkillSelectionTab.HideSkillInfoPanel();
+        this.activeSkillSelectionPanel.HideSkillInfoPanel();
+
+        ChangeSkillSelectionPanel();
     }
 
     //Update the sequence number of the selected skill list
@@ -176,5 +198,107 @@ public class SkillSelectionPanel : MonoBehaviour
             skillSelectionCounter++;
             skill.SetSkillSelectionSequenceNumber(skillSelectionCounter);
         }
+    }
+
+    // Callback function for the "attackSkillSelectionTabButton"
+    private void ShowAttackSkillTab()
+    {
+        UnselectAllTab();
+
+        this.skillInfoTab = SkillInfoTab.attack;
+        this.attackSkillSelectionTabBackgroundImage.color = this.selectedTabColor;
+
+        ChangeSkillSelectionTab();
+    }
+
+    // Callback function for the "repulseSkillSelectionTabButton"
+    private void ShowRepulseSkillTab()
+    {
+        UnselectAllTab();
+
+        this.skillInfoTab = SkillInfoTab.repulse;
+        this.repulseSkillSelectionTabBackgroundImage.color = this.selectedTabColor;
+
+        ChangeSkillSelectionTab();
+    }
+
+    // Callback function for the "derivedSkillSelectionTabButton"
+    private void ShowDerivedSkillTab()
+    {
+        UnselectAllTab();
+
+        this.skillInfoTab = SkillInfoTab.derived;
+        this.derivedSkillSelectionTabBackgroundImage.color = this.selectedTabColor;
+
+        ChangeSkillSelectionTab();
+    }
+
+    // Change all the tabs background to unselected.
+    private void UnselectAllTab()
+    {
+        this.attackSkillSelectionTabBackgroundImage.color = this.unselectedTabColor;
+        this.repulseSkillSelectionTabBackgroundImage.color = this.unselectedTabColor;
+        this.derivedSkillSelectionTabBackgroundImage.color = this.unselectedTabColor;
+    }
+
+    // Switch between active skill panel and backend skill panel
+    private void ChangeSkillSelectionPanel()
+    {
+        if (this.skillSelectionPanel == SkillSelectionUIPanel.active)
+        {
+            this.activeSkillSelectionPanel.ShowSelectedSkillInfo(null);
+        }
+        else if (this.skillSelectionPanel == SkillSelectionUIPanel.backend)
+        {
+            this.backendSkillSelectionPanel.ShowSelectedSkillInfo(null);
+        }
+
+        ShowAttackSkillTab();
+    }
+
+    // Switch between attack tab, repulse tab and derived tab
+    private void ChangeSkillSelectionTab()
+    {
+        SkillSelectionTab _skillSelectionPanel = null;
+
+        // Check whether current selected panel is active or backend
+        if (this.skillSelectionPanel == SkillSelectionUIPanel.active)
+        {
+            _skillSelectionPanel = this.activeSkillSelectionPanel;
+        }
+        else if (this.skillSelectionPanel == SkillSelectionUIPanel.backend)
+        {
+            _skillSelectionPanel = this.backendSkillSelectionPanel;
+        }
+
+        if (this.skillInfoTab == SkillInfoTab.attack)
+        {
+            if (this.skillSelectionPanel == SkillSelectionUIPanel.active)
+            {
+                _skillSelectionPanel.ShowCharacterSkillList(activeSkillList.ToArray());
+            }
+            else if (this.skillSelectionPanel == SkillSelectionUIPanel.backend)
+            {
+                _skillSelectionPanel.ShowCharacterSkillList(backendSkillList.ToArray());
+            }
+            
+            // Show back the last selected skill info from attack tab when switch back to the attack tab.
+            _skillSelectionPanel.ShowSelectedSkillInfo(_skillSelectionPanel.GetLastSelectedCharacterSkill());
+        }
+        else if (this.skillInfoTab == SkillInfoTab.repulse)
+        {
+            _skillSelectionPanel.ShowRepulseSkillList();
+            _skillSelectionPanel.ShowSelectedSkillInfo(null);
+        }
+        else if (this.skillInfoTab == SkillInfoTab.derived)
+        {
+            _skillSelectionPanel.ShowDerivedSkillList();
+            _skillSelectionPanel.ShowSelectedSkillInfo(null);
+        }
+    }
+
+    public SkillInfoTab GetSkillInfoTab()
+    {
+        return this.skillInfoTab;
     }
 }
