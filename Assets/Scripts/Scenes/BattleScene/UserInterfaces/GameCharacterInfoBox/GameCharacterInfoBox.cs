@@ -36,9 +36,9 @@ public class GameCharacterInfoBox : MonoBehaviour
             return;
         }
 
-        UpdateBar( this.selectedCharacter.GetCurrentHealthPoint(), this.selectedCharacter.GetMaximumHealthPoint(), this.healthPointFiller, this.healthPointLabel );
-        UpdateBar( this.selectedCharacter.GetCurrentStatePoint(), this.selectedCharacter.GetMaximumStatePoint(), this.statePointFiller, this.statePointLabel );
-        UpdateBar( this.selectedCharacter.GetCurrentStressValue(), this.selectedCharacter.GetMaximumStressValue(), this.stressValueFiller, this.stressValueLabel );
+        UpdateBar( this.selectedCharacter.GetCurrentHealthPoint(), this.selectedCharacter.GetMaximumHealthPoint(), this.healthPointFiller, this.healthPointLabel, false );
+        UpdateBar( this.selectedCharacter.GetCurrentStatePoint(), this.selectedCharacter.GetMaximumStatePoint(), this.statePointFiller, this.statePointLabel, true );
+        UpdateBar( this.selectedCharacter.GetCurrentStressValue(), this.selectedCharacter.GetMaximumStressValue(), this.stressValueFiller, this.stressValueLabel, false );
 
         string _skillInfoString = "";
         CharacterSkill _characterSkill = this.selectedCharacter.GetCurrentSkill();
@@ -59,13 +59,16 @@ public class GameCharacterInfoBox : MonoBehaviour
         currentSkillInfoLabel.SetText( _skillInfoString );
     }
 
-    private void UpdateBar( float currentValue, float maximumValue, SpriteRenderer filler, TextMeshPro label )
+    private void UpdateBar( float currentValue, float maximumValue, SpriteRenderer filler, TextMeshPro label, bool isNegativeValueAllowed )
     {
         float _currentValue = currentValue;
 
-        if (_currentValue < 0)
+        if (!isNegativeValueAllowed)
         {
-            _currentValue = 0;
+            if (_currentValue < 0)
+            {
+                _currentValue = 0;
+            }
         }
 
         label.SetText( Mathf.CeilToInt( _currentValue ) + " / " + Mathf.CeilToInt( maximumValue ) );
