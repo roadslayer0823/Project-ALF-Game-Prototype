@@ -147,4 +147,9 @@ public class BattleLogicManager
     {
         return ( gameCharacter.GetCurrentHealthPoint() <= 0 );
     }
+
+    public static bool HasGameCharacterReachedCounterAttackLimit( GameCharacter gameCharacter )
+    {
+        return ( gameCharacter.GetCounterAttacks() >= 1 );
+    }
 }

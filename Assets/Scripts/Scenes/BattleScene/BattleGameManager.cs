@@ -110,6 +110,7 @@ public class BattleGameManager : MonoBehaviour
             }
 
             _character.SetCurrentStatePointToMaximum();
+            _character.ResetCounterAttacks();
         }
     }
 

@@ -37,6 +37,7 @@ public class GameCharacter : MonoBehaviour
 
     private CharacterSkill currentSkill = null;
     private GameCharacter currentAttacker = null;
+    private int counterAttacks = 0;
     private int breakStatusRemainingATLs = 0;
 
     public enum CharacterActionType
@@ -338,6 +339,11 @@ public class GameCharacter : MonoBehaviour
             return false;
         }
 
+        if (BattleLogicManager.HasGameCharacterReachedCounterAttackLimit( this ))
+        {
+            return false;
+        }
+
         counterSkill = this.currentSkill.GetCharacterSubskillData().GetCounterSkill();
 
         if (counterSkill == null)
@@ -460,6 +466,21 @@ public class GameCharacter : MonoBehaviour
         return this.currentAttacker;
     }
 
+    public void IncreaseCounterAttacks()
+    {
+        this.counterAttacks++;
+    }
+
+    public void ResetCounterAttacks()
+    {
+        this.counterAttacks = 0;
+    }
+
+    public int GetCounterAttacks()
+    {
+        return this.counterAttacks;
+    }
+
     public GameObject GetOwnContainer()
     {
         return this.ownContainer;
@@ -477,7 +498,7 @@ public class GameCharacter : MonoBehaviour
 
     public void Reset()
     {
-        currentCharacterActionType = CharacterActionType.None;
+        this.currentCharacterActionType = CharacterActionType.None;
         SetCurrentSkill( null );
         SetCurrentAttacker( null );
     }

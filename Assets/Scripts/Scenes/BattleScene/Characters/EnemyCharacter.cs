@@ -64,7 +64,10 @@ public class EnemyCharacter : GameCharacter
 
                 if (base.IsAbleToDerive())
                 {
-                    base.SetCurrentCharacterActionType( CharacterActionType.Derive );
+                    if (Random.value < 0.8f)
+                    {
+                        base.SetCurrentCharacterActionType( CharacterActionType.Derive );
+                    }
                 }
 
                 break;
@@ -85,7 +88,13 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnDefenseWin:
 
-                base.SetCurrentCharacterActionType( CharacterActionType.Counter );
+                if (base.IsAbleToCounter())
+                {
+                    if (Random.value < 0.8f)
+                    {
+                        base.SetCurrentCharacterActionType( CharacterActionType.Counter );
+                    }
+                }
 
                 break;
 
