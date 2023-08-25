@@ -25,6 +25,12 @@ public class PlayerActionPanel : MonoBehaviour
     private Action onExecuteButtonClickedCallback = null;
     private QTEActionType qteActionType = QTEActionType.None;
 
+    [Header("SkillSelectionPanel button")]
+    [SerializeField] private Button activeSkillButton = null;
+    [SerializeField] private Button backendSkillButton = null;
+    private Action onActiveSkillButtonClickedCallback = null;
+    private Action onBackendSkillButtonClickedCallback = null;
+
     public enum QTEActionType
     {
         None,
@@ -33,7 +39,7 @@ public class PlayerActionPanel : MonoBehaviour
         Counter
     }
 
-    public void Initialize( Action onExecuteButtonClickedCallback )
+    public void Initialize( Action onExecuteButtonClickedCallback, Action onActiveSkillButtonClicked, Action onBackendSkillButtonClicked)
     {
         this.onExecuteButtonClickedCallback = onExecuteButtonClickedCallback;
 
@@ -43,6 +49,11 @@ public class PlayerActionPanel : MonoBehaviour
         {
             skillActionButtons[ i ].Initialize( OnSkillActionButtonClicked );
         }
+
+        this.activeSkillButton.onClick.AddListener(OnActiveSkillButtonClicked);
+        this.backendSkillButton.onClick.AddListener(OnBackendSkillButtonClicked);
+        this.onActiveSkillButtonClickedCallback = onActiveSkillButtonClicked;
+        this.onBackendSkillButtonClickedCallback = onBackendSkillButtonClicked;
     }
 
     public void SetSelectedGameCharacter( GameCharacter selectedGameCharacter )
@@ -251,5 +262,57 @@ public class PlayerActionPanel : MonoBehaviour
         {
             this.skillActionButtons[ i ].DisableActionButton();
         }
+    }
+
+    // Show active skill selection panel
+    private void OnActiveSkillButtonClicked()
+    {
+        if (this.onActiveSkillButtonClickedCallback != null)
+        {
+            this.activeSkillButton.interactable = false;
+            this.backendSkillButton.interactable = true;
+
+            this.onActiveSkillButtonClickedCallback();
+        }
+        else
+        {
+            Debug.Log("The value for 'onActiveSkillButtonClicked' is not assigned.");
+        }
+    }
+
+    // Show backend skill selection panel
+    private void OnBackendSkillButtonClicked()
+    {
+        if (this.onBackendSkillButtonClickedCallback != null)
+        {
+            this.activeSkillButton.interactable = true;
+            this.backendSkillButton.interactable = false;
+
+            this.onBackendSkillButtonClickedCallback();
+        }
+        else
+        {
+            Debug.Log("The value for 'onBackendSkillButtonClicked' is not assigned.");
+        }
+    }
+
+    public void EnableActiveSkillButton()
+    {
+        this.activeSkillButton.interactable = true;
+    }
+
+    public void DisableActiveSkillButton()
+    {
+        this.activeSkillButton.interactable = false;
+    }
+
+    public void EnableBackendSkillButton()
+    {
+        this.backendSkillButton.interactable = true;
+    }
+
+    public void DisableBackendSkillButton()
+    {
+        this.backendSkillButton.interactable = false;
     }
 }

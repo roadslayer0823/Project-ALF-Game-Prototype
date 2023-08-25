@@ -121,7 +121,13 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     // Set the skill data that needed to display into TMP.
     private void UpdateSkillSelectionBoxData()
     {
-        Subskill _subskillData = characterSkill.GetCharacterSubskillData().GetSubskillData();
+        if (this.characterSkill == null)
+        {
+            this.gameObject.SetActive(false);
+            return;
+        }
+
+        Subskill _subskillData = this.characterSkill.GetCharacterSubskillData().GetSubskillData();
 
         this.skillNameText.SetText(_subskillData.DisplayName);
 

@@ -20,32 +20,59 @@ public class SkillSelectionTab : MonoBehaviour
         this.skillInfoPanel.Hide();
     }
 
-    public void Show(CharacterSkill[] characterSkills)
+    public void ShowCharacterSkillList(CharacterSkill[] characterSkills)
     {
-        this.skillSelectionListBox.Show(characterSkills);
+        this.skillSelectionListBox.ShowCharacterSkillList(characterSkills);
+    }
+
+    public void ShowRepulseSkillList()
+    {
+        this.skillSelectionListBox.ShowRepulseSkillList();
+    }
+
+    public void ShowDerivedSkillList()
+    {
+        this.skillSelectionListBox.ShowDerivedSkillList();
     }
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
         this.skillSelectionPanel.OnSkillSelected( skillSelectionBox );
 
-        ShowSelectedSkillInfo(skillSelectionBox);
+        ShowSelectedSkillInfo(skillSelectionBox.GetCharacterSkill());
     }
 
     public void OnSkillDeselected( SkillSelectionBox skillSelectionBox )
     {
         this.skillSelectionPanel.OnSkillDeselected( skillSelectionBox );
 
-        ShowSelectedSkillInfo(skillSelectionBox);
+        ShowSelectedSkillInfo(skillSelectionBox.GetCharacterSkill());
     }
 
-    public void ShowSelectedSkillInfo(SkillSelectionBox skillSelectionBox)
+    public void ShowSelectedSkillInfo(CharacterSkill characterSkill)
     {
-        this.skillInfoPanel.Show(skillSelectionBox.GetCharacterSkill());
+        if (characterSkill == null)
+        {
+            this.skillInfoPanel.Show(null);
+            return;
+        }
+
+        CharacterSubskill _characterSubskill = characterSkill.GetCharacterSubskillData();
+        this.skillInfoPanel.Show(_characterSubskill);
     }
 
     public void HideSkillInfoPanel()
     {
         this.skillInfoPanel.Hide();
+    }
+
+    public SkillSelectionPanel.SkillInfoTab GetSkillInfoTab()
+    {
+        return this.skillSelectionPanel.GetSkillInfoTab();
+    }
+
+    public CharacterSkill GetLastSelectedCharacterSkill()
+    {
+        return this.skillSelectionListBox.GetLastSelectedCharacterSkill();
     }
 }
