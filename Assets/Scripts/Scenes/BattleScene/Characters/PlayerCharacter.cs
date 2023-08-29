@@ -28,7 +28,8 @@ public class PlayerCharacter : GameCharacter
                     qteActionType: ( _isAbleToDerive ) ? QTEActionType.Derive : QTEActionType.None,
                     qteSkill: _derivedSkill,
                     canDefend: false,
-                    canEvade: false
+                    canEvade: false,
+                    countdownTime: base.GetSkillCountdownTime()
                     );
 
                 break;
@@ -42,7 +43,8 @@ public class PlayerCharacter : GameCharacter
                     qteActionType: ( _isAbleToRepulse ) ? QTEActionType.Repulse : QTEActionType.None,
                     qteSkill: _repulseSkill,
                     canDefend: true,
-                    canEvade: true
+                    canEvade: true,
+                    countdownTime: base.GetSkillCountdownTime()
                     );
 
                 break;
@@ -56,7 +58,8 @@ public class PlayerCharacter : GameCharacter
                     qteActionType: ( _isAbleToCounter ) ? QTEActionType.Counter : QTEActionType.None,
                     qteSkill: _counterSkill,
                     canDefend: false,
-                    canEvade: false
+                    canEvade: false,
+                    countdownTime: base.GetSkillCountdownTime()
                     );
 
                 break;

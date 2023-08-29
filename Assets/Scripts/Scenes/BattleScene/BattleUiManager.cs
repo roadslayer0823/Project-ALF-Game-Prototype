@@ -146,15 +146,15 @@ public class BattleUiManager : MonoBehaviour
         this.playerActionPanel.SetSelectedGameCharacter( gameCharacter );
     }
 
-    public void UpdatePlayerActionPanelButtons( PlayerActionPanel.QTEActionType qteActionType, CharacterSkill qteSkill, bool canDefend, bool canEvade )
+    public void UpdatePlayerActionPanelButtons( PlayerActionPanel.QTEActionType qteActionType, CharacterSkill qteSkill, bool canDefend, bool canEvade, float countdownTime )
     {
         this.playerActionPanel.ShowQTEActionButton( qteActionType, qteSkill );
-        this.playerActionPanel.UpdateSkillActionButtons( canDefend, canEvade );
+        this.playerActionPanel.UpdateSkillActionButtons( canDefend, canEvade, countdownTime );
     }
 
     public void DisablePlayerActionPanelButtons()
     {
-        UpdatePlayerActionPanelButtons( PlayerActionPanel.QTEActionType.None, null, false, false );
+        UpdatePlayerActionPanelButtons( PlayerActionPanel.QTEActionType.None, null, false, false, 0.0f );
     }
 
     public void OnExecuteButtonClicked()
@@ -178,7 +178,7 @@ public class BattleUiManager : MonoBehaviour
 
     #endregion
 
-    #region Character Info Panel
+#region Character Info Panel
 
     public CharacterInfoPanel GetCharacterInfoPanel()
     {

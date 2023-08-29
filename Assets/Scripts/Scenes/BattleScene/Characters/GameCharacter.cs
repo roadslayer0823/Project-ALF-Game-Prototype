@@ -37,6 +37,7 @@ public class GameCharacter : MonoBehaviour
 
     private CharacterSkill currentSkill = null;
     private GameCharacter currentAttacker = null;
+    private float skillCountdownTime = 0.0f;
     private int counterAttacks = 0;
     private int breakStatusRemainingATLs = 0;
 
@@ -464,6 +465,16 @@ public class GameCharacter : MonoBehaviour
     public GameCharacter GetCurrentAttacker()
     {
         return this.currentAttacker;
+    }
+
+    public void SetSkillCountdownTime( float skillCountdownTime )
+    {
+        this.skillCountdownTime = skillCountdownTime;
+    }
+
+    public float GetSkillCountdownTime()
+    {
+        return this.skillCountdownTime;
     }
 
     public void IncreaseCounterAttacks()

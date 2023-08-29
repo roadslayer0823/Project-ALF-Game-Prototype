@@ -229,19 +229,22 @@ public class PlayerActionPanel : MonoBehaviour
         }
     }
 
-    public void UpdateSkillActionButtons( bool canDefend, bool canEvade )
+    public void UpdateSkillActionButtons( bool canDefend, bool canEvade, float countdownTime )
     {
         for (int i = 0; i < this.skillActionButtons.Length; i++)
         {
             SkillActionButton _skillActionButton = this.skillActionButtons[ i ];
             CharacterSkill _skill = _skillActionButton.GetSelectedSkill();
-            if (_skill != null && _skill.IsSkillAvailable( canDefend, canEvade ))
+            if (_skill != null)
             {
-                _skillActionButton.EnableActionButton();
-            }
-            else
-            {
-                _skillActionButton.DisableActionButton();
+                if (_skill.IsSkillAvailable( canDefend, canEvade ))
+                {
+                    _skillActionButton.EnableActionButton( countdownTime );
+                }
+                else
+                {
+                    _skillActionButton.DisableActionButton();
+                }
             }
         }
     }
@@ -260,7 +263,11 @@ public class PlayerActionPanel : MonoBehaviour
 
         for (int i = 0; i < this.skillActionButtons.Length; i++)
         {
-            this.skillActionButtons[ i ].DisableActionButton();
+            SkillActionButton _skillActionButton = this.skillActionButtons[ i ];
+            if (_skillActionButton.GetSelectedSkill() != null)
+            {
+                _skillActionButton.DisableActionButton();
+            }
         }
     }
 

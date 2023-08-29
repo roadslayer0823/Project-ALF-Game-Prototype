@@ -15,6 +15,7 @@ public class SkillActionButton : MonoBehaviour
     [SerializeField] private GameObject strength = null;
     [SerializeField] private GameObject accuracy = null;
     [SerializeField] private GameObject evasion = null;
+    [SerializeField] private CountdownTimer countdownTimer = null;
 
     private CharacterSkill selectedSkill = null;
     private Action<CharacterSkill> onActionButtonClickedCallback = null;
@@ -98,14 +99,16 @@ public class SkillActionButton : MonoBehaviour
         }
     }
 
-    public void EnableActionButton()
+    public void EnableActionButton( float countdownTime )
     {
         this.actionButton.interactable = true;
+        this.countdownTimer.StartCountdownTimer( countdownTime );
     }
 
     public void DisableActionButton()
     {
         this.actionButton.interactable = false;
+        this.countdownTimer.StopCountdownTimer();
     }
 
     public void ClickOnActionButton()
@@ -116,5 +119,10 @@ public class SkillActionButton : MonoBehaviour
     public CharacterSkill GetSelectedSkill()
     {
         return this.selectedSkill;
+    }
+
+    public CountdownTimer GetCountdownTimer()
+    {
+        return this.countdownTimer;
     }
 }

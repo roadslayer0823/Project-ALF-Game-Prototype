@@ -65,6 +65,7 @@ public class BattleAnimationManager : MonoBehaviour
         GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
         CharacterSkill _attackerSkill = battleFlowATL.GetSelectedSkill();
 
+        float _skillCountdownTime = 0.0f;
         bool _hasCounterAttack = false;
 
         do
@@ -104,10 +105,11 @@ public class BattleAnimationManager : MonoBehaviour
             BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget );
             _attacker.TriggerEvent( AnimationEvent.SetCharacter );
             _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
-            _attackTarget.TriggerEvent( AnimationEvent.OnDefensePartA );
 
-            StartCoroutine( CountdownForEventCutoff( ( GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
-                                                     _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
+            _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+            _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
+            _attackTarget.TriggerEvent( AnimationEvent.OnDefensePartA );
+            StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
 
             yield return StartCoroutine( ZoomInCameraToTarget( _attacker, 1.0f ) );
 
@@ -149,9 +151,10 @@ public class BattleAnimationManager : MonoBehaviour
             {
                 case GameCharacter.CharacterActionType.None:
 
+                    _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                    _attacker.SetSkillCountdownTime( _skillCountdownTime );
                     _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
-                    StartCoroutine( CountdownForEventCutoff( ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
-                                                             _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
+                    StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
                     if (_attackerCharacterPartB != NO_ANIMATION)
                     {
@@ -214,9 +217,10 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (_winner != null)
                     {
+                        _skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                        _winner.SetSkillCountdownTime( _skillCountdownTime );
                         _winner.TriggerEvent( AnimationEvent.OnRepulseWin );
-                        StartCoroutine( CountdownForEventCutoff( 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
-                                                                 _attacker, AnimationEvent.OnRepulseWin_Cutoff ) );
+                        StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnRepulseWin_Cutoff ) );
 
                         if (_attackerRangeType == RangeType.melee)
                         {
@@ -315,9 +319,10 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (_winner == _attacker)
                     {
+                        _skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                        _attacker.SetSkillCountdownTime( _skillCountdownTime );
                         _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
-                        StartCoroutine( CountdownForEventCutoff( 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
-                                                                 _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
+                        StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
                         this.cameraEffect.Shake();
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME ) );
@@ -341,9 +346,10 @@ public class BattleAnimationManager : MonoBehaviour
                     }
                     else if (_winner == _attackTarget)
                     {
+                        _skillCountdownTime = ( GetAttackAnimationLength( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBackendSkillAnimationSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                        _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
                         _attackTarget.TriggerEvent( AnimationEvent.OnDefenseWin );
-                        StartCoroutine( CountdownForEventCutoff( ( GetAttackAnimationLength( _attacker, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBackendSkillAnimationSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage(),
-                                                                 _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
+                        StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefenseWin_Cutoff ) );
 
                         if (_attackTargetBackendSkillAnimationCharacterPartA != NO_ANIMATION)
                         {
