@@ -15,8 +15,10 @@ public class BattleLogicManager
     {
         CharacterSkill _skill = caster.GetCurrentSkill();
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
-        caster.MinusCurrentStatePoint( _subskillData.StatePointCost * GameConfiguration.Instance.GetBattleConfiguration().GetStatePointCostMultiplier() );
-        caster.AddMaximumStatePoint( _subskillData.MaxStatePointUp * GameConfiguration.Instance.GetBattleConfiguration().GetMaxStatePointUpMultiplier() );
+        GameConfiguration.Battle _battle = GameConfiguration.Instance.GetBattleConfiguration();
+
+        caster.MinusCurrentStatePoint( _subskillData.StatePointCost * _battle.GetStatePointCostMultiplier(), false );
+        caster.AddMaximumStatePoint( _subskillData.MaxStatePointUp * _battle.GetMaxStatePointUpMultiplier() );
     }
 
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage = true )
@@ -33,13 +35,18 @@ public class BattleLogicManager
         }
 
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
-        target.AddCurrentStressValue( _subskillData.StressDamage * GameConfiguration.Instance.GetBattleConfiguration().GetStressDamageMultiplier() );
+        GameConfiguration.Battle _battle = GameConfiguration.Instance.GetBattleConfiguration();
+
+        target.AddCurrentStressValue( _subskillData.StressDamage * _battle.GetStressDamageMultiplier() );
+        target.MinusCurrentStatePoint( _subskillData.StatePointDamage * _battle.GetStateDamageMultiplier(), true );
     }
 
     public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target )
     {
-        float _attackDamage = ( ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * GameConfiguration.Instance.GetBattleConfiguration().GetAttackDamageMultiplier() )
-                              * ( ( target.GetIsInBreakStatus() ) ? GameConfiguration.Instance.GetBattleConfiguration().GetBreakDamageMultiplier() : 1.0f ) );
+        GameConfiguration.Battle _battle = GameConfiguration.Instance.GetBattleConfiguration();
+
+        float _attackDamage = ( ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * _battle.GetAttackDamageMultiplier() )
+                              * ( ( target.GetIsInBreakStatus() ) ? _battle.GetBreakDamageMultiplier() : 1.0f ) );
 
         CharacterSkill _targetSkill = target.GetCurrentSkill();
         if (_targetSkill != null)
@@ -138,9 +145,22 @@ public class BattleLogicManager
         }
     }
 
-    public static bool IsGameCharacterInBreakStatus( GameCharacter gameCharacter )
+    public static bool IsGameCharacterInBreakStatus( GameCharacter gameCharacter, bool onHit = false )
     {
-        return ( gameCharacter.GetCurrentStressValue() >= gameCharacter.GetMaximumStressValue() );
+        if (gameCharacter.GetCurrentStressValue() >= gameCharacter.GetMaximumStressValue())
+        {
+            return true;
+        }
+
+        if (onHit)
+        {
+            if (gameCharacter.GetCurrentStatePoint() <= 0)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static bool IsGameCharacterDead( GameCharacter gameCharacter )

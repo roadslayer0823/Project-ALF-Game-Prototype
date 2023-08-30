@@ -11,6 +11,7 @@ public class GameCharacterInfoBox : MonoBehaviour
     [SerializeField] private SpriteRenderer stressValueFiller = null;
     [SerializeField] private TextMeshPro stressValueLabel = null;
     [SerializeField] private TextMeshPro currentSkillInfoLabel = null;
+    [SerializeField] private GameObject breakStatusIndicator = null;
 
     void Awake()
     {
@@ -40,6 +41,8 @@ public class GameCharacterInfoBox : MonoBehaviour
         UpdateBar( this.selectedCharacter.GetCurrentStatePoint(), this.selectedCharacter.GetMaximumStatePoint(), this.statePointFiller, this.statePointLabel, true );
         UpdateBar( this.selectedCharacter.GetCurrentStressValue(), this.selectedCharacter.GetMaximumStressValue(), this.stressValueFiller, this.stressValueLabel, false );
 
+        this.breakStatusIndicator.SetActive( this.selectedCharacter.GetIsInBreakStatus() );
+
         string _skillInfoString = "";
         CharacterSkill _characterSkill = this.selectedCharacter.GetCurrentSkill();
         if (_characterSkill != null)
@@ -56,7 +59,7 @@ public class GameCharacterInfoBox : MonoBehaviour
             }
         }
 
-        currentSkillInfoLabel.SetText( _skillInfoString );
+        this.currentSkillInfoLabel.SetText( _skillInfoString );
     }
 
     private void UpdateBar( float currentValue, float maximumValue, SpriteRenderer filler, TextMeshPro label, bool isNegativeValueAllowed )

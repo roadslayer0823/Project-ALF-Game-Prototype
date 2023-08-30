@@ -491,6 +491,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("stress_damage")]
         public int StressDamage { get; private set; }
 
+        [JsonProperty("state_point_damage")]
+        public int StatePointDamage { get; private set; }
+
         [JsonProperty("strength")]
         public int Strength { get; private set; }
 

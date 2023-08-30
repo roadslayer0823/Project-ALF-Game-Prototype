@@ -17,6 +17,7 @@ public class GameCharacter : MonoBehaviour
     protected string characterName = null;
     protected float maximumHealthPoint = 0.0f;
     protected float currentHealthPoint = 0.0f;
+    protected float originalStatePoint = 0.0f;
     protected float maximumStatePoint = 0.0f;
     protected float currentStatePoint = 0.0f;
     protected float maximumStressValue = 0.0f;
@@ -40,6 +41,7 @@ public class GameCharacter : MonoBehaviour
     private float skillCountdownTime = 0.0f;
     private int counterAttacks = 0;
     private int breakStatusRemainingATLs = 0;
+    private bool isBreakStatusCausedByStatePoint = false;
 
     public enum CharacterActionType
     {
@@ -61,7 +63,8 @@ public class GameCharacter : MonoBehaviour
         this.characterName = characterData.DisplayName;
         this.maximumHealthPoint = characterData.MaximumHealthPoint;
         this.currentHealthPoint = this.maximumHealthPoint;
-        this.maximumStatePoint = characterData.MaximumStatePoint;
+        this.originalStatePoint = characterData.MaximumStatePoint;
+        this.maximumStatePoint = this.originalStatePoint;
         this.currentStatePoint = this.maximumStatePoint;
         this.maximumStressValue = characterData.MaximumStressValue;
         this.currentStressValue = 0.0f;
@@ -108,9 +111,19 @@ public class GameCharacter : MonoBehaviour
         this.onCharacterInfoUpdated?.Invoke();
     }
 
-    public void MinusCurrentStatePoint( float amount )
+    public void MinusCurrentStatePoint( float amount, bool onHit )
     {
         this.currentStatePoint -= amount;
+
+        if (!GetIsInBreakStatus())
+        {
+            if (BattleLogicManager.IsGameCharacterInBreakStatus( this, onHit ))
+            {
+                this.breakStatusRemainingATLs = 2;
+                this.isBreakStatusCausedByStatePoint = true;
+            }
+        }
+
         this.onCharacterInfoUpdated?.Invoke();
     }
 
@@ -170,6 +183,14 @@ public class GameCharacter : MonoBehaviour
             if (!GetIsInBreakStatus())
             {
                 this.currentStressValue = 0.0f;
+
+                if (this.isBreakStatusCausedByStatePoint)
+                {
+                    this.isBreakStatusCausedByStatePoint = false;
+                    this.maximumStatePoint = this.originalStatePoint;
+                    this.currentStatePoint = this.maximumStatePoint;
+                }
+
                 this.onCharacterInfoUpdated?.Invoke();
             }
         }
