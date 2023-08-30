@@ -118,16 +118,22 @@ public class PlayerActionPanel : MonoBehaviour
         this.executeButton.interactable = false;
     }
 
-    public void ShowQTEActionButton(CharacterSkill qteSkill)
-    {   
+    public void ShowQTEActionButton( CharacterSkill qteSkill, float countdownTime )
+    {
         HideQTEActionButton();
 
         this.qteSkill = qteSkill;
-        this.qteButton.SetupQTESkillActionButton(qteSkill);
+
+        if (qteSkill != null)
+        {
+            this.qteButton.SetupQTESkillActionButton( qteSkill );
+            this.qteButton.GetCountdownTimer().StartCountdownTimer( countdownTime );
+        }
     }
 
     public void HideQTEActionButton()
     {
+        this.qteButton.GetCountdownTimer().StopCountdownTimer();
         this.qteButton.gameObject.SetActive(false);
     }
 

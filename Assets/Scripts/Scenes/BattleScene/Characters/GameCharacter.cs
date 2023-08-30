@@ -42,6 +42,7 @@ public class GameCharacter : MonoBehaviour
     private int counterAttacks = 0;
     private int breakStatusRemainingATLs = 0;
     private bool isBreakStatusCausedByStatePoint = false;
+    private bool isBreakStatusCausedByStressValue = false;
 
     public enum CharacterActionType
     {
@@ -162,6 +163,7 @@ public class GameCharacter : MonoBehaviour
             {
                 this.currentStressValue = this.maximumStressValue;
                 this.breakStatusRemainingATLs = 2;
+                this.isBreakStatusCausedByStressValue = true;
             }
         }
 
@@ -182,7 +184,11 @@ public class GameCharacter : MonoBehaviour
 
             if (!GetIsInBreakStatus())
             {
-                this.currentStressValue = 0.0f;
+                if (this.isBreakStatusCausedByStressValue)
+                {
+                    this.isBreakStatusCausedByStressValue = false;
+                    this.currentStressValue = 0.0f;
+                }
 
                 if (this.isBreakStatusCausedByStatePoint)
                 {

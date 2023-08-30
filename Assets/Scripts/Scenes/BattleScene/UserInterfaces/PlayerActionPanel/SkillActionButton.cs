@@ -47,11 +47,6 @@ public class SkillActionButton : MonoBehaviour
     // For QTE skill
     public void SetupQTESkillActionButton(CharacterSkill characterSkill)
     {
-        if (characterSkill == null)
-        {
-            return;
-        }
-
         this.gameObject.SetActive(true);
 
         Skill skillData = characterSkill.GetSkillData();
