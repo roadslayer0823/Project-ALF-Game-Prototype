@@ -394,6 +394,8 @@ public class BattleAnimationManager : MonoBehaviour
 
     private IEnumerator RunDerivedSkill( CharacterSkill derivedSkill, GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound battleFlowRound )
     {
+        attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
+
         battleFlowRound.GoToTargetATL( battleFlowRound.GetNextATL( attacker ), false );
         attacker.SetCurrentSkill( derivedSkill );
         BattleLogicManager.ExecuteCasterSkillOnUse( attacker, attackTarget );
@@ -485,7 +487,12 @@ public class BattleAnimationManager : MonoBehaviour
 
         for (int i = 0; i < _playerCharacterList.Count; i++)
         {
-            if (!BattleLogicManager.IsGameCharacterDead( _playerCharacterList[ i ] ))
+            PlayerCharacter _playerCharacter = _playerCharacterList[ i ];
+            if (BattleLogicManager.IsGameCharacterDead( _playerCharacter ))
+            {
+                _playerCharacter.gameObject.SetActive( false );
+            }
+            else
             {
                 _hasPlayerCharacterSurvived = true;
                 break;
@@ -494,7 +501,12 @@ public class BattleAnimationManager : MonoBehaviour
 
         for (int i = 0; i < _enemyCharacterList.Count; i++)
         {
-            if (!BattleLogicManager.IsGameCharacterDead( _enemyCharacterList[ i ] ))
+            EnemyCharacter _enemyCharacter = _enemyCharacterList[ i ];
+            if (BattleLogicManager.IsGameCharacterDead( _enemyCharacter ))
+            {
+                _enemyCharacter.gameObject.SetActive( false );
+            }
+            else
             {
                 _hasEnemyCharacterSurvived = true;
                 break;

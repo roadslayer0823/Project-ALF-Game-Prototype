@@ -5,18 +5,26 @@ using TMPro;
 public class BattleResultPanel : MonoBehaviour
 {
     [SerializeField] private GameObject container = null;
+    [SerializeField] private GameObject panel = null;
     [SerializeField] private TMP_Text titleLabel = null;
 
     public void ShowVictory()
     {
         this.titleLabel.text= "恭喜\n你贏了";
-        this.container.SetActive( true );
+        ShowPanel();
     }
 
     public void ShowDefeat()
     {
         this.titleLabel.text = "闖關失敗";
+        ShowPanel();
+    }
+
+    private void ShowPanel()
+    {
+        this.panel.transform.localScale = Vector3.zero;
         this.container.SetActive( true );
+        LeanTween.scale( this.panel, Vector3.one, 0.5f ).setEaseOutBack();
     }
 
     public void ClickToRestartBattle()
