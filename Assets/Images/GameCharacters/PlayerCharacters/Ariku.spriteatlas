@@ -56,6 +56,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 045896889525c4151a87df085935e9a3, type: 3}
   - {fileID: 21300000, guid: 951aead8b55ec46c9aa5cc49a3083659, type: 3}
   - {fileID: 21300000, guid: 7a1817e81b0574b39a90a6a1e0ce217c, type: 3}
+  - {fileID: 21300000, guid: 840d41691fdab42e8be38bee63de45e1, type: 3}
   - {fileID: 21300000, guid: da1cc05cb9b3b45d4b97167dfbecdd9c, type: 3}
   - {fileID: 21300000, guid: f2e573dd8e09b4926ae67190a7cf7469, type: 3}
   m_PackedSpriteNamesToIndex:
@@ -64,6 +65,7 @@ SpriteAtlas:
   - 04
   - 02
   - 03
+  - 02
   - 02
   - 03
   - ariku back
