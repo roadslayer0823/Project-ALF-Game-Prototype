@@ -52,8 +52,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2214a86184e844892adde7361a6e68ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeSkillSelectionPanel: {fileID: 5459260374220162652}
-  backendSkillSelectionPanel: {fileID: 612517740939008948}
+  activeSkillSelectionPanelTab: {fileID: 5459260374220162652}
+  backendSkillSelectionPanelTab: {fileID: 612517740939008948}
   attackSkillSelectionTabButton: {fileID: 8015979577208796029}
   repulseSkillSelectionTabButton: {fileID: 8063163667737907253}
   derivedSkillSelectionTabButton: {fileID: 5800599887510065705}
@@ -662,10 +662,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: DerivedSkillSelectionTabButton
       objectReference: {fileID: 0}
-    - target: {fileID: 5395172928961972319, guid: be42383b28f1248dca855ac668a32226, type: 3}
-      propertyPath: m_fontSize
-      value: 55.5
-      objectReference: {fileID: 0}
     - target: {fileID: 5443936741501078790, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -753,10 +749,6 @@ PrefabInstance:
     - target: {fileID: 7946638950644192532, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_IsActive
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8872307289537047387, guid: be42383b28f1248dca855ac668a32226, type: 3}
-      propertyPath: m_fontSize
-      value: 58.65
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be42383b28f1248dca855ac668a32226, type: 3}

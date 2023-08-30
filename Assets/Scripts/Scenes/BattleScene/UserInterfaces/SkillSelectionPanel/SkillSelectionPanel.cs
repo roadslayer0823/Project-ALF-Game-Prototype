@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class SkillSelectionPanel : MonoBehaviour
 {
-    [SerializeField] private SkillSelectionTab activeSkillSelectionPanel = null;
-    [SerializeField] private SkillSelectionTab backendSkillSelectionPanel = null;
+    [SerializeField] private SkillSelectionTab activeSkillSelectionPanelTab = null;
+    [SerializeField] private SkillSelectionTab backendSkillSelectionPanelTab = null;
 
     [Header("SkillTabButtons")]
     [SerializeField] private Button attackSkillSelectionTabButton = null;
@@ -55,10 +55,10 @@ public class SkillSelectionPanel : MonoBehaviour
         this.onSkillSelectedCallback = onSkillSelectedCallback;
         this.onSkillDeselectedCallback = onSkillDeselectedCallback;
 
-        this.activeSkillSelectionPanel.Initialize( this );
-        this.backendSkillSelectionPanel.Initialize( this );
+        this.activeSkillSelectionPanelTab.Initialize( this );
+        this.backendSkillSelectionPanelTab.Initialize( this );
 
-        this.backendSkillSelectionPanel.gameObject.SetActive(false);
+        this.backendSkillSelectionPanelTab.gameObject.SetActive(false);
 
         this.attackSkillSelectionTabButton.onClick.AddListener(ShowAttackSkillTab);
         this.repulseSkillSelectionTabButton.onClick.AddListener(ShowRepulseSkillTab);
@@ -87,8 +87,8 @@ public class SkillSelectionPanel : MonoBehaviour
             }
         }
 
-        this.activeSkillSelectionPanel.ShowCharacterSkillList(activeSkillList.ToArray());
-        this.backendSkillSelectionPanel.ShowCharacterSkillList(backendSkillList.ToArray());
+        this.activeSkillSelectionPanelTab.ShowCharacterSkillList(activeSkillList.ToArray());
+        this.backendSkillSelectionPanelTab.ShowCharacterSkillList(backendSkillList.ToArray());
 
         base.gameObject.SetActive(true);
 
@@ -171,10 +171,10 @@ public class SkillSelectionPanel : MonoBehaviour
     {
         this.skillSelectionPanel = SkillSelectionUIPanel.active;
 
-        this.activeSkillSelectionPanel.gameObject.SetActive(true);
-        this.backendSkillSelectionPanel.gameObject.SetActive(false);
+        this.activeSkillSelectionPanelTab.gameObject.SetActive(true);
+        this.backendSkillSelectionPanelTab.gameObject.SetActive(false);
 
-        this.backendSkillSelectionPanel.HideSkillInfoPanel();
+        this.backendSkillSelectionPanelTab.HideSkillInfoPanel();
 
         ChangeSkillSelectionPanel();
     }
@@ -184,10 +184,10 @@ public class SkillSelectionPanel : MonoBehaviour
     {
         this.skillSelectionPanel = SkillSelectionUIPanel.backend;
 
-        this.activeSkillSelectionPanel.gameObject.SetActive(false);
-        this.backendSkillSelectionPanel.gameObject.SetActive(true);
+        this.activeSkillSelectionPanelTab.gameObject.SetActive(false);
+        this.backendSkillSelectionPanelTab.gameObject.SetActive(true);
 
-        this.activeSkillSelectionPanel.HideSkillInfoPanel();
+        this.activeSkillSelectionPanelTab.HideSkillInfoPanel();
 
         ChangeSkillSelectionPanel();
     }
@@ -199,6 +199,8 @@ public class SkillSelectionPanel : MonoBehaviour
 
         foreach (SkillSelectionBox skill in selectedActiveSkillList)
         {
+            
+
             skillSelectionCounter++;
             skill.SetSkillSelectionSequenceNumber(skillSelectionCounter);
         }
@@ -262,7 +264,8 @@ public class SkillSelectionPanel : MonoBehaviour
     {
         if (this.skillSelectionPanel == SkillSelectionUIPanel.active)
         {
-            this.activeSkillSelectionPanel.ShowSelectedSkillInfo(null);
+            this.activeSkillSelectionPanelTab.ShowSelectedSkillInfo(null);
+            this.activeSkillSelectionPanelTab.SetSkillListTitle("Active Skill \n主動技能");
 
             this.attackSkillSelectionTabButton.gameObject.SetActive(true);
             this.repulseSkillSelectionTabButton.gameObject.SetActive(true);
@@ -271,7 +274,8 @@ public class SkillSelectionPanel : MonoBehaviour
         }
         else if (this.skillSelectionPanel == SkillSelectionUIPanel.backend)
         {
-            this.backendSkillSelectionPanel.ShowSelectedSkillInfo(null);
+            this.backendSkillSelectionPanelTab.ShowSelectedSkillInfo(null);
+            this.backendSkillSelectionPanelTab.SetSkillListTitle("Backend Skill \n後台技能");
 
             this.attackSkillSelectionTabButton.gameObject.SetActive(true);
             this.repulseSkillSelectionTabButton.gameObject.SetActive(false);
@@ -290,11 +294,11 @@ public class SkillSelectionPanel : MonoBehaviour
         // Check whether current selected panel is active or backend
         if (this.skillSelectionPanel == SkillSelectionUIPanel.active)
         {
-            _skillSelectionPanel = this.activeSkillSelectionPanel;
+            _skillSelectionPanel = this.activeSkillSelectionPanelTab;
         }
         else if (this.skillSelectionPanel == SkillSelectionUIPanel.backend)
         {
-            _skillSelectionPanel = this.backendSkillSelectionPanel;
+            _skillSelectionPanel = this.backendSkillSelectionPanelTab;
         }
 
         if (this.skillInfoTab == SkillInfoTab.attack)

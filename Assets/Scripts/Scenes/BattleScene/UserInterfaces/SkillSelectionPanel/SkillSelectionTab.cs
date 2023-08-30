@@ -95,4 +95,9 @@ public class SkillSelectionTab : MonoBehaviour
     {
         return this.skillSelectionListBox.GetLastSelectedCounterSkill();
     }
+
+    public void SetSkillListTitle(string skillListTitle)
+    {
+        this.skillSelectionListBox.SetSkillListTitle(skillListTitle);
+    }
 }

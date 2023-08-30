@@ -11,7 +11,8 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     [SerializeField] private float boxHeight = 150f;
 
     [Header("")]
-    [SerializeField] private RectTransform rectTransform;
+    [SerializeField] private Image selectionHightlight;
+    [SerializeField] private RectTransform skillSelectionBoxRect;
     [SerializeField] private TextMeshProUGUI skillNameText;
     [SerializeField] private TextMeshProUGUI skillTypeText;
     [SerializeField] private TextMeshProUGUI selectionText;
@@ -35,7 +36,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     private void Start()
     {
-        this.rectTransform.sizeDelta = new Vector2(0, this.boxHeight);
+        this.skillSelectionBoxRect.sizeDelta = new Vector2(0, this.boxHeight);
 
         UpdateSkillSelectionBoxData();
 
@@ -176,5 +177,15 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
         this.skillSelectionListBox.ShowSelectedSkillInfo(this);
         UpdateSkillSelectionBoxData();
+    }
+
+    public void ShowSelectionHighlight()
+    {
+        this.selectionHightlight.gameObject.SetActive(true);
+    }
+
+    public void HideSelectionHighlight()
+    {
+        this.selectionHightlight.gameObject.SetActive(false);
     }
 }

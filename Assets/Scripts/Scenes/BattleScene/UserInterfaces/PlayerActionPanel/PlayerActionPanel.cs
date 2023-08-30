@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Skill = DatabaseManager.Skill;
 
 public class PlayerActionPanel : MonoBehaviour
 {
@@ -11,49 +12,33 @@ public class PlayerActionPanel : MonoBehaviour
     [SerializeField] private SkillActionButton[] skillActionButtons = new SkillActionButton[ 0 ];
 
     [Header("QTE Button")]
-    [SerializeField] private Button qteButton = null;
-    [SerializeField] private TextMeshProUGUI qteType = null;
-    [SerializeField] private TextMeshProUGUI skillName = null;
-    [SerializeField] private TextMeshProUGUI strengthValue = null;
-    [SerializeField] private TextMeshProUGUI accuracyValue = null;
-    [SerializeField] private TextMeshProUGUI evasionValue = null;
-    [SerializeField] private GameObject strength = null;
-    [SerializeField] private GameObject accuracy = null;
-    [SerializeField] private GameObject evasion = null;
+    [SerializeField] private SkillActionButton qteButton = null;
 
     private GameCharacter selectedGameCharacter = null;
     private Action onExecuteButtonClickedCallback = null;
-    private QTEActionType qteActionType = QTEActionType.None;
+    private CharacterSkill qteSkill = null;
 
     [Header("SkillSelectionPanel button")]
-    [SerializeField] private Button activeSkillButton = null;
-    [SerializeField] private Button backendSkillButton = null;
+    [SerializeField] private Button showSkillSelectionPanelButton = null;
+    [SerializeField] private TextMeshProUGUI skillSelectionPanelButtonText = null;
     private Action onActiveSkillButtonClickedCallback = null;
     private Action onBackendSkillButtonClickedCallback = null;
+    private bool isShowingActiveSkillSelectionPanelNext = false;
 
-    public enum QTEActionType
-    {
-        None,
-        Repulse,
-        Derive,
-        Counter
-    }
-
-    public void Initialize( Action onExecuteButtonClickedCallback, Action onActiveSkillButtonClicked, Action onBackendSkillButtonClicked)
+    public void Initialize( Action onExecuteButtonClickedCallback, Action onShowActiveSkillSelectionPanelCallback, Action onShowBackendSkillSelectionPanelCallback)
     {
         this.onExecuteButtonClickedCallback = onExecuteButtonClickedCallback;
 
-        this.qteButton.onClick.AddListener( OnQTEButtonClicked );
+        this.qteButton.SetOnClick( OnQTEButtonClicked );
 
         for (int i = 0; i < this.skillActionButtons.Length; i++)
         {
             skillActionButtons[ i ].Initialize( OnSkillActionButtonClicked );
         }
 
-        this.activeSkillButton.onClick.AddListener(OnActiveSkillButtonClicked);
-        this.backendSkillButton.onClick.AddListener(OnBackendSkillButtonClicked);
-        this.onActiveSkillButtonClickedCallback = onActiveSkillButtonClicked;
-        this.onBackendSkillButtonClickedCallback = onBackendSkillButtonClicked;
+        this.showSkillSelectionPanelButton.onClick.AddListener(OnShowSkillSelectionPanelButtonClicked);
+        this.onActiveSkillButtonClickedCallback = onShowActiveSkillSelectionPanelCallback;
+        this.onBackendSkillButtonClickedCallback = onShowBackendSkillSelectionPanelCallback;
     }
 
     public void SetSelectedGameCharacter( GameCharacter selectedGameCharacter )
@@ -79,21 +64,23 @@ public class PlayerActionPanel : MonoBehaviour
     {
         DisableQTEAndSkillActionButtons();
 
-        switch ( this.qteActionType )
+        Skill _skillData = this.qteSkill.GetSkillData();
+
+        switch ( _skillData.skillType )
         {
-            case QTEActionType.Repulse:
+            case Skill.SkillType.repulse:
 
                 this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Repulse );
 
                 break;
 
-            case QTEActionType.Derive:
+            case Skill.SkillType.derived:
 
                 this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Derive );
 
                 break;
 
-            case QTEActionType.Counter:
+            case Skill.SkillType.counter:
 
                 this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Counter );
 
@@ -131,79 +118,17 @@ public class PlayerActionPanel : MonoBehaviour
         this.executeButton.interactable = false;
     }
 
-    public void ShowQTEActionButton(QTEActionType qteActionType, CharacterSkill qteSkill)
-    {
+    public void ShowQTEActionButton(CharacterSkill qteSkill)
+    {   
         HideQTEActionButton();
 
-        this.qteActionType = qteActionType;
-        
-        switch (qteActionType)
-        {
-            case QTEActionType.Repulse:
-
-                this.qteType.SetText("迎擊");
-                SetupQTEActionButton(qteSkill);
-                break;
-
-            case QTEActionType.Derive:
-
-                this.qteType.SetText("派生");
-                SetupQTEActionButton(qteSkill);
-                break;
-
-            case QTEActionType.Counter:
-
-                this.qteType.SetText("反擊");
-                SetupQTEActionButton(qteSkill);
-                break;
-        }
+        this.qteSkill = qteSkill;
+        this.qteButton.SetupQTESkillActionButton(qteSkill);
     }
 
     public void HideQTEActionButton()
     {
         this.qteButton.gameObject.SetActive(false);
-    }
-
-    private void SetupQTEActionButton(CharacterSkill qteSkill)
-    {
-        this.qteButton.gameObject.SetActive(true);
-
-        CharacterSubskill _characterSubskill = qteSkill.GetCharacterSubskillData();
-        int _strengthValue = _characterSubskill.GetSubskillData().Strength;
-        int _accuracyValue = _characterSubskill.GetSubskillData().Accuracy;
-        int _evasionValue =_characterSubskill.GetSubskillData().Evasion;
-
-        this.skillName.SetText(_characterSubskill.GetSubskillData().DisplayName);
-
-        if (_strengthValue > 1)
-        {
-            this.strength.gameObject.SetActive(true);
-            this.strengthValue.SetText("+" + (_strengthValue - 1).ToString());
-        }
-        else
-        {
-            this.strength.gameObject.SetActive(false);
-        }
-
-        if (_accuracyValue > 1)
-        {
-            this.accuracy.gameObject.SetActive(true);
-            this.accuracyValue.SetText("+" + (_accuracyValue - 1).ToString());
-        }
-        else
-        {
-            this.accuracy.gameObject.SetActive(false);
-        }
-
-        if (_evasionValue > 1)
-        {
-            this.evasion.gameObject.SetActive(true);
-            this.evasionValue.SetText("+" + (_evasionValue - 1).ToString());
-        }
-        else
-        {
-            this.evasion.gameObject.SetActive(false);
-        }
     }
 
     public void ShowSkillActionButtons( CharacterSkill[] skills )
@@ -271,55 +196,47 @@ public class PlayerActionPanel : MonoBehaviour
         }
     }
 
+    private void OnShowSkillSelectionPanelButtonClicked()
+    {
+        if (this.isShowingActiveSkillSelectionPanelNext)
+        {
+            ShowActiveSkillSelectionPanel();
+        }
+        else
+        {
+            ShowBackendSkillSelectionPanel();
+        }
+    }
+
     // Show active skill selection panel
-    private void OnActiveSkillButtonClicked()
+    private void ShowActiveSkillSelectionPanel()
     {
         if (this.onActiveSkillButtonClickedCallback != null)
         {
-            this.activeSkillButton.interactable = false;
-            this.backendSkillButton.interactable = true;
-
             this.onActiveSkillButtonClickedCallback();
         }
         else
         {
             Debug.Log("The value for 'onActiveSkillButtonClicked' is not assigned.");
         }
+
+        this.isShowingActiveSkillSelectionPanelNext = false;
+        this.skillSelectionPanelButtonText.SetText("Backend Skill \n後台技能");
     }
 
     // Show backend skill selection panel
-    private void OnBackendSkillButtonClicked()
+    private void ShowBackendSkillSelectionPanel()
     {
         if (this.onBackendSkillButtonClickedCallback != null)
         {
-            this.activeSkillButton.interactable = true;
-            this.backendSkillButton.interactable = false;
-
             this.onBackendSkillButtonClickedCallback();
         }
         else
         {
             Debug.Log("The value for 'onBackendSkillButtonClicked' is not assigned.");
         }
-    }
 
-    public void EnableActiveSkillButton()
-    {
-        this.activeSkillButton.interactable = true;
-    }
-
-    public void DisableActiveSkillButton()
-    {
-        this.activeSkillButton.interactable = false;
-    }
-
-    public void EnableBackendSkillButton()
-    {
-        this.backendSkillButton.interactable = true;
-    }
-
-    public void DisableBackendSkillButton()
-    {
-        this.backendSkillButton.interactable = false;
+        this.isShowingActiveSkillSelectionPanelNext = true;
+        this.skillSelectionPanelButtonText.SetText("Active Skill \n主動技能");
     }
 }

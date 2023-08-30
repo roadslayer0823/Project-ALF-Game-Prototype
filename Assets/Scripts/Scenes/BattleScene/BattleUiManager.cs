@@ -18,7 +18,7 @@ public class BattleUiManager : MonoBehaviour
     {
         this.battleGameManager = battleGameManager;
         this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
-        this.playerActionPanel.Initialize( OnExecuteButtonClicked, OnActiveSkillButtonClicked, OnBackendSkillButtonClicked );
+        this.playerActionPanel.Initialize( OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel);
         this.skillSlotListPanel.Initialize(OnSkillSlotSwiped);
     }
 
@@ -129,7 +129,7 @@ public class BattleUiManager : MonoBehaviour
     public void ShowPreparationSection()
     {
         this.playerActionPanel.ShowPreparationSection();
-        OnActiveSkillButtonClicked();
+        ShowActiveSkillSelectionPanel();
         this.playerActionPanel.HideBattleSection();
     }
 
@@ -146,15 +146,15 @@ public class BattleUiManager : MonoBehaviour
         this.playerActionPanel.SetSelectedGameCharacter( gameCharacter );
     }
 
-    public void UpdatePlayerActionPanelButtons( PlayerActionPanel.QTEActionType qteActionType, CharacterSkill qteSkill, bool canDefend, bool canEvade, float countdownTime )
+    public void UpdatePlayerActionPanelButtons( CharacterSkill qteSkill, bool canDefend, bool canEvade, float countdownTime )
     {
-        this.playerActionPanel.ShowQTEActionButton( qteActionType, qteSkill );
+        this.playerActionPanel.ShowQTEActionButton( qteSkill );
         this.playerActionPanel.UpdateSkillActionButtons( canDefend, canEvade, countdownTime );
     }
 
     public void DisablePlayerActionPanelButtons()
     {
-        UpdatePlayerActionPanelButtons( PlayerActionPanel.QTEActionType.None, null, false, false, 0.0f );
+        UpdatePlayerActionPanelButtons( null, false, false, 0.0f );
     }
 
     public void OnExecuteButtonClicked()
@@ -162,18 +162,14 @@ public class BattleUiManager : MonoBehaviour
         this.battleGameManager.StartExecution();
     }
 
-    private void OnActiveSkillButtonClicked()
+    private void ShowActiveSkillSelectionPanel()
     {
         this.skillSelectionPanel.ShowActiveSkillSelectionPanel();
-        this.playerActionPanel.DisableActiveSkillButton();
-        this.playerActionPanel.EnableBackendSkillButton();
     }
 
-    private void OnBackendSkillButtonClicked()
+    private void ShowBackendSkillSelectionPanel()
     {
         this.skillSelectionPanel.ShowBackendSkillSelectionPanel();
-        this.playerActionPanel.EnableActiveSkillButton();
-        this.playerActionPanel.DisableBackendSkillButton();
     }
 
     #endregion
