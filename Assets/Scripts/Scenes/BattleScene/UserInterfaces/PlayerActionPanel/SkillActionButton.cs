@@ -1,7 +1,9 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
+using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
 public class SkillActionButton : MonoBehaviour
@@ -23,6 +25,8 @@ public class SkillActionButton : MonoBehaviour
     public void Initialize( Action<CharacterSkill> onActionButtonClickedCallback )
     {
         this.onActionButtonClickedCallback = onActionButtonClickedCallback;
+
+        SetOnClick(ClickOnActionButton);
     }
 
     private void Start()
@@ -40,6 +44,41 @@ public class SkillActionButton : MonoBehaviour
         DisableActionButton();
     }
 
+    // For QTE skill
+    public void SetupQTESkillActionButton(CharacterSkill characterSkill)
+    {
+        if (characterSkill == null)
+        {
+            return;
+        }
+
+        this.gameObject.SetActive(true);
+
+        Skill skillData = characterSkill.GetSkillData();
+        // Setup QTE action type
+        switch (skillData.skillType)
+        {
+            case Skill.SkillType.repulse:
+
+                this.actionType.SetText("迎擊");
+                break;
+
+            case Skill.SkillType.derived:
+
+                this.actionType.SetText("派生");
+                break;
+
+            case Skill.SkillType.counter:
+
+                this.actionType.SetText("反擊");
+                break;
+        }
+
+        CharacterSubskill _characterSubskill = characterSkill.GetCharacterSubskillData();
+        SetupSkillActionButtonDetail(_characterSubskill.GetSubskillData());
+    }
+
+    // For backend skill
     private void SetupSkillActionButton(Subskill subskillData)
     {
         //Setup action type
@@ -60,6 +99,11 @@ public class SkillActionButton : MonoBehaviour
             this.actionType.gameObject.SetActive(false);
         }
 
+        SetupSkillActionButtonDetail(subskillData);
+    }
+
+    private void SetupSkillActionButtonDetail(Subskill subskillData)
+    {
         //Setup skill name
         this.actionSkillName.SetText(subskillData.DisplayName);
 
@@ -114,6 +158,11 @@ public class SkillActionButton : MonoBehaviour
     public void ClickOnActionButton()
     {
         this.onActionButtonClickedCallback?.Invoke( selectedSkill );
+    }
+
+    public void SetOnClick(UnityAction callbackFunction)
+    {
+        this.actionButton.onClick.AddListener(callbackFunction);
     }
 
     public CharacterSkill GetSelectedSkill()
