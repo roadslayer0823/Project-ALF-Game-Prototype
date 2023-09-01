@@ -13,6 +13,7 @@ public class BattleAnimationManager : MonoBehaviour
     [SerializeField] private Sprite backgroundPartA = null;
     [SerializeField] private Sprite backgroundPartB = null;
     [SerializeField] private Animator skillEffectAnimator = null;
+    [SerializeField] private Animator skillEffectUiAnimator = null;
 
     [SerializeField] private Camera targetCamera = null;
     [SerializeField] private CameraEffects cameraEffect = null;
@@ -368,6 +369,15 @@ public class BattleAnimationManager : MonoBehaviour
                 _attacker = _winner;
                 _attackTarget = _loser;
                 _attackerSkill = _winner.GetCurrentSkill().GetCharacterSubskillData().GetCounterSkill();
+
+                if (_attacker is PlayerCharacter)
+                {
+                    yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, "Player_Ariku_Counterattack" ) );
+                }
+                else if (_attacker is EnemyCharacter)
+                {
+                    yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, "Enemy_Enemy_Counterattack" ) );
+                }
             }
 
             _attacker.Reset();
@@ -449,9 +459,9 @@ public class BattleAnimationManager : MonoBehaviour
         yield return StartCoroutine( WaitForAnimationEventTriggered() );
     }
 
-    private IEnumerator PlaySkillEffectAnimation( string animationName )
+    private IEnumerator PlayAnimation( Animator animator, string animationName )
     {
-        skillEffectAnimator.Play( animationName );
+        animator.Play( animationName );
         yield return StartCoroutine( WaitForAnimationEventTriggered() );
     }
 
