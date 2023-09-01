@@ -39,6 +39,8 @@ public class PlayerActionPanel : MonoBehaviour
         this.showSkillSelectionPanelButton.onClick.AddListener(OnShowSkillSelectionPanelButtonClicked);
         this.onActiveSkillButtonClickedCallback = onShowActiveSkillSelectionPanelCallback;
         this.onBackendSkillButtonClickedCallback = onShowBackendSkillSelectionPanelCallback;
+
+        this.skillSelectionPanelButtonText.SetText("Backend Skill \n後台技能");
     }
 
     public void SetSelectedGameCharacter( GameCharacter selectedGameCharacter )
