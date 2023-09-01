@@ -116,12 +116,13 @@ public class GameCharacter : MonoBehaviour
     {
         this.currentStatePoint -= amount;
 
-        if (!GetIsInBreakStatus())
+        if (BattleLogicManager.IsGameCharacterInBreakStatus( this, onHit ))
         {
-            if (BattleLogicManager.IsGameCharacterInBreakStatus( this, onHit ))
+            this.isBreakStatusCausedByStatePoint = true;
+
+            if (!GetIsInBreakStatus())
             {
-                this.breakStatusRemainingATLs = 2;
-                this.isBreakStatusCausedByStatePoint = true;
+                EnterIntoBreakStatus( 1 );
             }
         }
 
@@ -155,15 +156,19 @@ public class GameCharacter : MonoBehaviour
 
     public void AddCurrentStressValue( float amount )
     {
-        if (!GetIsInBreakStatus())
+        if (!this.isBreakStatusCausedByStressValue)
         {
             this.currentStressValue += amount;
 
             if (BattleLogicManager.IsGameCharacterInBreakStatus( this ))
             {
                 this.currentStressValue = this.maximumStressValue;
-                this.breakStatusRemainingATLs = 2;
                 this.isBreakStatusCausedByStressValue = true;
+
+                if (!GetIsInBreakStatus())
+                {
+                    EnterIntoBreakStatus( 1 );
+                }
             }
         }
 
@@ -382,6 +387,22 @@ public class GameCharacter : MonoBehaviour
         return true;
     }
 
+    public bool IsAbleToDefend()
+    {
+        if (this.GetIsInBreakStatus())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void EnterIntoBreakStatus( int numberOfATLs )
+    {
+        this.breakStatusRemainingATLs = numberOfATLs;
+        TriggerEvent( AnimationEvent.OnBeingInBreakStatus );
+    }
+
     public string GetId()
     {
         return this.id;
@@ -517,6 +538,11 @@ public class GameCharacter : MonoBehaviour
     public int GetCounterAttacks()
     {
         return this.counterAttacks;
+    }
+
+    public int GetBreakStatusRemainingATLs()
+    {
+        return this.breakStatusRemainingATLs;
     }
 
     public GameObject GetOwnContainer()

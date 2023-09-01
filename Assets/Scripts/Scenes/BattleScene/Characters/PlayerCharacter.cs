@@ -39,8 +39,8 @@ public class PlayerCharacter : GameCharacter
 
                 _battleUiManager.UpdatePlayerActionPanelButtons(
                     qteSkill: _repulseSkill,
-                    canDefend: true,
-                    canEvade: true,
+                    canDefend: base.IsAbleToDefend(),
+                    canEvade: base.IsAbleToDefend(),
                     countdownTime: base.GetSkillCountdownTime()
                     );
 
