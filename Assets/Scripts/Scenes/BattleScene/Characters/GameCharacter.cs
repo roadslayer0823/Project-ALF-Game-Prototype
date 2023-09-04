@@ -96,36 +96,49 @@ public class GameCharacter : MonoBehaviour
 
     public void AddCurrentHealthPoint( float amount )
     {
-        this.currentHealthPoint = Mathf.Clamp( this.currentHealthPoint + amount, 0.0f, this.maximumHealthPoint );
-        this.onCharacterInfoUpdated?.Invoke();
+        if (amount > 0)
+        {
+            this.currentHealthPoint = Mathf.Clamp( this.currentHealthPoint + amount, 0.0f, this.maximumHealthPoint );
+            this.onCharacterInfoUpdated?.Invoke();
+        }
     }
 
     public void MinusCurrentHealthPoint( float amount )
     {
-        this.currentHealthPoint -= amount;
-        this.onCharacterInfoUpdated?.Invoke();
+        if (amount > 0)
+        {
+            this.currentHealthPoint -= amount;
+            this.onCharacterInfoUpdated?.Invoke();
+        }
     }
 
     public void AddCurrentStatePoint( float amount )
     {
-        this.currentStatePoint = Mathf.Clamp( this.currentStatePoint + amount, 0.0f, this.maximumStatePoint );
-        this.onCharacterInfoUpdated?.Invoke();
+        if (amount > 0)
+        {
+            this.currentStatePoint = Mathf.Clamp( this.currentStatePoint + amount, 0.0f, this.maximumStatePoint );
+            this.onCharacterInfoUpdated?.Invoke();
+        }
     }
 
     public void MinusCurrentStatePoint( float amount, bool onHit )
     {
-        this.currentStatePoint -= amount;
-
-        if (!GetIsInBreakStatus())
+        if (amount > 0)
         {
+            this.currentStatePoint -= amount;
+
             if (BattleLogicManager.IsGameCharacterInBreakStatus( this, onHit ))
             {
-                this.breakStatusRemainingATLs = 2;
                 this.isBreakStatusCausedByStatePoint = true;
-            }
-        }
 
-        this.onCharacterInfoUpdated?.Invoke();
+                if (!GetIsInBreakStatus())
+                {
+                    EnterIntoBreakStatus( 1 );
+                }
+            }
+
+            this.onCharacterInfoUpdated?.Invoke();
+        }
     }
 
     public void SetCurrentStatePointToMaximum()
@@ -136,44 +149,60 @@ public class GameCharacter : MonoBehaviour
 
     public void AddMaximumStatePoint( float amount )
     {
-        this.maximumStatePoint += amount;
-        this.onCharacterInfoUpdated?.Invoke();
+        if (amount > 0)
+        {
+            this.maximumStatePoint += amount;
+            this.onCharacterInfoUpdated?.Invoke();
+        }
     }
 
     public void MinusMaximumStatePoint( float amount )
     {
-        this.maximumStatePoint -= amount;
-
-        float _lowestMaximumStatePoint = GameConfiguration.Instance.GetBattleConfiguration().GetLowestMaximumStatePoint();
-        if (this.maximumStatePoint < _lowestMaximumStatePoint)
+        if (amount > 0)
         {
-            this.maximumStatePoint = _lowestMaximumStatePoint;
-        }
+            this.maximumStatePoint -= amount;
 
-        this.onCharacterInfoUpdated?.Invoke();
+            float _lowestMaximumStatePoint = GameConfiguration.Instance.GetBattleConfiguration().GetLowestMaximumStatePoint();
+            if (this.maximumStatePoint < _lowestMaximumStatePoint)
+            {
+                this.maximumStatePoint = _lowestMaximumStatePoint;
+            }
+
+            this.onCharacterInfoUpdated?.Invoke();
+        }
     }
 
     public void AddCurrentStressValue( float amount )
     {
-        if (!GetIsInBreakStatus())
+        if (amount > 0)
         {
-            this.currentStressValue += amount;
-
-            if (BattleLogicManager.IsGameCharacterInBreakStatus( this ))
+            if (!this.isBreakStatusCausedByStressValue)
             {
-                this.currentStressValue = this.maximumStressValue;
-                this.breakStatusRemainingATLs = 2;
-                this.isBreakStatusCausedByStressValue = true;
-            }
-        }
+                this.currentStressValue += amount;
 
-        this.onCharacterInfoUpdated?.Invoke();
+                if (BattleLogicManager.IsGameCharacterInBreakStatus( this ))
+                {
+                    this.currentStressValue = this.maximumStressValue;
+                    this.isBreakStatusCausedByStressValue = true;
+
+                    if (!GetIsInBreakStatus())
+                    {
+                        EnterIntoBreakStatus( 1 );
+                    }
+                }
+            }
+
+            this.onCharacterInfoUpdated?.Invoke();
+        }
     }
 
     public void MinusCurrentStressValue( float amount )
     {
-        this.currentStressValue -= amount;
-        this.onCharacterInfoUpdated?.Invoke();
+        if (amount > 0)
+        {
+            this.currentStressValue -= amount;
+            this.onCharacterInfoUpdated?.Invoke();
+        }
     }
 
     public void MinusBreakStatusRemainingATLs()
@@ -382,6 +411,22 @@ public class GameCharacter : MonoBehaviour
         return true;
     }
 
+    public bool IsAbleToDefend()
+    {
+        if (this.GetIsInBreakStatus())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void EnterIntoBreakStatus( int numberOfATLs )
+    {
+        this.breakStatusRemainingATLs = numberOfATLs;
+        TriggerEvent( AnimationEvent.OnBeingInBreakStatus );
+    }
+
     public string GetId()
     {
         return this.id;
@@ -519,6 +564,11 @@ public class GameCharacter : MonoBehaviour
         return this.counterAttacks;
     }
 
+    public int GetBreakStatusRemainingATLs()
+    {
+        return this.breakStatusRemainingATLs;
+    }
+
     public GameObject GetOwnContainer()
     {
         return this.ownContainer;
@@ -532,6 +582,16 @@ public class GameCharacter : MonoBehaviour
     public bool GetIsInBreakStatus()
     {
         return ( this.breakStatusRemainingATLs > 0 );
+    }
+
+    public bool GetIsBreakStatusCausedByStatePoint()
+    {
+        return this.isBreakStatusCausedByStatePoint;
+    }
+
+    public bool GetIsBreakStatusCausedByStressValue()
+    {
+        return this.isBreakStatusCausedByStressValue;
     }
 
     public void Reset()

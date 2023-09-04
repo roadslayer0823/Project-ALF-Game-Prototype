@@ -9,6 +9,7 @@ public class ATLSlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI ownerName = null;
     [SerializeField] private TextMeshProUGUI skillName = null;
     [SerializeField] private Image slotBackground = null;
+    [SerializeField] private GameObject deactivationIndicator = null;
 
     [Header("ATL slot color")]
     [SerializeField] private Color playerActiveATLSlotColor = new Color();
@@ -30,16 +31,19 @@ public class ATLSlot : MonoBehaviour
     public void Show( BattleFlowATL flowATL )
     {
         this.battleFlowATL = flowATL;
-        base.gameObject.SetActive( true );
+
+        Activate();
 
         if (battleFlowATL.CheckIsPlayer())
         {
-            slotBackground.color = playerActiveATLSlotColor;
+            this.slotBackground.color = this.playerActiveATLSlotColor;
         }
         else
         {
-            slotBackground.color = enemyActiveATLSlotColor;
+            this.slotBackground.color = this.enemyActiveATLSlotColor;
         }
+
+        base.gameObject.SetActive( true );
     }
 
     public void Hide()
@@ -59,13 +63,13 @@ public class ATLSlot : MonoBehaviour
 
     public void MarkATLSlotColorInactive()
     {
-        if (battleFlowATL.CheckIsPlayer())
+        if (this.battleFlowATL.CheckIsPlayer())
         {
-            slotBackground.color = playerInactiveATLSlotColor;
+            this.slotBackground.color = this.playerInactiveATLSlotColor;
         }
         else
         {
-            slotBackground.color = enemyInactiveATLSlotColor;
+            this.slotBackground.color = this.enemyInactiveATLSlotColor;
         }
     }
 
@@ -77,5 +81,15 @@ public class ATLSlot : MonoBehaviour
     public void SetSkillName(string skillName)
     {
         this.skillName.SetText(skillName);
+    }
+
+    public void Activate()
+    {
+        this.deactivationIndicator.SetActive( false );
+    }
+
+    public void Deactivate()
+    {
+        this.deactivationIndicator.SetActive( true );
     }
 }

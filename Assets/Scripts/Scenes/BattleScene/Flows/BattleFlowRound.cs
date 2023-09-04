@@ -63,6 +63,17 @@ public class BattleFlowRound
 
     public void StartRunningATL()
     {
+        BattleGameManager _battleGameManager = this.battleFlowManager.GetBattleGameManager();
+
+        List<GameCharacter> _gameCharacterList = new List<GameCharacter>();
+        _gameCharacterList.AddRange( _battleGameManager.GetPlayerCharacterList() );
+        _gameCharacterList.AddRange( _battleGameManager.GetEnemyCharacterList() );
+
+        for (int i = 0; i < _gameCharacterList.Count; i++)
+        {
+            UpdateATLSlotStatuses( _gameCharacterList[ i ], true );
+        }
+
         this.flowATLIndex = 0;
         this.battleFlowManager.StartCoroutine( RunATLFlow() );
     }
@@ -145,6 +156,46 @@ public class BattleFlowRound
         }
     }
 
+    public void UpdateATLSlotStatuses( GameCharacter gameCharacter, bool isNewRound )
+    {
+        if (gameCharacter.GetIsInBreakStatus())
+        {
+            int _breakStatusRemainingATLs = gameCharacter.GetBreakStatusRemainingATLs();
+            BattleFlowATL _currentATL = GetCurrentATL();
+
+            int _theATLIndex = this.flowATLIndex;
+            int _nextATLIndex = 0;
+
+            if (_currentATL != null)
+            {
+                if (_currentATL.GetSelectedCharacter() == gameCharacter)
+                {
+                    _currentATL.GetATLSlot().Deactivate();
+
+                    if (isNewRound)
+                    {
+                        _breakStatusRemainingATLs--;
+                    }
+                }
+            }
+
+            while (_breakStatusRemainingATLs > 0)
+            {
+                BattleFlowATL _nextATL = GetNextATL( gameCharacter, _theATLIndex, out _nextATLIndex );
+                if (_nextATL != null)
+                {
+                    _nextATL.GetATLSlot().Deactivate();
+                    _breakStatusRemainingATLs--;
+                    _theATLIndex = _nextATLIndex;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+    }
+
     public int GetRoundNumber()
     {
         return this.roundNumber;
@@ -167,16 +218,26 @@ public class BattleFlowRound
 
     public BattleFlowATL GetNextATL( GameCharacter gameCharacter )
     {
+        return GetNextATL( gameCharacter, this.flowATLIndex );
+    }
+
+    public BattleFlowATL GetNextATL( GameCharacter gameCharacter, int fromATLIndex )
+    {
+        return GetNextATL( gameCharacter, fromATLIndex, out _ );
+    }
+
+    public BattleFlowATL GetNextATL( GameCharacter gameCharacter, int fromATLIndex, out int nextATLIndex )
+    {
         BattleFlowATL _nextATL = null;
-        int _index = this.flowATLIndex;
+        nextATLIndex = fromATLIndex;
 
         do
         {
-            _index++;
+            nextATLIndex++;
 
-            if (_index < this.flowATLs.Length)
+            if (nextATLIndex < this.flowATLs.Length)
             {
-                _nextATL = this.flowATLs[ _index ];
+                _nextATL = this.flowATLs[ nextATLIndex ];
             }
             else
             {

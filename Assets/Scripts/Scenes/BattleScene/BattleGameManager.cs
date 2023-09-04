@@ -122,6 +122,11 @@ public class BattleGameManager : MonoBehaviour
     private void OnCharacterEventTriggered( BattleAnimationManager.AnimationEvent animationEvent, GameCharacter gameCharacter )
     {
         gameCharacter.OnEventTriggered( this, animationEvent );
+
+        if (animationEvent == BattleAnimationManager.AnimationEvent.OnBeingInBreakStatus)
+        {
+            this.battleFlowManager.GetCurrentRound().UpdateATLSlotStatuses( gameCharacter, false );
+        }
     }
 
     private void OnBattleEnded( bool isVictory )

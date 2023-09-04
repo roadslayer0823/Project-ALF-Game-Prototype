@@ -12,6 +12,8 @@ public class GameCharacterInfoBox : MonoBehaviour
     [SerializeField] private TextMeshPro stressValueLabel = null;
     [SerializeField] private TextMeshPro currentSkillInfoLabel = null;
     [SerializeField] private GameObject breakStatusIndicator = null;
+    [SerializeField] private GameObject breakStatusForStatePoint = null;
+    [SerializeField] private GameObject breakStatusForStressValue = null;
 
     void Awake()
     {
@@ -42,20 +44,26 @@ public class GameCharacterInfoBox : MonoBehaviour
         UpdateBar( this.selectedCharacter.GetCurrentStressValue(), this.selectedCharacter.GetMaximumStressValue(), this.stressValueFiller, this.stressValueLabel, false );
 
         this.breakStatusIndicator.SetActive( this.selectedCharacter.GetIsInBreakStatus() );
+        this.breakStatusForStatePoint.SetActive( this.selectedCharacter.GetIsBreakStatusCausedByStatePoint() );
+        this.breakStatusForStressValue.SetActive( this.selectedCharacter.GetIsBreakStatusCausedByStressValue() );
 
         string _skillInfoString = "";
-        CharacterSkill _characterSkill = this.selectedCharacter.GetCurrentSkill();
-        if (_characterSkill != null)
+
+        if (!this.selectedCharacter.GetIsInBreakStatus())
         {
-            CharacterSubskill _characterSubskillData = _characterSkill.GetCharacterSubskillData();
-            if (_characterSubskillData != null)
+            CharacterSkill _characterSkill = this.selectedCharacter.GetCurrentSkill();
+            if (_characterSkill != null)
             {
-                DatabaseManager.Subskill _subskillData = _characterSubskillData.GetSubskillData();
-                _skillInfoString = _subskillData.DisplayName;
-                _skillInfoString += ( _subskillData.Strength > 1 ) ? "\n強度 +" + ( _subskillData.Strength - 1 ) : "";
-                _skillInfoString += ( _subskillData.Accuracy > 1 ) ? "\n命中 +" + ( _subskillData.Accuracy - 1 ) : "";
-                _skillInfoString += ( _subskillData.Evasion > 1 ) ? "\n迴避 +" + ( _subskillData.Evasion - 1 ) : "";
-                _skillInfoString += ( _subskillData.EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide ) ? "\n廣角" : "";
+                CharacterSubskill _characterSubskillData = _characterSkill.GetCharacterSubskillData();
+                if (_characterSubskillData != null)
+                {
+                    DatabaseManager.Subskill _subskillData = _characterSubskillData.GetSubskillData();
+                    _skillInfoString = "<size=120%><color=#FFFF00><b>" + _subskillData.DisplayName + "</b></color></size>";
+                    _skillInfoString += ( _subskillData.Strength > 1 ) ? "\n強度 +" + ( _subskillData.Strength - 1 ) : "";
+                    _skillInfoString += ( _subskillData.Accuracy > 1 ) ? "\n命中 +" + ( _subskillData.Accuracy - 1 ) : "";
+                    _skillInfoString += ( _subskillData.Evasion > 1 ) ? "\n迴避 +" + ( _subskillData.Evasion - 1 ) : "";
+                    _skillInfoString += ( _subskillData.EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide ) ? "\n廣角" : "";
+                }
             }
         }
 

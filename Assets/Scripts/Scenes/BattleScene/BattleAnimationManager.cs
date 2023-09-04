@@ -42,7 +42,8 @@ public class BattleAnimationManager : MonoBehaviour
         OnRepulseWin,
         OnRepulseWin_Cutoff,
         OnDefenseWin,
-        OnDefenseWin_Cutoff
+        OnDefenseWin_Cutoff,
+        OnBeingInBreakStatus
     }
 
     public void Initialize( Action<bool> onBattleEndedCallback )
@@ -60,6 +61,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (_attacker.GetIsInBreakStatus())
         {
+            _attacker.MinusBreakStatusRemainingATLs();
             yield break;
         }
 
@@ -148,6 +150,11 @@ public class BattleAnimationManager : MonoBehaviour
             GameCharacter _winner = null;
             GameCharacter _loser = null;
             CharacterSkill _derivedSkill = null;
+
+            if (_attackTarget.GetIsInBreakStatus())
+            {
+                _attackTarget.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.None );
+            }
 
             switch ( _attackTarget.GetCurrentCharacterActionType() )
             {
