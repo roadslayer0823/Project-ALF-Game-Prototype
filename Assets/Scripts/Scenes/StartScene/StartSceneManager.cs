@@ -1,15 +1,20 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class StartSceneManager : MonoBehaviour
+public class StartSceneManager : Singleton<StartSceneManager>
 {
-    void Awake()
+    private void Start()
     {
-        DatabaseManager.Instance.onAllDataLoadedCallback = GoToBattleScene;
+        DatabaseManager.Instance.onAllDataLoadedCallback = GoToAdminPage;
     }
 
-    private void GoToBattleScene()
+    public void GoToBattleScene()
     {
         SceneManager.LoadScene( "BattleScene" );
+    }
+
+    private void GoToAdminPage()
+    {
+        SceneManager.LoadScene("AdminPage");
     }
 }

@@ -13,7 +13,6 @@ public class SkillSelectionListBox : MonoBehaviour
 
     private SkillSelectionTab skillSelectionTab = null;
     private List<SkillSelectionBox> skillSelectionBoxList = null;
-    private GameObject skillSelectionBoxPrefabObject = null;
 
     private List<SkillSelectionBox> repulseSkillSelectionBoxList = null;
     private List<SkillSelectionBox> derivedSkillSelectionBoxList = null;
@@ -28,7 +27,6 @@ public class SkillSelectionListBox : MonoBehaviour
     public void Initialize( SkillSelectionTab skillSelectionTab )
     {
         this.skillSelectionTab = skillSelectionTab;
-        this.skillSelectionBoxPrefabObject = this.skillSelectionBoxPrefab.gameObject;
     }
 
     // Show main list for the active and backend character skill 
@@ -253,9 +251,8 @@ public class SkillSelectionListBox : MonoBehaviour
             // Initialize the SkillSelectionBox so that the skill can be display on it respectively. 
             for (int i = 0; i < characterSkills.Length; i++)
             {
-                GameObject skillSelectionBoxObj = Instantiate(this.skillSelectionBoxPrefabObject, this.containerContent, false);
+                SkillSelectionBox skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 
-                SkillSelectionBox skillSelectionBox = skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
                 skillSelectionBox.Initialize(this, characterSkills[i]);
 
                 this.skillSelectionBoxList.Add(skillSelectionBox);
@@ -278,9 +275,8 @@ public class SkillSelectionListBox : MonoBehaviour
 
             if (_repulseSkill != null)
             {
-                GameObject skillSelectionBoxObj = Instantiate(this.skillSelectionBoxPrefabObject, this.containerContent, false);
+                SkillSelectionBox skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 
-                SkillSelectionBox skillSelectionBox = skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
                 skillSelectionBox.Initialize(this, _repulseSkill);
 
                 this.repulseSkillSelectionBoxList.Add(skillSelectionBox);
@@ -305,9 +301,8 @@ public class SkillSelectionListBox : MonoBehaviour
 
             if (_derivedSkill != null)
             {
-                GameObject skillSelectionBoxObj = Instantiate(this.skillSelectionBoxPrefabObject, this.containerContent, false);
+                SkillSelectionBox skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 
-                SkillSelectionBox skillSelectionBox = skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
                 skillSelectionBox.Initialize(this, _derivedSkill);
 
                 this.derivedSkillSelectionBoxList.Add(skillSelectionBox);
@@ -332,9 +327,8 @@ public class SkillSelectionListBox : MonoBehaviour
 
             if (_counterSkill != null)
             {
-                GameObject skillSelectionBoxObj = Instantiate(this.skillSelectionBoxPrefabObject, this.containerContent, false);
+                SkillSelectionBox skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 
-                SkillSelectionBox skillSelectionBox = skillSelectionBoxObj.GetComponent<SkillSelectionBox>();
                 skillSelectionBox.Initialize(this, _counterSkill);
 
                 this.counterSkillSelectionBoxList.Add(skillSelectionBox);

@@ -124,7 +124,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         }
     }
 
-    private void LoadAllData()
+    public void LoadAllData()
     {
         StartCoroutine(GetJsonData<Version>(this.versionSheetName));
         StartCoroutine(GetJsonData<Configuration>(this.configurationSheetName));
@@ -335,6 +335,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
         }
 
         return null;
+    }
+
+    public List<Version> GetVersionList()
+    {
+        return this.versionList;
     }
 
     public List<Configuration> GetConfigurationList()
