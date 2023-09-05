@@ -23,22 +23,33 @@ public class BattleLogicManager
 
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage = true )
     {
+        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, out _, out _, out _ );
+    }
+
+    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage,
+                                                out float attackDamage, out float stressDamage, out float statePointDamage )
+    {
+        attackDamage = 0;
+
         CharacterSkill _skill = caster.GetCurrentSkill();
 
         if (hasAttackDamage)
         {
-            float _attackDamage = GetCurrentAttackDamage( _skill, caster, target );
-            if (_attackDamage > 0)
+            attackDamage = GetCurrentAttackDamage( _skill, caster, target );
+            if (attackDamage > 0)
             {
-                target.MinusCurrentHealthPoint( _attackDamage );
+                target.MinusCurrentHealthPoint( attackDamage );
             }
         }
 
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
         GameConfiguration.Battle _battle = GameConfiguration.Instance.GetBattleConfiguration();
 
-        target.AddCurrentStressValue( _subskillData.StressDamage * _battle.GetStressDamageMultiplier() );
-        target.MinusCurrentStatePoint( _subskillData.StatePointDamage * _battle.GetStateDamageMultiplier(), true );
+        stressDamage = _subskillData.StressDamage * _battle.GetStressDamageMultiplier();
+        target.AddCurrentStressValue( stressDamage );
+
+        statePointDamage = _subskillData.StatePointDamage * _battle.GetStateDamageMultiplier();
+        target.MinusCurrentStatePoint( statePointDamage, true );
     }
 
     public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target )

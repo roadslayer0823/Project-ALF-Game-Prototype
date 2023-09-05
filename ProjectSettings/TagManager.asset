@@ -44,3 +44,6 @@ TagManager:
   - name: GameUI
     uniqueID: 1910029227
     locked: 0
+  - name: PopUpUI
+    uniqueID: 3410862961
+    locked: 0

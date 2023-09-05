@@ -12,6 +12,8 @@ public class GameCharacter : MonoBehaviour
     [SerializeField] private SortingGroup sortingGroup = null;
     [SerializeField] private Animator characterAnimator = null;
     [SerializeField] private Animator skillEffectAnimator = null;
+    [SerializeField] private Transform pivot = null;
+    [SerializeField] private PopUpDisplayInfo popUpDisplayInfoPrefab = null;
 
     protected string id = null;
     protected string characterName = null;
@@ -425,6 +427,15 @@ public class GameCharacter : MonoBehaviour
     {
         this.breakStatusRemainingATLs = numberOfATLs;
         TriggerEvent( AnimationEvent.OnBeingInBreakStatus );
+    }
+
+    public void ShowPopUpDisplayInfo( string text, Color textColor )
+    {
+        GameObject _popUpDisplayInfoObj = Instantiate( this.popUpDisplayInfoPrefab.gameObject );
+        _popUpDisplayInfoObj.transform.position = this.pivot.position;
+
+        PopUpDisplayInfo _popUpDisplayInfo = _popUpDisplayInfoObj.GetComponent<PopUpDisplayInfo>();
+        _popUpDisplayInfo.Show( text, textColor, 5.0f, TMPro.FontStyles.Bold ).MoveUpAndFadeOut( 2.0f, 0.5f, 1.5f );
     }
 
     public string GetId()

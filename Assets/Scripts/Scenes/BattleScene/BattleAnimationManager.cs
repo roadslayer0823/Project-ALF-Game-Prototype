@@ -150,6 +150,9 @@ public class BattleAnimationManager : MonoBehaviour
             GameCharacter _winner = null;
             GameCharacter _loser = null;
             CharacterSkill _derivedSkill = null;
+            float _attackDamage = 0;
+            float _stressDamage = 0;
+            float _statePointDamage = 0;
 
             if (_attackTarget.GetIsInBreakStatus())
             {
@@ -175,9 +178,9 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
                     }
 
-                    BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget );
+                    BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage );
                     this.cameraEffect.Shake();
-                    yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME ) );
+                    yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
                     yield return new WaitForSeconds( 1.0f );
 
                     if (CheckHasBattleEnded( battleGameManager ))
@@ -233,10 +236,11 @@ public class BattleAnimationManager : MonoBehaviour
 
                         if (_attackerRangeType == RangeType.melee)
                         {
-                            BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser );
+                            BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, true, out _attackDamage, out _stressDamage, out _statePointDamage );
                             this.cameraEffect.Shake();
                             yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
-                                                                                         + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ) ) );
+                                                                                         + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ),
+                                                                                         _attackDamage, _stressDamage, _statePointDamage ) );
                             yield return new WaitForSeconds( 1.0f );
                         }
 
@@ -307,7 +311,7 @@ public class BattleAnimationManager : MonoBehaviour
                                                                             out _winner, out _loser );
                     }
 
-                    BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _winner == _attacker );
+                    BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _winner == _attacker, out _attackDamage, out _stressDamage, out _statePointDamage );
 
                     if (_winner == _attacker)
                     {
@@ -317,7 +321,7 @@ public class BattleAnimationManager : MonoBehaviour
                         StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
                         this.cameraEffect.Shake();
-                        yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME ) );
+                        yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
                         yield return new WaitForSeconds( 1.0f );
 
                         if (CheckHasBattleEnded( battleGameManager ))
@@ -404,6 +408,10 @@ public class BattleAnimationManager : MonoBehaviour
         attacker.GetSortingGroup().sortingOrder = 3;
         attackTarget.GetSortingGroup().sortingOrder = 1;
 
+        float _attackDamage = 0;
+        float _stressDamage = 0;
+        float _statePointDamage = 0;
+
         if (derivedSkill.GetCharacterSubskillData().GetSubskillData().Range == RangeType.melee)
         {
             SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( derivedSkill.GetCharacterSubskillData().GetSubskillData().Id );
@@ -420,9 +428,9 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlaySkillEffectAnimation( attacker, _skillEffectPartB ) );
             }
 
-            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget );
+            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage );
             this.cameraEffect.Shake();
-            yield return StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME ) );
+            yield return StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
         }
         else
         {
@@ -446,18 +454,49 @@ public class BattleAnimationManager : MonoBehaviour
             attacker.GetOpponentContainer().SetActive( true );
             StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME ) );
             yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_D" ) );
-            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget );
+            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage );
             this.cameraEffect.Shake();
+            yield return null;
+            StartCoroutine( ShowPopUpDisplayInfo( attackTarget, _attackDamage, _stressDamage, _statePointDamage ) );
             yield return new WaitForSeconds( 0.7f );
         }
 
         yield return new WaitForSeconds( 1.0f );
     }
 
-    private IEnumerator PlayCharacterAnimation( GameCharacter gameCharacter, string animationName )
+    private IEnumerator PlayCharacterAnimation( GameCharacter gameCharacter, string animationName,
+                                                float damageTaken = 0, float stressValueIncreased = 0, float statePointReduced = 0 )
     {
         gameCharacter.PlayCharacterAnimation( animationName, OnAnimationEventTriggered );
+
+        if (animationName.Contains( GETTING_HIT_ANIMATION_NAME ))
+        {
+            StartCoroutine( ShowPopUpDisplayInfo( gameCharacter, damageTaken, stressValueIncreased, statePointReduced ) );
+        }
+
         yield return StartCoroutine( WaitForAnimationEventTriggered() );
+    }
+
+    private IEnumerator ShowPopUpDisplayInfo( GameCharacter gameCharacter,
+                                              float damageTaken = 0, float stressValueIncreased = 0, float statePointReduced = 0 )
+    {
+        if (damageTaken > 0)
+        {
+            yield return null;
+            gameCharacter.ShowPopUpDisplayInfo( "-" + damageTaken.ToString() + " HP", Color.red );
+        }
+
+        if (statePointReduced > 0)
+        {
+            yield return new WaitForSeconds( 0.5f );
+            gameCharacter.ShowPopUpDisplayInfo( "-" + statePointReduced.ToString() + " SP", Color.cyan );
+        }
+
+        if (stressValueIncreased > 0)
+        {
+            yield return new WaitForSeconds( 0.5f );
+            gameCharacter.ShowPopUpDisplayInfo( "+" + stressValueIncreased.ToString() + " SV", Color.yellow );
+        }
     }
 
     private IEnumerator PlaySkillEffectAnimation( GameCharacter gameCharacter, string animationName )
