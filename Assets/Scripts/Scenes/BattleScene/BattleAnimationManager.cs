@@ -236,7 +236,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                         if (_attackerRangeType == RangeType.melee)
                         {
-                            BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, true, out _attackDamage, out _stressDamage, out _statePointDamage );
+                            BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, true, GameCharacter.CharacterActionType.Repulse, out _attackDamage, out _stressDamage, out _statePointDamage );
                             this.cameraEffect.Shake();
                             yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
                                                                                          + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ),

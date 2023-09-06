@@ -532,6 +532,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [HideInInspector] public string IsAttackingSkillString { get; private set; }
         public bool IsAttackingSkill;
 
+        [JsonProperty("failed_repulse_damage_rate")]
+        public float FailedRepulseDamageRate { get; private set; }
+
         [JsonProperty("is_defending_skill")]
         [HideInInspector] public string IsDefendingSkillString { get; private set; }
         public bool IsDefendingSkill;
