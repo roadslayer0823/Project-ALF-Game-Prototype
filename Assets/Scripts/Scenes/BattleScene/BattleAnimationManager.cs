@@ -284,7 +284,10 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (_attackerSkillEffectPartB != NO_ANIMATION)
                     {
-                        yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
+                        if (_attackerSkillEffectPartB != "HittingEffect")
+                        {
+                            yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
+                        }
                     }
 
                     CharacterSkill _attackTargetSkill = _attackTarget.GetCurrentSkill();
@@ -315,6 +318,11 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (_winner == _attacker)
                     {
+                        if (_attackerSkillEffectPartB == "HittingEffect")
+                        {
+                            yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
+                        }
+
                         _skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                         _attacker.SetSkillCountdownTime( _skillCountdownTime );
                         _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
