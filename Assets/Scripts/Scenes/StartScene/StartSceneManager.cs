@@ -1,16 +1,11 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class StartSceneManager : Singleton<StartSceneManager>
+public class StartSceneManager : MonoBehaviour
 {
     private void Start()
     {
-        DatabaseManager.Instance.onAllDataLoadedCallback = GoToAdminPage;
-    }
-
-    public void GoToBattleScene()
-    {
-        SceneManager.LoadScene( "BattleScene" );
+        GoToAdminPage();
     }
 
     private void GoToAdminPage()

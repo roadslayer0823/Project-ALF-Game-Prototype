@@ -18,6 +18,11 @@ public class TableRow : MonoBehaviour
         this.tableRowRect.sizeDelta = new Vector2(tableRowRect.sizeDelta.x, this.rowHeight);
     }
 
+    public string GetSheetName()
+    {
+        return this.sheetName.text;
+    }
+
     public void SetSheetName(string sheetName)
     {
         this.sheetName.SetText(sheetName);
@@ -28,7 +33,7 @@ public class TableRow : MonoBehaviour
         this.version.SetText(version.ToString());
     }
 
-    public void SetStatus(string status)
+    public void UpdateStatus(string status)
     {
         this.status.SetText(status);
     }
