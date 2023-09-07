@@ -21,12 +21,19 @@ public class BattleLogicManager
         caster.AddMaximumStatePoint( _subskillData.MaxStatePointUp * _battle.GetMaxStatePointUpMultiplier() );
     }
 
-    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage = true )
+    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage = true,
+                                                GameCharacter.CharacterActionType actionType = GameCharacter.CharacterActionType.None )
     {
-        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, out _, out _, out _ );
+        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, actionType, out _, out _, out _ );
     }
 
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage,
+                                                out float attackDamage, out float stressDamage, out float statePointDamage )
+    {
+        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, GameCharacter.CharacterActionType.None, out attackDamage, out stressDamage, out statePointDamage );
+    }
+
+    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage, GameCharacter.CharacterActionType actionType,
                                                 out float attackDamage, out float stressDamage, out float statePointDamage )
     {
         attackDamage = 0;
@@ -35,7 +42,7 @@ public class BattleLogicManager
 
         if (hasAttackDamage)
         {
-            attackDamage = GetCurrentAttackDamage( _skill, caster, target );
+            attackDamage = GetCurrentAttackDamage( _skill, caster, target, actionType );
             if (attackDamage > 0)
             {
                 target.MinusCurrentHealthPoint( attackDamage );
@@ -52,7 +59,7 @@ public class BattleLogicManager
         target.MinusCurrentStatePoint( statePointDamage, true );
     }
 
-    public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target )
+    public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target, GameCharacter.CharacterActionType actionType )
     {
         GameConfiguration.Battle _battle = GameConfiguration.Instance.GetBattleConfiguration();
 
@@ -63,10 +70,23 @@ public class BattleLogicManager
         if (_targetSkill != null)
         {
             Subskill _targetSubskillData = _targetSkill.GetCharacterSubskillData().GetSubskillData();
-            if (_targetSubskillData.IsDefendingSkill)
+
+            if (_targetSubskillData.IsDefendingSkill
+                && _targetSubskillData.FailedDefenseDamageRate > 0)
             {
                 _attackDamage *= _targetSubskillData.FailedDefenseDamageRate;
             }
+
+            if (actionType == GameCharacter.CharacterActionType.Repulse
+                && _targetSubskillData.FailedRepulseDamageRate > 0)
+            {
+                _attackDamage -= _targetSubskillData.AttackDamage * _battle.GetAttackDamageMultiplier() * _targetSubskillData.FailedRepulseDamageRate;
+            }
+        }
+
+        if (_attackDamage <= 0)
+        {
+            _attackDamage = 1.0f;
         }
 
         return _attackDamage;

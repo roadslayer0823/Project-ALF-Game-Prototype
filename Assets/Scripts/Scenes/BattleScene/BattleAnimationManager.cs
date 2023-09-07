@@ -236,7 +236,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                         if (_attackerRangeType == RangeType.melee)
                         {
-                            BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, true, out _attackDamage, out _stressDamage, out _statePointDamage );
+                            BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, true, GameCharacter.CharacterActionType.Repulse, out _attackDamage, out _stressDamage, out _statePointDamage );
                             this.cameraEffect.Shake();
                             yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
                                                                                          + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ),
@@ -284,7 +284,10 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (_attackerSkillEffectPartB != NO_ANIMATION)
                     {
-                        yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
+                        if (_attackerSkillEffectPartB != "HittingEffect")
+                        {
+                            yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
+                        }
                     }
 
                     CharacterSkill _attackTargetSkill = _attackTarget.GetCurrentSkill();
@@ -315,6 +318,11 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (_winner == _attacker)
                     {
+                        if (_attackerSkillEffectPartB == "HittingEffect")
+                        {
+                            yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
+                        }
+
                         _skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                         _attacker.SetSkillCountdownTime( _skillCountdownTime );
                         _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
