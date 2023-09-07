@@ -57,17 +57,18 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    // Select the skill to use in the battle
     public void Select()
     {
         this.isSelected = true;
-        this.skillSelectionListBox.OnSkillSelected( this );
+        this.skillSelectionListBox.OnSkillSelected(this);
     }
 
     public void Deselect()
     {
         this.isSkillLevelChanged = false;
         this.isSelected = false;
-        this.skillSelectionListBox.OnSkillDeselected( this );
+        this.skillSelectionListBox.OnSkillDeselected(this);
     }
 
     public CharacterSkill GetCharacterSkill()
@@ -75,6 +76,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         return this.characterSkill;
     }
 
+    // Show the skill info
     public void OnPointerClick(PointerEventData eventData)
     {
         this.skillSelectionListBox.ShowSelectedSkillInfo(this);
@@ -111,6 +113,11 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     public bool CheckIsSkillLevelChanged()
     {
         return this.isSkillLevelChanged;
+    }
+
+    public void MarkSelected()
+    {
+        this.isSelected = true;
     }
 
     // To mark the selected skill back to deselected if it failed to add into the SelectedSkillList.

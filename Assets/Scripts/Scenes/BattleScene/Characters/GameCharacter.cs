@@ -345,7 +345,7 @@ public class GameCharacter : MonoBehaviour
             return false;
         }
 
-        repulseSkill = nextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill();
+        repulseSkill = nextATL.GetSelectedSkill().GetCharacterSubskillData().GetSelectedRepulseSkill();
 
         if (repulseSkill == null)
         {
@@ -374,7 +374,7 @@ public class GameCharacter : MonoBehaviour
             return false;
         }
 
-        derivedSkill = this.currentSkill.GetCharacterSubskillData().GetDerivedSkill();
+        derivedSkill = this.currentSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
 
         if (derivedSkill == null)
         {
@@ -403,7 +403,7 @@ public class GameCharacter : MonoBehaviour
             return false;
         }
 
-        counterSkill = this.currentSkill.GetCharacterSubskillData().GetCounterSkill();
+        counterSkill = this.currentSkill.GetCharacterSubskillData().GetSelectedCounterSkill();
 
         if (counterSkill == null)
         {

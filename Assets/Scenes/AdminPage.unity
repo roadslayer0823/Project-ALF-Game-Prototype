@@ -417,7 +417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tableRowPrefab: {fileID: 6640811132199509225, guid: 2b9e8d29e7e5940b9857faaf7c6b5bec, type: 3}
-  tableRect: {fileID: 1580380145}
+  tableContentRect: {fileID: 1580380145}
   startGameButton: {fileID: 1452850105}
   reloadDatabaseButton: {fileID: 476722199}
 --- !u!1 &780327556

@@ -8,15 +8,15 @@ public class ATLSlot : MonoBehaviour
     [SerializeField] private Image selectedHighlight = null;
     [SerializeField] private TextMeshProUGUI ownerName = null;
     [SerializeField] private TextMeshProUGUI skillName = null;
-    [SerializeField] private Image slotBackground = null;
     [SerializeField] private GameObject deactivationIndicator = null;
+    [SerializeField] private GameObject passedIndicator = null;
+    [SerializeField] private Image slotBackground = null;
 
     [Header("ATL slot color")]
     [SerializeField] private Color playerActiveATLSlotColor = new Color();
     [SerializeField] private Color enemyActiveATLSlotColor = new Color();
-    [SerializeField] private Color playerInactiveATLSlotColor = new Color();
-    [SerializeField] private Color enemyInactiveATLSlotColor = new Color();
 
+    [Header("")]
     private BattleFlowATL battleFlowATL = null;
 
     public Action onSkillSlotSwipedCallback = null;
@@ -33,6 +33,8 @@ public class ATLSlot : MonoBehaviour
         this.battleFlowATL = flowATL;
 
         Activate();
+
+        this.passedIndicator.gameObject.SetActive(false);
 
         if (battleFlowATL.CheckIsPlayer())
         {
@@ -61,16 +63,9 @@ public class ATLSlot : MonoBehaviour
         this.selectedHighlight.gameObject.SetActive(false);
     }
 
-    public void MarkATLSlotColorInactive()
+    public void MarkATLSlotInactive()
     {
-        if (this.battleFlowATL.CheckIsPlayer())
-        {
-            this.slotBackground.color = this.playerInactiveATLSlotColor;
-        }
-        else
-        {
-            this.slotBackground.color = this.enemyInactiveATLSlotColor;
-        }
+        this.passedIndicator.gameObject.SetActive(true);
     }
 
     public void SetOwnerName(string ownerName)
