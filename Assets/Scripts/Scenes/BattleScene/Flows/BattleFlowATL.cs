@@ -39,7 +39,7 @@ public class BattleFlowATL
 
     public void Finish()
     {
-        this.atlSlot.MarkATLSlotColorInactive();
+        this.atlSlot.MarkATLSlotInactive();
         this.atlSlot.HideSelectionHighlight();
 
         if (CheckIsPlayer())

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Skill = DatabaseManager.Skill;
 
 public class SkillSelectionPanel : MonoBehaviour
 {
@@ -27,7 +28,10 @@ public class SkillSelectionPanel : MonoBehaviour
 
     private GameCharacter selectedGameCharacter = null;
     private List<SkillSelectionBox> selectedActiveSkillList = new List<SkillSelectionBox>();
+    private List<CharacterSkill> selectedRepulseSkillList = new List<CharacterSkill>();
+    private List<CharacterSkill> selectedDerivedSkillList = new List<CharacterSkill>();
     private List<SkillSelectionBox> selectedBackendSkillList = new List<SkillSelectionBox>();
+    private List<CharacterSkill> selectedCounterSkillList = new List<CharacterSkill>();
 
     private SkillInfoTab skillInfoTab = SkillInfoTab.none;
     private SkillSelectionUIPanel skillSelectionPanel = SkillSelectionUIPanel.none;
@@ -77,11 +81,11 @@ public class SkillSelectionPanel : MonoBehaviour
         {
             CharacterSkill _characterSkill = _characterSkills[i];
 
-            if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+            if (_characterSkill.GetSkillData().skillType == Skill.SkillType.active)
             {
                 activeSkillList.Add(_characterSkill);
             }
-            else if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend)
+            else if (_characterSkill.GetSkillData().skillType == Skill.SkillType.backend)
             {
                 backendSkillList.Add(_characterSkill);
             }
@@ -102,20 +106,60 @@ public class SkillSelectionPanel : MonoBehaviour
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
-        if (skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.active && !skillSelectionBox.CheckIsSkillLevelChanged())
+        if (skillSelectionBox.CheckIsSkillLevelChanged())
+        {
+            return;
+        }
+
+        CharacterSkill _lastSelectedCharacterActiveSkill = this.activeSkillSelectionPanelTab.GetLastSelectedCharacterSkill();
+        CharacterSkill _lastSelectedCharacterBackendSkill = this.backendSkillSelectionPanelTab.GetLastSelectedCharacterSkill();
+        CharacterSkill _currentSelectedSkill = skillSelectionBox.GetCharacterSkill();
+        Skill.SkillType _skillType = skillSelectionBox.GetCharacterSkill().GetSkillData().skillType;
+
+        if (_skillType == Skill.SkillType.active)
         {
             if (this.selectedActiveSkillList.Count < 3)
-            {
-                this.selectedActiveSkillList.Add(skillSelectionBox);
+             {
+                 this.selectedActiveSkillList.Add(skillSelectionBox);
 
-                UpdateSelectedSkillSequence();
+                 UpdateSelectedSkillSequence();
+             }
+             else
+             {
+                 skillSelectionBox.MarkDeselected();
+             }
+        }
+        else if (_skillType == Skill.SkillType.repulse) // repulse skill
+        {
+            if (_lastSelectedCharacterActiveSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() == null)
+            {
+                this.selectedRepulseSkillList.Add(skillSelectionBox.GetCharacterSkill());
+
+                _lastSelectedCharacterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_currentSelectedSkill);
+
+                skillSelectionBox.SetSkillSelectionText("ON");
             }
             else
             {
-                skillSelectionBox.MarkDeselected();
+                Debug.Log("Max repulse skill selected");
             }
         }
-        else if (skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend && !skillSelectionBox.CheckIsSkillLevelChanged())
+        else if (_skillType == Skill.SkillType.derived) // derived skill
+        {
+            if (_lastSelectedCharacterActiveSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
+            {
+                this.selectedDerivedSkillList.Add(skillSelectionBox.GetCharacterSkill());
+
+                _lastSelectedCharacterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_currentSelectedSkill);
+
+                skillSelectionBox.SetSkillSelectionText("ON");
+            }
+            else
+            {
+                Debug.Log("Max derived skill selected");
+            }
+        }
+        else if (_skillType == Skill.SkillType.backend)
         {
             if (this.selectedBackendSkillList.Count < 3)
             {
@@ -126,6 +170,21 @@ public class SkillSelectionPanel : MonoBehaviour
             else
             {
                 skillSelectionBox.MarkDeselected();
+            }
+        }
+        else if (_skillType == Skill.SkillType.counter) // counter skill
+        {
+            if (_lastSelectedCharacterBackendSkill.GetCharacterSubskillData().GetSelectedCounterSkill() == null)
+            {
+                this.selectedCounterSkillList.Add(skillSelectionBox.GetCharacterSkill());
+
+                _lastSelectedCharacterBackendSkill.GetCharacterSubskillData().SetSelectedCounterSkill(_currentSelectedSkill);
+
+                skillSelectionBox.SetSkillSelectionText("ON");
+            }
+            else
+            {
+                Debug.Log("Max counter skill selected");
             }
         }
 
@@ -141,24 +200,48 @@ public class SkillSelectionPanel : MonoBehaviour
 
     public void OnSkillDeselected( SkillSelectionBox skillSelectionBox )
     {
+        CharacterSkill _lastSelectedCharacterActiveSkill = this.activeSkillSelectionPanelTab.GetLastSelectedCharacterSkill();
+        CharacterSkill _lastSelectedCharacterBackendSkill = this.backendSkillSelectionPanelTab.GetLastSelectedCharacterSkill();
+
+        if (this.selectedActiveSkillList.Contains(skillSelectionBox))
+        {
+            this.selectedActiveSkillList.Remove(skillSelectionBox);
+
+            skillSelectionBox.SetSkillSelectionSequenceNumber(0);
+
+            UpdateSelectedSkillSequence();
+        }
+        else if (this.selectedRepulseSkillList.Contains(skillSelectionBox.GetCharacterSkill())) // repulse skill
+        {
+            this.selectedRepulseSkillList.Remove(skillSelectionBox.GetCharacterSkill());
+            _lastSelectedCharacterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(null);
+
+            skillSelectionBox.SetSkillSelectionText("");
+        }
+        else if (this.selectedDerivedSkillList.Contains(skillSelectionBox.GetCharacterSkill())) // derived skill
+        {
+            this.selectedDerivedSkillList.Remove(skillSelectionBox.GetCharacterSkill());
+            _lastSelectedCharacterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(null);
+
+            skillSelectionBox.SetSkillSelectionText("");
+        }
+        else if (this.selectedBackendSkillList.Contains(skillSelectionBox))
+        {
+            this.selectedBackendSkillList.Remove(skillSelectionBox);
+
+            skillSelectionBox.SetSkillSelectionText("");
+        }
+        else if (this.selectedCounterSkillList.Contains(skillSelectionBox.GetCharacterSkill())) // counter skill
+        {
+            this.selectedCounterSkillList.Remove(skillSelectionBox.GetCharacterSkill());
+            _lastSelectedCharacterBackendSkill.GetCharacterSubskillData().SetSelectedCounterSkill(null);
+
+            skillSelectionBox.SetSkillSelectionText("");
+        }
+
         if (this.onSkillDeselectedCallback != null)
         {
             this.onSkillDeselectedCallback( skillSelectionBox );
-
-            if (this.selectedActiveSkillList.Contains(skillSelectionBox))
-            {
-                this.selectedActiveSkillList.Remove(skillSelectionBox);
-
-                skillSelectionBox.SetSkillSelectionSequenceNumber(0);
-
-                UpdateSelectedSkillSequence();
-            }
-            else if (this.selectedBackendSkillList.Contains(skillSelectionBox))
-            {
-                this.selectedBackendSkillList.Remove(skillSelectionBox);
-
-                skillSelectionBox.SetSkillSelectionText("");
-            }
         }
         else
         {
@@ -199,8 +282,6 @@ public class SkillSelectionPanel : MonoBehaviour
 
         foreach (SkillSelectionBox skill in selectedActiveSkillList)
         {
-            
-
             skillSelectionCounter++;
             skill.SetSkillSelectionSequenceNumber(skillSelectionCounter);
         }

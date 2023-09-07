@@ -190,7 +190,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (_attacker.GetCurrentCharacterActionType() == GameCharacter.CharacterActionType.Derive)
                     {
-                        yield return StartCoroutine( RunDerivedSkill( _attackerSkill.GetCharacterSubskillData().GetDerivedSkill(),
+                        yield return StartCoroutine( RunDerivedSkill( _attackerSkill.GetCharacterSubskillData().GetSelectedDerivedSkill(),
                                                                       _attacker, _attackTarget, battleFlowRound ) );
                     }
 
@@ -206,7 +206,7 @@ public class BattleAnimationManager : MonoBehaviour
                     BattleFlowATL _attackTargetNextATL = battleFlowRound.GetNextATL( _attackTarget );
                     battleFlowRound.GoToTargetATL( _attackTargetNextATL, false );
 
-                    CharacterSkill _repulseSkill = _attackTargetNextATL.GetSelectedSkill().GetCharacterSubskillData().GetRepulseSkill();
+                    CharacterSkill _repulseSkill = _attackTargetNextATL.GetSelectedSkill().GetCharacterSubskillData().GetSelectedRepulseSkill();
                     _attackTarget.SetCurrentSkill( _repulseSkill, _attackTarget );
                     BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker );
 
@@ -249,7 +249,7 @@ public class BattleAnimationManager : MonoBehaviour
                             yield break;
                         }
 
-                        _derivedSkill = _winner.GetCurrentSkill().GetCharacterSubskillData().GetDerivedSkill();
+                        _derivedSkill = _winner.GetCurrentSkill().GetCharacterSubskillData().GetSelectedDerivedSkill();
                     }
                     else
                     {
@@ -262,7 +262,7 @@ public class BattleAnimationManager : MonoBehaviour
                         {
                             if (_winner.GetCurrentCharacterActionType() == GameCharacter.CharacterActionType.Derive)
                             {
-                                yield return StartCoroutine( RunDerivedSkill( _winner.GetCurrentSkill().GetCharacterSubskillData().GetDerivedSkill(),
+                                yield return StartCoroutine( RunDerivedSkill( _winner.GetCurrentSkill().GetCharacterSubskillData().GetSelectedDerivedSkill(),
                                                                               _winner, _loser, battleFlowRound ) );
 
                                 if (CheckHasBattleEnded( battleGameManager ))
@@ -331,7 +331,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                         if (_attacker.GetCurrentCharacterActionType() == GameCharacter.CharacterActionType.Derive)
                         {
-                            yield return StartCoroutine( RunDerivedSkill( _attackerSkill.GetCharacterSubskillData().GetDerivedSkill(),
+                            yield return StartCoroutine( RunDerivedSkill( _attackerSkill.GetCharacterSubskillData().GetSelectedDerivedSkill(),
                                                                           _attacker, _attackTarget, battleFlowRound ) );
                         }
 
@@ -379,7 +379,7 @@ public class BattleAnimationManager : MonoBehaviour
             {
                 _attacker = _winner;
                 _attackTarget = _loser;
-                _attackerSkill = _winner.GetCurrentSkill().GetCharacterSubskillData().GetCounterSkill();
+                _attackerSkill = _winner.GetCurrentSkill().GetCharacterSubskillData().GetSelectedCounterSkill();
 
                 if (_attacker is PlayerCharacter)
                 {

@@ -26,6 +26,13 @@ public class DatabaseManager : Singleton<DatabaseManager>
     private List<Subskill> subskillList = new List<Subskill>();
     private List<SkillAnimation> skillAnimationList = new List<SkillAnimation>();
 
+    private string versionDatabaseStatus = "";
+    private string configurationDatabaseStatus = "";
+    private string characterDatabaseStatus = "";
+    private string skillDatabaseStatus = "";
+    private string subskillDatabaseStatus = "";
+    private string skillAnimationDatabaseStatus = "";
+
     public Action onDataUpdatedCallback = null;
     public Action onAllDataLoadedCallback = null;
 
@@ -93,7 +100,12 @@ public class DatabaseManager : Singleton<DatabaseManager>
                     if (previousDatabaseVersion.SheetName == latestDatabaseVersion.SheetName
                         && previousDatabaseVersion.VersionNumber < latestDatabaseVersion.VersionNumber)
                     {
-                        if (latestDatabaseVersion.SheetName == this.configurationSheetName)
+                        if (latestDatabaseVersion.SheetName == this.versionSheetName)
+                        {
+                            StartCoroutine(GetJsonData<Version>(this.versionSheetName));
+                            Debug.Log("Update: " + this.versionSheetName);
+                        }
+                        else if (latestDatabaseVersion.SheetName == this.configurationSheetName)
                         {
                             StartCoroutine(GetJsonData<Configuration>(this.configurationSheetName));
                             Debug.Log("Update: " + this.configurationSheetName);
@@ -151,24 +163,34 @@ public class DatabaseManager : Singleton<DatabaseManager>
         {
             ProcessJsonData<T>( webRequest.downloadHandler.text, sheetName );
 
-            if (this.onDataUpdatedCallback != null)
-            {
-                this.onDataUpdatedCallback();
-            }
+            UpdateDatabaseStatus(sheetName, "Up to date.");
 
             Debug.Log( "Done." );
         }
         else
         {
-            Debug.Log( "Oops something went wrong" );
+            UpdateDatabaseStatus(sheetName, "Error");
+
+            Debug.Log( "Oops something went wrong");
         }
 
-        if (this.versionList != null
+        /*if (this.onDataUpdatedCallback != null)
+        {
+            this.onDataUpdatedCallback();
+        }*/
+
+        if ((this.versionList != null
             && this.configurationList != null
             && this.characterList != null
             && this.skillList != null
             && this.subskillList != null
             && this.skillAnimationList != null)
+            ||!(string.IsNullOrEmpty(versionDatabaseStatus)
+            && string.IsNullOrEmpty(configurationDatabaseStatus)
+            && string.IsNullOrEmpty(characterDatabaseStatus)
+            && string.IsNullOrEmpty(skillDatabaseStatus)
+            && string.IsNullOrEmpty(subskillDatabaseStatus)
+            && string.IsNullOrEmpty(skillAnimationDatabaseStatus)))
         {
             onAllDataLoadedCallback?.Invoke();
         }
@@ -237,6 +259,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 subskill.IsDefendingSkill = bool.Parse(subskill.IsDefendingSkillString);
                 subskill.IsEvadingSkill = bool.Parse(subskill.IsEvadingSkillString);
                 subskill.IsInterceptable = bool.Parse(subskill.IsInterceptableString);
+                subskill.RepulseSkillIds = ConvertStringToStringArray(subskill.RepulseSkillIdsString);
+                subskill.DerivedSkillIds = ConvertStringToStringArray(subskill.DerivedSkillIdsString);
+                subskill.CounterSkillIds = ConvertStringToStringArray(subskill.CounterSkillIdsString);
                 subskill.Effects = ConvertStringToIntArray(subskill.EffectsString);
             }
 
@@ -247,6 +272,36 @@ public class DatabaseManager : Singleton<DatabaseManager>
             this.skillAnimationList = dataList as List<SkillAnimation>;
 
             PlayerPrefsManager.SaveSkillAnimationDatabase(jsonData);
+        }
+
+        UpdateDatabaseStatus(sheetName, "Up to date.");
+    }
+
+    private void UpdateDatabaseStatus(string sheetName, string status)
+    {
+        if (sheetName == this.versionSheetName)
+        {
+            this.versionDatabaseStatus = status;
+        }
+        else if (sheetName == this.configurationSheetName)
+        {
+            this.configurationDatabaseStatus = status;
+        }
+        else if (sheetName == this.characterSheetName)
+        {
+            this.characterDatabaseStatus = status;
+        }
+        else if (sheetName == this.skillSheetName)
+        {
+            this.skillDatabaseStatus = status;
+        }
+        else if (sheetName == this.subskillSheetName)
+        {
+            this.subskillDatabaseStatus = status;
+        }
+        else if (sheetName == this.skillAnimationSheetName)
+        {
+            this.skillAnimationDatabaseStatus = status;
         }
     }
 
@@ -367,8 +422,65 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.skillAnimationList;
     }
 
+    public string GetVersionSheetName()
+    {
+        return this.versionSheetName;
+    }
+
+    public string GetConfigurationSheetName()
+    {
+        return this.configurationSheetName;
+    }
+
+    public string GetCharacterSheetName()
+    {
+        return this.characterSheetName;
+    }
+
+    public string GetSkillSheetName()
+    {
+        return this.skillSheetName;
+    }
+
+    public string GetSubskillSheetNamee()
+    {
+        return this.subskillSheetName;
+    }
+
+    public string GetSkillAnimationSheetName()
+    {
+        return this.skillAnimationSheetName;
+    }
+
+    public string GetVersionDatabaseStatus()
+    {
+        return this.versionDatabaseStatus;
+    }
+
+    public string GetConfigurationDatabaseStatus()
+    {
+        return this.configurationDatabaseStatus;
+    }
+
+    public string GetCharacterDatabaseStatus()
+    {
+        return this.characterDatabaseStatus;
+    }
+    public string GetSkillDatabaseStatus()
+    {
+        return this.skillDatabaseStatus;
+    }
+    public string GetSubskillDatabaseStatus()
+    {
+        return this.subskillDatabaseStatus;
+    }
+    public string GetSkillAnimationDatabaseStatus()
+    {
+        return this.skillAnimationDatabaseStatus;
+    }
+
     // Inner classes declaration
-#region Inner Classes
+    #region Inner Classes
     [Serializable]
     public class Version
     {
@@ -469,11 +581,23 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("repulse_skill_id")]
         public string RepulseSkillId { get; private set; }
 
+        [JsonProperty("repulse_skill_ids")]
+        [HideInInspector] public string RepulseSkillIdsString { get; private set; }
+        public string[] RepulseSkillIds;
+
         [JsonProperty("derived_skill_id")]
         public string DerivedSkillId { get; private set; }
 
+        [JsonProperty("derived_skill_ids")]
+        [HideInInspector] public string DerivedSkillIdsString { get; private set; }
+        public string[] DerivedSkillIds;
+
         [JsonProperty("counter_skill_id")]
         public string CounterSkillId { get; private set; }
+
+        [JsonProperty("counter_skill_ids")]
+        [HideInInspector] public string CounterSkillIdsString { get; private set; }
+        public string[] CounterSkillIds;
 
         [JsonProperty("range")]
         [HideInInspector] public string RangeString { get; private set; }

@@ -1,98 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Subskill = DatabaseManager.Subskill;
 
 public class CharacterSubskill
 {
-    GameCharacter owner = null;
-    Subskill subskill = null;
-    CharacterSkill repulseSkill = null;
-    CharacterSkill derivedSkill = null;
-    CharacterSkill counterSkill = null;
+    private GameCharacter owner = null;
+    private Subskill subskill = null;
+
+    private List<CharacterSkill> repulseSkillList = new List<CharacterSkill>();
+    private List<CharacterSkill> derivedSkillList = new List<CharacterSkill>();
+    private List<CharacterSkill> counterSkillList = new List<CharacterSkill>();
+
+    private CharacterSkill selectedRepulseSkill = null;
+    private CharacterSkill selectedDerivedSkill = null;
+    private CharacterSkill selectedCounterSkill = null;
 
     public CharacterSubskill(Subskill subskillData, GameCharacter owner)
     {
         this.subskill = subskillData;
         this.owner = owner;
 
-        SetRepulseSkill();
-        SetDerivedSkill();
-        SetCounterSkill();
-    }
-
-    private void SetRepulseSkill()
-    {
-        string _repulseSkillId = this.subskill.RepulseSkillId;
-
-        if (_repulseSkillId == "-")
+        if (subskillData.IsAttackingSkill)
         {
-            this.repulseSkill = null;
-            return;
+            SetRepulseSkillList();
+            SetDerivedSkillList();
         }
-        else
+        else if (subskillData.IsDefendingSkill || subskillData.IsEvadingSkill)
         {
-            CharacterSkill[] _characterSkill = owner.GetSkills();
-            for (int i = 0; i < _characterSkill.Length; i++)
-            {
-                CharacterSkill _repulseSkill = _characterSkill[i];
-
-                if (_repulseSkillId == _repulseSkill.GetSkillData().Id)
-                {
-                    this.repulseSkill = _repulseSkill;
-                    break;
-                }
-            }
-        }
-    }
-
-    private void SetDerivedSkill()
-    {
-        string _derivedSkillId = this.subskill.DerivedSkillId;
-
-        if (_derivedSkillId == "-")
-        {
-            this.derivedSkill = null;
-            return;
-        }
-        else
-        {
-            CharacterSkill[] _characterSkill = owner.GetSkills();
-            for (int i = 0; i < _characterSkill.Length; i++)
-            {
-                CharacterSkill _derivedSkill = _characterSkill[i];
-
-                if (_derivedSkillId == _derivedSkill.GetSkillData().Id)
-                {
-                    this.derivedSkill = _derivedSkill;
-                    break;
-                }
-            }
-        }
-    }
-
-    private void SetCounterSkill()
-    {
-        string _counterSkillId = this.subskill.CounterSkillId;
-
-        if (_counterSkillId == "-")
-        {
-            this.counterSkill = null;
-            return;
-        }
-        else
-        {
-            CharacterSkill[] _characterSkill = owner.GetSkills();
-            for (int i = 0; i < _characterSkill.Length; i++)
-            {
-                CharacterSkill _counterSkill = _characterSkill[i];
-
-                if (_counterSkillId == _counterSkill.GetSkillData().Id)
-                {
-                    this.counterSkill = _counterSkill;
-                    break;
-                }
-            }
+            SetCounterSkillList();
         }
     }
 
@@ -101,18 +36,129 @@ public class CharacterSubskill
         return this.subskill;
     }
 
-    public CharacterSkill GetRepulseSkill()
+    private void SetRepulseSkillList()
     {
-        return this.repulseSkill;
+        if (this.subskill.RepulseSkillIds == null)
+        {
+            return;
+        }
+
+        string[] _repulseSkillIds = this.subskill.RepulseSkillIds;
+
+        for (int i = 0; i < _repulseSkillIds.Length; i++)
+        {
+            string _repulseSkillId = _repulseSkillIds[i];
+
+            CharacterSkill[] _characterSkill = owner.GetSkills();
+            for (int j = 0; j < _characterSkill.Length; j++)
+            {
+                CharacterSkill _repulseSkill = _characterSkill[j];
+
+                if (_repulseSkillId == _repulseSkill.GetSkillData().Id)
+                {
+                    this.repulseSkillList.Add(_repulseSkill);
+                    break;
+                }
+            }
+        }
     }
 
-    public CharacterSkill GetDerivedSkill()
+    private void SetDerivedSkillList()
     {
-        return this.derivedSkill;
+        if (this.subskill.DerivedSkillIds == null)
+        {
+            return;
+        }
+
+        string[] _derivedSkillIds = this.subskill.DerivedSkillIds;
+
+        for (int i = 0; i < _derivedSkillIds.Length; i++)
+        {
+            string _derivedSkillId = _derivedSkillIds[i];
+
+            CharacterSkill[] _characterSkill = owner.GetSkills();
+            for (int j = 0; j < _characterSkill.Length; j++)
+            {
+                CharacterSkill _derivedSkill = _characterSkill[j];
+
+                if (_derivedSkillId == _derivedSkill.GetSkillData().Id)
+                {
+                    this.derivedSkillList.Add(_derivedSkill);
+                    break;
+                }
+            }
+        }
     }
 
-    public CharacterSkill GetCounterSkill()
+    private void SetCounterSkillList()
     {
-        return this.counterSkill;
+        if (this.subskill.CounterSkillIds == null)
+        {
+            return;
+        }
+
+        string[] _counterSkillIds = this.subskill.CounterSkillIds;
+
+        for (int i = 0; i < _counterSkillIds.Length; i++)
+        {
+            string _counterSkillId = _counterSkillIds[i];
+
+            CharacterSkill[] _characterSkill = owner.GetSkills();
+            for (int j = 0; j < _characterSkill.Length; j++)
+            {
+                CharacterSkill _counterSkill = _characterSkill[j];
+
+                if (_counterSkillId == _counterSkill.GetSkillData().Id)
+                {
+                    this.counterSkillList.Add(_counterSkill);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void SetSelectedRepulseSkill(CharacterSkill selectedRepulseSkill)
+    {
+        this.selectedRepulseSkill = selectedRepulseSkill;
+    }
+
+    public void SetSelectedDerivedSkill(CharacterSkill selectedDerivedSkill)
+    {
+        this.selectedDerivedSkill = selectedDerivedSkill;
+    }
+
+    public void SetSelectedCounterSkill(CharacterSkill selectedCounterSkill)
+    {
+        this.selectedCounterSkill = selectedCounterSkill;
+    }
+
+    public List<CharacterSkill> GetRepulseSkillList()
+    {
+        return this.repulseSkillList;
+    }
+
+    public List<CharacterSkill> GetDerivedSkillList()
+    {
+        return this.derivedSkillList;
+    }
+
+    public List<CharacterSkill> GetCounterSkillList()
+    {
+        return this.counterSkillList;
+    }
+
+    public CharacterSkill GetSelectedRepulseSkill()
+    {
+        return this.selectedRepulseSkill;
+    }
+
+    public CharacterSkill GetSelectedDerivedSkill()
+    {
+        return this.selectedDerivedSkill;
+    }
+
+    public CharacterSkill GetSelectedCounterSkill()
+    {
+        return this.selectedCounterSkill;
     }
 }
