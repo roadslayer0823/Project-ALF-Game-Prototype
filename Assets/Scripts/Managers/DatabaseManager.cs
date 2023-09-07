@@ -578,6 +578,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("display_name")]
         public string DisplayName { get; private set; }
 
+        [JsonProperty("description")]
+        public string Description { get; private set; }
+
         [JsonProperty("repulse_skill_id")]
         public string RepulseSkillId { get; private set; }
 

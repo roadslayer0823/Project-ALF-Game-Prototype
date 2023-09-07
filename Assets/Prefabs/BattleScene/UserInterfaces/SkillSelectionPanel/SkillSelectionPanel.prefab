@@ -662,6 +662,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: DerivedSkillSelectionTabButton
       objectReference: {fileID: 0}
+    - target: {fileID: 5395172928961972319, guid: be42383b28f1248dca855ac668a32226, type: 3}
+      propertyPath: m_fontSize
+      value: 55.4
+      objectReference: {fileID: 0}
     - target: {fileID: 5443936741501078790, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -746,9 +750,33 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6768276178056046707, guid: be42383b28f1248dca855ac668a32226, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6768276178056046707, guid: be42383b28f1248dca855ac668a32226, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6768276178056046707, guid: be42383b28f1248dca855ac668a32226, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6768276178056046707, guid: be42383b28f1248dca855ac668a32226, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6768276178056046707, guid: be42383b28f1248dca855ac668a32226, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7946638950644192532, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8872307289537047387, guid: be42383b28f1248dca855ac668a32226, type: 3}
+      propertyPath: m_fontSize
+      value: 58.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be42383b28f1248dca855ac668a32226, type: 3}

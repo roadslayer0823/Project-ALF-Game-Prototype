@@ -16,12 +16,14 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI strengthValue;
     [SerializeField] private TextMeshProUGUI accuracyValue;
     [SerializeField] private TextMeshProUGUI evasionValue;
+    [SerializeField] private TextMeshProUGUI stressDamageValue;
     [SerializeField] private TextMeshProUGUI skillDescription;
 
     [Header("SkillInfoLabel")]
     [SerializeField] private TextMeshProUGUI strength;
     [SerializeField] private TextMeshProUGUI accuracy;
     [SerializeField] private TextMeshProUGUI evasion;
+    [SerializeField] private TextMeshProUGUI stressDamage;
 
     public void Show(CharacterSubskill characterSubskill)
     {
@@ -84,6 +86,25 @@ public class SkillInfoBox : MonoBehaviour
         else
         {
             this.evasion.gameObject.SetActive(false);
+        }
+
+        if (_subskillData.StressDamage > 1)
+        {
+            this.stressDamage.gameObject.SetActive(true);
+            this.stressDamageValue.SetText("+" + (_subskillData.StressDamage - 1).ToString());
+        }
+        else
+        {
+            this.stressDamage.gameObject.SetActive(false);
+        }
+
+        if (_subskillData.Description == "-")
+        {
+            this.skillDescription.SetText("");
+        }
+        else
+        {
+            this.skillDescription.SetText(_subskillData.Description);
         }
     }
 }
