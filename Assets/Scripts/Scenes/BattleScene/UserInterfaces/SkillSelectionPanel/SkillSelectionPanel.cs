@@ -28,10 +28,10 @@ public class SkillSelectionPanel : MonoBehaviour
 
     private GameCharacter selectedGameCharacter = null;
     private List<SkillSelectionBox> selectedActiveSkillList = new List<SkillSelectionBox>();
-    private List<CharacterSkill> selectedRepulseSkillList = new List<CharacterSkill>();
-    private List<CharacterSkill> selectedDerivedSkillList = new List<CharacterSkill>();
     private List<SkillSelectionBox> selectedBackendSkillList = new List<SkillSelectionBox>();
-    private List<CharacterSkill> selectedCounterSkillList = new List<CharacterSkill>();
+    private CharacterSkill selectedRepulseSkill = null;
+    private CharacterSkill selectedDerivedSkill = null;
+    private CharacterSkill selectedCounterSkill = null;
 
     private SkillInfoTab skillInfoTab = SkillInfoTab.none;
     private SkillSelectionUIPanel skillSelectionPanel = SkillSelectionUIPanel.none;
@@ -133,7 +133,7 @@ public class SkillSelectionPanel : MonoBehaviour
         {
             if (_lastSelectedCharacterActiveSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() == null)
             {
-                this.selectedRepulseSkillList.Add(skillSelectionBox.GetCharacterSkill());
+                this.selectedRepulseSkill = skillSelectionBox.GetCharacterSkill();
 
                 _lastSelectedCharacterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_currentSelectedSkill);
 
@@ -148,7 +148,7 @@ public class SkillSelectionPanel : MonoBehaviour
         {
             if (_lastSelectedCharacterActiveSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
             {
-                this.selectedDerivedSkillList.Add(skillSelectionBox.GetCharacterSkill());
+                this.selectedDerivedSkill = skillSelectionBox.GetCharacterSkill();
 
                 _lastSelectedCharacterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_currentSelectedSkill);
 
@@ -176,7 +176,7 @@ public class SkillSelectionPanel : MonoBehaviour
         {
             if (_lastSelectedCharacterBackendSkill.GetCharacterSubskillData().GetSelectedCounterSkill() == null)
             {
-                this.selectedCounterSkillList.Add(skillSelectionBox.GetCharacterSkill());
+                this.selectedCounterSkill = skillSelectionBox.GetCharacterSkill();
 
                 _lastSelectedCharacterBackendSkill.GetCharacterSubskillData().SetSelectedCounterSkill(_currentSelectedSkill);
 
@@ -211,16 +211,16 @@ public class SkillSelectionPanel : MonoBehaviour
 
             UpdateSelectedSkillSequence();
         }
-        else if (this.selectedRepulseSkillList.Contains(skillSelectionBox.GetCharacterSkill())) // repulse skill
+        else if (this.selectedRepulseSkill == skillSelectionBox.GetCharacterSkill()) // repulse skill
         {
-            this.selectedRepulseSkillList.Remove(skillSelectionBox.GetCharacterSkill());
+            this.selectedRepulseSkill = null;
             _lastSelectedCharacterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(null);
 
             skillSelectionBox.SetSkillSelectionText("");
         }
-        else if (this.selectedDerivedSkillList.Contains(skillSelectionBox.GetCharacterSkill())) // derived skill
+        else if (this.selectedDerivedSkill == skillSelectionBox.GetCharacterSkill()) // derived skill
         {
-            this.selectedDerivedSkillList.Remove(skillSelectionBox.GetCharacterSkill());
+            this.selectedDerivedSkill = null;
             _lastSelectedCharacterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(null);
 
             skillSelectionBox.SetSkillSelectionText("");
@@ -231,9 +231,9 @@ public class SkillSelectionPanel : MonoBehaviour
 
             skillSelectionBox.SetSkillSelectionText("");
         }
-        else if (this.selectedCounterSkillList.Contains(skillSelectionBox.GetCharacterSkill())) // counter skill
+        else if (this.selectedCounterSkill == skillSelectionBox.GetCharacterSkill()) // counter skill
         {
-            this.selectedCounterSkillList.Remove(skillSelectionBox.GetCharacterSkill());
+            this.selectedCounterSkill = null;
             _lastSelectedCharacterBackendSkill.GetCharacterSubskillData().SetSelectedCounterSkill(null);
 
             skillSelectionBox.SetSkillSelectionText("");
@@ -402,6 +402,8 @@ public class SkillSelectionPanel : MonoBehaviour
 
             // Show back the last selected skill info from attack tab when switch back to the repulse tab.
             _skillSelectionPanel.ShowSelectedSkillInfo(_skillSelectionPanel.GetLastSelectedRepulseSkill());
+
+            SelectDefaultSkillBox(_skillSelectionPanel.GetRepulseSkillSelectionBoxList(), ref this.selectedRepulseSkill);
         }
         else if (this.skillInfoTab == SkillInfoTab.derived)
         {
@@ -409,6 +411,8 @@ public class SkillSelectionPanel : MonoBehaviour
 
             // Show back the last selected skill info from attack tab when switch back to the derived tab.
             _skillSelectionPanel.ShowSelectedSkillInfo(_skillSelectionPanel.GetLastSelectedDerivedSkill());
+
+            SelectDefaultSkillBox(_skillSelectionPanel.GetDerivedSkillSelectionBoxList(), ref this.selectedDerivedSkill);
         }
         else if (this.skillInfoTab == SkillInfoTab.counter)
         {
@@ -416,6 +420,71 @@ public class SkillSelectionPanel : MonoBehaviour
 
             // Show back the last selected skill info from attack tab when switch back to the counter tab.
             _skillSelectionPanel.ShowSelectedSkillInfo(_skillSelectionPanel.GetLastSelectedCounterSkill());
+
+            SelectDefaultSkillBox(_skillSelectionPanel.GetCounterSkillSelectionBoxList(), ref this.selectedCounterSkill);
+        }
+    }
+
+    // Select default repulse, derived and counter skill if the user didn't select any
+    private void SelectDefaultSkillBox(List<SkillSelectionBox> instantiatedSkillSelectionBoxList, ref CharacterSkill selectedSkill)
+    {
+        if (instantiatedSkillSelectionBoxList == null || instantiatedSkillSelectionBoxList.Count == 0)
+        {
+            return;
+        }
+
+        if (selectedSkill == null && instantiatedSkillSelectionBoxList.Count > 0)
+        {
+            SkillSelectionBox _skillSelectionBox = instantiatedSkillSelectionBoxList[0];
+            _skillSelectionBox.MarkSelected();
+
+            selectedSkill = _skillSelectionBox.GetCharacterSkill();
+        }
+    }
+
+    // Final check to make sure default skill assigned.
+    public void CheckForNecessarySkill()
+    {
+        for (int i = 0; i < this.selectedActiveSkillList.Count; i++)
+        {
+            SkillSelectionBox _activeSkillSelectionBox = this.selectedActiveSkillList[i];
+            CharacterSkill _characterActiveSkill = _activeSkillSelectionBox.GetCharacterSkill();
+
+            CharacterSkill _selectedRepulseSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
+            CharacterSkill _selectedDerivedSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
+
+            List<CharacterSkill> _repulseSkillList = _characterActiveSkill.GetCharacterSubskillData().GetRepulseSkillList();
+            List<CharacterSkill> _derivedSkillList = _characterActiveSkill.GetCharacterSubskillData().GetDerivedSkillList();
+
+            if (_selectedRepulseSkill == null && _repulseSkillList.Count > 0)
+            {
+                CharacterSkill _repulseSkill = _repulseSkillList[0];
+
+                _characterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_repulseSkill);
+            }
+
+            if (_selectedDerivedSkill == null && _derivedSkillList.Count > 0)
+            {
+                CharacterSkill _derivedSkill = _derivedSkillList[0];
+
+                _characterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_derivedSkill);
+            }
+        }
+
+        for (int i = 0; i < this.selectedBackendSkillList.Count; i++)
+        {
+            SkillSelectionBox _backendSkillSelectionBox = this.selectedBackendSkillList[i];
+            CharacterSkill _characterActiveSkill = _backendSkillSelectionBox.GetCharacterSkill();
+
+            CharacterSkill _selectedCounterSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedCounterSkill();
+            List<CharacterSkill> _counterSkillList = _characterActiveSkill.GetCharacterSubskillData().GetCounterSkillList();
+
+            if (_selectedCounterSkill == null && _counterSkillList.Count > 0)
+            {
+                CharacterSkill _counterSkill = _counterSkillList[0];
+
+                _characterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_counterSkill);
+            }
         }
     }
 

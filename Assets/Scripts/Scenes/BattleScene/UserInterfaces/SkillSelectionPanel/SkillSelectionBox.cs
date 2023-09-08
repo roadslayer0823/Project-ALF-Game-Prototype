@@ -118,12 +118,14 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     public void MarkSelected()
     {
         this.isSelected = true;
+        SetSkillSelectionText("ON");
     }
 
     // To mark the selected skill back to deselected if it failed to add into the SelectedSkillList.
     public void MarkDeselected()
     {
         this.isSelected = false;
+        SetSkillSelectionText("");
     }
 
     // Set the skill data that needed to display into TMP.
