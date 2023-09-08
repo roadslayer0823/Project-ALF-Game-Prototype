@@ -159,6 +159,7 @@ public class BattleUiManager : MonoBehaviour
 
     public void OnExecuteButtonClicked()
     {
+        this.skillSelectionPanel.CheckForNecessarySkill();
         this.battleGameManager.StartExecution();
     }
 

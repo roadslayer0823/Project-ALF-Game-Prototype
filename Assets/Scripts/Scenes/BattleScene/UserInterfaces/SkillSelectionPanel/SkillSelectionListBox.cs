@@ -339,7 +339,13 @@ public class SkillSelectionListBox : MonoBehaviour
 
                     this.isLastSelectedCharacterSkillChanged = false;
 
-                    if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedRepulseSkill()?.GetCharacterSubskillData().GetSubskillData().Id == _repulseSkill.GetCharacterSubskillData().GetSubskillData().Id)
+                    if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() == null)
+                    {
+                        this.lastSelectedCharacterSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_repulseSkill);
+                        _skillSelectionBox.SetSkillSelectionText("ON");
+                        _skillSelectionBox.MarkSelected();
+                    }
+                    else if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedRepulseSkill().GetCharacterSubskillData().GetSubskillData().Id == _repulseSkill.GetCharacterSubskillData().GetSubskillData().Id)
                     {
                         _skillSelectionBox.SetSkillSelectionText("ON");
                         _skillSelectionBox.MarkSelected();
@@ -468,5 +474,20 @@ public class SkillSelectionListBox : MonoBehaviour
     public CharacterSkill GetLastSelectedCounterSkill()
     {
         return this.lastSelectedCounterSkill;
+    }
+
+    public List<SkillSelectionBox> GetRepulseSkillSelectionBoxList()
+    {
+        return this.repulseSkillSelectionBoxList;
+    }
+
+    public List<SkillSelectionBox> GetDerivedSkillSelectionBoxList()
+    {
+        return this.derivedSkillSelectionBoxList;
+    }
+
+    public List<SkillSelectionBox> GetCounterSkillSelectionBoxList()
+    {
+        return this.counterSkillSelectionBoxList;
     }
 }

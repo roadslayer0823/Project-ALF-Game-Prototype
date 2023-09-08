@@ -100,4 +100,19 @@ public class SkillSelectionTab : MonoBehaviour
     {
         this.skillSelectionListBox.SetSkillListTitle(skillListTitle);
     }
+
+    public List<SkillSelectionBox> GetRepulseSkillSelectionBoxList()
+    {
+        return this.skillSelectionListBox.GetRepulseSkillSelectionBoxList();
+    }
+
+    public List<SkillSelectionBox> GetDerivedSkillSelectionBoxList()
+    {
+        return this.skillSelectionListBox.GetDerivedSkillSelectionBoxList();
+    }
+
+    public List<SkillSelectionBox> GetCounterSkillSelectionBoxList()
+    {
+        return this.skillSelectionListBox.GetCounterSkillSelectionBoxList();
+    }
 }
