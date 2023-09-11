@@ -54,6 +54,7 @@ public class SkillSelectionTab : MonoBehaviour
         ShowSelectedSkillInfo(skillSelectionBox.GetCharacterSkill());
     }
 
+    // Show back the last selected skill info from the tab when switch back to the tab
     public void ShowSelectedSkillInfo(CharacterSkill characterSkill)
     {
         if (characterSkill == null)

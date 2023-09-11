@@ -344,11 +344,13 @@ public class SkillSelectionListBox : MonoBehaviour
                         this.lastSelectedCharacterSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_repulseSkill);
                         _skillSelectionBox.SetSkillSelectionText("ON");
                         _skillSelectionBox.MarkSelected();
+                        _skillSelectionBox.transform.SetAsFirstSibling();
                     }
                     else if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedRepulseSkill().GetCharacterSubskillData().GetSubskillData().Id == _repulseSkill.GetCharacterSubskillData().GetSubskillData().Id)
                     {
                         _skillSelectionBox.SetSkillSelectionText("ON");
                         _skillSelectionBox.MarkSelected();
+                        _skillSelectionBox.transform.SetAsFirstSibling();
                     }
                     else
                     {
@@ -388,6 +390,7 @@ public class SkillSelectionListBox : MonoBehaviour
                     {
                         _skillSelectionBox.SetSkillSelectionText("ON");
                         _skillSelectionBox.MarkSelected();
+                        _skillSelectionBox.transform.SetAsFirstSibling();
                     }
                     else
                     {
@@ -427,6 +430,7 @@ public class SkillSelectionListBox : MonoBehaviour
                     {
                         _skillSelectionBox.SetSkillSelectionText("ON");
                         _skillSelectionBox.MarkSelected();
+                        _skillSelectionBox.transform.SetAsFirstSibling();
                     }
                     else
                     {
