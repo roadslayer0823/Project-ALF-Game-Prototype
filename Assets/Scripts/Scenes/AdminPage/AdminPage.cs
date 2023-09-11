@@ -17,17 +17,14 @@ public class AdminPage : MonoBehaviour
     private void Awake()
     {
         DatabaseManager.Instance.onAllDataLoadedCallback = GenerateTable;
-        //DatabaseManager.Instance.onDataUpdatedCallback = UpdateStatus;
     }
 
     private void Start()
     {
         DisableStartButton();
 
-        //GenerateTable();
-
-        startGameButton.onClick.AddListener(OnStartGameButtonClick);
-        reloadDatabaseButton.onClick.AddListener(DatabaseManager.Instance.LoadAllData);
+        this.startGameButton.onClick.AddListener(OnStartGameButtonClick);
+        this.reloadDatabaseButton.onClick.AddListener(DatabaseManager.Instance.LoadAllData);
     }
 
     private void GenerateTable()
@@ -63,40 +60,6 @@ public class AdminPage : MonoBehaviour
 
         this.tableRowList.Clear();
     }
-
-    /*private void UpdateStatus(string sheetName)
-    {
-        for (int i = 0; i < this.tableRowList.Count; i++)
-        {
-            TableRow _tableRow = this.tableRowList[i];
-            DatabaseManager _databaseManager = DatabaseManager.Instance;
-
-            if (sheetName == _databaseManager.GetVersionSheetName())
-            {
-                _tableRow.UpdateStatus(_databaseManager.GetVersionDatabaseStatus());
-            }
-            else if (sheetName == _databaseManager.GetConfigurationSheetName())
-            {
-                _tableRow.UpdateStatus(_databaseManager.GetConfigurationDatabaseStatus());
-            }
-            else if (sheetName == _databaseManager.GetCharacterSheetName())
-            {
-                _tableRow.UpdateStatus(_databaseManager.GetCharacterDatabaseStatus());
-            }
-            else if (sheetName == _databaseManager.GetSkillSheetName())
-            {
-                _tableRow.UpdateStatus(_databaseManager.GetSkillDatabaseStatus());
-            }
-            else if (sheetName == _databaseManager.GetSubskillSheetNamee())
-            {
-                _tableRow.UpdateStatus(_databaseManager.GetSubskillDatabaseStatus());
-            }
-            else if (sheetName == _databaseManager.GetSkillAnimationSheetName())
-            {
-                _tableRow.UpdateStatus(_databaseManager.GetSkillAnimationDatabaseStatus());
-            }
-        }
-    }*/
 
     private void UpdateStatus()
     {
@@ -139,12 +102,12 @@ public class AdminPage : MonoBehaviour
 
     private void DisableStartButton()
     {
-        startGameButton.interactable = false;
+        this.startGameButton.interactable = false;
     }
 
     private void EnableStartButton()
     {
-        startGameButton.interactable = true;
+        this.startGameButton.interactable = true;
     }
 
     private void OnStartGameButtonClick()
