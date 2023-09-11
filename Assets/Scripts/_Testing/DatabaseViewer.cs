@@ -12,7 +12,7 @@ public class DatabaseViewer : MonoBehaviour
         DatabaseManager.Instance.onDataUpdatedCallback = DisplayAllData;
     }
 
-    private void DisplayAllData()
+    private void DisplayAllData( string sheetName, DatabaseManager.TableStatus tableStatus )
     {
         this.characterList = DatabaseManager.Instance.GetCharacterList();
         this.skillList = DatabaseManager.Instance.GetSkillList();

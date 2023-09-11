@@ -1,30 +1,65 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Version = DatabaseManager.Version;
+using TableStatus = DatabaseManager.TableStatus;
 
 public class AdminPage : MonoBehaviour
 {
     [SerializeField] private TableRow tableRowPrefab = null;
     [SerializeField] private RectTransform tableContentRect = null;
     [SerializeField] private Button startGameButton = null;
-    [SerializeField] private Button reloadDatabaseButton = null;
+    [SerializeField] private Button updateButton = null;
+    [SerializeField] private Button resetButton = null;
 
     private List<TableRow> tableRowList = new List<TableRow>();
 
-    private void Awake()
+    void Awake()
     {
-        DatabaseManager.Instance.onAllDataLoadedCallback = GenerateTable;
+        DatabaseManager.Instance.onAllVersionsLoadedCallback = GenerateTable;
+
+        DatabaseManager.Instance.onDataCheckingCallback = () =>
+        {
+            UpdateAllTableRowStatuses( TableStatus.CheckingForUpdates );
+        };
+
+        DatabaseManager.Instance.onDataUpdatedCallback = ( sheetName, tableStatus ) =>
+        {
+            TableRow _tableRow = GetTableRowBySheetName( sheetName );
+            if (_tableRow != null)
+            {
+                UpdateTableRowStatus( _tableRow, tableStatus );
+            }
+        };
+
+        DatabaseManager.Instance.onVersionUpdatedCallback = ( sheetName, versionNumber ) =>
+        {
+            if (versionNumber > 0)
+            {
+                TableRow _tableRow = GetTableRowBySheetName( sheetName );
+                if (_tableRow != null)
+                {
+                    _tableRow.SetVersionNumber( versionNumber );
+                }
+            }
+        };
+
+        DatabaseManager.Instance.onAllDataLoadedCallback = EnableStartButton;
+
+        DatabaseManager.Instance.Initialize();
     }
 
-    private void Start()
+    void Start()
     {
-        DisableStartButton();
-
         this.startGameButton.onClick.AddListener(OnStartGameButtonClick);
-        this.reloadDatabaseButton.onClick.AddListener(DatabaseManager.Instance.LoadAllData);
+        this.updateButton.onClick.AddListener(DatabaseManager.Instance.LoadAllData);
+        this.resetButton.onClick.AddListener( () =>
+        {
+            PlayerPrefsManager.DeleteAll();
+            SceneManager.LoadScene( SceneManager.GetActiveScene().name );
+            DatabaseManager.Instance.Initialize();
+        } );
     }
 
     private void GenerateTable()
@@ -45,8 +80,6 @@ public class AdminPage : MonoBehaviour
         }
 
         UpdateStatus();
-
-        EnableStartButton();
     }
 
     private void DropTable()
@@ -65,39 +98,96 @@ public class AdminPage : MonoBehaviour
     {
         for (int i = 0; i < this.tableRowList.Count; i++)
         {
-            TableRow _tableRow = this.tableRowList[i];
-            string sheetName = _tableRow.GetSheetName();
+            TableRow _tableRow = this.tableRowList[ i ];
+            string _sheetName = _tableRow.GetSheetName();
             DatabaseManager _databaseManager = DatabaseManager.Instance;
+            TableStatus _tableStatus = TableStatus.None;
 
-            if (sheetName == _databaseManager.GetVersionSheetName())
+            if (_sheetName == _databaseManager.GetVersionSheetName())
             {
-                _tableRow.UpdateStatus(_databaseManager.GetVersionDatabaseStatus());
+                _tableStatus = _databaseManager.GetVersionTableStatus();
             }
-            else if (sheetName == _databaseManager.GetConfigurationSheetName())
+            else if (_sheetName == _databaseManager.GetConfigurationSheetName())
             {
-                _tableRow.UpdateStatus(_databaseManager.GetConfigurationDatabaseStatus());
+                _tableStatus = _databaseManager.GetConfigurationTableStatus();
             }
-            else if (sheetName == _databaseManager.GetCharacterSheetName())
+            else if (_sheetName == _databaseManager.GetCharacterSheetName())
             {
-                _tableRow.UpdateStatus(_databaseManager.GetCharacterDatabaseStatus());
+                _tableStatus = _databaseManager.GetCharacterTableStatus();
             }
-            else if (sheetName == _databaseManager.GetSkillSheetName())
+            else if (_sheetName == _databaseManager.GetSkillSheetName())
             {
-                _tableRow.UpdateStatus(_databaseManager.GetSkillDatabaseStatus());
+                _tableStatus = _databaseManager.GetSkillTableStatus();
             }
-            else if (sheetName == _databaseManager.GetSubskillSheetNamee())
+            else if (_sheetName == _databaseManager.GetSubskillSheetNamee())
             {
-                _tableRow.UpdateStatus(_databaseManager.GetSubskillDatabaseStatus());
+                _tableStatus = _databaseManager.GetSubskillTableStatus();
             }
-            else if (sheetName == _databaseManager.GetSkillAnimationSheetName())
+            else if (_sheetName == _databaseManager.GetSkillAnimationSheetName())
             {
-                _tableRow.UpdateStatus(_databaseManager.GetSkillAnimationDatabaseStatus());
+                _tableStatus = _databaseManager.GetSkillAnimationTableStatus();
             }
-            else
+
+            UpdateTableRowStatus( _tableRow, _tableStatus );
+        }
+    }
+
+    private void UpdateTableRowStatus( TableRow tableRow, TableStatus tableStatus )
+    {
+        switch ( tableStatus )
+        {
+            case TableStatus.CheckingForUpdates:
+
+                tableRow.UpdateStatus( "Checking for updates..." );
+
+                break;
+
+            case TableStatus.Updating:
+
+                tableRow.UpdateStatus( "Updating..." );
+
+                break;
+
+            case TableStatus.UpdateFailed:
+
+                tableRow.UpdateStatus( "Update failed." );
+
+                break;
+
+            case TableStatus.UpToDate:
+
+                tableRow.UpdateStatus( "Up-to-date." );
+
+                break;
+
+            default:
+
+                tableRow.UpdateStatus( "Error." );
+
+                break;
+        }
+    }
+
+    private void UpdateAllTableRowStatuses( TableStatus tableStatus )
+    {
+        for (int i = 0; i < this.tableRowList.Count; i++)
+        {
+            UpdateTableRowStatus( this.tableRowList[ i ], tableStatus );
+        }
+    }
+
+    private TableRow GetTableRowBySheetName( string sheetName )
+    {
+        for (int i = 0; i < this.tableRowList.Count; i++)
+        {
+            TableRow _tableRow = this.tableRowList[ i ];
+            if (_tableRow.GetSheetName() == sheetName)
             {
-                _tableRow.UpdateStatus("Error");
+                return _tableRow;
             }
         }
+
+        return null;
     }
 
     private void DisableStartButton()

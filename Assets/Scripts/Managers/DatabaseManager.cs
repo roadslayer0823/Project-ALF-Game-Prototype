@@ -26,17 +26,29 @@ public class DatabaseManager : Singleton<DatabaseManager>
     private List<Subskill> subskillList = new List<Subskill>();
     private List<SkillAnimation> skillAnimationList = new List<SkillAnimation>();
 
-    private string versionDatabaseStatus = "";
-    private string configurationDatabaseStatus = "";
-    private string characterDatabaseStatus = "";
-    private string skillDatabaseStatus = "";
-    private string subskillDatabaseStatus = "";
-    private string skillAnimationDatabaseStatus = "";
+    private TableStatus versionTableStatus = TableStatus.None;
+    private TableStatus configurationTableStatus = TableStatus.None;
+    private TableStatus characterTableStatus = TableStatus.None;
+    private TableStatus skillTableStatus = TableStatus.None;
+    private TableStatus subskillTableStatus = TableStatus.None;
+    private TableStatus skillAnimationTableStatus = TableStatus.None;
 
-    public Action onDataUpdatedCallback = null;
+    public Action onAllVersionsLoadedCallback = null;
+    public Action onDataCheckingCallback = null;
+    public Action<string,TableStatus> onDataUpdatedCallback = null;
+    public Action<string,int> onVersionUpdatedCallback = null;
     public Action onAllDataLoadedCallback = null;
 
-    void Start()
+    public enum TableStatus
+    {
+        None,
+        CheckingForUpdates,
+        Updating,
+        UpdateFailed,
+        UpToDate
+    }
+
+    public void Initialize()
     {
         if (this.isCheckingForUpdatesEnabled)
         {
@@ -47,6 +59,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
             string _versionJsonData = PlayerPrefsManager.LoadVersionDatabase();
             if (!string.IsNullOrEmpty(_versionJsonData))
             {
+                ProcessJsonData<Version>( _versionJsonData, this.versionSheetName );
+                this.onAllVersionsLoadedCallback?.Invoke();
+
                 StartCoroutine(CheckDatabaseVersion(_versionJsonData));
             }
 
@@ -68,8 +83,6 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 ProcessJsonData<Skill>( _skillJsonData, this.skillSheetName );
                 ProcessJsonData<Subskill>( _subskillJsonData, this.subskillSheetName );
                 ProcessJsonData<SkillAnimation>(_skillAnimationJsonData, this.skillAnimationSheetName);
-
-                this.onAllDataLoadedCallback?.Invoke();
             }
             else
             {
@@ -80,6 +93,8 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
     private IEnumerator CheckDatabaseVersion(string versionJsonData)
     {
+        this.onDataCheckingCallback?.Invoke();
+
         // Get latest database version list
         yield return StartCoroutine(GetJsonData<Version>(this.versionSheetName));
 
@@ -89,46 +104,57 @@ public class DatabaseManager : Singleton<DatabaseManager>
         {
             Debug.Log("Check Database Version.");
 
-            List<Version> latestDatabaseVersionList = this.versionList;
-            List<Version> previousDatabaseVersionList = JsonConvert.DeserializeObject<List<Version>>(versionJsonData);
+            List<Version> _latestDatabaseVersionList = this.versionList;
+            List<Version> _previousDatabaseVersionList = JsonConvert.DeserializeObject<List<Version>>(versionJsonData);
 
-            foreach (Version latestDatabaseVersion in latestDatabaseVersionList)
+            foreach (Version _latestDatabaseVersion in _latestDatabaseVersionList)
             {
-                foreach (Version previousDatabaseVersion in previousDatabaseVersionList)
+                foreach (Version _previousDatabaseVersion in _previousDatabaseVersionList)
                 {
                     // Compare the loaded previous database version number with latest database version number
-                    if (previousDatabaseVersion.SheetName == latestDatabaseVersion.SheetName
-                        && previousDatabaseVersion.VersionNumber < latestDatabaseVersion.VersionNumber)
+                    if (_previousDatabaseVersion.SheetName == _latestDatabaseVersion.SheetName)
                     {
-                        if (latestDatabaseVersion.SheetName == this.versionSheetName)
+                        int _latestVersionNumber = _latestDatabaseVersion.VersionNumber;
+                        if (_previousDatabaseVersion.VersionNumber < _latestVersionNumber)
                         {
-                            StartCoroutine(GetJsonData<Version>(this.versionSheetName));
-                            Debug.Log("Update: " + this.versionSheetName);
+                            if (_latestDatabaseVersion.SheetName == this.versionSheetName)
+                            {
+                                StartCoroutine( GetJsonData<Version>( this.versionSheetName ) );
+                                Debug.Log( "Update: " + this.versionSheetName );
+                            }
+                            else if (_latestDatabaseVersion.SheetName == this.configurationSheetName)
+                            {
+                                StartCoroutine( GetJsonData<Configuration>( this.configurationSheetName, _latestVersionNumber ) );
+                                Debug.Log( "Update: " + this.configurationSheetName );
+                            }
+                            else if (_latestDatabaseVersion.SheetName == this.characterSheetName)
+                            {
+                                StartCoroutine( GetJsonData<Character>( this.characterSheetName, _latestVersionNumber ) );
+                                Debug.Log( "Update: " + this.characterSheetName );
+                            }
+                            else if (_latestDatabaseVersion.SheetName == this.skillSheetName)
+                            {
+                                StartCoroutine( GetJsonData<Skill>( this.skillSheetName, _latestVersionNumber ) );
+                                Debug.Log( "Update: " + this.skillSheetName );
+                            }
+                            else if (_latestDatabaseVersion.SheetName == this.subskillSheetName)
+                            {
+                                StartCoroutine( GetJsonData<Subskill>( this.subskillSheetName, _latestVersionNumber ) );
+                                Debug.Log( "Update: " + this.subskillSheetName );
+                            }
+                            else if (_latestDatabaseVersion.SheetName == this.skillAnimationSheetName)
+                            {
+                                StartCoroutine( GetJsonData<SkillAnimation>( this.skillAnimationSheetName, _latestVersionNumber ) );
+                                Debug.Log( "Update: " + this.skillAnimationSheetName );
+                            }
                         }
-                        else if (latestDatabaseVersion.SheetName == this.configurationSheetName)
+                        else
                         {
-                            StartCoroutine(GetJsonData<Configuration>(this.configurationSheetName));
-                            Debug.Log("Update: " + this.configurationSheetName);
-                        }
-                        else if (latestDatabaseVersion.SheetName == this.characterSheetName)
-                        {
-                            StartCoroutine(GetJsonData<Character>(this.characterSheetName));
-                            Debug.Log("Update: " + this.characterSheetName);
-                        }
-                        else if (latestDatabaseVersion.SheetName == this.skillSheetName)
-                        {
-                            StartCoroutine(GetJsonData<Skill>(this.skillSheetName));
-                            Debug.Log("Update: " + this.skillSheetName);
-                        }
-                        else if (latestDatabaseVersion.SheetName == this.subskillSheetName)
-                        {
-                            StartCoroutine(GetJsonData<Subskill>(this.subskillSheetName));
-                            Debug.Log("Update: " + this.subskillSheetName);
-                        }
-                        else if (latestDatabaseVersion.SheetName == this.skillAnimationSheetName)
-                        {
-                            StartCoroutine(GetJsonData<SkillAnimation>(this.skillAnimationSheetName));
-                            Debug.Log("Update: " + this.skillAnimationSheetName);
+                            if (this.onDataUpdatedCallback != null)
+                            {
+                                this.onDataUpdatedCallback.Invoke( _latestDatabaseVersion.SheetName, TableStatus.UpToDate );
+                                this.onVersionUpdatedCallback.Invoke( _latestDatabaseVersion.SheetName, _latestVersionNumber );
+                            }
                         }
                     }
                 }
@@ -138,59 +164,60 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
     public void LoadAllData()
     {
-        StartCoroutine(GetJsonData<Version>(this.versionSheetName));
-        StartCoroutine(GetJsonData<Configuration>(this.configurationSheetName));
-        StartCoroutine(GetJsonData<Character>(this.characterSheetName));
-        StartCoroutine(GetJsonData<Skill>(this.skillSheetName));
-        StartCoroutine(GetJsonData<Subskill>(this.subskillSheetName));
-        StartCoroutine(GetJsonData<SkillAnimation>(this.skillAnimationSheetName));
+        StartCoroutine( RunLoadingAllData() );
     }
 
-    private IEnumerator GetJsonData<T>( string sheetName ) where T : class
+    private IEnumerator RunLoadingAllData()
     {
-        string jsonURL = "https://opensheet.elk.sh/" + this.databaseSpreadsheetId + "/" + sheetName;
+        yield return StartCoroutine( GetJsonData<Version>( this.versionSheetName ) );
+
+        this.onAllVersionsLoadedCallback?.Invoke();
+        this.onDataCheckingCallback?.Invoke();
+
+        StartCoroutine( GetJsonData<Configuration>( this.configurationSheetName ) );
+        StartCoroutine( GetJsonData<Character>( this.characterSheetName ) );
+        StartCoroutine( GetJsonData<Skill>( this.skillSheetName ) );
+        StartCoroutine( GetJsonData<Subskill>( this.subskillSheetName ) );
+        StartCoroutine( GetJsonData<SkillAnimation>( this.skillAnimationSheetName ) );
+    }
+
+    private IEnumerator GetJsonData<T>( string sheetName, int versionNumber = 0 ) where T : class
+    {
+        UpdateTableStatus( sheetName, TableStatus.Updating );
+
+        string _jsonURL = "https://opensheet.elk.sh/" + this.databaseSpreadsheetId + "/" + sheetName;
 
         Debug.Log( "Processing Data, Please Wait" );
 
         //Download the data from json
-        UnityWebRequest webRequest = UnityWebRequest.Get( jsonURL );
+        UnityWebRequest _webRequest = UnityWebRequest.Get( _jsonURL );
 
         //wait for it to download finish
-        yield return webRequest.SendWebRequest();
+        yield return _webRequest.SendWebRequest();
 
         //Check to make sure no error, then pass the loaded data to other function for using
-        if (string.IsNullOrEmpty( webRequest.error ))
+        if (string.IsNullOrEmpty( _webRequest.error ))
         {
-            ProcessJsonData<T>( webRequest.downloadHandler.text, sheetName );
+            ProcessJsonData<T>( _webRequest.downloadHandler.text, sheetName );
 
-            UpdateDatabaseStatus(sheetName, "Up to date.");
+            UpdateTableStatus( sheetName, TableStatus.UpToDate );
+            this.onVersionUpdatedCallback.Invoke( sheetName, versionNumber );
 
             Debug.Log( "Done." );
         }
         else
         {
-            UpdateDatabaseStatus(sheetName, "Error");
+            UpdateTableStatus( sheetName, TableStatus.UpdateFailed );
 
             Debug.Log( "Oops something went wrong");
         }
 
-        /*if (this.onDataUpdatedCallback != null)
-        {
-            this.onDataUpdatedCallback();
-        }*/
-
-        if ((this.versionList != null
-            && this.configurationList != null
-            && this.characterList != null
-            && this.skillList != null
-            && this.subskillList != null
-            && this.skillAnimationList != null)
-            ||!(string.IsNullOrEmpty(versionDatabaseStatus)
-            && string.IsNullOrEmpty(configurationDatabaseStatus)
-            && string.IsNullOrEmpty(characterDatabaseStatus)
-            && string.IsNullOrEmpty(skillDatabaseStatus)
-            && string.IsNullOrEmpty(subskillDatabaseStatus)
-            && string.IsNullOrEmpty(skillAnimationDatabaseStatus)))
+        if (this.versionTableStatus == TableStatus.UpToDate
+            && this.configurationTableStatus == TableStatus.UpToDate
+            && this.characterTableStatus == TableStatus.UpToDate
+            && this.skillTableStatus == TableStatus.UpToDate
+            && this.subskillTableStatus == TableStatus.UpToDate
+            && this.skillTableStatus == TableStatus.UpToDate)
         {
             onAllDataLoadedCallback?.Invoke();
         }
@@ -274,34 +301,39 @@ public class DatabaseManager : Singleton<DatabaseManager>
             PlayerPrefsManager.SaveSkillAnimationDatabase(jsonData);
         }
 
-        UpdateDatabaseStatus(sheetName, "Up to date.");
+        UpdateTableStatus( sheetName, TableStatus.UpToDate );
     }
 
-    private void UpdateDatabaseStatus(string sheetName, string status)
+    private void UpdateTableStatus( string sheetName, TableStatus tableStatus )
     {
         if (sheetName == this.versionSheetName)
         {
-            this.versionDatabaseStatus = status;
+            this.versionTableStatus = tableStatus;
         }
         else if (sheetName == this.configurationSheetName)
         {
-            this.configurationDatabaseStatus = status;
+            this.configurationTableStatus = tableStatus;
         }
         else if (sheetName == this.characterSheetName)
         {
-            this.characterDatabaseStatus = status;
+            this.characterTableStatus = tableStatus;
         }
         else if (sheetName == this.skillSheetName)
         {
-            this.skillDatabaseStatus = status;
+            this.skillTableStatus = tableStatus;
         }
         else if (sheetName == this.subskillSheetName)
         {
-            this.subskillDatabaseStatus = status;
+            this.subskillTableStatus = tableStatus;
         }
         else if (sheetName == this.skillAnimationSheetName)
         {
-            this.skillAnimationDatabaseStatus = status;
+            this.skillAnimationTableStatus = tableStatus;
+        }
+
+        if (this.onDataUpdatedCallback != null)
+        {
+            this.onDataUpdatedCallback.Invoke( sheetName, tableStatus );
         }
     }
 
@@ -452,31 +484,34 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.skillAnimationSheetName;
     }
 
-    public string GetVersionDatabaseStatus()
+    public TableStatus GetVersionTableStatus()
     {
-        return this.versionDatabaseStatus;
+        return this.versionTableStatus;
     }
 
-    public string GetConfigurationDatabaseStatus()
+    public TableStatus GetConfigurationTableStatus()
     {
-        return this.configurationDatabaseStatus;
+        return this.configurationTableStatus;
     }
 
-    public string GetCharacterDatabaseStatus()
+    public TableStatus GetCharacterTableStatus()
     {
-        return this.characterDatabaseStatus;
+        return this.characterTableStatus;
     }
-    public string GetSkillDatabaseStatus()
+
+    public TableStatus GetSkillTableStatus()
     {
-        return this.skillDatabaseStatus;
+        return this.skillTableStatus;
     }
-    public string GetSubskillDatabaseStatus()
+
+    public TableStatus GetSubskillTableStatus()
     {
-        return this.subskillDatabaseStatus;
+        return this.subskillTableStatus;
     }
-    public string GetSkillAnimationDatabaseStatus()
+
+    public TableStatus GetSkillAnimationTableStatus()
     {
-        return this.skillAnimationDatabaseStatus;
+        return this.skillAnimationTableStatus;
     }
 
     // Inner classes declaration

@@ -68,4 +68,9 @@ public class PlayerPrefsManager
     {
         return PlayerPrefs.GetString(SKILL_ANIMATION_DATABASE, "");
     }
+
+    public static void DeleteAll()
+    {
+        PlayerPrefs.DeleteAll();
+    }
 }
