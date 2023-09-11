@@ -111,8 +111,8 @@ public class SkillSelectionPanel : MonoBehaviour
             return;
         }
 
-        CharacterSkill _lastSelectedCharacterActiveSkill = this.activeSkillSelectionPanelTab.GetLastSelectedCharacterSkill();
-        CharacterSkill _lastSelectedCharacterBackendSkill = this.backendSkillSelectionPanelTab.GetLastSelectedCharacterSkill();
+        CharacterSubskill _lastSelectedCharacterActiveSkill = this.activeSkillSelectionPanelTab.GetLastSelectedCharacterSkill()?.GetCharacterSubskillData();
+        CharacterSubskill _lastSelectedCharacterBackendSkill = this.backendSkillSelectionPanelTab.GetLastSelectedCharacterSkill()?.GetCharacterSubskillData();
         CharacterSkill _currentSelectedSkill = skillSelectionBox.GetCharacterSkill();
         Skill.SkillType _skillType = skillSelectionBox.GetCharacterSkill().GetSkillData().skillType;
 
@@ -120,9 +120,11 @@ public class SkillSelectionPanel : MonoBehaviour
         {
             if (this.selectedActiveSkillList.Count < 3)
              {
-                 this.selectedActiveSkillList.Add(skillSelectionBox);
+                this.selectedActiveSkillList.Add(skillSelectionBox);
 
-                 UpdateSelectedSkillSequence();
+                skillSelectionBox.SetSkillSelectionText("ON");
+
+                UpdateSkillSelectionListOrder(this.selectedActiveSkillList);
              }
              else
              {
@@ -131,32 +133,38 @@ public class SkillSelectionPanel : MonoBehaviour
         }
         else if (_skillType == Skill.SkillType.repulse) // repulse skill
         {
-            if (_lastSelectedCharacterActiveSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() == null)
+            if (_lastSelectedCharacterActiveSkill.GetSelectedRepulseSkill() == null)
             {
                 this.selectedRepulseSkill = skillSelectionBox.GetCharacterSkill();
 
-                _lastSelectedCharacterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_currentSelectedSkill);
+                _lastSelectedCharacterActiveSkill.SetSelectedRepulseSkill(_currentSelectedSkill);
 
                 skillSelectionBox.SetSkillSelectionText("ON");
+
+                skillSelectionBox.transform.SetAsFirstSibling();
             }
             else
             {
                 Debug.Log("Max repulse skill selected");
+                skillSelectionBox.MarkDeselected();
             }
         }
         else if (_skillType == Skill.SkillType.derived) // derived skill
         {
-            if (_lastSelectedCharacterActiveSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
+            if (_lastSelectedCharacterActiveSkill.GetSelectedDerivedSkill() == null)
             {
                 this.selectedDerivedSkill = skillSelectionBox.GetCharacterSkill();
 
-                _lastSelectedCharacterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_currentSelectedSkill);
+                _lastSelectedCharacterActiveSkill.SetSelectedDerivedSkill(_currentSelectedSkill);
 
                 skillSelectionBox.SetSkillSelectionText("ON");
+
+                skillSelectionBox.transform.SetAsFirstSibling();
             }
             else
             {
                 Debug.Log("Max derived skill selected");
+                skillSelectionBox.MarkDeselected();
             }
         }
         else if (_skillType == Skill.SkillType.backend)
@@ -166,6 +174,8 @@ public class SkillSelectionPanel : MonoBehaviour
                 this.selectedBackendSkillList.Add(skillSelectionBox);
 
                 skillSelectionBox.SetSkillSelectionText("ON");
+
+                UpdateSkillSelectionListOrder(this.selectedBackendSkillList);
             }
             else
             {
@@ -174,17 +184,20 @@ public class SkillSelectionPanel : MonoBehaviour
         }
         else if (_skillType == Skill.SkillType.counter) // counter skill
         {
-            if (_lastSelectedCharacterBackendSkill.GetCharacterSubskillData().GetSelectedCounterSkill() == null)
+            if (_lastSelectedCharacterBackendSkill.GetSelectedCounterSkill() == null)
             {
                 this.selectedCounterSkill = skillSelectionBox.GetCharacterSkill();
 
-                _lastSelectedCharacterBackendSkill.GetCharacterSubskillData().SetSelectedCounterSkill(_currentSelectedSkill);
+                _lastSelectedCharacterBackendSkill.SetSelectedCounterSkill(_currentSelectedSkill);
 
                 skillSelectionBox.SetSkillSelectionText("ON");
+
+                skillSelectionBox.transform.SetAsFirstSibling();
             }
             else
             {
                 Debug.Log("Max counter skill selected");
+                skillSelectionBox.MarkDeselected();
             }
         }
 
@@ -207,9 +220,9 @@ public class SkillSelectionPanel : MonoBehaviour
         {
             this.selectedActiveSkillList.Remove(skillSelectionBox);
 
-            skillSelectionBox.SetSkillSelectionSequenceNumber(0);
+            skillSelectionBox.SetSkillSelectionText("");
 
-            UpdateSelectedSkillSequence();
+            UpdateSkillSelectionListOrder(this.selectedActiveSkillList);
         }
         else if (this.selectedRepulseSkill == skillSelectionBox.GetCharacterSkill()) // repulse skill
         {
@@ -367,8 +380,8 @@ public class SkillSelectionPanel : MonoBehaviour
         ShowAttackSkillTab();
     }
 
-    // Switch between attack tab, repulse tab and derived tab
-    private void ChangeSkillSelectionTab()
+    // Check whether current showing panel is actiev skill or backend skill panel tab
+    private SkillSelectionTab CurrentShowingSkillSelectionPanel()
     {
         SkillSelectionTab _skillSelectionPanel = null;
 
@@ -382,6 +395,14 @@ public class SkillSelectionPanel : MonoBehaviour
             _skillSelectionPanel = this.backendSkillSelectionPanelTab;
         }
 
+        return _skillSelectionPanel;
+    }
+
+    // Switch between attack tab, repulse tab and derived tab
+    private void ChangeSkillSelectionTab()
+    {
+        SkillSelectionTab _skillSelectionPanel = CurrentShowingSkillSelectionPanel();
+
         if (this.skillInfoTab == SkillInfoTab.attack)
         {
             if (this.skillSelectionPanel == SkillSelectionUIPanel.active)
@@ -393,14 +414,12 @@ public class SkillSelectionPanel : MonoBehaviour
                 _skillSelectionPanel.ShowCharacterSkillList(backendSkillList.ToArray());
             }
             
-            // Show back the last selected skill info from attack tab when switch back to the attack tab.
             _skillSelectionPanel.ShowSelectedSkillInfo(_skillSelectionPanel.GetLastSelectedCharacterSkill());
         }
         else if (this.skillInfoTab == SkillInfoTab.repulse)
         {
             _skillSelectionPanel.ShowRepulseSkillList();
 
-            // Show back the last selected skill info from attack tab when switch back to the repulse tab.
             _skillSelectionPanel.ShowSelectedSkillInfo(_skillSelectionPanel.GetLastSelectedRepulseSkill());
 
             SelectDefaultSkillBox(_skillSelectionPanel.GetRepulseSkillSelectionBoxList(), ref this.selectedRepulseSkill);
@@ -409,7 +428,6 @@ public class SkillSelectionPanel : MonoBehaviour
         {
             _skillSelectionPanel.ShowDerivedSkillList();
 
-            // Show back the last selected skill info from attack tab when switch back to the derived tab.
             _skillSelectionPanel.ShowSelectedSkillInfo(_skillSelectionPanel.GetLastSelectedDerivedSkill());
 
             SelectDefaultSkillBox(_skillSelectionPanel.GetDerivedSkillSelectionBoxList(), ref this.selectedDerivedSkill);
@@ -418,7 +436,6 @@ public class SkillSelectionPanel : MonoBehaviour
         {
             _skillSelectionPanel.ShowCounterSkillList();
 
-            // Show back the last selected skill info from attack tab when switch back to the counter tab.
             _skillSelectionPanel.ShowSelectedSkillInfo(_skillSelectionPanel.GetLastSelectedCounterSkill());
 
             SelectDefaultSkillBox(_skillSelectionPanel.GetCounterSkillSelectionBoxList(), ref this.selectedCounterSkill);
@@ -442,7 +459,7 @@ public class SkillSelectionPanel : MonoBehaviour
         }
     }
 
-    // Final check to make sure default skill assigned.
+    // Final check to make sure default skill assigned if player did not select.
     public void CheckForNecessarySkill()
     {
         for (int i = 0; i < this.selectedActiveSkillList.Count; i++)
@@ -485,6 +502,16 @@ public class SkillSelectionPanel : MonoBehaviour
 
                 _characterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_counterSkill);
             }
+        }
+    }
+
+    private void UpdateSkillSelectionListOrder(List<SkillSelectionBox> selectedSkillList)
+    {
+        for (int i = 0; i < selectedSkillList.Count; i++)
+        {
+            SkillSelectionBox _skillSelectionBox = selectedSkillList[i];
+
+            _skillSelectionBox.transform.SetSiblingIndex(i);
         }
     }
 

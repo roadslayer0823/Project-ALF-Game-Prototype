@@ -149,6 +149,8 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         {
             this.skillTypeText.SetText("[" + _subskillData.Prefix.ToString() + "]");
         }
+
+        SetupLevelUIDisplayVisibility();
     }
 
     // Callback function for selection button
@@ -182,10 +184,31 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
             Select();
         }
 
-        this.skillLevelText.SetText(skillLevel.ToString());
+        this.skillLevelText.SetText($"Lv. {skillLevel}");
 
         this.skillSelectionListBox.ShowSelectedSkillInfo(this);
         UpdateSkillSelectionBoxData();
+    }
+
+    private void SetupLevelUIDisplayVisibility()
+    {
+        if (this.skillLevel == characterSkill.GetCharacterSubskillList().Count)
+        {
+            this.plusLevelButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            this.plusLevelButton.gameObject.SetActive(true);
+        }
+
+        if (this.skillLevel == 1)
+        {
+            this.minusLevelButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            this.minusLevelButton.gameObject.SetActive(true);
+        }
     }
 
     public void ShowSelectionHighlight()
