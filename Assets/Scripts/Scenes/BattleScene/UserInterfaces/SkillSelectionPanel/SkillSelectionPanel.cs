@@ -106,6 +106,15 @@ public class SkillSelectionPanel : MonoBehaviour
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
+        if (this.onSkillSelectedCallback != null)
+        {
+            this.onSkillSelectedCallback(skillSelectionBox);
+        }
+        else
+        {
+            Debug.Log("The value for 'onSkillSelectedCallback' is not assigned.");
+        }
+
         if (skillSelectionBox.CheckIsSkillLevelChanged())
         {
             return;
@@ -199,15 +208,6 @@ public class SkillSelectionPanel : MonoBehaviour
                 Debug.Log("Max counter skill selected");
                 skillSelectionBox.MarkDeselected();
             }
-        }
-
-        if (this.onSkillSelectedCallback != null)
-        {
-            this.onSkillSelectedCallback( skillSelectionBox );
-        }
-        else
-        {
-            Debug.Log( "The value for 'onSkillSelectedCallback' is not assigned." );
         }
     }
 
