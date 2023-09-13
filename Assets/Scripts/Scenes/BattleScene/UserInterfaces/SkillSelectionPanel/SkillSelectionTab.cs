@@ -116,4 +116,9 @@ public class SkillSelectionTab : MonoBehaviour
     {
         return this.skillSelectionListBox.GetCounterSkillSelectionBoxList();
     }
+
+    public SkillSelectionListBox GetSkillSelectionListBox()
+    {
+        return this.skillSelectionListBox;
+    }
 }

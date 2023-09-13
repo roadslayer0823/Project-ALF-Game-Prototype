@@ -38,6 +38,9 @@ public class SkillSelectionPanel : MonoBehaviour
     private List<CharacterSkill> activeSkillList = new List<CharacterSkill>();
     private List<CharacterSkill> backendSkillList = new List<CharacterSkill>();
 
+    private const float skillSelectionBoxAnimationDuration = 0.2f;
+    private bool isPlayingSkillSelectionBoxAnimation = false;
+
     public enum SkillInfoTab
     {
         none,
@@ -106,6 +109,11 @@ public class SkillSelectionPanel : MonoBehaviour
 
     public void OnSkillSelected( SkillSelectionBox skillSelectionBox )
     {
+        if (this.isPlayingSkillSelectionBoxAnimation)
+        {
+            return;
+        }
+
         if (this.onSkillSelectedCallback != null)
         {
             this.onSkillSelectedCallback(skillSelectionBox);
@@ -127,11 +135,12 @@ public class SkillSelectionPanel : MonoBehaviour
 
         if (_skillType == Skill.SkillType.active)
         {
-            if (this.selectedActiveSkillList.Count < 3)
+            if (this.selectedActiveSkillList.Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills())
              {
                 this.selectedActiveSkillList.Add(skillSelectionBox);
 
                 skillSelectionBox.SetSkillSelectionText("ON");
+                skillSelectionBox.BringToFront();
 
                 UpdateSkillSelectionListOrder(this.selectedActiveSkillList);
              }
@@ -178,11 +187,12 @@ public class SkillSelectionPanel : MonoBehaviour
         }
         else if (_skillType == Skill.SkillType.backend)
         {
-            if (this.selectedBackendSkillList.Count < 3)
+            if (this.selectedBackendSkillList.Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills())
             {
                 this.selectedBackendSkillList.Add(skillSelectionBox);
 
                 skillSelectionBox.SetSkillSelectionText("ON");
+                skillSelectionBox.BringToFront();
 
                 UpdateSkillSelectionListOrder(this.selectedBackendSkillList);
             }
@@ -213,6 +223,11 @@ public class SkillSelectionPanel : MonoBehaviour
 
     public void OnSkillDeselected( SkillSelectionBox skillSelectionBox )
     {
+        if (this.isPlayingSkillSelectionBoxAnimation)
+        {
+            return;
+        }
+
         CharacterSkill _lastSelectedCharacterActiveSkill = this.activeSkillSelectionPanelTab.GetLastSelectedCharacterSkill();
         CharacterSkill _lastSelectedCharacterBackendSkill = this.backendSkillSelectionPanelTab.GetLastSelectedCharacterSkill();
 
@@ -505,14 +520,22 @@ public class SkillSelectionPanel : MonoBehaviour
         }
     }
 
-    private void UpdateSkillSelectionListOrder(List<SkillSelectionBox> selectedSkillList)
+    private void UpdateSkillSelectionListOrder( List<SkillSelectionBox> selectedSkillList )
     {
+        this.isPlayingSkillSelectionBoxAnimation = true;
+
+        List<SkillSelectionBox> _skillSelectionBoxList = CurrentShowingSkillSelectionPanel().GetSkillSelectionListBox().GetSkillSelectionBoxList();
+        for (int i = 0; i < _skillSelectionBoxList.Count; i++)
+        {
+            _skillSelectionBoxList[ i ].MoveContainerToOrigin( SkillSelectionPanel.skillSelectionBoxAnimationDuration );
+        }
+
         for (int i = 0; i < selectedSkillList.Count; i++)
         {
-            SkillSelectionBox _skillSelectionBox = selectedSkillList[i];
-
-            _skillSelectionBox.transform.SetSiblingIndex(i);
+            selectedSkillList[ i ].transform.SetSiblingIndex( i );
         }
+
+        LeanTween.delayedCall( SkillSelectionPanel.skillSelectionBoxAnimationDuration, () => { this.isPlayingSkillSelectionBoxAnimation = false; } );
     }
 
     public SkillInfoTab GetSkillInfoTab()
