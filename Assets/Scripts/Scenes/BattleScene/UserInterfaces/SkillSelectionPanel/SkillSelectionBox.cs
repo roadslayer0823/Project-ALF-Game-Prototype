@@ -1,8 +1,9 @@
 using System;
+using System.Collections;
 using UnityEngine;
-using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 using Subskill = DatabaseManager.Subskill;
 
 public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
@@ -10,7 +11,9 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     [Header("Settings")]
     [SerializeField] private float boxHeight = 150f;
 
-    [Header("")]
+    [Header( "" )]
+    [SerializeField] private Canvas canvas;
+    [SerializeField] private RectTransform container;
     [SerializeField] private Image selectionHightlight;
     [SerializeField] private RectTransform skillSelectionBoxRect;
     [SerializeField] private TextMeshProUGUI skillNameText;
@@ -26,6 +29,8 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     private bool isSelected = false;
     private bool isSkillLevelChanged = false;
     private int skillLevel = 1;
+
+    private Vector3 containerOriginalPosition = Vector2.zero;
 
     public void Initialize(SkillSelectionListBox skillSelectionListBox, CharacterSkill characterSkill)
     {
@@ -219,5 +224,29 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     public void HideSelectionHighlight()
     {
         this.selectionHightlight.gameObject.SetActive(false);
+    }
+
+    public void MoveContainerToOrigin( float animationDuration )
+    {
+        this.containerOriginalPosition = this.container.position;
+        StartCoroutine( RunMovingContainerToOrigin( animationDuration ) );
+    }
+
+    private IEnumerator RunMovingContainerToOrigin( float animationDuration )
+    {
+        yield return new WaitForEndOfFrame();
+        this.container.position = this.containerOriginalPosition;
+
+        LeanTween.move( this.container, Vector3.zero, animationDuration ).setOnComplete( () =>
+        {
+            this.canvas.overrideSorting = false;
+            this.canvas.sortingOrder = 0;
+        } );
+    }
+
+    public void BringToFront()
+    {
+        this.canvas.overrideSorting = true;
+        this.canvas.sortingOrder = 1;
     }
 }

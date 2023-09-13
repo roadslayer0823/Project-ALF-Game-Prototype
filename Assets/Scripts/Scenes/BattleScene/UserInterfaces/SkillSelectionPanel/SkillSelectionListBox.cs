@@ -494,4 +494,9 @@ public class SkillSelectionListBox : MonoBehaviour
     {
         return this.counterSkillSelectionBoxList;
     }
+
+    public List<SkillSelectionBox> GetSkillSelectionBoxList()
+    {
+        return this.skillSelectionBoxList;
+    }
 }
