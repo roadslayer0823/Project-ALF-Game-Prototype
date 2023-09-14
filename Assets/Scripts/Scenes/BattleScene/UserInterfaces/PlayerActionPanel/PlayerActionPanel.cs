@@ -25,6 +25,8 @@ public class PlayerActionPanel : MonoBehaviour
     private Action onBackendSkillButtonClickedCallback = null;
     private bool isShowingActiveSkillSelectionPanelNext = false;
 
+    private const string AUDIO_ID_CLICK = "click";
+
     public void Initialize( Action onExecuteButtonClickedCallback, Action onShowActiveSkillSelectionPanelCallback, Action onShowBackendSkillSelectionPanelCallback)
     {
         this.onExecuteButtonClickedCallback = onExecuteButtonClickedCallback;
@@ -50,6 +52,8 @@ public class PlayerActionPanel : MonoBehaviour
 
     public void ClickOnExecuteButton()
     {
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+
         DisableExecuteButton();
 
         if (this.onExecuteButtonClickedCallback != null)
@@ -64,6 +68,8 @@ public class PlayerActionPanel : MonoBehaviour
 
     private void OnQTEButtonClicked()
     {
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+
         DisableQTEAndSkillActionButtons();
 
         Skill _skillData = this.qteSkill.GetSkillData();
@@ -184,6 +190,8 @@ public class PlayerActionPanel : MonoBehaviour
 
     private void OnSkillActionButtonClicked( CharacterSkill skill )
     {
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+
         DisableQTEAndSkillActionButtons();
 
         this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Backend );
@@ -206,6 +214,8 @@ public class PlayerActionPanel : MonoBehaviour
 
     private void OnShowSkillSelectionPanelButtonClicked()
     {
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+
         if (this.isShowingActiveSkillSelectionPanelNext)
         {
             ShowActiveSkillSelectionPanel();

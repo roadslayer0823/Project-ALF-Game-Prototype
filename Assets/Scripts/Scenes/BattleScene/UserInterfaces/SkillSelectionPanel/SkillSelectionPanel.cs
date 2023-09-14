@@ -41,6 +41,8 @@ public class SkillSelectionPanel : MonoBehaviour
     private const float skillSelectionBoxAnimationDuration = 0.2f;
     private bool isPlayingSkillSelectionBoxAnimation = false;
 
+    private const string AUDIO_ID_CLICK = "click";
+
     public enum SkillInfoTab
     {
         none,
@@ -67,7 +69,7 @@ public class SkillSelectionPanel : MonoBehaviour
 
         this.backendSkillSelectionPanelTab.gameObject.SetActive(false);
 
-        this.attackSkillSelectionTabButton.onClick.AddListener(ShowAttackSkillTab);
+        this.attackSkillSelectionTabButton.onClick.AddListener(OnShowAttackSkillTabClicked);
         this.repulseSkillSelectionTabButton.onClick.AddListener(ShowRepulseSkillTab);
         this.derivedSkillSelectionTabButton.onClick.AddListener(ShowDerivedSkillTab);
         this.counterSkillSelectionTabButton.onClick.AddListener(ShowCounterSkillTab);
@@ -322,7 +324,6 @@ public class SkillSelectionPanel : MonoBehaviour
         }
     }
 
-    // Callback function for the "attackSkillSelectionTabButton"
     private void ShowAttackSkillTab()
     {
         UnselectAllTab();
@@ -333,9 +334,19 @@ public class SkillSelectionPanel : MonoBehaviour
         ChangeSkillSelectionTab();
     }
 
+    // Callback function for the "attackSkillSelectionTabButton"
+    private void OnShowAttackSkillTabClicked()
+    {
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+
+        ShowAttackSkillTab();
+    }
+
     // Callback function for the "repulseSkillSelectionTabButton"
     private void ShowRepulseSkillTab()
     {
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+
         UnselectAllTab();
 
         this.skillInfoTab = SkillInfoTab.repulse;
@@ -347,6 +358,8 @@ public class SkillSelectionPanel : MonoBehaviour
     // Callback function for the "derivedSkillSelectionTabButton"
     private void ShowDerivedSkillTab()
     {
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+
         UnselectAllTab();
 
         this.skillInfoTab = SkillInfoTab.derived;
@@ -358,6 +371,8 @@ public class SkillSelectionPanel : MonoBehaviour
     // Callback function for the "counterSkillSelectionTabButton"
     private void ShowCounterSkillTab()
     {
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+
         UnselectAllTab();
 
         this.skillInfoTab = SkillInfoTab.counter;
