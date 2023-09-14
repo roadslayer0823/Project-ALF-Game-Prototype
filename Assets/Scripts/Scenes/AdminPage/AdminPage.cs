@@ -12,6 +12,7 @@ public class AdminPage : MonoBehaviour
     [SerializeField] private Button startGameButton = null;
     [SerializeField] private Button updateButton = null;
     [SerializeField] private Button resetButton = null;
+    [SerializeField] private GameObject loadingObject = null;
     [SerializeField] private AudioClip buttonClickingAudioClip = null;
 
     private List<TableRow> tableRowList = new List<TableRow>();
@@ -82,12 +83,14 @@ public class AdminPage : MonoBehaviour
 
     private void GenerateTable()
     {
+        this.loadingObject.SetActive( false );
+
         DropTable();
 
-        List<Version> versionList = DatabaseManager.Instance.GetVersionList();
-        for (int i = 0; i < versionList.Count; i++)
+        List<Version> _versionList = DatabaseManager.Instance.GetVersionList();
+        for (int i = 0; i < _versionList.Count; i++)
         {
-            Version _version = versionList[i];
+            Version _version = _versionList[ i ];
 
             TableRow _tableRow = Instantiate(tableRowPrefab, tableContentRect, false);
             _tableRow.SetSheetName(_version.SheetName);
