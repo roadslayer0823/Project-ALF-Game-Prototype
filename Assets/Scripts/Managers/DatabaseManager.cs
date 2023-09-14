@@ -164,6 +164,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
     public void LoadAllData()
     {
+        this.onDataCheckingCallback?.Invoke();
         StartCoroutine( RunLoadingAllData() );
     }
 

@@ -67,12 +67,14 @@ public class AdminPage : MonoBehaviour
     private void OnUpdateButtonClicked()
     {
         AudioManager.Instance.PlaySoundEffect( this.buttonClickingAudioClip );
+        DisableStartButton();
         DatabaseManager.Instance.LoadAllData();
     }
 
     private void OnResetButtonClicked()
     {
         AudioManager.Instance.PlaySoundEffect( this.buttonClickingAudioClip );
+        DisableStartButton();
         PlayerPrefsManager.DeleteAll();
         SceneManager.LoadScene( SceneManager.GetActiveScene().name );
         DatabaseManager.Instance.Initialize();
