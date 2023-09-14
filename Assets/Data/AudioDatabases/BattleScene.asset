@@ -29,3 +29,5 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 7c0a936be227c41f48dfaab335171c0f, type: 3}
   - id: victory
     clip: {fileID: 8300000, guid: c45488bfb8668411ea0a192746afa7b7, type: 3}
+  - id: break
+    clip: {fileID: 8300000, guid: df44fa637dbf44328a18b2a6eae912d3, type: 3}

@@ -24,6 +24,7 @@ public class BattleGameManager : MonoBehaviour
 
     private const string AUDIO_ID_VICTORY = "victory";
     private const string AUDIO_ID_DEFEAT = "defeat";
+    private const string AUDIO_ID_BREAK = "break";
 
     void Awake()
     {
@@ -136,6 +137,7 @@ public class BattleGameManager : MonoBehaviour
 
         if (animationEvent == BattleAnimationManager.AnimationEvent.OnBeingInBreakStatus)
         {
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_BREAK );
             this.battleFlowManager.GetCurrentRound().UpdateATLSlotStatuses( gameCharacter, false );
         }
     }

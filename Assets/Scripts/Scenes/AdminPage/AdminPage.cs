@@ -2,11 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 using Version = DatabaseManager.Version;
 using TableStatus = DatabaseManager.TableStatus;
 
 public class AdminPage : MonoBehaviour
 {
+    [SerializeField] private TMP_Text titleLabel = null;
     [SerializeField] private TableRow tableRowPrefab = null;
     [SerializeField] private RectTransform tableContentRect = null;
     [SerializeField] private Button startGameButton = null;
@@ -19,6 +21,8 @@ public class AdminPage : MonoBehaviour
 
     void Awake()
     {
+        this.titleLabel.SetText( $"Project ALF Game Prototype (version {Application.version})" );
+
         DatabaseManager.Instance.onAllVersionsLoadedCallback = GenerateTable;
 
         DatabaseManager.Instance.onDataCheckingCallback = () =>
