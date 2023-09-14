@@ -12,6 +12,7 @@ public class AdminPage : MonoBehaviour
     [SerializeField] private Button startGameButton = null;
     [SerializeField] private Button updateButton = null;
     [SerializeField] private Button resetButton = null;
+    [SerializeField] private AudioClip buttonClickingAudioClip = null;
 
     private List<TableRow> tableRowList = new List<TableRow>();
 
@@ -52,14 +53,29 @@ public class AdminPage : MonoBehaviour
 
     void Start()
     {
-        this.startGameButton.onClick.AddListener(OnStartGameButtonClick);
-        this.updateButton.onClick.AddListener(DatabaseManager.Instance.LoadAllData);
-        this.resetButton.onClick.AddListener( () =>
-        {
-            PlayerPrefsManager.DeleteAll();
-            SceneManager.LoadScene( SceneManager.GetActiveScene().name );
-            DatabaseManager.Instance.Initialize();
-        } );
+        this.startGameButton.onClick.AddListener( OnStartGameButtonClicked );
+        this.updateButton.onClick.AddListener( OnUpdateButtonClicked );
+        this.resetButton.onClick.AddListener( OnResetButtonClicked );
+    }
+
+    private void OnStartGameButtonClicked()
+    {
+        AudioManager.Instance.PlaySoundEffect( this.buttonClickingAudioClip );
+        SceneManager.LoadScene( "BattleScene" );
+    }
+
+    private void OnUpdateButtonClicked()
+    {
+        AudioManager.Instance.PlaySoundEffect( this.buttonClickingAudioClip );
+        DatabaseManager.Instance.LoadAllData();
+    }
+
+    private void OnResetButtonClicked()
+    {
+        AudioManager.Instance.PlaySoundEffect( this.buttonClickingAudioClip );
+        PlayerPrefsManager.DeleteAll();
+        SceneManager.LoadScene( SceneManager.GetActiveScene().name );
+        DatabaseManager.Instance.Initialize();
     }
 
     private void GenerateTable()
@@ -198,10 +214,5 @@ public class AdminPage : MonoBehaviour
     private void EnableStartButton()
     {
         this.startGameButton.interactable = true;
-    }
-
-    private void OnStartGameButtonClick()
-    {
-        SceneManager.LoadScene("BattleScene");
     }
 }

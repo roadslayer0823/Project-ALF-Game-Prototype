@@ -3,10 +3,15 @@ using UnityEngine.Events;
 
 public class UnityEventHandler : MonoBehaviour
 {
-    [SerializeField] private UnityEvent callback = null;
+    [SerializeField] private UnityEvent<string> callback = null;
 
-    public void TriggerCallback()
+    public void TriggerCallback( string parameterValue )
     {
-        this.callback?.Invoke();
+        this.callback?.Invoke( parameterValue );
+    }
+
+    public UnityEvent<string> GetCallback()
+    {
+        return this.callback;
     }
 }

@@ -206,19 +206,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   callback:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8983169822177079382}
-        m_TargetAssemblyTypeName: GameCharacter, Assembly-CSharp
-        m_MethodName: OnSkillEffectAnimationTriggered
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &6925375786907864233
 GameObject:
   m_ObjectHideFlags: 0
@@ -386,6 +374,8 @@ MonoBehaviour:
   skillEffectAnimator: {fileID: 1234973640034452173}
   pivot: {fileID: 5916782224816579521}
   popUpDisplayInfoPrefab: {fileID: 4771544036075216567, guid: 6236c2078a895463e8a7655454c199f3, type: 3}
+  characterEventHandler: {fileID: 7508747669786702836}
+  skillEffectEventHandler: {fileID: 1773053262134630097}
 --- !u!210 &1752166085130199784
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -520,16 +510,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   callback:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8983169822177079382}
-        m_TargetAssemblyTypeName: GameCharacter, Assembly-CSharp
-        m_MethodName: OnCharacterAnimationTriggered
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []

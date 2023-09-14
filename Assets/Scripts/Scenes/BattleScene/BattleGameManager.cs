@@ -14,12 +14,21 @@ public class BattleGameManager : MonoBehaviour
     [SerializeField] private PlayerCharacter playerCharacter = null;
     [SerializeField] private EnemyCharacter enemyCharacter = null;
 
+    [Header( "Audio" )]
+    [SerializeField] private AudioDatabase audioDatabase = null;
+    [SerializeField] private AudioClip backgroundMusicAudioClip = null;
+
     private List<PlayerCharacter> playerCharacterList = null;
     private List<EnemyCharacter> enemyCharacterList = null;
     private bool hasBattleEnded = false;
 
+    private const string AUDIO_ID_VICTORY = "victory";
+    private const string AUDIO_ID_DEFEAT = "defeat";
+
     void Awake()
     {
+        AudioManager.Instance.SetUpAudioDatabase( this.audioDatabase );
+
         this.battleUiManager.HideSkillSelectionPanel();
         this.battleUiManager.HideSkillSlotListPanel();
         this.battleUiManager.HideATLSlotListPanel();
@@ -49,6 +58,8 @@ public class BattleGameManager : MonoBehaviour
 
         this.battleUiManager.GetCharacterInfoPanel().SetSelectedCharacter( this.playerCharacter );
         this.battleFlowManager.StartGame();
+
+        AudioManager.Instance.PlayBackgroundMusic( this.backgroundMusicAudioClip, 0.5f );
     }
 
     public void StartExecution()
@@ -136,10 +147,12 @@ public class BattleGameManager : MonoBehaviour
         if (isVictory)
         {
             this.battleUiManager.ShowVictoryResult();
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_VICTORY );
         }
         else
         {
             this.battleUiManager.ShowDefeatResult();
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DEFEAT );
         }
     }
 

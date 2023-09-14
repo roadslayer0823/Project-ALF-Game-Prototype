@@ -172,6 +172,7 @@ MonoBehaviour:
   startGameButton: {fileID: 1452850105}
   updateButton: {fileID: 476722199}
   resetButton: {fileID: 1192704238}
+  buttonClickingAudioClip: {fileID: 8300000, guid: f4f30a082243444ecb511ffaa3e0c587, type: 3}
 --- !u!1 &476722197
 GameObject:
   m_ObjectHideFlags: 0

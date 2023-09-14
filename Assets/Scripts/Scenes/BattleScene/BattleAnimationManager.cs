@@ -31,6 +31,12 @@ public class BattleAnimationManager : MonoBehaviour
     private const string REPULSE_ANIMATION_NAME = "Repulse";
     private const string DERIVE_ANIMATION_NAME = "Derive";
 
+    private const string AUDIO_ID_ATTACK = "attack";
+    private const string AUDIO_ID_DEFEND = "defend";
+    private const string AUDIO_ID_DODGE = "dodge";
+    private const string AUDIO_ID_FIREBALL = "fireball";
+    private const string AUDIO_ID_HIT = "hit";
+
     public enum AnimationEvent
     {
         None,
@@ -123,6 +129,11 @@ public class BattleAnimationManager : MonoBehaviour
 
             if (_attackerSkillEffectPartA != NO_ANIMATION)
             {
+                if (_attackerSkillEffectPartA == "Fireball_Part_A")
+                {
+                    AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
+                }
+
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartA ) );
             }
 
@@ -180,6 +191,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage );
                     this.cameraEffect.Shake();
+                    AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
                     yield return new WaitForSeconds( 1.0f );
 
@@ -238,6 +250,7 @@ public class BattleAnimationManager : MonoBehaviour
                         {
                             BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, true, GameCharacter.CharacterActionType.Repulse, out _attackDamage, out _stressDamage, out _statePointDamage );
                             this.cameraEffect.Shake();
+                            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                             yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
                                                                                          + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ),
                                                                                          _attackDamage, _stressDamage, _statePointDamage ) );
@@ -329,6 +342,7 @@ public class BattleAnimationManager : MonoBehaviour
                         StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
                         this.cameraEffect.Shake();
+                        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
                         yield return new WaitForSeconds( 1.0f );
 
@@ -354,6 +368,15 @@ public class BattleAnimationManager : MonoBehaviour
                         _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
                         _attackTarget.TriggerEvent( AnimationEvent.OnDefenseWin );
                         StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefenseWin_Cutoff ) );
+
+                        if (_attackTargetSubskillData.IsDefendingSkill)
+                        {
+                            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DEFEND );
+                        }
+                        else if (_attackTargetSubskillData.IsEvadingSkill)
+                        {
+                            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DODGE );
+                        }
 
                         if (_attackTargetBackendSkillAnimationCharacterPartA != NO_ANIMATION)
                         {
@@ -438,6 +461,7 @@ public class BattleAnimationManager : MonoBehaviour
 
             BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage );
             this.cameraEffect.Shake();
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
             yield return StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
         }
         else
@@ -464,6 +488,7 @@ public class BattleAnimationManager : MonoBehaviour
             yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_D" ) );
             BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage );
             this.cameraEffect.Shake();
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
             yield return null;
             StartCoroutine( ShowPopUpDisplayInfo( attackTarget, _attackDamage, _stressDamage, _statePointDamage ) );
             yield return new WaitForSeconds( 0.7f );
@@ -634,6 +659,12 @@ public class BattleAnimationManager : MonoBehaviour
 
     public void OnAnimationEventTriggered( string parameterValue )
     {
+        if (parameterValue == "attack")
+        {
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_ATTACK );
+            return;
+        }
+
         this.isAnimationEventTriggered = true;
     }
 

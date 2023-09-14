@@ -15,6 +15,9 @@ public class GameCharacter : MonoBehaviour
     [SerializeField] private Transform pivot = null;
     [SerializeField] private PopUpDisplayInfo popUpDisplayInfoPrefab = null;
 
+    [SerializeField] private UnityEventHandler characterEventHandler = null;
+    [SerializeField] private UnityEventHandler skillEffectEventHandler = null;
+
     protected string id = null;
     protected string characterName = null;
     protected float maximumHealthPoint = 0.0f;
@@ -90,6 +93,9 @@ public class GameCharacter : MonoBehaviour
         this.selectedBackendSkillList = new List<CharacterSkill>();
 
         this.onCharacterInfoUpdated?.Invoke();
+
+        this.characterEventHandler.GetCallback().AddListener( OnCharacterAnimationTriggered );
+        this.skillEffectEventHandler.GetCallback().AddListener( OnSkillEffectAnimationTriggered );
     }
 
     public virtual void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
@@ -280,7 +286,6 @@ public class GameCharacter : MonoBehaviour
         if (this.onCharacterAnimationTriggeredCallback != null)
         {
             this.onCharacterAnimationTriggeredCallback( parameterValue );
-            this.onCharacterAnimationTriggeredCallback = null;
         }
     }
 
@@ -289,7 +294,6 @@ public class GameCharacter : MonoBehaviour
         if (this.onSkillEffectAnimationTriggeredCallback != null)
         {
             this.onSkillEffectAnimationTriggeredCallback( parameterValue );
-            this.onSkillEffectAnimationTriggeredCallback = null;
         }
     }
 
