@@ -49,6 +49,8 @@ public class GameCharacter : MonoBehaviour
     private bool isBreakStatusCausedByStatePoint = false;
     private bool isBreakStatusCausedByStressValue = false;
 
+    private const string AUDIO_ID_BREAK = "break";
+
     public enum CharacterActionType
     {
         None,
@@ -143,6 +145,8 @@ public class GameCharacter : MonoBehaviour
                 {
                     EnterIntoBreakStatus( 1 );
                 }
+
+                AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BREAK);
             }
 
             this.onCharacterInfoUpdated?.Invoke();
