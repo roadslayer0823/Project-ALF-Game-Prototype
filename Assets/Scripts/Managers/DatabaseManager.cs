@@ -617,22 +617,13 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("description")]
         public string Description { get; private set; }
 
-        [JsonProperty("repulse_skill_id")]
-        public string RepulseSkillId { get; private set; }
-
         [JsonProperty("repulse_skill_ids")]
         [HideInInspector] public string RepulseSkillIdsString { get; private set; }
         public string[] RepulseSkillIds;
 
-        [JsonProperty("derived_skill_id")]
-        public string DerivedSkillId { get; private set; }
-
         [JsonProperty("derived_skill_ids")]
         [HideInInspector] public string DerivedSkillIdsString { get; private set; }
         public string[] DerivedSkillIds;
-
-        [JsonProperty("counter_skill_id")]
-        public string CounterSkillId { get; private set; }
 
         [JsonProperty("counter_skill_ids")]
         [HideInInspector] public string CounterSkillIdsString { get; private set; }
