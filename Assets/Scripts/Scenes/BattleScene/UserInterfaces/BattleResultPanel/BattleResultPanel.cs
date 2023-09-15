@@ -8,6 +8,8 @@ public class BattleResultPanel : MonoBehaviour
     [SerializeField] private GameObject panel = null;
     [SerializeField] private TMP_Text titleLabel = null;
 
+    private const string AUDIO_ID_CLICK = "click";
+
     public void ShowVictory()
     {
         this.titleLabel.text= "恭喜\n你贏了";
@@ -29,6 +31,8 @@ public class BattleResultPanel : MonoBehaviour
 
     public void ClickToRestartBattle()
     {
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+
         SceneManager.LoadScene( "BattleScene" );
     }
 }
