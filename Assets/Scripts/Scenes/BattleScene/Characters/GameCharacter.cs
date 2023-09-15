@@ -252,7 +252,7 @@ public class GameCharacter : MonoBehaviour
                 this.selectedActiveSkillList.Add(characterSkill);
             }
         }
-        else
+        else if (characterSkill.GetSkillData().skillType == Skill.SkillType.backend)
         {
             if (this.selectedBackendSkillList.Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills())
             {
@@ -267,7 +267,7 @@ public class GameCharacter : MonoBehaviour
         {
             this.selectedActiveSkillList.Remove(characterSkill);
         }
-        else
+        else if (characterSkill.GetSkillData().skillType == Skill.SkillType.backend)
         {
             this.selectedBackendSkillList.Remove(characterSkill);
         }

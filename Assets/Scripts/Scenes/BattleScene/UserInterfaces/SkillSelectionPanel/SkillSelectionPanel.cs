@@ -537,7 +537,7 @@ public class SkillSelectionPanel : MonoBehaviour
             {
                 CharacterSkill _counterSkill = _counterSkillList[0];
 
-                _characterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_counterSkill);
+                _characterActiveSkill.GetCharacterSubskillData().SetSelectedCounterSkill(_counterSkill);
             }
         }
     }
