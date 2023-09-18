@@ -18,6 +18,8 @@ public class SkillSlotListPanel : MonoBehaviour
 
     private Action onSkillSlotSwipedCallback = null;
 
+    private const string AUDIO_ID_SCROLL = "scroll";
+
     public void Initialize(Action onSkillSlotSwipedCallback)
     {
         this.onSkillSlotSwipedCallback = onSkillSlotSwipedCallback;
@@ -121,6 +123,8 @@ public class SkillSlotListPanel : MonoBehaviour
             }
 
             this.onSkillSlotSwipedCallback();
+
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_SCROLL);
         }
     }
 
