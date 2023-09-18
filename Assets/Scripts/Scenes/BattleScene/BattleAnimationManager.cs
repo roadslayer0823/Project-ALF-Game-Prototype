@@ -665,10 +665,14 @@ public class BattleAnimationManager : MonoBehaviour
 
     public void OnAnimationEventTriggered( string parameterValue )
     {
-        if (parameterValue == "attack")
+        if (parameterValue == "attack" || parameterValue == "attack2")
         {
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_ATTACK );
-            return;
+
+            if (parameterValue == "attack")
+            {
+                return;
+            }
         }
 
         this.isAnimationEventTriggered = true;

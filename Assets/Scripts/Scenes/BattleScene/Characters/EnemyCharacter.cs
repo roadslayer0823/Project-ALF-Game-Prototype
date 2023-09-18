@@ -22,6 +22,30 @@ public class EnemyCharacter : GameCharacter
             {
                 _backendSkillList.Add( _skill );
             }
+
+            List<CharacterSubskill> _characterSubskillList = _skill.GetCharacterSubskillList();
+            for (int j = 0; j < _characterSubskillList.Count; j++)
+            {
+                CharacterSubskill _characterSubskill = _characterSubskillList[ j ];
+
+                List<CharacterSkill> _repulseSkillList = _characterSubskill.GetRepulseSkillList();
+                if (_repulseSkillList.Count > 0)
+                {
+                    _characterSubskill.SetSelectedRepulseSkill( _repulseSkillList[ 0 ] );
+                }
+
+                List<CharacterSkill> _derivedSkillList = _characterSubskill.GetDerivedSkillList();
+                if (_derivedSkillList.Count > 0)
+                {
+                    _characterSubskill.SetSelectedDerivedSkill( _derivedSkillList[ 0 ] );
+                }
+
+                List<CharacterSkill> _counterSkillList = _characterSubskill.GetCounterSkillList();
+                if (_counterSkillList.Count > 0)
+                {
+                    _characterSubskill.SetSelectedCounterSkill( _counterSkillList[ 0 ] );
+                }
+            }
         }
 
         int _numberOfSelectedActiveSkills = Random.Range( 1, GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills() );
