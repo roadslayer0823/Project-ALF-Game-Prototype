@@ -227,7 +227,7 @@ public class PlayerActionPanel : MonoBehaviour
     }
 
     // Show active skill selection panel
-    private void ShowActiveSkillSelectionPanel()
+    public void ShowActiveSkillSelectionPanel()
     {
         if (this.onActiveSkillButtonClickedCallback != null)
         {

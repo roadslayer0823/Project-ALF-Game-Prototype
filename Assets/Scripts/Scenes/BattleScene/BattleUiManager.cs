@@ -129,7 +129,7 @@ public class BattleUiManager : MonoBehaviour
     public void ShowPreparationSection()
     {
         this.playerActionPanel.ShowPreparationSection();
-        ShowActiveSkillSelectionPanel();
+        this.playerActionPanel.ShowActiveSkillSelectionPanel();
         this.playerActionPanel.HideBattleSection();
     }
 
