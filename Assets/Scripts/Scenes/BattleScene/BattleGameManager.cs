@@ -60,7 +60,7 @@ public class BattleGameManager : MonoBehaviour
         this.battleUiManager.GetCharacterInfoPanel().SetSelectedCharacter( this.playerCharacter );
         this.battleFlowManager.StartGame();
 
-        AudioManager.Instance.PlayBackgroundMusic( this.backgroundMusicAudioClip, 0.5f );
+        AudioManager.Instance.PlayBackgroundMusic( this.backgroundMusicAudioClip, 0.3f );
     }
 
     public void StartExecution()
