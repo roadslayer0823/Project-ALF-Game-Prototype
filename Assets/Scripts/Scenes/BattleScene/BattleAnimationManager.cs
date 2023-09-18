@@ -32,6 +32,7 @@ public class BattleAnimationManager : MonoBehaviour
     private const string DERIVE_ANIMATION_NAME = "Derive";
 
     private const string AUDIO_ID_ATTACK = "attack";
+    private const string AUDIO_ID_COUNTER = "counter";
     private const string AUDIO_ID_DEFEND = "defend";
     private const string AUDIO_ID_DODGE = "dodge";
     private const string AUDIO_ID_FIREBALL = "fireball";
@@ -411,6 +412,8 @@ public class BattleAnimationManager : MonoBehaviour
                 _attacker = _winner;
                 _attackTarget = _loser;
                 _attackerSkill = _winner.GetCurrentSkill().GetCharacterSubskillData().GetSelectedCounterSkill();
+
+                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
 
                 if (_attacker is PlayerCharacter)
                 {

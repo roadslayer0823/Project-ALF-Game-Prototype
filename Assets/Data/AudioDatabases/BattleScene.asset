@@ -31,3 +31,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: c45488bfb8668411ea0a192746afa7b7, type: 3}
   - id: break
     clip: {fileID: 8300000, guid: ce92c80feb11d41b0999dac4867e6dd9, type: 3}
+  - id: counter
+    clip: {fileID: 8300000, guid: e4679a4c70a8d448db18c4e6530d7ceb, type: 3}
+  - id: scroll
+    clip: {fileID: 8300000, guid: 144a8367479ae4f5090fe3f2e8e83407, type: 3}
