@@ -674,6 +674,11 @@ public class BattleAnimationManager : MonoBehaviour
                 return;
             }
         }
+        else if (parameterValue == "hit")
+        {
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
+            return;
+        }
 
         this.isAnimationEventTriggered = true;
     }
