@@ -12,6 +12,7 @@ public class BattleFlowATL
     private float animationStartTime = 0.0f;
     private ATLSlot atlSlot = null;
     private bool isATLSlotExecuted = false;
+    private bool isSkillSlotSwipedManually = false;
 
     private CharacterSkill selectedSkill = null;
 
@@ -42,7 +43,7 @@ public class BattleFlowATL
         this.atlSlot.MarkATLSlotInactive();
         this.atlSlot.HideSelectionHighlight();
 
-        if (CheckIsPlayer())
+        if (CheckIsPlayer() && !isSkillSlotSwipedManually)
         {
             // Automatically swipe the Skill Slot leftwards.
             this.atlSlot.onATLSlotExecutedCallback();
@@ -99,5 +100,10 @@ public class BattleFlowATL
     public void SetIsATLSlotExecuted(bool isATLSlotExecuted)
     {
         this.isATLSlotExecuted = isATLSlotExecuted;
+    }
+
+    public void SetSkillSlotSwipedManually(bool swipedManually)
+    {
+        this.isSkillSlotSwipedManually = swipedManually;
     }
 }

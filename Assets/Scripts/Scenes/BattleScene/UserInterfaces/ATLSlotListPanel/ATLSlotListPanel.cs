@@ -53,6 +53,7 @@ public class ATLSlotListPanel : MonoBehaviour
             {
                 if (_battleFlowATL.GetIsATLSlotExecuted())
                 {
+                    _battleFlowATL.SetSkillSlotSwipedManually(true);
                     continue;
                 }
             }

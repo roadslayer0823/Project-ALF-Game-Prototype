@@ -5,6 +5,7 @@ using UnityEngine;
 public class SkillSlotListPanel : MonoBehaviour
 {
     [SerializeField] private SkillSlot[] skillSlots = new SkillSlot[ 0 ];
+    [SerializeField] private RectTransform scrollableArea = null;
 
     private GameCharacter selectedGameCharacter = null;
 
@@ -13,7 +14,6 @@ public class SkillSlotListPanel : MonoBehaviour
     private Vector2 mouseReleasePosition = new Vector2();
     private Vector2 currentSwipe = new Vector2();
 
-    private RectTransform rectTransform = null;
     private List<CharacterSkill> selectedSkills = null;
 
     private Action onSkillSlotSwipedCallback = null;
@@ -23,11 +23,6 @@ public class SkillSlotListPanel : MonoBehaviour
     public void Initialize(Action onSkillSlotSwipedCallback)
     {
         this.onSkillSlotSwipedCallback = onSkillSlotSwipedCallback;
-    }
-
-    private void Start()
-    {
-        this.rectTransform = GetComponent<RectTransform>();
     }
 
     private void Update()
@@ -89,8 +84,8 @@ public class SkillSlotListPanel : MonoBehaviour
         }
 
         // if the click is outside the define range
-        if (!RectTransformUtility.RectangleContainsScreenPoint(this.rectTransform, this.mousePressPosition) || 
-            this.selectedSkills.Count == 0)
+        if (!RectTransformUtility.RectangleContainsScreenPoint(this.scrollableArea, this.mousePressPosition) || 
+            this.selectedSkills.Count <= 1)
         {
             return;
         }
@@ -100,7 +95,7 @@ public class SkillSlotListPanel : MonoBehaviour
             //save ended touch 2d point
             this.mouseReleasePosition = Input.mousePosition;
 
-            if (!RectTransformUtility.RectangleContainsScreenPoint(this.rectTransform, this.mouseReleasePosition))
+            if (!RectTransformUtility.RectangleContainsScreenPoint(this.scrollableArea, this.mouseReleasePosition))
             {
                 return;
             }
