@@ -225,11 +225,6 @@ public class SkillSelectionPanel : MonoBehaviour
 
     public void OnSkillDeselected( SkillSelectionBox skillSelectionBox )
     {
-        if (this.isPlayingSkillSelectionBoxAnimation)
-        {
-            return;
-        }
-
         CharacterSkill _lastSelectedCharacterActiveSkill = this.activeSkillSelectionPanelTab.GetLastSelectedCharacterSkill();
         CharacterSubskill _activeSubskillData = _lastSelectedCharacterActiveSkill?.GetCharacterSubskillData();
 
