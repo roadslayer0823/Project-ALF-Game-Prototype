@@ -51,7 +51,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: e7510cc58fc4b49fa990a61408bb1e34, type: 3}
   - id: defeat
     clip: {fileID: 8300000, guid: e7510cc58fc4b49fa990a61408bb1e34, type: 3}
-  - id: crossinggActionMode
+  - id: crossingActionMode
     clip: {fileID: 8300000, guid: 5d79131683d4e4f6baf2216ed9bf7251, type: 3}
   - id: commandPhase
     clip: {fileID: 8300000, guid: 66f1600e66e204563a513c67bd75bfe6, type: 3}
