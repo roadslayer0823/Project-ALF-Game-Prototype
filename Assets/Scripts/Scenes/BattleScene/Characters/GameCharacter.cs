@@ -48,6 +48,7 @@ public class GameCharacter : MonoBehaviour
     private int breakStatusRemainingATLs = 0;
     private bool isBreakStatusCausedByStatePoint = false;
     private bool isBreakStatusCausedByStressValue = false;
+    private List<PopUpDisplayInfo> popUpDisplayInfoList = new List<PopUpDisplayInfo>();
 
     private const string AUDIO_ID_BREAK = "break";
 
@@ -443,7 +444,19 @@ public class GameCharacter : MonoBehaviour
         _popUpDisplayInfoObj.transform.position = this.pivot.position;
 
         PopUpDisplayInfo _popUpDisplayInfo = _popUpDisplayInfoObj.GetComponent<PopUpDisplayInfo>();
-        _popUpDisplayInfo.Show( text, textColor, 5.0f, TMPro.FontStyles.Bold ).MoveUpAndFadeOut( 2.0f, 0.5f, 1.5f );
+        _popUpDisplayInfo.Show( text, textColor, 5.0f, TMPro.FontStyles.Bold ).MoveUpAndFadeOut( 2.0f, 0.5f, 1.5f ).SetOnDestroyedCallback( OnPopUpDisplayInfoDestroyed );
+
+        this.popUpDisplayInfoList.Add( _popUpDisplayInfo );
+    }
+
+    private void OnPopUpDisplayInfoDestroyed( PopUpDisplayInfo popUpDisplayInfo )
+    {
+        this.popUpDisplayInfoList.Remove( popUpDisplayInfo );
+    }
+
+    public bool HasPopUpDisplayInfo()
+    {
+        return ( this.popUpDisplayInfoList.Count > 0 );
     }
 
     public string GetId()

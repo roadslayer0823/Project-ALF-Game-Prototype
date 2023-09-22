@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 using TMPro;
 
 public class PopUpDisplayInfo : MonoBehaviour
 {
     [SerializeField] private TMP_Text displayLabel = null;
+
+    private Action<PopUpDisplayInfo> onDestroyedCallback = null;
 
     public PopUpDisplayInfo Show( string text, Color textColor, float fontSize, FontStyles fontStyle )
     {
@@ -29,5 +32,15 @@ public class PopUpDisplayInfo : MonoBehaviour
         Color _color = displayLabel.color;
         _color.a = alphaValue;
         displayLabel.color = _color;
+    }
+
+    public void SetOnDestroyedCallback( Action<PopUpDisplayInfo> onDestroyedCallback )
+    {
+        this.onDestroyedCallback = onDestroyedCallback;
+    }
+
+    void OnDestroy()
+    {
+        this.onDestroyedCallback?.Invoke( this );
     }
 }
