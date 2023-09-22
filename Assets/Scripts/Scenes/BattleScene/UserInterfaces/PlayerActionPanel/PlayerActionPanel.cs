@@ -26,6 +26,9 @@ public class PlayerActionPanel : MonoBehaviour
     private bool isShowingActiveSkillSelectionPanelNext = false;
 
     private const string AUDIO_ID_CLICK = "click";
+    private const string AUDIO_ID_EXECUTE = "execute";
+    private const string AUDIO_ID_POPUP = "popup";
+    private const string AUDIO_ID_PASSIVE_FLASH = "passiveFlash";
 
     public void Initialize( Action onExecuteButtonClickedCallback, Action onShowActiveSkillSelectionPanelCallback, Action onShowBackendSkillSelectionPanelCallback)
     {
@@ -52,7 +55,7 @@ public class PlayerActionPanel : MonoBehaviour
 
     public void ClickOnExecuteButton()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_EXECUTE);
 
         DisableExecuteButton();
 
@@ -136,6 +139,8 @@ public class PlayerActionPanel : MonoBehaviour
         {
             this.qteButton.SetupQTESkillActionButton( qteSkill );
             this.qteButton.GetCountdownTimer().StartCountdownTimer( countdownTime );
+
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_PASSIVE_FLASH);
         }
     }
 
@@ -157,6 +162,11 @@ public class PlayerActionPanel : MonoBehaviour
                 _skillActionButton.SetSelectedSkill( skills[ i ] );
                 _skillActionButton.gameObject.SetActive( true );
             }
+        }
+
+        if (skills.Length > 0)
+        {
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_PASSIVE_FLASH);
         }
     }
 
@@ -214,7 +224,7 @@ public class PlayerActionPanel : MonoBehaviour
 
     private void OnShowSkillSelectionPanelButtonClicked()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_POPUP);
 
         if (this.isShowingActiveSkillSelectionPanelNext)
         {

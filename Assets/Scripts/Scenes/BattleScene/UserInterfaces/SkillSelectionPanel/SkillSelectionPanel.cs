@@ -42,6 +42,8 @@ public class SkillSelectionPanel : MonoBehaviour
     private bool isPlayingSkillSelectionBoxAnimation = false;
 
     private const string AUDIO_ID_CLICK = "click";
+    private const string AUDIO_ID_SKILL_OFF = "skillOff";
+    private const string AUDIO_ID_SKILL_ON = "skillOn";
 
     public enum SkillInfoTab
     {
@@ -221,6 +223,15 @@ public class SkillSelectionPanel : MonoBehaviour
                 skillSelectionBox.MarkDeselected();
             }
         }
+
+        if (skillSelectionBox.isSkillBoxSelected())
+        {
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_SKILL_ON);
+        }
+        else if (!skillSelectionBox.isSkillBoxSelected())
+        {
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        }
     }
 
     public void OnSkillDeselected( SkillSelectionBox skillSelectionBox )
@@ -270,6 +281,8 @@ public class SkillSelectionPanel : MonoBehaviour
         }
 
         skillSelectionBox.MarkDeselected();
+
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_SKILL_OFF);
 
         if (this.onSkillDeselectedCallback != null)
         {
