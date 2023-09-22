@@ -36,7 +36,16 @@ public class BattleLogicManager
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage, GameCharacter.CharacterActionType actionType,
                                                 out float attackDamage, out float stressDamage, out float statePointDamage )
     {
+        ExecuteCasterSkillOnHit( caster, target, actionType, hasAttackDamage, true, true, out attackDamage, out stressDamage, out statePointDamage );
+    }
+
+    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, GameCharacter.CharacterActionType actionType,
+                                                bool hasAttackDamage, bool hasStressDamage, bool hasStatePointDamage,
+                                                out float attackDamage, out float stressDamage, out float statePointDamage )
+    {
         attackDamage = 0;
+        stressDamage = 0;
+        statePointDamage = 0;
 
         CharacterSkill _skill = caster.GetCurrentSkill();
 
@@ -52,11 +61,17 @@ public class BattleLogicManager
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
         GameConfiguration.Battle _battle = GameConfiguration.Instance.GetBattleConfiguration();
 
-        stressDamage = _subskillData.StressDamage * _battle.GetStressDamageMultiplier();
-        target.AddCurrentStressValue( stressDamage );
+        if (hasStressDamage)
+        {
+            stressDamage = _subskillData.StressDamage * _battle.GetStressDamageMultiplier();
+            target.AddCurrentStressValue( stressDamage );
+        }
 
-        statePointDamage = _subskillData.StatePointDamage * _battle.GetStateDamageMultiplier();
-        target.MinusCurrentStatePoint( statePointDamage, true );
+        if (hasStatePointDamage)
+        {
+            statePointDamage = _subskillData.StatePointDamage * _battle.GetStateDamageMultiplier();
+            target.MinusCurrentStatePoint( statePointDamage, true );
+        }
     }
 
     public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target, GameCharacter.CharacterActionType actionType )

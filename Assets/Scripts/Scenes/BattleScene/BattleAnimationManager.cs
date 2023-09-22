@@ -249,19 +249,24 @@ public class BattleAnimationManager : MonoBehaviour
                                                                         out _winner, out _loser );
 
                     bool _hasAttackDamage = false;
+                    bool _hasStressDamage = false;
+                    bool _hasStatePointDamage = false;
                     if (_winner != null)
                     {
+                        _hasAttackDamage = true;
+
                         if (_attackerRangeType == RangeType.melee)
                         {
-                            if (_repulseSkill.GetCharacterSubskillData().GetSubskillData().Range == RangeType.melee)
-                            {
-                                _hasAttackDamage = true;
-                            }
-
                             OnHitWithNoDamage( _loser, _winner );
                         }
 
-                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _hasAttackDamage, GameCharacter.CharacterActionType.Repulse, out _attackDamage, out _stressDamage, out _statePointDamage );
+                        if (_repulseSkill.GetCharacterSubskillData().GetSubskillData().Range == RangeType.melee)
+                        {
+                            _hasStressDamage = true;
+                            _hasStatePointDamage = true;
+                        }
+
+                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, GameCharacter.CharacterActionType.Repulse, _hasAttackDamage, _hasStressDamage, _hasStatePointDamage, out _attackDamage, out _stressDamage, out _statePointDamage );
                     }
                     else
                     {
