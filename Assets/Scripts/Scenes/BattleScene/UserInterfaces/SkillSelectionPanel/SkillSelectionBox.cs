@@ -33,8 +33,8 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     private Vector3 containerOriginalPosition = Vector2.zero;
 
     private const string AUDIO_ID_HIGHLIGHT = "highlight";
-    private const string AUDIO_ID_BOOST_LEVEL_UP= "boostLevelUp";
-    private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boostLevelDown";
+    private const string AUDIO_ID_BOOST_LEVEL_UP= "boost_level_up";
+    private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
 
     public void Initialize(SkillSelectionListBox skillSelectionListBox, CharacterSkill characterSkill)
     {

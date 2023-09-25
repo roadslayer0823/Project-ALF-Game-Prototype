@@ -42,8 +42,8 @@ public class SkillSelectionPanel : MonoBehaviour
     private bool isPlayingSkillSelectionBoxAnimation = false;
 
     private const string AUDIO_ID_CLICK = "click";
-    private const string AUDIO_ID_SKILL_OFF = "skillOff";
-    private const string AUDIO_ID_SKILL_ON = "skillOn";
+    private const string AUDIO_ID_SKILL_OFF = "skill_off";
+    private const string AUDIO_ID_SKILL_ON = "skill_on";
 
     public enum SkillInfoTab
     {

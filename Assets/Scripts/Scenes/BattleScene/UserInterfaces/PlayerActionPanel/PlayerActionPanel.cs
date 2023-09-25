@@ -28,7 +28,7 @@ public class PlayerActionPanel : MonoBehaviour
     private const string AUDIO_ID_CLICK = "click";
     private const string AUDIO_ID_EXECUTE = "execute";
     private const string AUDIO_ID_POPUP = "popup";
-    private const string AUDIO_ID_PASSIVE_FLASH = "passiveFlash";
+    private const string AUDIO_ID_PASSIVE_FLASH = "passive_flash";
 
     public void Initialize( Action onExecuteButtonClickedCallback, Action onShowActiveSkillSelectionPanelCallback, Action onShowBackendSkillSelectionPanelCallback)
     {

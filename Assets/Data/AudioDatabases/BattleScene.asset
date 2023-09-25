@@ -27,9 +27,9 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 7c0a936be227c41f48dfaab335171c0f, type: 3}
   - id: break
     clip: {fileID: 8300000, guid: ce92c80feb11d41b0999dac4867e6dd9, type: 3}
-  - id: boostLevelUp
+  - id: boost_level_up
     clip: {fileID: 8300000, guid: eca22f6f8fa3845c0aac03bb23be1822, type: 3}
-  - id: boostLevelDown
+  - id: boost_level_down
     clip: {fileID: 8300000, guid: 88f49bf8227a94b268e535f2b7b4bba2, type: 3}
   - id: counter
     clip: {fileID: 8300000, guid: 2f703c53cc4e64b93a93a2d0e4c8bac1, type: 3}
@@ -37,13 +37,13 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: d69d7f020f8e749dc860910d2249020b, type: 3}
   - id: highlight
     clip: {fileID: 8300000, guid: e134d3e34a12347579c01b06f2c392af, type: 3}
-  - id: passiveFlash
+  - id: passive_flash
     clip: {fileID: 8300000, guid: 52cc1f64ce16f416892a2c203a504495, type: 3}
   - id: popup
     clip: {fileID: 8300000, guid: a28860527e7a8402db769198675242cf, type: 3}
-  - id: skillOff
+  - id: skill_off
     clip: {fileID: 8300000, guid: da467945b1de24975a810bc64b11bb65, type: 3}
-  - id: skillOn
+  - id: skill_on
     clip: {fileID: 8300000, guid: da019e8fbf40e46f5ba71cb45b2a7fb6, type: 3}
   - id: wheel
     clip: {fileID: 8300000, guid: 5c86b52ab9dd74948be07d01fd8cd43a, type: 3}
@@ -51,9 +51,9 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: e7510cc58fc4b49fa990a61408bb1e34, type: 3}
   - id: defeat
     clip: {fileID: 8300000, guid: e7510cc58fc4b49fa990a61408bb1e34, type: 3}
-  - id: crossingActionMode
+  - id: crossing_action_mode
     clip: {fileID: 8300000, guid: 5d79131683d4e4f6baf2216ed9bf7251, type: 3}
-  - id: commandPhase
+  - id: command_phase
     clip: {fileID: 8300000, guid: 66f1600e66e204563a513c67bd75bfe6, type: 3}
   - id: hints
     clip: {fileID: 8300000, guid: ea8de695acaeb4a6da33e9d85b2c975a, type: 3}
