@@ -19,19 +19,41 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 06591cd2a6cdf48308baf36c77ce2f83, type: 3}
   - id: defend
     clip: {fileID: 8300000, guid: 09516b63b0712484398f9c60975825ea, type: 3}
-  - id: defeat
-    clip: {fileID: 8300000, guid: 926f2e0ec66c4476da89871f3627f44c, type: 3}
   - id: dodge
     clip: {fileID: 8300000, guid: d161aca9032b9458f89bd7857db52bde, type: 3}
   - id: fireball
     clip: {fileID: 8300000, guid: 467154816850a4863b2be37392e37438, type: 3}
   - id: hit
     clip: {fileID: 8300000, guid: 7c0a936be227c41f48dfaab335171c0f, type: 3}
-  - id: victory
-    clip: {fileID: 8300000, guid: c45488bfb8668411ea0a192746afa7b7, type: 3}
   - id: break
     clip: {fileID: 8300000, guid: ce92c80feb11d41b0999dac4867e6dd9, type: 3}
+  - id: boost_level_up
+    clip: {fileID: 8300000, guid: eca22f6f8fa3845c0aac03bb23be1822, type: 3}
+  - id: boost_level_down
+    clip: {fileID: 8300000, guid: 88f49bf8227a94b268e535f2b7b4bba2, type: 3}
   - id: counter
-    clip: {fileID: 8300000, guid: e4679a4c70a8d448db18c4e6530d7ceb, type: 3}
-  - id: scroll
-    clip: {fileID: 8300000, guid: 144a8367479ae4f5090fe3f2e8e83407, type: 3}
+    clip: {fileID: 8300000, guid: 2f703c53cc4e64b93a93a2d0e4c8bac1, type: 3}
+  - id: execute
+    clip: {fileID: 8300000, guid: d69d7f020f8e749dc860910d2249020b, type: 3}
+  - id: highlight
+    clip: {fileID: 8300000, guid: e134d3e34a12347579c01b06f2c392af, type: 3}
+  - id: passive_flash
+    clip: {fileID: 8300000, guid: 52cc1f64ce16f416892a2c203a504495, type: 3}
+  - id: popup
+    clip: {fileID: 8300000, guid: a28860527e7a8402db769198675242cf, type: 3}
+  - id: skill_off
+    clip: {fileID: 8300000, guid: da467945b1de24975a810bc64b11bb65, type: 3}
+  - id: skill_on
+    clip: {fileID: 8300000, guid: da019e8fbf40e46f5ba71cb45b2a7fb6, type: 3}
+  - id: wheel
+    clip: {fileID: 8300000, guid: 5c86b52ab9dd74948be07d01fd8cd43a, type: 3}
+  - id: victory
+    clip: {fileID: 8300000, guid: e7510cc58fc4b49fa990a61408bb1e34, type: 3}
+  - id: defeat
+    clip: {fileID: 8300000, guid: e7510cc58fc4b49fa990a61408bb1e34, type: 3}
+  - id: crossing_action_mode
+    clip: {fileID: 8300000, guid: 5d79131683d4e4f6baf2216ed9bf7251, type: 3}
+  - id: command_phase
+    clip: {fileID: 8300000, guid: 66f1600e66e204563a513c67bd75bfe6, type: 3}
+  - id: hints
+    clip: {fileID: 8300000, guid: ea8de695acaeb4a6da33e9d85b2c975a, type: 3}

@@ -32,7 +32,9 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     private Vector3 containerOriginalPosition = Vector2.zero;
 
-    private const string AUDIO_ID_CLICK = "click";
+    private const string AUDIO_ID_HIGHLIGHT = "highlight";
+    private const string AUDIO_ID_BOOST_LEVEL_UP= "boost_level_up";
+    private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
 
     public void Initialize(SkillSelectionListBox skillSelectionListBox, CharacterSkill characterSkill)
     {
@@ -86,7 +88,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     // Show the skill info
     public void OnPointerClick(PointerEventData eventData)
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_HIGHLIGHT);
 
         this.skillSelectionListBox.ShowSelectedSkillInfo(this);
     }
@@ -165,14 +167,12 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     // Callback function for selection button
     private void OnSelectionButtonClick()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-
         ClickToToggle();
     }
 
     private void OnMinusLevelButtonClick()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_DOWN);
 
         this.skillLevel = Math.Clamp(this.skillLevel - 1, 1, characterSkill.GetCharacterSubskillList().Count);
 
@@ -181,7 +181,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     private void OnPlusLevelButtonClick()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_UP);
 
         this.skillLevel = Math.Clamp(this.skillLevel + 1, 1, characterSkill.GetCharacterSubskillList().Count);
 
@@ -258,5 +258,10 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     {
         this.canvas.overrideSorting = true;
         this.canvas.sortingOrder = 1;
+    }
+
+    public bool isSkillBoxSelected()
+    {
+        return this.isSelected;
     }
 }
