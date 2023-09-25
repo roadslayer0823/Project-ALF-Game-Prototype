@@ -25,6 +25,8 @@ public class BattleAnimationManager : MonoBehaviour
     private Vector3 cameraPosition = Vector3.zero;
     private float cameraOrthographicSize = 0.0f;
 
+    private List<GameCharacter> gameCharacterList = null;  
+
     private const string NO_ANIMATION = "-";
     private const string IDLE_ANIMATION_NAME = "Idle";
     private const string GETTING_HIT_ANIMATION_NAME = "GettingHit";
@@ -81,6 +83,12 @@ public class BattleAnimationManager : MonoBehaviour
         do
         {
             _hasCounterAttack = false;
+
+            this.gameCharacterList = new List<GameCharacter>()
+            {
+                _attacker,
+                _attackTarget
+            };
 
             SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackerSkill.GetCharacterSubskillData().GetSubskillData().Id );
 
@@ -194,7 +202,7 @@ public class BattleAnimationManager : MonoBehaviour
                     this.cameraEffect.Shake();
                     AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
-                    yield return new WaitForSeconds( 1.0f );
+                    yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
 
                     if (CheckHasBattleEnded( battleGameManager ))
                     {
@@ -240,34 +248,56 @@ public class BattleAnimationManager : MonoBehaviour
                                                                         _attacker, _attackTarget,
                                                                         out _winner, out _loser );
 
+                    bool _hasAttackDamage = false;
+                    bool _hasStressDamage = false;
+                    bool _hasStatePointDamage = false;
                     if (_winner != null)
+                    {
+                        _hasAttackDamage = true;
+
+                        if (_attackerRangeType == RangeType.melee)
+                        {
+                            OnHitWithNoDamage( _loser, _winner );
+                        }
+
+                        if (_repulseSkill.GetCharacterSubskillData().GetSubskillData().Range == RangeType.melee)
+                        {
+                            _hasStressDamage = true;
+                            _hasStatePointDamage = true;
+                        }
+
+                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, GameCharacter.CharacterActionType.Repulse, _hasAttackDamage, _hasStressDamage, _hasStatePointDamage, out _attackDamage, out _stressDamage, out _statePointDamage );
+                    }
+                    else
+                    {
+                        OnHitWithNoDamage( _attacker, _attackTarget );
+                        OnHitWithNoDamage( _attackTarget, _attacker );
+                    }
+
+                    if (_hasAttackDamage)
                     {
                         _skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                         _winner.SetSkillCountdownTime( _skillCountdownTime );
                         _winner.TriggerEvent( AnimationEvent.OnRepulseWin );
                         StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnRepulseWin_Cutoff ) );
 
-                        if (_attackerRangeType == RangeType.melee)
-                        {
-                            BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, true, GameCharacter.CharacterActionType.Repulse, out _attackDamage, out _stressDamage, out _statePointDamage );
-                            this.cameraEffect.Shake();
-                            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                            yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
-                                                                                         + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ),
-                                                                                         _attackDamage, _stressDamage, _statePointDamage ) );
-                            yield return new WaitForSeconds( 1.0f );
-                        }
+                        this.cameraEffect.Shake();
+                        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
+                        yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
+                                                                                     + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ),
+                                                                                     _attackDamage, _stressDamage, _statePointDamage ) );
+                    }
 
+                    yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+
+                    if (_hasAttackDamage)
+                    {
                         if (CheckHasBattleEnded( battleGameManager ))
                         {
                             yield break;
                         }
 
                         _derivedSkill = _winner.GetCurrentSkill().GetCharacterSubskillData().GetSelectedDerivedSkill();
-                    }
-                    else
-                    {
-                        yield return new WaitForSeconds( 0.5f );
                     }
 
                     if (_attackerRangeType == RangeType.melee)
@@ -345,7 +375,7 @@ public class BattleAnimationManager : MonoBehaviour
                         this.cameraEffect.Shake();
                         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
-                        yield return new WaitForSeconds( 1.0f );
+                        yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
 
                         if (CheckHasBattleEnded( battleGameManager ))
                         {
@@ -500,7 +530,16 @@ public class BattleAnimationManager : MonoBehaviour
             yield return new WaitForSeconds( 0.7f );
         }
 
-        yield return new WaitForSeconds( 1.0f );
+        yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+    }
+
+    private void OnHitWithNoDamage( GameCharacter caster, GameCharacter target )
+    {
+        float _damageTaken = 0;
+        float _stressValueIncreased = 0;
+        float _statePointReduced = 0;
+        BattleLogicManager.ExecuteCasterSkillOnHit( caster, target, false, GameCharacter.CharacterActionType.Repulse, out _damageTaken, out _stressValueIncreased, out _statePointReduced );
+        StartCoroutine( ShowPopUpDisplayInfo( target, _damageTaken, _stressValueIncreased, _statePointReduced ) );
     }
 
     private IEnumerator PlayCharacterAnimation( GameCharacter gameCharacter, string animationName,
@@ -554,6 +593,24 @@ public class BattleAnimationManager : MonoBehaviour
     {
         this.isAnimationEventTriggered = false;
         yield return new WaitUntil( () => this.isAnimationEventTriggered );
+    }
+
+    private IEnumerator WaitForPopUpDisplayInfoCompleted()
+    {
+        yield return new WaitForSeconds( 0.5f );
+
+        yield return new WaitWhile( () =>
+        {
+            for (int i = 0; i < this.gameCharacterList.Count; i++)
+            {
+                if (this.gameCharacterList[i].HasPopUpDisplayInfo())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        } );
     }
 
     private IEnumerator ZoomInCameraToTarget( GameCharacter target, float duration )
