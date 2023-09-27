@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -14,6 +12,7 @@ public class CharacterInfoPanel : MonoBehaviour
     [SerializeField] private Image stressPercentageBar = null;
     [SerializeField] private Image healthPointBar = null;
     [SerializeField] private Image statePointBar = null;
+    [SerializeField] private TextMeshProUGUI roundInfoText = null;
 
     private GameCharacter selectedCharacter = null;
 
@@ -52,5 +51,16 @@ public class CharacterInfoPanel : MonoBehaviour
         this.stressPercentageText.SetText(_currentStressValue + "%");
         this.stressPercentageBar.fillAmount = _currentStressValue * 0.01f;
         this.breakRepresentationText.gameObject.SetActive( this.selectedCharacter.GetIsInBreakStatus() );
+    }
+
+    public void ShowRoundInfoText( bool isPlayerFirst )
+    {
+        this.roundInfoText.SetText( ( isPlayerFirst ) ? "先手回合" : "後手回合" );
+        this.roundInfoText.gameObject.SetActive( true );
+    }
+
+    public void HideRoundInfoText()
+    {
+        this.roundInfoText.gameObject.SetActive( false );
     }
 }

@@ -66,6 +66,7 @@ public class BattleGameManager : MonoBehaviour
     public void StartExecution()
     {
         this.battleFlowManager.GetCurrentRound().SetCurrentPhase( BattleFlowRound.PhaseType.Execution );
+        this.battleUiManager.GetCharacterInfoPanel().HideRoundInfoText();
     }
 
     public void OnPreparationPhaseStarted()
@@ -105,8 +106,10 @@ public class BattleGameManager : MonoBehaviour
         this.battleFlowManager.StartNewRound();
     }
 
-    public void OnNewRoundStarted()
+    public void OnNewRoundStarted( bool isPlayerFirst )
     {
+        this.battleUiManager.GetCharacterInfoPanel().ShowRoundInfoText( isPlayerFirst );
+
         List<GameCharacter> _characters = new List<GameCharacter>();
         _characters.AddRange( this.playerCharacterList );
         _characters.AddRange( this.enemyCharacterList );

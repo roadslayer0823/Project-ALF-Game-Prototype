@@ -40,7 +40,7 @@ public class BattleFlowManager : MonoBehaviour
             _roundNumber = this.currentRound.GetRoundNumber();
         }
 
-        this.battleGameManager.OnNewRoundStarted();
+        this.battleGameManager.OnNewRoundStarted( this.isPlayerFirst );
         this.currentRound = new BattleFlowRound( this, _roundNumber + 1, this.isPlayerFirst, OnCurrentRoundPhaseChanged );
         this.currentRound.SetCurrentPhase( BattleFlowRound.PhaseType.Preparation );
 

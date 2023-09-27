@@ -61,7 +61,8 @@ public class BattleLogicManager
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
         GameConfiguration.Battle _battle = GameConfiguration.Instance.GetBattleConfiguration();
 
-        if (hasStressDamage)
+        // If the target does not take the health damage, then it will take the stress damage.
+        if (!hasAttackDamage && hasStressDamage)
         {
             stressDamage = _subskillData.StressDamage * _battle.GetStressDamageMultiplier();
             target.AddCurrentStressValue( stressDamage );
