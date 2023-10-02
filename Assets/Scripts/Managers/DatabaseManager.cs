@@ -286,6 +286,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 subskill.IsAttackingSkill = bool.Parse(subskill.IsAttackingSkillString);
                 subskill.IsDefendingSkill = bool.Parse(subskill.IsDefendingSkillString);
                 subskill.IsEvadingSkill = bool.Parse(subskill.IsEvadingSkillString);
+                subskill.IsObservingSkill = bool.Parse(subskill.IsObservingSkillString);
                 subskill.IsInterceptable = bool.Parse(subskill.IsInterceptableString);
                 subskill.RepulseSkillIds = ConvertStringToStringArray(subskill.RepulseSkillIdsString);
                 subskill.DerivedSkillIds = ConvertStringToStringArray(subskill.DerivedSkillIdsString);
@@ -633,6 +634,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [HideInInspector] public string RangeString { get; private set; }
         public enum RangeType
         {
+            none,
             ranged,
             melee
         }
@@ -699,6 +701,13 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("is_evading_skill")]
         [HideInInspector] public string IsEvadingSkillString { get; private set; }
         public bool IsEvadingSkill;
+
+        [JsonProperty("is_observing_skill")]
+        [HideInInspector] public string IsObservingSkillString { get; private set; }
+        public bool IsObservingSkill;
+
+        [JsonProperty("observation_rate")]
+        public int ObservationRate { get; private set; }
 
         [JsonProperty("is_interceptable")]
         [HideInInspector] public string IsInterceptableString { get; private set; }
