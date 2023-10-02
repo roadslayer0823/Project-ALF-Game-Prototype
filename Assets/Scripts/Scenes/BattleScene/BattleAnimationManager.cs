@@ -17,6 +17,7 @@ public class BattleAnimationManager : MonoBehaviour
 
     [SerializeField] private Camera targetCamera = null;
     [SerializeField] private CameraEffects cameraEffect = null;
+    [SerializeField] private SpriteRenderer darkLayer = null;
 
     private bool isAnimationEventTriggered = false;
     private Action<bool> onBattleEndedCallback = null;
@@ -123,6 +124,11 @@ public class BattleAnimationManager : MonoBehaviour
             BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget );
             _attacker.TriggerEvent( AnimationEvent.SetCharacter );
             _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
+
+            if (CheckHasTimeStop( _attacker.GetCurrentSkill() ))
+            {
+                yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
+            }
 
             _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
             _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
@@ -231,6 +237,11 @@ public class BattleAnimationManager : MonoBehaviour
                     _attackTarget.SetCurrentSkill( _repulseSkill, _attackTarget );
                     BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker );
 
+                    if (CheckHasTimeStop( _attackTarget.GetCurrentSkill() ))
+                    {
+                        yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
+                    }
+
                     if (_attackerCharacterPartB != NO_ANIMATION)
                     {
                         StartCoroutine( PlayCharacterAnimation( _attacker, _attackerCharacterPartB + "_" + REPULSE_ANIMATION_NAME ) );
@@ -320,6 +331,11 @@ public class BattleAnimationManager : MonoBehaviour
                     break;
 
                 case GameCharacter.CharacterActionType.Backend:
+
+                    if (CheckHasTimeStop( _attackTarget.GetCurrentSkill() ))
+                    {
+                        yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
+                    }
 
                     if (_attackerCharacterPartB != NO_ANIMATION)
                     {
@@ -469,6 +485,11 @@ public class BattleAnimationManager : MonoBehaviour
         attacker.SetCurrentSkill( derivedSkill );
         BattleLogicManager.ExecuteCasterSkillOnUse( attacker, attackTarget );
 
+        if (CheckHasTimeStop( attacker.GetCurrentSkill() ))
+        {
+            yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
+        }
+
         attacker.GetSortingGroup().sortingOrder = 3;
         attackTarget.GetSortingGroup().sortingOrder = 1;
 
@@ -573,7 +594,7 @@ public class BattleAnimationManager : MonoBehaviour
         if (stressValueIncreased > 0)
         {
             yield return new WaitForSeconds( 0.5f );
-            gameCharacter.ShowPopUpDisplayInfo( "+" + stressValueIncreased.ToString() + " SV", Color.yellow );
+            gameCharacter.ShowPopUpDisplayInfo( "+" + stressValueIncreased.ToString() + " SV", Color.magenta );
         }
     }
 
@@ -647,6 +668,23 @@ public class BattleAnimationManager : MonoBehaviour
         yield return new WaitForSeconds( duration );
     }
 
+    private IEnumerator FadeDarkLayer( float darkness, float duration )
+    {
+        LeanTween.value( 0.0f, darkness, duration * 0.9f ).setEaseOutCirc().setOnUpdate( SetDarkLayerAlphaValue ).setOnComplete( () =>
+        {
+            LeanTween.value( darkness, 0.0f, duration * 0.1f ).setEaseOutCirc().setOnUpdate( SetDarkLayerAlphaValue );
+        } );
+
+        yield return new WaitForSeconds( duration );
+    }
+
+    private void SetDarkLayerAlphaValue( float value )
+    {
+        Color _color = this.darkLayer.color;
+        _color.a = value;
+        this.darkLayer.color = _color;
+    }
+
     private bool CheckHasBattleEnded( BattleGameManager battleGameManager )
     {
         bool _hasPlayerCharacterSurvived = false;
@@ -693,6 +731,33 @@ public class BattleAnimationManager : MonoBehaviour
         if (!_hasPlayerCharacterSurvived && _hasEnemyCharacterSurvived)
         {
             this.onBattleEndedCallback?.Invoke( false );
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool CheckHasTimeStop( CharacterSkill characterSkill )
+    {
+        Subskill _subskillData = characterSkill.GetCharacterSubskillData().GetSubskillData();
+
+        if (_subskillData.Strength > 1)
+        {
+            return true;
+        }
+
+        if (_subskillData.Accuracy > 1)
+        {
+            return true;
+        }
+
+        if (_subskillData.Evasion > 1)
+        {
+            return true;
+        }
+
+        if (_subskillData.EffectType == Subskill.EffectTypeEnum.wide)
+        {
             return true;
         }
 

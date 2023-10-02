@@ -1240,6 +1240,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5847496022770585197}
   - component: {fileID: 837113250473293118}
+  - component: {fileID: 2272914243624369961}
   m_Layer: 0
   m_Name: GameCharacterInfoBox
   m_TagString: Untagged
@@ -1293,6 +1294,17 @@ MonoBehaviour:
   breakStatusIndicator: {fileID: 3680643887258663690}
   breakStatusForStatePoint: {fileID: 7830994704126561267}
   breakStatusForStressValue: {fileID: 2875314176730493166}
+--- !u!210 &2272914243624369961
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5847496022770585198}
+  m_Enabled: 1
+  m_SortingLayerID: 1910029227
+  m_SortingLayer: 1
+  m_SortingOrder: 1
 --- !u!1 &5975243229637165288
 GameObject:
   m_ObjectHideFlags: 0
