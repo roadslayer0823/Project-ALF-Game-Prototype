@@ -635,8 +635,8 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public enum RangeType
         {
             none,
-            ranged,
-            melee
+            melee,
+            ranged
         }
         public RangeType Range;
 
@@ -707,7 +707,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public bool IsObservingSkill;
 
         [JsonProperty("observation_rate")]
-        public int ObservationRate { get; private set; }
+        public float ObservationRate { get; private set; }
 
         [JsonProperty("is_interceptable")]
         [HideInInspector] public string IsInterceptableString { get; private set; }
