@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class BattleUiManager : MonoBehaviour
 {
@@ -10,6 +9,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private PlayerActionPanel playerActionPanel = null;
     [SerializeField] private CharacterInfoPanel characterInfoPanel = null;
     [SerializeField] private BattleResultPanel battleResultPanel = null;
+    [SerializeField] private TMP_Text instructionLabel = null;
 
     private BattleGameManager battleGameManager = null;
     private GameCharacter selectedGameCharacter = null;
@@ -37,6 +37,25 @@ public class BattleUiManager : MonoBehaviour
         {
             this.playerActionPanel.DisableExecuteButton();
         }
+    }
+
+    public void SetAllActive( bool value )
+    {
+        this.skillSelectionPanel.gameObject.SetActive( value );
+        this.skillSlotListPanel.gameObject.SetActive( value );
+        this.atlSlotListPanel.gameObject.SetActive( value );
+        this.playerActionPanel.gameObject.SetActive( value );
+        this.characterInfoPanel.gameObject.SetActive( value );
+        this.battleResultPanel.gameObject.SetActive( value );
+    }
+
+    public void PlayInstructionAnimation()
+    {
+        this.instructionLabel.transform.localScale = Vector3.zero;
+        LeanTween.scale( this.instructionLabel.gameObject, Vector3.one, 0.9f ).setEaseOutCubic().setLoopPingPong( 1 ).setOnComplete( () =>
+        {
+            this.instructionLabel.gameObject.SetActive( false );
+        } );
     }
 
 #region Skill Selection Panel

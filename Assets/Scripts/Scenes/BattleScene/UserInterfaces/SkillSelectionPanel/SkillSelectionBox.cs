@@ -41,12 +41,8 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         this.skillSelectionListBox = skillSelectionListBox;
         this.characterSkill = characterSkill;
         this.isSelected = false;
-    }
 
-    private void Start()
-    {
-        this.skillSelectionBoxRect.sizeDelta = new Vector2(0, this.boxHeight);
-
+        this.skillSelectionBoxRect.sizeDelta = new Vector2( this.skillSelectionBoxRect.sizeDelta.x, this.boxHeight );
         UpdateSkillSelectionBoxData();
 
         this.selectionButton.onClick.AddListener(OnSelectionButtonClick);

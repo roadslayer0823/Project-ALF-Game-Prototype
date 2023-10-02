@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,14 +26,18 @@ public class BattleGameManager : MonoBehaviour
     private const string AUDIO_ID_VICTORY = "victory";
     private const string AUDIO_ID_DEFEAT = "defeat";
     private const string AUDIO_ID_BREAK = "break";
+    private const string AUDIO_ID_CROSSING_ACTION_MODE = "crossing_action_mode";
+    private const string AUDIO_ID_COMMAND_PHASE = "command_phase";
+    private const string AUDIO_ID_LINE_BREAK = "line_break";
 
     void Awake()
     {
         AudioManager.Instance.SetUpAudioDatabase( this.audioDatabase );
 
-        this.battleUiManager.HideSkillSelectionPanel();
-        this.battleUiManager.HideSkillSlotListPanel();
-        this.battleUiManager.HideATLSlotListPanel();
+        this.battleUiManager.SetAllActive( false );
+        this.battleAnimationManager.ChangeToBackgroundPartB();
+        this.playerCharacter.PlayCharacterAnimation( "Prepare" );
+        this.enemyCharacter.PlayCharacterAnimation( "Idle" );
     }
 
     void Start()
@@ -57,10 +62,21 @@ public class BattleGameManager : MonoBehaviour
 
         // -----------------------------------------------------------------------
 
-        this.battleUiManager.GetCharacterInfoPanel().SetSelectedCharacter( this.playerCharacter );
-        this.battleFlowManager.StartGame();
+        AudioManager.Instance.PlayBackgroundMusic( this.backgroundMusicAudioClip );
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CROSSING_ACTION_MODE, () =>
+        {
+            this.battleUiManager.SetAllActive( true );
+            this.battleUiManager.HideSkillSelectionPanel();
+            this.battleUiManager.HideSkillSlotListPanel();
+            this.battleUiManager.HideATLSlotListPanel();
 
-        AudioManager.Instance.PlayBackgroundMusic( this.backgroundMusicAudioClip, 0.5f );
+            this.battleUiManager.GetCharacterInfoPanel().SetSelectedCharacter( this.playerCharacter );
+            this.battleFlowManager.StartGame();
+
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COMMAND_PHASE );
+        } );
+
+        this.battleUiManager.PlayInstructionAnimation();
     }
 
     public void StartExecution()
@@ -149,16 +165,19 @@ public class BattleGameManager : MonoBehaviour
     {
         this.hasBattleEnded = true;
 
-        if (isVictory)
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_LINE_BREAK, () =>
         {
-            this.battleUiManager.ShowVictoryResult();
-            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_VICTORY );
-        }
-        else
-        {
-            this.battleUiManager.ShowDefeatResult();
-            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DEFEAT );
-        }
+            if (isVictory)
+            {
+                this.battleUiManager.ShowVictoryResult();
+                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_VICTORY );
+            }
+            else
+            {
+                this.battleUiManager.ShowDefeatResult();
+                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DEFEAT );
+            }
+        } );
     }
 
     public List<PlayerCharacter> GetPlayerCharacterList()

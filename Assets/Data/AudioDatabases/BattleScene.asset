@@ -48,12 +48,14 @@ MonoBehaviour:
   - id: wheel
     clip: {fileID: 8300000, guid: 5c86b52ab9dd74948be07d01fd8cd43a, type: 3}
   - id: victory
-    clip: {fileID: 8300000, guid: e7510cc58fc4b49fa990a61408bb1e34, type: 3}
+    clip: {fileID: 8300000, guid: c45488bfb8668411ea0a192746afa7b7, type: 3}
   - id: defeat
-    clip: {fileID: 8300000, guid: e7510cc58fc4b49fa990a61408bb1e34, type: 3}
+    clip: {fileID: 8300000, guid: 926f2e0ec66c4476da89871f3627f44c, type: 3}
   - id: crossing_action_mode
     clip: {fileID: 8300000, guid: 5d79131683d4e4f6baf2216ed9bf7251, type: 3}
   - id: command_phase
     clip: {fileID: 8300000, guid: 66f1600e66e204563a513c67bd75bfe6, type: 3}
   - id: hints
     clip: {fileID: 8300000, guid: ea8de695acaeb4a6da33e9d85b2c975a, type: 3}
+  - id: line_break
+    clip: {fileID: 8300000, guid: e7510cc58fc4b49fa990a61408bb1e34, type: 3}
