@@ -27,6 +27,13 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI evasion;
     [SerializeField] private TextMeshProUGUI stressDamage;
 
+    [Header("SkillInfoBox")]
+    [SerializeField] private GameObject skillDataBox = null;
+    [SerializeField] private GameObject observedSkillListBox = null;
+
+    [Header("ObservedSkillInfo")]
+    [SerializeField] private GameObject observedSkillInfo = null;
+
     public void Show(CharacterSubskill characterSubskill)
     {
         if (characterSubskill == null)
@@ -36,6 +43,7 @@ public class SkillInfoBox : MonoBehaviour
         }
 
         this.skillInformation.gameObject.SetActive(true);
+
         SetupSkillInfomation(characterSubskill);
     }
 
@@ -46,6 +54,17 @@ public class SkillInfoBox : MonoBehaviour
 
     private void SetupSkillInfomation(CharacterSubskill characterSubskill)
     {
+        if (characterSubskill.GetSubskillData().IsObservingSkill)
+        {
+            SetupObservedSkillList(characterSubskill);
+        }
+        else
+        {
+            this.skillDataBox.SetActive(true);
+            this.observedSkillListBox.SetActive(false);
+            this.observedSkillInfo.SetActive(false);
+        }
+
         Subskill _subskillData = characterSubskill.GetSubskillData();
 
         if (_subskillData.Prefix.ToString() == "-") // Prefix
@@ -128,5 +147,14 @@ public class SkillInfoBox : MonoBehaviour
         {
             this.skillDescription.SetText(_subskillData.Description);
         }
+    }
+
+    private void SetupObservedSkillList(CharacterSubskill characterSubskill)
+    {
+        this.skillDataBox.SetActive(false);
+        this.observedSkillListBox.SetActive(true);
+        this.observedSkillInfo.SetActive(false); // Change back to true in future if needed
+
+        //TODO: List all observed skills. 
     }
 }
