@@ -34,6 +34,9 @@ public class BattleAnimationManager : MonoBehaviour
     private const string REPULSE_ANIMATION_NAME = "Repulse";
     private const string DERIVE_ANIMATION_NAME = "Derive";
 
+    private const float SKILL_TIME_STOP_DURATION = 1.2f;
+    private const float SKILL_TIME_STOP_DARKNESS = 0.8f;
+
     private const string AUDIO_ID_ATTACK = "attack";
     private const string AUDIO_ID_COUNTER = "counter";
     private const string AUDIO_ID_DEFEND = "defend";
@@ -126,11 +129,7 @@ public class BattleAnimationManager : MonoBehaviour
             _attacker.TriggerEvent( AnimationEvent.SetCharacter );
             _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
 
-            if (CheckHasTimeStop( _attacker.GetCurrentSkill() ))
-            {
-                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
-                yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
-            }
+            yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attacker.GetCurrentSkill() ) );
 
             _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
             _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
@@ -239,11 +238,7 @@ public class BattleAnimationManager : MonoBehaviour
                     _attackTarget.SetCurrentSkill( _repulseSkill, _attackTarget );
                     BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker );
 
-                    if (CheckHasTimeStop( _attackTarget.GetCurrentSkill() ))
-                    {
-                        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
-                        yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
-                    }
+                    yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attackTarget.GetCurrentSkill() ) );
 
                     if (_attackerCharacterPartB != NO_ANIMATION)
                     {
@@ -267,17 +262,52 @@ public class BattleAnimationManager : MonoBehaviour
                     bool _hasStatePointDamage = false;
                     if (_winner != null)
                     {
-                        _hasAttackDamage = true;
+                        RangeType _attackTargetRangeType = _repulseSkill.GetCharacterSubskillData().GetSubskillData().Range;
 
                         if (_attackerRangeType == RangeType.melee)
                         {
-                            OnHitWithNoDamage( _loser, _winner );
+                            if (_attackTargetRangeType == RangeType.melee)
+                            {
+                                _hasAttackDamage = true;
+                                _hasStressDamage = true;
+                                _hasStatePointDamage = true;
+                                OnHitWithNoDamage( _winner, _loser );
+                            }
+                            else if (_attackTargetRangeType == RangeType.ranged)
+                            {
+                                if (_winner == _attackTarget)
+                                {
+                                    _hasAttackDamage = true;
+                                    _hasStressDamage = true;
+                                    _hasStatePointDamage = true;
+                                }
+                                else
+                                {
+                                    OnHitWithNoDamage( _winner, _loser );
+                                }
+                            }
                         }
-
-                        if (_repulseSkill.GetCharacterSubskillData().GetSubskillData().Range == RangeType.melee)
+                        else if (_attackerRangeType == RangeType.ranged)
                         {
-                            _hasStressDamage = true;
-                            _hasStatePointDamage = true;
+                            if (_attackTargetRangeType == RangeType.melee)
+                            {
+                                if (_winner == _attacker)
+                                {
+                                    _hasAttackDamage = true;
+                                    _hasStressDamage = true;
+                                    _hasStatePointDamage = true;
+                                }
+                                else
+                                {
+                                    OnHitWithNoDamage( _winner, _loser );
+                                }
+                            }
+                            else if (_attackTargetRangeType == RangeType.ranged)
+                            {
+                                _hasAttackDamage = true;
+                                _hasStressDamage = true;
+                                _hasStatePointDamage = true;
+                            }
                         }
 
                         BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, GameCharacter.CharacterActionType.Repulse, _hasAttackDamage, _hasStressDamage, _hasStatePointDamage, out _attackDamage, out _stressDamage, out _statePointDamage );
@@ -335,11 +365,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                 case GameCharacter.CharacterActionType.Backend:
 
-                    if (CheckHasTimeStop( _attackTarget.GetCurrentSkill() ))
-                    {
-                        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
-                        yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
-                    }
+                    yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attackTarget.GetCurrentSkill() ) );
 
                     if (_attackerCharacterPartB != NO_ANIMATION)
                     {
@@ -489,11 +515,7 @@ public class BattleAnimationManager : MonoBehaviour
         attacker.SetCurrentSkill( derivedSkill );
         BattleLogicManager.ExecuteCasterSkillOnUse( attacker, attackTarget );
 
-        if (CheckHasTimeStop( attacker.GetCurrentSkill() ))
-        {
-            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
-            yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
-        }
+        yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
 
         attacker.GetSortingGroup().sortingOrder = 3;
         attackTarget.GetSortingGroup().sortingOrder = 1;
@@ -740,6 +762,15 @@ public class BattleAnimationManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private IEnumerator PlaySkillTimeStopAnimationIfNeeded( CharacterSkill characterSkill )
+    {
+        if (CheckHasTimeStop( characterSkill ))
+        {
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
+            yield return StartCoroutine( FadeDarkLayer( SKILL_TIME_STOP_DARKNESS, SKILL_TIME_STOP_DURATION ) );
+        }
     }
 
     private bool CheckHasTimeStop( CharacterSkill characterSkill )
