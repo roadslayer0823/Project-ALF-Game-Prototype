@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 
 public class AudioManager : Singleton<AudioManager>
@@ -25,19 +27,31 @@ public class AudioManager : Singleton<AudioManager>
         }
     }
 
-    public void PlaySoundEffect( string audioId, float volumeScale = 1.0f )
+    public void PlaySoundEffect( string audioId, Action onCompleteCallback )
+    {
+        PlaySoundEffect( audioId, 1.0f, onCompleteCallback );
+    }
+
+    public void PlaySoundEffect( string audioId, float volumeScale = 1.0f, Action onCompleteCallback = null )
     {
         if (this.audioDatabase == null)
         {
             Debug.LogError( "The audio database is not set up yet." );
-            return;
         }
 
-        PlaySoundEffect( this.audioDatabase.GetAudioDataById( audioId ).GetClip(), volumeScale );
+        AudioClip _clip = this.audioDatabase.GetAudioDataById( audioId ).GetClip();
+        PlaySoundEffect( _clip, volumeScale );
+        StartCoroutine( WaitAndCallback( _clip.length, onCompleteCallback ) );
     }
 
     public void SetUpAudioDatabase( AudioDatabase audioDatabase )
     {
         this.audioDatabase = audioDatabase;
+    }
+
+    private IEnumerator WaitAndCallback( float delay, Action callback )
+    {
+        yield return new WaitForSecondsRealtime( delay );
+        callback?.Invoke();
     }
 }

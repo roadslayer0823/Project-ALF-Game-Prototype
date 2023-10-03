@@ -39,6 +39,7 @@ public class BattleAnimationManager : MonoBehaviour
     private const string AUDIO_ID_DEFEND = "defend";
     private const string AUDIO_ID_DODGE = "dodge";
     private const string AUDIO_ID_FIREBALL = "fireball";
+    private const string AUDIO_ID_HINTS = "hints";
     private const string AUDIO_ID_HIT = "hit";
 
     public enum AnimationEvent
@@ -127,6 +128,7 @@ public class BattleAnimationManager : MonoBehaviour
 
             if (CheckHasTimeStop( _attacker.GetCurrentSkill() ))
             {
+                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
                 yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
             }
 
@@ -239,6 +241,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (CheckHasTimeStop( _attackTarget.GetCurrentSkill() ))
                     {
+                        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
                         yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
                     }
 
@@ -334,6 +337,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (CheckHasTimeStop( _attackTarget.GetCurrentSkill() ))
                     {
+                        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
                         yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
                     }
 
@@ -487,6 +491,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (CheckHasTimeStop( attacker.GetCurrentSkill() ))
         {
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
             yield return StartCoroutine( FadeDarkLayer( 0.8f, 1.2f ) );
         }
 
