@@ -23,6 +23,9 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Button selectionButton;
     [SerializeField] private Button minusLevelButton;
     [SerializeField] private Button plusLevelButton;
+    [SerializeField] private GameObject observationRate;
+    [SerializeField] private TextMeshProUGUI observationPercentageText;
+    [SerializeField] private Image observationPercentageBar;
 
     private SkillSelectionListBox skillSelectionListBox = null;
     private CharacterSkill characterSkill = null;
@@ -135,7 +138,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         SetSkillSelectionText("");
     }
 
-    // Set the skill data that needed to display into TMP.
+    // Set the skill data that needed to display into SkillSelectionBox.
     private void UpdateSkillSelectionBoxData()
     {
         if (this.characterSkill == null)
@@ -256,7 +259,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         this.canvas.sortingOrder = 1;
     }
 
-    public bool isSkillBoxSelected()
+    public bool IsSkillBoxSelected()
     {
         return this.isSelected;
     }

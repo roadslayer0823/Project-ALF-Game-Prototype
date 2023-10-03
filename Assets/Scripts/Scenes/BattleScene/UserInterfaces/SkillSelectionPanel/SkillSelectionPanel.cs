@@ -224,11 +224,11 @@ public class SkillSelectionPanel : MonoBehaviour
             }
         }
 
-        if (skillSelectionBox.isSkillBoxSelected())
+        if (skillSelectionBox.IsSkillBoxSelected())
         {
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_SKILL_ON);
         }
-        else if (!skillSelectionBox.isSkillBoxSelected())
+        else if (!skillSelectionBox.IsSkillBoxSelected())
         {
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
         }

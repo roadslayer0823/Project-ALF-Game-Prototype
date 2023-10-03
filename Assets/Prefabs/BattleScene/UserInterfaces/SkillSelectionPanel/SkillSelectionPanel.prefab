@@ -64,6 +64,8 @@ MonoBehaviour:
   counterSkillSelectionTabBackgroundImage: {fileID: 3197091826157577507}
   selectedTabColor: {r: 0.5803922, g: 0.6431373, b: 1, a: 0.39215687}
   unselectedTabColor: {r: 0.44705883, g: 0.4862745, b: 0.62352943, a: 0.5019608}
+  skillDataBox: {fileID: 4567302721798977506}
+  interceptedSkillListBox: {fileID: 2922636427925582980}
 --- !u!1001 &317417582073872088
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -668,7 +670,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5395172928961972319, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_fontSize
-      value: 55.35
+      value: 52.2
       objectReference: {fileID: 0}
     - target: {fileID: 5443936741501078790, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_AnchorMax.y
@@ -784,10 +786,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8872307289537047387, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_fontSize
-      value: 67.2
+      value: 63.4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be42383b28f1248dca855ac668a32226, type: 3}
+--- !u!1 &2922636427925582980 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8046756066541574068, guid: be42383b28f1248dca855ac668a32226, type: 3}
+  m_PrefabInstance: {fileID: 5126389791967994672}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4567302721798977506 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8666836611065992402, guid: be42383b28f1248dca855ac668a32226, type: 3}
+  m_PrefabInstance: {fileID: 5126389791967994672}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &5459260374220162652 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 929896807347168620, guid: be42383b28f1248dca855ac668a32226, type: 3}
