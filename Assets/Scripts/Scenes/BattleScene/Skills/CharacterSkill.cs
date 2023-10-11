@@ -11,8 +11,6 @@ public class CharacterSkill
     private List<CharacterSubskill> characterSubskillList = null;
     private int selectedSkillLevel = 1;
 
-    public Skill Skill { get; }
-
     public CharacterSkill( Skill skillData, GameCharacter owner)
     {
         this.skillData = skillData;
