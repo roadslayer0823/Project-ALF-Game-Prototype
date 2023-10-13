@@ -1698,6 +1698,7 @@ MonoBehaviour:
   scrollRect: {fileID: 1704474623}
   battleLogContentBox: {fileID: 1704474622}
   battleLogText: {fileID: 3862273046676029797, guid: 386430445ffac494988c0e5509239079, type: 3}
+  lineBreak: {fileID: 9197242576489350892, guid: 6f8f687e5a2e64a2782d192977cf44ac, type: 3}
   clearAllButton: {fileID: 1525369176}
 --- !u!224 &1155207981 stripped
 RectTransform:
@@ -2188,6 +2189,10 @@ PrefabInstance:
     - target: {fileID: 8147464390305383753, guid: ec3a240cc76604f6c8bd43e6d721a990, type: 3}
       propertyPath: m_Name
       value: SkillListScrollArea
+      objectReference: {fileID: 0}
+    - target: {fileID: 8224676091369555571, guid: ec3a240cc76604f6c8bd43e6d721a990, type: 3}
+      propertyPath: m_ChildControlHeight
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec3a240cc76604f6c8bd43e6d721a990, type: 3}
