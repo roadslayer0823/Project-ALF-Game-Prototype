@@ -20,9 +20,27 @@ public class BattleLog : Singleton<BattleLog>
 
     public void AddOnScreenBattleLog(string logText, Color? textColor = null)
     {
+        if (string.IsNullOrEmpty(logText))
+        {
+            return;
+        }
+
         TextMeshProUGUI _battleLogText = Instantiate(this.battleLogText, this.battleLogContentBox);
         _battleLogText.SetText(logText);
         _battleLogText.color = textColor.GetValueOrDefault(Color.white);
+
+        int _logTextLenght = logText.Length;
+        Vector2 _battleLogBoxSize = _battleLogText.rectTransform.sizeDelta;
+
+        while (_logTextLenght >= 40)
+        {
+            _battleLogBoxSize.y += 80f;
+
+            _logTextLenght -= 40;
+        }
+
+        _battleLogText.rectTransform.sizeDelta = new Vector2(_battleLogBoxSize.x, _battleLogBoxSize.y);
+
         this.battleLogTextList.Add(_battleLogText);
 
         //Scroll to bottom
