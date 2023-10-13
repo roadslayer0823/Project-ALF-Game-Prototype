@@ -432,6 +432,16 @@ public class GameCharacter : MonoBehaviour
         return true;
     }
 
+    public bool IsAbleToObserve()
+    {
+        if (this.GetIsInBreakStatus())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public void EnterIntoBreakStatus( int numberOfATLs )
     {
         this.breakStatusRemainingATLs = numberOfATLs;

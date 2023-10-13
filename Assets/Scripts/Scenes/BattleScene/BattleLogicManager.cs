@@ -11,37 +11,124 @@ public class BattleLogicManager
         Evade
     }
 
-    public static void ExecuteCasterSkillOnUse( GameCharacter caster, GameCharacter target )
+    public static void ExecuteCasterSkillOnUse( GameCharacter caster, GameCharacter target, out string log )
     {
         CharacterSkill _skill = caster.GetCurrentSkill();
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
         GameConfiguration.Battle _battle = GameConfiguration.Instance.GetBattleConfiguration();
 
-        caster.MinusCurrentStatePoint( _subskillData.StatePointCost * _battle.GetStatePointCostMultiplier(), false );
-        caster.AddMaximumStatePoint( _subskillData.MaxStatePointUp * _battle.GetMaxStatePointUpMultiplier() );
+        float _statePointCost = _subskillData.StatePointCost * _battle.GetStatePointCostMultiplier();
+        caster.MinusCurrentStatePoint( _statePointCost, false );
+
+        float _maxStatePointUp = _subskillData.MaxStatePointUp * _battle.GetMaxStatePointUpMultiplier();
+        caster.AddMaximumStatePoint( _maxStatePointUp );
+
+        log = "<color=#FFFF00>" + caster.GetCharacterName() + "</color>" + "對" + "<color=#FFFF00>" + target.GetCharacterName() + "</color>" + "使出了"
+            + "<color=#FFFF00>" + _subskillData.DisplayName + "</color>";
+
+        string _skillStatLog = "";
+
+        if (_subskillData.Strength > 1)
+        {
+            if (_skillStatLog == "")
+            {
+                _skillStatLog += "(";
+            }
+
+            _skillStatLog += $"強度+{_subskillData.Strength - 1}";
+        }
+
+        if (_subskillData.Accuracy > 1)
+        {
+            if (_skillStatLog == "")
+            {
+                _skillStatLog += "(";
+            }
+            else
+            {
+                _skillStatLog += "，";
+            }
+
+            _skillStatLog += $"命中+{_subskillData.Accuracy - 1}";
+        }
+
+        if (_subskillData.Evasion > 1)
+        {
+            if (_skillStatLog == "")
+            {
+                _skillStatLog += "(";
+            }
+            else
+            {
+                _skillStatLog += "，";
+            }
+
+            _skillStatLog += $"迴避+{_subskillData.Evasion - 1}";
+        }
+
+        if (_skillStatLog != "")
+        {
+            log += _skillStatLog + ")";
+        }
+
+        string _extraLog = "";
+
+        if (_statePointCost > 0)
+        {
+            _extraLog += "，消耗了<color=#FFFF00>" + _statePointCost + "狀態值</color>";
+        }
+
+        if (_maxStatePointUp > 0)
+        {
+            if (_extraLog != "")
+            {
+                _extraLog += "和";
+            }
+
+            _extraLog += "提升了<color=#FFFF00>" + _maxStatePointUp + "最大狀態值</color>。";
+        }
+
+        if (_extraLog == "")
+        {
+            log += "。";
+        }
+        else
+        {
+            log += _extraLog;
+        }
     }
 
-    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage = true,
-                                                GameCharacter.CharacterActionType actionType = GameCharacter.CharacterActionType.None )
+    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, out string log )
     {
-        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, actionType, out _, out _, out _ );
+        ExecuteCasterSkillOnHit( caster, target, true, GameCharacter.CharacterActionType.None, out _, out _, out _, out log );
+    }
+
+    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage, out string log )
+    {
+        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, GameCharacter.CharacterActionType.None, out _, out _, out _, out log );
     }
 
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage,
-                                                out float attackDamage, out float stressDamage, out float statePointDamage )
+                                                GameCharacter.CharacterActionType actionType, out string log )
     {
-        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, GameCharacter.CharacterActionType.None, out attackDamage, out stressDamage, out statePointDamage );
+        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, actionType, out _, out _, out _, out log );
+    }
+
+    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage,
+                                                out float attackDamage, out float stressDamage, out float statePointDamage, out string log )
+    {
+        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, GameCharacter.CharacterActionType.None, out attackDamage, out stressDamage, out statePointDamage, out log );
     }
 
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage, GameCharacter.CharacterActionType actionType,
-                                                out float attackDamage, out float stressDamage, out float statePointDamage )
+                                                out float attackDamage, out float stressDamage, out float statePointDamage, out string log )
     {
-        ExecuteCasterSkillOnHit( caster, target, actionType, hasAttackDamage, true, true, out attackDamage, out stressDamage, out statePointDamage );
+        ExecuteCasterSkillOnHit( caster, target, actionType, hasAttackDamage, true, true, out attackDamage, out stressDamage, out statePointDamage, out log );
     }
 
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, GameCharacter.CharacterActionType actionType,
                                                 bool hasAttackDamage, bool hasStressDamage, bool hasStatePointDamage,
-                                                out float attackDamage, out float stressDamage, out float statePointDamage )
+                                                out float attackDamage, out float stressDamage, out float statePointDamage, out string log )
     {
         attackDamage = 0;
         stressDamage = 0;
@@ -72,6 +159,39 @@ public class BattleLogicManager
         {
             statePointDamage = _subskillData.StatePointDamage * _battle.GetStateDamageMultiplier();
             target.MinusCurrentStatePoint( statePointDamage, true );
+        }
+
+        log = "";
+
+        string _extraLog = "";
+        if (attackDamage > 0)
+        {
+            _extraLog += "<color=#FFFF00>" + attackDamage + "HP傷害</color>";
+        }
+
+        if (stressDamage > 0)
+        {
+            if (_extraLog != "")
+            {
+                _extraLog += "、";
+            }
+
+            _extraLog += "<color=#FFFF00>" + stressDamage + "負荷傷害</color>";
+        }
+
+        if (statePointDamage > 0)
+        {
+            if (_extraLog != "")
+            {
+                _extraLog += "、";
+            }
+
+            _extraLog += "<color=#FFFF00>" + statePointDamage + "狀態值傷害</color>";
+        }
+
+        if (_extraLog != "")
+        {
+            log += "<color=#FFFF00>" + target.GetCharacterName() + "</color>受到了" + _extraLog + "。";
         }
     }
 

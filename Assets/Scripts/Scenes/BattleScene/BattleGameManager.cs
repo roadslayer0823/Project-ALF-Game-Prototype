@@ -159,6 +159,11 @@ public class BattleGameManager : MonoBehaviour
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_BREAK );
             this.battleFlowManager.GetCurrentRound().UpdateATLSlotStatuses( gameCharacter, false );
         }
+        else if (animationEvent == BattleAnimationManager.AnimationEvent.OnBeingInBreakStatus)
+        {
+            CharacterSkill _currentCasterSkill = battleAnimationManager.GetCurrentCaster().GetCurrentSkill();
+            gameCharacter.GetCurrentSkill().AddObservedSkillData( _currentCasterSkill.GetCharacterSubskillData().GetSubskillData().FeatureId );
+        }
     }
 
     private void OnBattleEnded( bool isVictory )

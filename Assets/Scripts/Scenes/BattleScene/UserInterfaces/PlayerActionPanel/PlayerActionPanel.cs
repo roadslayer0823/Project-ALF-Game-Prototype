@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Skill = DatabaseManager.Skill;
+using Subskill = DatabaseManager.Subskill;
 
 public class PlayerActionPanel : MonoBehaviour
 {
@@ -178,7 +179,7 @@ public class PlayerActionPanel : MonoBehaviour
         }
     }
 
-    public void UpdateSkillActionButtons( bool canDefend, bool canEvade, float countdownTime )
+    public void UpdateSkillActionButtons( bool canDefend, bool canEvade, bool canObserve, float countdownTime )
     {
         for (int i = 0; i < this.skillActionButtons.Length; i++)
         {
@@ -186,7 +187,7 @@ public class PlayerActionPanel : MonoBehaviour
             CharacterSkill _skill = _skillActionButton.GetSelectedSkill();
             if (_skill != null)
             {
-                if (_skill.IsSkillAvailable( canDefend, canEvade ))
+                if (_skill.IsSkillAvailable( canDefend, canEvade, canObserve ))
                 {
                     _skillActionButton.EnableActionButton( countdownTime );
                 }
@@ -200,12 +201,20 @@ public class PlayerActionPanel : MonoBehaviour
 
     private void OnSkillActionButtonClicked( CharacterSkill skill )
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
 
         DisableQTEAndSkillActionButtons();
-
-        this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Backend );
         this.selectedGameCharacter.SetCurrentSkill( skill );
+
+        Subskill _subskillData = skill.GetCharacterSubskillData().GetSubskillData();
+        if (_subskillData.IsDefendingSkill || _subskillData.IsEvadingSkill)
+        {
+            this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Backend );
+        }
+        else if (_subskillData.IsObservingSkill)
+        {
+            this.selectedGameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnSkillBeingObserved );
+        }
     }
 
     public void DisableQTEAndSkillActionButtons()

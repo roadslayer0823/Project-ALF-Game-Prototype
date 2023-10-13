@@ -27,6 +27,7 @@ public class PlayerCharacter : GameCharacter
                     qteSkill: _derivedSkill,
                     canDefend: false,
                     canEvade: false,
+                    canObserve: base.IsAbleToObserve(),
                     countdownTime: base.GetSkillCountdownTime()
                     );
 
@@ -41,6 +42,7 @@ public class PlayerCharacter : GameCharacter
                     qteSkill: _repulseSkill,
                     canDefend: base.IsAbleToDefend(),
                     canEvade: base.IsAbleToDefend(),
+                    canObserve: base.IsAbleToObserve(),
                     countdownTime: base.GetSkillCountdownTime()
                     );
 
@@ -55,6 +57,7 @@ public class PlayerCharacter : GameCharacter
                     qteSkill: _counterSkill,
                     canDefend: false,
                     canEvade: false,
+                    canObserve: base.IsAbleToObserve(),
                     countdownTime: base.GetSkillCountdownTime()
                     );
 

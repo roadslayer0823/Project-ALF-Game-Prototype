@@ -33,6 +33,7 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private float stressDamageMultiplier = 0.0f;
         private float stateDamageMultiplier = 0.0f;
         private float lowestMaximumStatePoint = 0.0f;
+        private float maximumObservedRate = 0.0f;
 
         private const string NUMBER_OF_ATL_SLOTS = "number_of_atl_slots";
         private const string MAXIMUM_SELECTED_ACTIVE_SKILLS = "maximum_selected_active_skills";
@@ -45,6 +46,7 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private const string STRESS_DAMAGE_MULTIPLIER = "stress_damage_multiplier";
         private const string STATE_DAMAGE_MULTIPLIER = "state_damage_multiplier";
         private const string LOWEST_MAXIMUM_STATE_POINT = "lowest_maximum_state_point";
+        private const string MAXIMUM_OBSERVED_RATE = "maximum_observed_rate";
 
         public Battle( List<Configuration> battleConfigurationList )
         {
@@ -88,6 +90,10 @@ public class GameConfiguration : Singleton<GameConfiguration>
 
                     case LOWEST_MAXIMUM_STATE_POINT:
                         this.lowestMaximumStatePoint = _configurationValue;
+                        break;
+
+                    case MAXIMUM_OBSERVED_RATE:
+                        this.maximumObservedRate = _configurationValue;
                         break;
 
                     default:
@@ -149,6 +155,11 @@ public class GameConfiguration : Singleton<GameConfiguration>
         public float GetLowestMaximumStatePoint()
         {
             return this.lowestMaximumStatePoint;
+        }
+
+        public float GetMaximumObservedRate()
+        {
+            return this.maximumObservedRate;
         }
     }
 

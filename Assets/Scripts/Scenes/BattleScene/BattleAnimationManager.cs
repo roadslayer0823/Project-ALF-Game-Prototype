@@ -26,7 +26,8 @@ public class BattleAnimationManager : MonoBehaviour
     private Vector3 cameraPosition = Vector3.zero;
     private float cameraOrthographicSize = 0.0f;
 
-    private List<GameCharacter> gameCharacterList = null;  
+    private List<GameCharacter> gameCharacterList = null;
+    private GameCharacter currentCaster = null;
 
     private const string NO_ANIMATION = "-";
     private const string IDLE_ANIMATION_NAME = "Idle";
@@ -57,7 +58,8 @@ public class BattleAnimationManager : MonoBehaviour
         OnRepulseWin_Cutoff,
         OnDefenseWin,
         OnDefenseWin_Cutoff,
-        OnBeingInBreakStatus
+        OnBeingInBreakStatus,
+        OnSkillBeingObserved
     }
 
     public void Initialize( Action<bool> onBattleEndedCallback )
@@ -84,6 +86,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         float _skillCountdownTime = 0.0f;
         bool _hasCounterAttack = false;
+        string _log = "";
 
         do
         {
@@ -125,7 +128,8 @@ public class BattleAnimationManager : MonoBehaviour
             yield return new WaitForSeconds( 0.1f );
 
             _attacker.SetCurrentSkill( _attackerSkill, _attackTarget );
-            BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget );
+            BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget, out _log );
+            BattleLog.Instance.AddOnScreenBattleLog( _log );
             _attacker.TriggerEvent( AnimationEvent.SetCharacter );
             _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
 
@@ -205,7 +209,9 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
                     }
 
-                    BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage );
+                    BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
+                    BattleLog.Instance.AddOnScreenBattleLog( _log );
+
                     this.cameraEffect.Shake();
                     AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
@@ -236,7 +242,8 @@ public class BattleAnimationManager : MonoBehaviour
 
                     CharacterSkill _repulseSkill = _attackTargetNextATL.GetSelectedSkill().GetCharacterSubskillData().GetSelectedRepulseSkill();
                     _attackTarget.SetCurrentSkill( _repulseSkill, _attackTarget );
-                    BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker );
+                    BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
+                    BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                     yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attackTarget.GetCurrentSkill() ) );
 
@@ -310,7 +317,8 @@ public class BattleAnimationManager : MonoBehaviour
                             }
                         }
 
-                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, GameCharacter.CharacterActionType.Repulse, _hasAttackDamage, _hasStressDamage, _hasStatePointDamage, out _attackDamage, out _stressDamage, out _statePointDamage );
+                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, GameCharacter.CharacterActionType.Repulse, _hasAttackDamage, _hasStressDamage, _hasStatePointDamage, out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
+                        BattleLog.Instance.AddOnScreenBattleLog( _log );
                     }
                     else
                     {
@@ -381,7 +389,8 @@ public class BattleAnimationManager : MonoBehaviour
                     }
 
                     CharacterSkill _attackTargetSkill = _attackTarget.GetCurrentSkill();
-                    BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker );
+                    BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
+                    BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                     Subskill _attackTargetSubskillData = _attackTargetSkill.GetCharacterSubskillData().GetSubskillData();
                     SkillAnimation _attackTargetBackendSkillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackTargetSubskillData.Id );
@@ -404,7 +413,8 @@ public class BattleAnimationManager : MonoBehaviour
                                                                             out _winner, out _loser );
                     }
 
-                    BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _winner == _attacker, out _attackDamage, out _stressDamage, out _statePointDamage );
+                    BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _winner == _attacker, out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
+                    BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                     if (_winner == _attacker)
                     {
@@ -511,9 +521,11 @@ public class BattleAnimationManager : MonoBehaviour
     {
         attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
 
+        string _log = "";
         battleFlowRound.GoToTargetATL( battleFlowRound.GetNextATL( attacker ), false );
         attacker.SetCurrentSkill( derivedSkill );
-        BattleLogicManager.ExecuteCasterSkillOnUse( attacker, attackTarget );
+        BattleLogicManager.ExecuteCasterSkillOnUse( attacker, attackTarget, out _log );
+        BattleLog.Instance.AddOnScreenBattleLog( _log );
 
         yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
 
@@ -540,7 +552,9 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlaySkillEffectAnimation( attacker, _skillEffectPartB ) );
             }
 
-            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage );
+            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
+            BattleLog.Instance.AddOnScreenBattleLog( _log );
+
             this.cameraEffect.Shake();
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
             yield return StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
@@ -570,7 +584,10 @@ public class BattleAnimationManager : MonoBehaviour
             attacker.GetOpponentContainer().SetActive( true );
             StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME ) );
             yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_D" ) );
-            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage );
+
+            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
+            BattleLog.Instance.AddOnScreenBattleLog( _log );
+
             this.cameraEffect.Shake();
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
             yield return null;
@@ -586,7 +603,11 @@ public class BattleAnimationManager : MonoBehaviour
         float _damageTaken = 0;
         float _stressValueIncreased = 0;
         float _statePointReduced = 0;
-        BattleLogicManager.ExecuteCasterSkillOnHit( caster, target, false, GameCharacter.CharacterActionType.Repulse, out _damageTaken, out _stressValueIncreased, out _statePointReduced );
+
+        string _log = "";
+        BattleLogicManager.ExecuteCasterSkillOnHit( caster, target, false, GameCharacter.CharacterActionType.Repulse, out _damageTaken, out _stressValueIncreased, out _statePointReduced, out _log );
+        BattleLog.Instance.AddOnScreenBattleLog( _log );
+
         StartCoroutine( ShowPopUpDisplayInfo( target, _damageTaken, _stressValueIncreased, _statePointReduced ) );
     }
 
@@ -849,5 +870,10 @@ public class BattleAnimationManager : MonoBehaviour
     public void ChangeToBackgroundPartB()
     {
         this.background.sprite = this.backgroundPartB;
+    }
+
+    public GameCharacter GetCurrentCaster()
+    {
+        return this.currentCaster;
     }
 }

@@ -726,7 +726,7 @@ RectTransform:
   m_Father: {fileID: 1107169195}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.85}
+  m_AnchorMin: {x: 0, y: 0.9}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -1678,7 +1678,7 @@ RectTransform:
   m_Father: {fileID: 1050411305}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.7}
+  m_AnchorMin: {x: 0, y: 0.3}
   m_AnchorMax: {x: 0.3, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -2184,7 +2184,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3053464572090172561, guid: ec3a240cc76604f6c8bd43e6d721a990, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000076293945
+      value: 0.000061035156
       objectReference: {fileID: 0}
     - target: {fileID: 8147464390305383753, guid: ec3a240cc76604f6c8bd43e6d721a990, type: 3}
       propertyPath: m_Name
@@ -2390,6 +2390,7 @@ MonoBehaviour:
   targetCamera: {fileID: 794048806}
   cameraEffect: {fileID: 794048808}
   darkLayer: {fileID: 2065764080}
+  battleLog: {fileID: 1107169196}
 --- !u!1 &2065764078
 GameObject:
   m_ObjectHideFlags: 0
