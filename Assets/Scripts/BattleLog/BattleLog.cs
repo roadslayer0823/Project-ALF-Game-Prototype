@@ -37,7 +37,18 @@ public class BattleLog : Singleton<BattleLog>
         this.lineBreakList.Add(_lineBreak);
 
         //Scroll to bottom
-        this.scrollRect.verticalNormalizedPosition = -1f;
+        StartCoroutine(ForceScrollDown());
+    }
+
+    // Called at the end of instantiation function.
+    IEnumerator ForceScrollDown()
+    {
+        // Wait for end of frame AND force update all canvases before setting to bottom.
+        yield return new WaitForEndOfFrame();
+
+        Canvas.ForceUpdateCanvases();
+        this.scrollRect.verticalNormalizedPosition = 0f;
+        Canvas.ForceUpdateCanvases();
     }
 
     private void OnClearAllButtonClick()
