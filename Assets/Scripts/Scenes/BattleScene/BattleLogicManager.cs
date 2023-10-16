@@ -32,7 +32,7 @@ public class BattleLogicManager
         {
             if (_skillStatLog == "")
             {
-                _skillStatLog += "(";
+                _skillStatLog += "（";
             }
 
             _skillStatLog += $"強度+{_subskillData.Strength - 1}";
@@ -42,7 +42,7 @@ public class BattleLogicManager
         {
             if (_skillStatLog == "")
             {
-                _skillStatLog += "(";
+                _skillStatLog += "（";
             }
             else
             {
@@ -56,7 +56,7 @@ public class BattleLogicManager
         {
             if (_skillStatLog == "")
             {
-                _skillStatLog += "(";
+                _skillStatLog += "（";
             }
             else
             {
@@ -68,7 +68,7 @@ public class BattleLogicManager
 
         if (_skillStatLog != "")
         {
-            log += _skillStatLog + ")";
+            log += _skillStatLog + "）";
         }
 
         string _extraLog = "";
@@ -85,7 +85,12 @@ public class BattleLogicManager
                 _extraLog += "和";
             }
 
-            _extraLog += "提升了<color=#FFFF00>" + _maxStatePointUp + "最大狀態值</color>。";
+            _extraLog += "提升了<color=#FFFF00>" + _maxStatePointUp + "最大狀態值</color>";
+        }
+
+        if (_extraLog != "")
+        {
+            _extraLog += "。";
         }
 
         if (_extraLog == "")
