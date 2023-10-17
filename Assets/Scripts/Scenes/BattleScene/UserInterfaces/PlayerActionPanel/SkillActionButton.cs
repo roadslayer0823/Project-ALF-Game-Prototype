@@ -29,11 +29,6 @@ public class SkillActionButton : MonoBehaviour
         SetOnClick(ClickOnActionButton);
     }
 
-    private void Start()
-    {
-        this.actionButton.onClick.AddListener(ClickOnActionButton);
-    }
-
     public void SetSelectedSkill( CharacterSkill selectedSkill )
     {
         this.selectedSkill = selectedSkill;
@@ -138,10 +133,18 @@ public class SkillActionButton : MonoBehaviour
         }
     }
 
-    public void EnableActionButton( float countdownTime )
+    public void EnableActionButton( float countdownTime = 0.0f )
     {
         this.actionButton.interactable = true;
-        this.countdownTimer.StartCountdownTimer( countdownTime );
+
+        if (countdownTime > 0)
+        {
+            this.countdownTimer.StartCountdownTimer( countdownTime );
+        }
+        else
+        {
+            this.countdownTimer.HideTimerImage();
+        }
     }
 
     public void DisableActionButton()

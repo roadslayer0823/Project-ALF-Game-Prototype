@@ -1,6 +1,6 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Subskill = DatabaseManager.Subskill;
 
 public class BattleGameManager : MonoBehaviour
 {
@@ -154,15 +154,25 @@ public class BattleGameManager : MonoBehaviour
     {
         gameCharacter.OnEventTriggered( this, animationEvent );
 
-        if (animationEvent == BattleAnimationManager.AnimationEvent.OnBeingInBreakStatus)
+        switch ( animationEvent )
         {
-            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_BREAK );
-            this.battleFlowManager.GetCurrentRound().UpdateATLSlotStatuses( gameCharacter, false );
-        }
-        else if (animationEvent == BattleAnimationManager.AnimationEvent.OnBeingInBreakStatus)
-        {
-            CharacterSkill _currentCasterSkill = battleAnimationManager.GetCurrentCaster().GetCurrentSkill();
-            gameCharacter.GetCurrentSkill().AddObservedSkillData( _currentCasterSkill.GetCharacterSubskillData().GetSubskillData().FeatureId );
+            case BattleAnimationManager.AnimationEvent.OnBeingInBreakStatus:
+
+                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_BREAK );
+                this.battleFlowManager.GetCurrentRound().UpdateATLSlotStatuses( gameCharacter, false );
+
+                break;
+
+            case BattleAnimationManager.AnimationEvent.OnSkillBeingObserved:
+
+                CharacterSkill _gameCharacterCurrentSkill = gameCharacter.GetCurrentSkill();
+                CharacterSkill _currentCasterSkill = battleAnimationManager.GetCurrentCaster().GetCurrentSkill();
+                Subskill _currentCasterSubskillData = _currentCasterSkill.GetCharacterSubskillData().GetSubskillData();
+
+                _gameCharacterCurrentSkill.AddObservedSkillData( _currentCasterSubskillData.FeatureId, _currentCasterSubskillData.DisplayName, _currentCasterSkill.GetSkillData().skillType,
+                                                                 _gameCharacterCurrentSkill.GetCharacterSubskillData().GetSubskillData().ObservationRate );
+
+                break;
         }
     }
 

@@ -59,7 +59,9 @@ public class BattleAnimationManager : MonoBehaviour
         OnDefenseWin,
         OnDefenseWin_Cutoff,
         OnBeingInBreakStatus,
-        OnSkillBeingObserved
+        OnSkillBeingObserved,
+        OnActiveSkillStarted,
+        OnActiveSkillFinished
     }
 
     public void Initialize( Action<bool> onBattleEndedCallback )
@@ -129,7 +131,10 @@ public class BattleAnimationManager : MonoBehaviour
 
             _attacker.SetCurrentSkill( _attackerSkill, _attackTarget );
             BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget, out _log );
+            currentCaster = _attacker;
+
             BattleLog.Instance.AddOnScreenBattleLog( _log );
+
             _attacker.TriggerEvent( AnimationEvent.SetCharacter );
             _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
 
@@ -139,6 +144,11 @@ public class BattleAnimationManager : MonoBehaviour
             _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
             _attackTarget.TriggerEvent( AnimationEvent.OnDefensePartA );
             StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
+
+            if (_attacker.GetCurrentSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+            {
+                _attackTarget.TriggerEvent( AnimationEvent.OnActiveSkillStarted );
+            }
 
             yield return StartCoroutine( ZoomInCameraToTarget( _attacker, 1.0f ) );
 
@@ -198,6 +208,7 @@ public class BattleAnimationManager : MonoBehaviour
                     _attacker.SetSkillCountdownTime( _skillCountdownTime );
                     _attacker.TriggerEvent( AnimationEvent.OnAttackPartB );
                     StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
+                    StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
 
                     if (_attackerCharacterPartB != NO_ANIMATION)
                     {
@@ -243,6 +254,8 @@ public class BattleAnimationManager : MonoBehaviour
                     CharacterSkill _repulseSkill = _attackTargetNextATL.GetSelectedSkill().GetCharacterSubskillData().GetSelectedRepulseSkill();
                     _attackTarget.SetCurrentSkill( _repulseSkill, _attackTarget );
                     BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
+                    currentCaster = _attackTarget;
+
                     BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                     yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attackTarget.GetCurrentSkill() ) );
@@ -256,6 +269,9 @@ public class BattleAnimationManager : MonoBehaviour
                     {
                         StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB + "_" + REPULSE_ANIMATION_NAME ) );
                     }
+
+                    _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                    StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
 
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                     yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
@@ -375,6 +391,9 @@ public class BattleAnimationManager : MonoBehaviour
 
                     yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attackTarget.GetCurrentSkill() ) );
 
+                    _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                    StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
+
                     if (_attackerCharacterPartB != NO_ANIMATION)
                     {
                         yield return StartCoroutine( PlayCharacterAnimation( _attacker, _attackerCharacterPartB ) );
@@ -390,6 +409,8 @@ public class BattleAnimationManager : MonoBehaviour
 
                     CharacterSkill _attackTargetSkill = _attackTarget.GetCurrentSkill();
                     BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
+                    currentCaster = _attackTarget;
+
                     BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                     Subskill _attackTargetSubskillData = _attackTargetSkill.GetCharacterSubskillData().GetSubskillData();
@@ -522,9 +543,12 @@ public class BattleAnimationManager : MonoBehaviour
         attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
 
         string _log = "";
+
         battleFlowRound.GoToTargetATL( battleFlowRound.GetNextATL( attacker ), false );
         attacker.SetCurrentSkill( derivedSkill );
         BattleLogicManager.ExecuteCasterSkillOnUse( attacker, attackTarget, out _log );
+        currentCaster = attacker;
+
         BattleLog.Instance.AddOnScreenBattleLog( _log );
 
         yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
