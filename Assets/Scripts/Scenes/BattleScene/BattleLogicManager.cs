@@ -75,7 +75,7 @@ public class BattleLogicManager
 
         if (_statePointCost > 0)
         {
-            _extraLog += "，消耗了<color=#FFFF00>" + _statePointCost + "狀態值</color>";
+            _extraLog += "，消耗了<color=#FFFF00>" + _statePointCost + TerminologyManager.STATE_POINT + "</color>";
         }
 
         if (_maxStatePointUp > 0)
@@ -85,7 +85,7 @@ public class BattleLogicManager
                 _extraLog += "和";
             }
 
-            _extraLog += "提升了<color=#FFFF00>" + _maxStatePointUp + "最大狀態值</color>";
+            _extraLog += "提升了<color=#FFFF00>" + _maxStatePointUp + "最大" + TerminologyManager.STATE_POINT +"</color>";
         }
 
         if (_extraLog != "")
@@ -191,7 +191,7 @@ public class BattleLogicManager
                 _extraLog += "、";
             }
 
-            _extraLog += "<color=#FFFF00>" + statePointDamage + "狀態值傷害</color>";
+            _extraLog += "<color=#FFFF00>" + statePointDamage + TerminologyManager.STATE_POINT + "傷害</color>";
         }
 
         if (_extraLog != "")
