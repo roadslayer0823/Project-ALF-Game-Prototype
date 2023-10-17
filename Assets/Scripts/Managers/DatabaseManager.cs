@@ -582,6 +582,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [HideInInspector] public string SkillTypeString { get; private set; }
         public enum SkillType
         {
+            none,
             active,
             backend,
             repulse,

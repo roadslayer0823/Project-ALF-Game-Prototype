@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
@@ -17,6 +15,7 @@ public class CharacterSkill
     {
         this.skillData = skillData;
         this.owner = owner;
+        this.observedSkillDataList = new List<ObservedSkillData>();
     }
 
     public void SetupCharacterSubskillList()
@@ -86,9 +85,62 @@ public class CharacterSkill
 
 #region Observed Skill Data
 
-    public void AddObservedSkillData( int featureId )
+    public void AddObservedSkillData( int featureId, string skillName, Skill.SkillType skillType, float observedRate )
     {
-        this.observedSkillDataList.Add( new ObservedSkillData( featureId, GameConfiguration.Instance.GetBattleConfiguration().GetMaximumObservedRate() ) );
+        if (skillType != Skill.SkillType.active
+            && skillType != Skill.SkillType.backend)
+        {
+            return;
+        }
+
+        int _numberOfSkillDataMatched = 0;
+        ObservedSkillData _firstSkillDataMatched = null;
+        ObservedSkillData _skillDataFound = null;
+        for (int i = 0; i < this.observedSkillDataList.Count; i++)
+        {
+            ObservedSkillData _observedSkillData = this.observedSkillDataList[ i ];
+
+            if (_observedSkillData.GetFeatureId() == featureId)
+            {
+                _skillDataFound = _observedSkillData;
+                break;
+            }
+
+            if (_observedSkillData.GetSkillType() == skillType)
+            {
+                if (_firstSkillDataMatched == null)
+                {
+                    _firstSkillDataMatched = _observedSkillData;
+                }
+
+                _numberOfSkillDataMatched++;
+            }
+        }
+
+        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
+
+        if (_skillDataFound == null)
+        {
+            int _maximumObservedSkills = 0;
+            if (skillType == Skill.SkillType.active)
+            {
+                _maximumObservedSkills = _battleConfiguration.GetMaximumObservedActiveSkills();
+            }
+            else if (skillType == Skill.SkillType.backend)
+            {
+                _maximumObservedSkills = _battleConfiguration.GetMaximumObservedBackendSkills();
+            }
+
+            if (_numberOfSkillDataMatched >= _maximumObservedSkills)
+            {
+                this.observedSkillDataList.Remove( _firstSkillDataMatched );
+            }
+
+            _skillDataFound = new ObservedSkillData( featureId, skillName, skillType, _battleConfiguration.GetMaximumObservedRate() );
+            this.observedSkillDataList.Add( _skillDataFound );
+        }
+
+        _skillDataFound.IncreaseObservedRate( observedRate );
     }
 
     public ObservedSkillData GetObservedSkillData( int featureId )
@@ -108,6 +160,11 @@ public class CharacterSkill
     public void ClearObservedSkillDataList()
     {
         this.observedSkillDataList.Clear();
+    }
+
+    public List<ObservedSkillData> GetObservedSkillDataList()
+    {
+        return this.observedSkillDataList;
     }
 
 #endregion

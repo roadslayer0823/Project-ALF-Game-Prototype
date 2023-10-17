@@ -31,6 +31,14 @@ public class PlayerActionPanel : MonoBehaviour
     private const string AUDIO_ID_POPUP = "popup";
     private const string AUDIO_ID_PASSIVE_FLASH = "passive_flash";
 
+    public enum SkillActionButtonType
+    {
+        None,
+        Defense,
+        Evasion,
+        Observation
+    }
+
     public void Initialize( Action onExecuteButtonClickedCallback, Action onShowActiveSkillSelectionPanelCallback, Action onShowBackendSkillSelectionPanelCallback)
     {
         this.onExecuteButtonClickedCallback = onExecuteButtonClickedCallback;
@@ -194,6 +202,33 @@ public class PlayerActionPanel : MonoBehaviour
                 else
                 {
                     _skillActionButton.DisableActionButton();
+                }
+            }
+        }
+    }
+
+    public void UpdateSkillActionButtons( SkillActionButtonType skillActionButtonType, bool isActionButtonEnabled, float countdownTime = 0.0f )
+    {
+        for (int i = 0; i < this.skillActionButtons.Length; i++)
+        {
+            SkillActionButton _skillActionButton = this.skillActionButtons[ i ];
+            CharacterSkill _skill = _skillActionButton.GetSelectedSkill();
+            if (_skill != null)
+            {
+                Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
+
+                if (( skillActionButtonType == SkillActionButtonType.Defense && _subskillData.IsDefendingSkill )
+                    || ( skillActionButtonType == SkillActionButtonType.Evasion && _subskillData.IsEvadingSkill )
+                    || ( skillActionButtonType == SkillActionButtonType.Observation && _subskillData.IsObservingSkill ))
+                {
+                    if (isActionButtonEnabled)
+                    {
+                        _skillActionButton.EnableActionButton( countdownTime );
+                    }
+                    else
+                    {
+                        _skillActionButton.DisableActionButton();
+                    }
                 }
             }
         }

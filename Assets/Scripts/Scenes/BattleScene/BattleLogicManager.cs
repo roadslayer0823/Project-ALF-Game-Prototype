@@ -14,12 +14,12 @@ public class BattleLogicManager
     {
         CharacterSkill _skill = caster.GetCurrentSkill();
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
-        GameConfiguration.Battle _battle = GameConfiguration.Instance.GetBattleConfiguration();
+        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
 
-        float _statePointCost = _subskillData.StatePointCost * _battle.GetStatePointCostMultiplier();
+        float _statePointCost = _subskillData.StatePointCost * _battleConfiguration.GetStatePointCostMultiplier();
         caster.MinusCurrentStatePoint( _statePointCost, false );
 
-        float _maxStatePointUp = _subskillData.MaxStatePointUp * _battle.GetMaxStatePointUpMultiplier();
+        float _maxStatePointUp = _subskillData.MaxStatePointUp * _battleConfiguration.GetMaxStatePointUpMultiplier();
         caster.AddMaximumStatePoint( _maxStatePointUp );
 
         log = "<color=#FFFF00>" + caster.GetCharacterName() + "</color>" + "對" + "<color=#FFFF00>" + target.GetCharacterName() + "</color>" + "使出了"
@@ -151,18 +151,18 @@ public class BattleLogicManager
         }
 
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
-        GameConfiguration.Battle _battle = GameConfiguration.Instance.GetBattleConfiguration();
+        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
 
         // If the target does not take the health damage, then it will take the stress damage.
         if (!hasAttackDamage && hasStressDamage)
         {
-            stressDamage = _subskillData.StressDamage * _battle.GetStressDamageMultiplier();
+            stressDamage = _subskillData.StressDamage * _battleConfiguration.GetStressDamageMultiplier();
             target.AddCurrentStressValue( stressDamage );
         }
 
         if (hasStatePointDamage)
         {
-            statePointDamage = _subskillData.StatePointDamage * _battle.GetStateDamageMultiplier();
+            statePointDamage = _subskillData.StatePointDamage * _battleConfiguration.GetStateDamageMultiplier();
             target.MinusCurrentStatePoint( statePointDamage, true );
         }
 
@@ -202,10 +202,10 @@ public class BattleLogicManager
 
     public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target, GameCharacter.CharacterActionType actionType )
     {
-        GameConfiguration.Battle _battle = GameConfiguration.Instance.GetBattleConfiguration();
+        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
 
-        float _attackDamage = ( ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * _battle.GetAttackDamageMultiplier() )
-                              * ( ( target.GetIsInBreakStatus() ) ? _battle.GetBreakDamageMultiplier() : 1.0f ) );
+        float _attackDamage = ( ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * _battleConfiguration.GetAttackDamageMultiplier() )
+                              * ( ( target.GetIsInBreakStatus() ) ? _battleConfiguration.GetBreakDamageMultiplier() : 1.0f ) );
 
         CharacterSkill _targetSkill = target.GetCurrentSkill();
         if (_targetSkill != null)
@@ -221,7 +221,7 @@ public class BattleLogicManager
             if (actionType == GameCharacter.CharacterActionType.Repulse
                 && _targetSubskillData.FailedRepulseDamageRate > 0)
             {
-                _attackDamage -= _targetSubskillData.AttackDamage * _battle.GetAttackDamageMultiplier() * _targetSubskillData.FailedRepulseDamageRate;
+                _attackDamage -= _targetSubskillData.AttackDamage * _battleConfiguration.GetAttackDamageMultiplier() * _targetSubskillData.FailedRepulseDamageRate;
             }
         }
 

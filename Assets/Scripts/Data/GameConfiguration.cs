@@ -34,6 +34,8 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private float stateDamageMultiplier = 0.0f;
         private float lowestMaximumStatePoint = 0.0f;
         private float maximumObservedRate = 0.0f;
+        private int maximumObservedActiveSkills = 0;
+        private int maximumObservedBackendSkills = 0;
 
         private const string NUMBER_OF_ATL_SLOTS = "number_of_atl_slots";
         private const string MAXIMUM_SELECTED_ACTIVE_SKILLS = "maximum_selected_active_skills";
@@ -47,6 +49,8 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private const string STATE_DAMAGE_MULTIPLIER = "state_damage_multiplier";
         private const string LOWEST_MAXIMUM_STATE_POINT = "lowest_maximum_state_point";
         private const string MAXIMUM_OBSERVED_RATE = "maximum_observed_rate";
+        private const string MAXIMUM_OBSERVED_ACTIVE_SKILLS = "maximum_observed_active_skills";
+        private const string MAXIMUM_OBSERVED_BACKEND_SKILLS = "maximum_observed_backend_skills";
 
         public Battle( List<Configuration> battleConfigurationList )
         {
@@ -94,6 +98,14 @@ public class GameConfiguration : Singleton<GameConfiguration>
 
                     case MAXIMUM_OBSERVED_RATE:
                         this.maximumObservedRate = _configurationValue;
+                        break;
+
+                    case MAXIMUM_OBSERVED_ACTIVE_SKILLS:
+                        this.maximumObservedActiveSkills = ( int )_configurationValue;
+                        break;
+
+                    case MAXIMUM_OBSERVED_BACKEND_SKILLS:
+                        this.maximumObservedBackendSkills = ( int )_configurationValue;
                         break;
 
                     default:
@@ -160,6 +172,16 @@ public class GameConfiguration : Singleton<GameConfiguration>
         public float GetMaximumObservedRate()
         {
             return this.maximumObservedRate;
+        }
+
+        public int GetMaximumObservedActiveSkills()
+        {
+            return this.maximumObservedActiveSkills;
+        }
+
+        public int GetMaximumObservedBackendSkills()
+        {
+            return this.maximumObservedBackendSkills;
         }
     }
 

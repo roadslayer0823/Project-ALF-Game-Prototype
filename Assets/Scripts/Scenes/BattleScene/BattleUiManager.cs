@@ -192,7 +192,12 @@ public class BattleUiManager : MonoBehaviour
         this.skillSelectionPanel.ShowBackendSkillSelectionPanel();
     }
 
-    #endregion
+    public PlayerActionPanel GetPlayerActionPanel()
+    {
+        return this.playerActionPanel;
+    }
+
+#endregion
 
 #region Character Info Panel
 
