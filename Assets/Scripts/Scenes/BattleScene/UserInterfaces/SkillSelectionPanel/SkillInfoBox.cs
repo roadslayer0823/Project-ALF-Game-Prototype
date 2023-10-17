@@ -12,6 +12,7 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI skillType;
     [SerializeField] private TextMeshProUGUI displayName;
     [SerializeField] private TextMeshProUGUI attackDamageValue;
+    [SerializeField] private TextMeshProUGUI statePointCostTitle;
     [SerializeField] private TextMeshProUGUI statePointCostValue;
     [SerializeField] private TextMeshProUGUI strengthValue;
     [SerializeField] private TextMeshProUGUI accuracyValue;
@@ -78,6 +79,9 @@ public class SkillInfoBox : MonoBehaviour
 
         // Display Name
         this.displayName.SetText(_subskillData.DisplayName);
+
+        //State Point Title
+        this.statePointCostTitle.SetText(TerminologyManager.STATE_POINT+"點數");
 
         if (_subskillData.AttackDamage > 0) // Attack Damage
         {
