@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TerminologyManager : MonoBehaviour
+public class TerminologyManager :
 {
     public const string STATE_POINT = "以太值";
     public const string BREAK = "崩潰";
