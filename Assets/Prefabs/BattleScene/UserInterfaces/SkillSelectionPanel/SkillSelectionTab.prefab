@@ -874,7 +874,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u72C0\u614B\u503C\u9EDE\u6578"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
   m_sharedMaterial: {fileID: -8331989788932644591, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
@@ -1284,6 +1284,7 @@ MonoBehaviour:
   skillType: {fileID: 6045989707172890192}
   displayName: {fileID: 8872307289537047387}
   attackDamageValue: {fileID: 2009537845378419568}
+  statePointCostTitle: {fileID: 916990371823929039}
   statePointCostValue: {fileID: 8601711330666135456}
   strengthValue: {fileID: 7356346219715666879}
   accuracyValue: {fileID: 5582929520360266103}
@@ -3537,7 +3538,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 52.2
+  m_fontSize: 29.75
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -7759,7 +7760,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 63.4
+  m_fontSize: 36.1
   m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 1
