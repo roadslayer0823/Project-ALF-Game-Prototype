@@ -8,12 +8,25 @@ public class PlayerCharacter : GameCharacter
         BattleUiManager _battleUiManager = battleGameManager.GetBattleUiManager();
         BattleFlowManager _battleFlowManager = battleGameManager.GetBattleFlowManager();
         BattleFlowATL _nextATL = _battleFlowManager.GetCurrentRound().GetNextATL( this );
+        PlayerActionPanel _playerActionPanel = _battleUiManager.GetPlayerActionPanel();
 
         switch ( animationEvent )
         {
             case AnimationEvent.SetCharacter:
 
-                _battleUiManager.UpdatePlayerActionPanelCharacter( this );
+                _playerActionPanel.SetSelectedGameCharacter( this );
+
+                break;
+
+            case AnimationEvent.OnActiveSkillStarted:
+
+                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Observation, base.IsAbleToObserve() );
+
+                break;
+
+            case AnimationEvent.OnActiveSkillFinished:
+
+                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Observation, false );
 
                 break;
 
@@ -23,13 +36,7 @@ public class PlayerCharacter : GameCharacter
                 CharacterSkill _derivedSkill = null;
                 bool _isAbleToDerive = base.IsAbleToDerive( out _derivedSkill );
 
-                _battleUiManager.UpdatePlayerActionPanelButtons(
-                    qteSkill: _derivedSkill,
-                    canDefend: false,
-                    canEvade: false,
-                    canObserve: base.IsAbleToObserve(),
-                    countdownTime: base.GetSkillCountdownTime()
-                    );
+                _playerActionPanel.ShowQTEActionButton( _derivedSkill, base.GetSkillCountdownTime() );
 
                 break;
 
@@ -38,13 +45,9 @@ public class PlayerCharacter : GameCharacter
                 CharacterSkill _repulseSkill = null;
                 bool _isAbleToRepulse = base.IsAbleToRepulse( _nextATL, out _repulseSkill );
 
-                _battleUiManager.UpdatePlayerActionPanelButtons(
-                    qteSkill: _repulseSkill,
-                    canDefend: base.IsAbleToDefend(),
-                    canEvade: base.IsAbleToDefend(),
-                    canObserve: base.IsAbleToObserve(),
-                    countdownTime: base.GetSkillCountdownTime()
-                    );
+                _playerActionPanel.ShowQTEActionButton( _repulseSkill, base.GetSkillCountdownTime() );
+                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Defense, base.IsAbleToDefend(), base.GetSkillCountdownTime() );
+                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Evasion, base.IsAbleToEvade(), base.GetSkillCountdownTime() );
 
                 break;
 
@@ -53,13 +56,7 @@ public class PlayerCharacter : GameCharacter
                 CharacterSkill _counterSkill = null;
                 bool _isAbleToCounter = base.IsAbleToCounter( out _counterSkill );
 
-                _battleUiManager.UpdatePlayerActionPanelButtons(
-                    qteSkill: _counterSkill,
-                    canDefend: false,
-                    canEvade: false,
-                    canObserve: base.IsAbleToObserve(),
-                    countdownTime: base.GetSkillCountdownTime()
-                    );
+                _playerActionPanel.ShowQTEActionButton( _counterSkill, base.GetSkillCountdownTime() );
 
                 break;
 
@@ -68,7 +65,9 @@ public class PlayerCharacter : GameCharacter
             case AnimationEvent.OnRepulseWin_Cutoff:
             case AnimationEvent.OnDefenseWin_Cutoff:
 
-                _battleUiManager.DisablePlayerActionPanelButtons();
+                _playerActionPanel.HideQTEActionButton();
+                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Defense, false );
+                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Evasion, false );
 
                 break;
         }

@@ -49,4 +49,9 @@ public class CountdownTimer : MonoBehaviour
     {
         this.timerImage.fillAmount = ( Time.time - this.startTime ) / this.countdownTime;
     }
+
+    public void HideTimerImage()
+    {
+        this.timerImage.fillAmount = 0.0f;
+    }
 }
