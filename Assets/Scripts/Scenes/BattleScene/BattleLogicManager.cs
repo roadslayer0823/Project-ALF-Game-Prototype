@@ -1,3 +1,4 @@
+using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
 public class BattleLogicManager
@@ -25,56 +26,101 @@ public class BattleLogicManager
         log = "<color=#FFFF00>" + caster.GetCharacterName() + "</color>" + "對" + "<color=#FFFF00>" + target.GetCharacterName() + "</color>" + "使出了"
             + "<color=#FFFF00>" + _subskillData.DisplayName + "</color>";
 
+        string _skillTypeLog = "";
+
+        switch ( _skill.GetSkillData().skillType )
+        {
+            case Skill.SkillType.active:
+
+                _skillTypeLog = "主動技能";
+
+                break;
+
+            case Skill.SkillType.backend:
+
+                _skillTypeLog = "後台技能";
+
+                break;
+
+            case Skill.SkillType.repulse:
+
+                _skillTypeLog = "迎擊技能";
+
+                break;
+
+            case Skill.SkillType.derived:
+
+                _skillTypeLog = "派生技能";
+
+                break;
+
+            case Skill.SkillType.counter:
+
+                _skillTypeLog = "反擊技能";
+
+                break;
+        }
+
+        if (_skillTypeLog != "")
+        {
+            log += " （" + _skillTypeLog;
+        }
+
         string _skillStatLog = "";
 
         if (_subskillData.Strength > 1)
         {
             if (_skillStatLog == "")
             {
-                _skillStatLog += "（";
+                _skillStatLog += "：";
             }
 
-            _skillStatLog += $"強度+{_subskillData.Strength - 1}";
+            _skillStatLog += $"強度+{ _subskillData.Strength - 1 }";
         }
 
         if (_subskillData.Accuracy > 1)
         {
             if (_skillStatLog == "")
             {
-                _skillStatLog += "（";
+                _skillStatLog += "：";
             }
             else
             {
                 _skillStatLog += "，";
             }
 
-            _skillStatLog += $"命中+{_subskillData.Accuracy - 1}";
+            _skillStatLog += $"命中+{ _subskillData.Accuracy - 1 }";
         }
 
         if (_subskillData.Evasion > 1)
         {
             if (_skillStatLog == "")
             {
-                _skillStatLog += "（";
+                _skillStatLog += "：";
             }
             else
             {
                 _skillStatLog += "，";
             }
 
-            _skillStatLog += $"迴避+{_subskillData.Evasion - 1}";
+            _skillStatLog += $"迴避+{ _subskillData.Evasion - 1 }";
         }
 
         if (_skillStatLog != "")
         {
-            log += _skillStatLog + "）";
+            log += _skillStatLog;
+        }
+
+        if (_skillTypeLog != "")
+        {
+            log += "）";
         }
 
         string _extraLog = "";
 
         if (_statePointCost > 0)
         {
-            _extraLog += "，消耗了<color=#FFFF00>" + _statePointCost + "狀態值</color>";
+            _extraLog += "，消耗了<color=#FFFF00>" + _statePointCost + TerminologyManager.STATE_POINT + "</color>";
         }
 
         if (_maxStatePointUp > 0)
@@ -84,7 +130,7 @@ public class BattleLogicManager
                 _extraLog += "和";
             }
 
-            _extraLog += "提升了<color=#FFFF00>" + _maxStatePointUp + "最大狀態值</color>";
+            _extraLog += "提升了<color=#FFFF00>" + _maxStatePointUp + "最大" + TerminologyManager.STATE_POINT +"</color>";
         }
 
         if (_extraLog != "")
@@ -191,7 +237,7 @@ public class BattleLogicManager
                 _extraLog += "、";
             }
 
-            _extraLog += "<color=#FFFF00>" + statePointDamage + "狀態值傷害</color>";
+            _extraLog += "<color=#FFFF00>" + statePointDamage + TerminologyManager.STATE_POINT + "傷害</color>";
         }
 
         if (_extraLog != "")
@@ -239,14 +285,17 @@ public class BattleLogicManager
         winner = null;
         loser = null;
 
+        int _attackerSkillStatIncrement = attacker.GetCurrentSkillStatIncrement();
         Subskill _attackerSubskillData = attacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+
+        int _defenderSkillStatIncrement = defender.GetCurrentSkillStatIncrement();
         Subskill _defenderSubskillData = defender.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
 
-        int _attackerSkillStrength = _attackerSubskillData.Strength;
-        int _defenderSkillStrength = _defenderSubskillData.Strength;
+        int _attackerSkillStrength = _attackerSubskillData.Strength + _attackerSkillStatIncrement;
+        int _defenderSkillStrength = _defenderSubskillData.Strength + _defenderSkillStatIncrement;
 
-        int _attackerSkillAccuracy = _attackerSubskillData.Accuracy;
-        int _defenderSkillEvasion = _defenderSubskillData.Evasion;
+        int _attackerSkillAccuracy = _attackerSubskillData.Accuracy + _attackerSkillStatIncrement;
+        int _defenderSkillEvasion = _defenderSubskillData.Evasion + _defenderSkillStatIncrement;
 
         int _attackerSkillEffectType = ( int )_attackerSubskillData.EffectType;
         int _defenderSkillEffectType = ( int )_defenderSubskillData.EffectType;

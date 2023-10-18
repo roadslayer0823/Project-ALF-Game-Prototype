@@ -166,11 +166,17 @@ public class BattleGameManager : MonoBehaviour
             case BattleAnimationManager.AnimationEvent.OnSkillBeingObserved:
 
                 CharacterSkill _gameCharacterCurrentSkill = gameCharacter.GetCurrentSkill();
-                CharacterSkill _currentCasterSkill = battleAnimationManager.GetCurrentCaster().GetCurrentSkill();
+                Subskill _gameCharacterCurrentSubskillData = _gameCharacterCurrentSkill.GetCharacterSubskillData().GetSubskillData();
+                GameCharacter _currentCaster = battleAnimationManager.GetCurrentCaster();
+                CharacterSkill _currentCasterSkill = _currentCaster.GetCurrentSkill();
                 Subskill _currentCasterSubskillData = _currentCasterSkill.GetCharacterSubskillData().GetSubskillData();
 
-                _gameCharacterCurrentSkill.AddObservedSkillData( _currentCasterSubskillData.FeatureId, _currentCasterSubskillData.DisplayName, _currentCasterSkill.GetSkillData().skillType,
-                                                                 _gameCharacterCurrentSkill.GetCharacterSubskillData().GetSubskillData().ObservationRate );
+                float _currentObservedRate = _gameCharacterCurrentSkill.AddObservedSkillData( _currentCasterSubskillData.FeatureId, _currentCasterSubskillData.DisplayName, _currentCasterSkill.GetSkillData().skillType,
+                                                                                              _gameCharacterCurrentSubskillData.ObservationRate );
+
+                BattleLog.Instance.AddOnScreenBattleLog( "<color=#FFFF00>" + gameCharacter.GetCharacterName() + "</color>使用<color=#FFFF00>" + _gameCharacterCurrentSubskillData.DisplayName + "</color>（看破技能）來看破<color=#FFFF00>"
+                                                         + _currentCaster.GetCharacterName() + "</color>使用的<color=#FFFF00>" + _currentCasterSubskillData.DisplayName
+                                                         + "</color>和對<color=#FFFF00>" + _currentCasterSubskillData.DisplayName + "</color>的看破值現為<color=#FFFF00>" + Mathf.RoundToInt( _currentObservedRate * 100 ) + "%</color>。" );
 
                 break;
         }

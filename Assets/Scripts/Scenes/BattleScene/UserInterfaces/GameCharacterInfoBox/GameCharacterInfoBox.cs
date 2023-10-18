@@ -58,10 +58,45 @@ public class GameCharacterInfoBox : MonoBehaviour
                 if (_characterSubskillData != null)
                 {
                     DatabaseManager.Subskill _subskillData = _characterSubskillData.GetSubskillData();
+                    int _skillStatIncrement = selectedCharacter.GetCurrentSkillStatIncrement();
+
                     _skillInfoString = "<size=120%><color=#FFFF00><b>" + _subskillData.DisplayName + "</b></color></size>";
                     _skillInfoString += ( _subskillData.Strength > 1 ) ? "\n強度 +" + ( _subskillData.Strength - 1 ) : "";
+
+                    if (_skillStatIncrement > 0 && _subskillData.Strength > 0)
+                    {
+                        if (_subskillData.Strength == 1)
+                        {
+                            _skillInfoString += "\n強度";
+                        }
+
+                        _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color>";
+                    }
+
                     _skillInfoString += ( _subskillData.Accuracy > 1 ) ? "\n命中 +" + ( _subskillData.Accuracy - 1 ) : "";
+
+                    if (_skillStatIncrement > 0 && _subskillData.Accuracy > 0)
+                    {
+                        if (_subskillData.Accuracy == 1)
+                        {
+                            _skillInfoString += "\n命中";
+                        }
+
+                        _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color>";
+                    }
+
                     _skillInfoString += ( _subskillData.Evasion > 1 ) ? "\n迴避 +" + ( _subskillData.Evasion - 1 ) : "";
+
+                    if (_skillStatIncrement > 0 && _subskillData.Evasion > 0)
+                    {
+                        if (_subskillData.Evasion == 1)
+                        {
+                            _skillInfoString += "\n迴避";
+                        }
+
+                        _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color>";
+                    }
+
                     _skillInfoString += ( _subskillData.EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide ) ? "\n廣角" : "";
                 }
             }
