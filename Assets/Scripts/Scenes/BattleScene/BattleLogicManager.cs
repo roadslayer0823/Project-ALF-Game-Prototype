@@ -192,6 +192,7 @@ public class BattleLogicManager
             if (attackDamage > 0)
             {
                 target.MinusCurrentHealthPoint( attackDamage );
+                target.MinusVirtualHealthPoint( attackDamage );
             }
         }
 

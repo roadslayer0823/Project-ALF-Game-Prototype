@@ -23,9 +23,6 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     [SerializeField] private Button selectionButton;
     [SerializeField] private Button minusLevelButton;
     [SerializeField] private Button plusLevelButton;
-    [SerializeField] private GameObject observationRate;
-    [SerializeField] private TextMeshProUGUI observationPercentageText;
-    [SerializeField] private Image observationPercentageBar;
 
     private SkillSelectionListBox skillSelectionListBox = null;
     private CharacterSkill characterSkill = null;

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Subskill = DatabaseManager.Subskill;
+using System.Collections.Generic;
 
 public class SkillInfoBox : MonoBehaviour
 {
@@ -34,10 +35,14 @@ public class SkillInfoBox : MonoBehaviour
 
     [Header("ObservedSkillInfo")]
     [SerializeField] private GameObject observedSkillInfo = null;
+    [SerializeField] private ObservedSkillBox observedSkillBoxPrefab = null;
+    [SerializeField] private RectTransform observedSkillListContent = null;
 
-    public void Show(CharacterSubskill characterSubskill)
+    private List<ObservedSkillBox> observedSkillBoxList = new List<ObservedSkillBox>();
+
+    public void Show(CharacterSkill characterSkill)
     {
-        if (characterSubskill == null)
+        if (characterSkill == null)
         {
             Hide();
             return;
@@ -45,7 +50,7 @@ public class SkillInfoBox : MonoBehaviour
 
         this.skillInformation.gameObject.SetActive(true);
 
-        SetupSkillInfomation(characterSubskill);
+        SetupSkillInfomation(characterSkill);
     }
 
     public void Hide()
@@ -53,11 +58,13 @@ public class SkillInfoBox : MonoBehaviour
         this.skillInformation.gameObject.SetActive(false);
     }
 
-    private void SetupSkillInfomation(CharacterSubskill characterSubskill)
+    private void SetupSkillInfomation(CharacterSkill characterSkill)
     {
-        if (characterSubskill.GetSubskillData().IsObservingSkill)
+        CharacterSubskill _characterSubskill = characterSkill.GetCharacterSubskillData();
+
+        if (_characterSubskill.GetSubskillData().IsObservingSkill)
         {
-            SetupObservedSkillList(characterSubskill);
+            SetupObservedSkillList(characterSkill);
         }
         else
         {
@@ -66,7 +73,7 @@ public class SkillInfoBox : MonoBehaviour
             this.observedSkillInfo.SetActive(false);
         }
 
-        Subskill _subskillData = characterSubskill.GetSubskillData();
+        Subskill _subskillData = _characterSubskill.GetSubskillData();
 
         if (_subskillData.Prefix.ToString() == "-") // Prefix
         {
@@ -153,12 +160,36 @@ public class SkillInfoBox : MonoBehaviour
         }
     }
 
-    private void SetupObservedSkillList(CharacterSubskill characterSubskill)
+    private void SetupObservedSkillList(CharacterSkill characterSkill)
     {
         this.skillDataBox.SetActive(false);
         this.observedSkillListBox.SetActive(true);
         this.observedSkillInfo.SetActive(false); // Change back to true in future if needed
 
-        //TODO: List all observed skills. 
+        ClearObservedSkillList();
+
+        Debug.Log("No of element: " + characterSkill.GetObservedSkillDataList().Count);
+
+        // Initialize the SkillSelectionBox so that the skill can be display on it respectively. 
+        for (int i = 0; i < characterSkill.GetObservedSkillDataList().Count; i++)
+        {
+            ObservedSkillData _observedSkillData = characterSkill.GetObservedSkillDataList()[i];
+
+            ObservedSkillBox _observedSkillBox = Instantiate(this.observedSkillBoxPrefab, this.observedSkillListContent, false);
+            _observedSkillBox.Initialize(_observedSkillData);
+
+            this.observedSkillBoxList.Add(_observedSkillBox);
+        }
+    }
+
+    private void ClearObservedSkillList()
+    {
+        for (int i = 0; i < this.observedSkillBoxList.Count; i++)
+        {
+            ObservedSkillBox _observedSkillBox = this.observedSkillBoxList[i];
+            Destroy(_observedSkillBox.gameObject);
+        }
+
+        this.observedSkillBoxList.Clear();
     }
 }

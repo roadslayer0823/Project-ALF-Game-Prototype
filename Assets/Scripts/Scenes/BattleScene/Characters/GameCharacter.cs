@@ -22,6 +22,7 @@ public class GameCharacter : MonoBehaviour
     protected string characterName = null;
     protected float maximumHealthPoint = 0.0f;
     protected float currentHealthPoint = 0.0f;
+    protected float virtualHealthPoint = 0.0f;
     protected float originalStatePoint = 0.0f;
     protected float maximumStatePoint = 0.0f;
     protected float currentStatePoint = 0.0f;
@@ -73,6 +74,7 @@ public class GameCharacter : MonoBehaviour
         this.characterName = characterData.DisplayName;
         this.maximumHealthPoint = characterData.MaximumHealthPoint;
         this.currentHealthPoint = this.maximumHealthPoint;
+        this.virtualHealthPoint = this.maximumHealthPoint;
         this.originalStatePoint = characterData.MaximumStatePoint;
         this.maximumStatePoint = this.originalStatePoint;
         this.currentStatePoint = this.maximumStatePoint;
@@ -122,6 +124,36 @@ public class GameCharacter : MonoBehaviour
             this.currentHealthPoint -= amount;
             this.onCharacterInfoUpdated?.Invoke();
         }
+    }
+
+    public void AddVirtualHealthPoint(float amount)
+    {
+        if (amount > 0)
+        {
+            this.virtualHealthPoint = Mathf.Clamp(this.virtualHealthPoint + amount, 0.0f, this.maximumHealthPoint);
+            this.onCharacterInfoUpdated?.Invoke();
+        }
+    }
+
+    public void MinusVirtualHealthPoint(float amount)
+    {
+        if (amount > 0)
+        {
+            this.virtualHealthPoint -= amount;
+            this.onCharacterInfoUpdated?.Invoke();
+        }
+    }
+
+    public void RecoverHealthPointToVirtualHP()
+    {
+        this.currentHealthPoint = this.virtualHealthPoint;
+        this.onCharacterInfoUpdated?.Invoke();
+    }
+
+    public void ClearVirtualHealthPoint()
+    {
+        this.virtualHealthPoint = this.currentHealthPoint;
+        this.onCharacterInfoUpdated?.Invoke();
     }
 
     public void AddCurrentStatePoint( float amount )
@@ -498,6 +530,11 @@ public class GameCharacter : MonoBehaviour
     public float GetCurrentHealthPoint()
     {
         return this.currentHealthPoint;
+    }
+
+    public float GetVirtualHealthPoint()
+    {
+        return this.virtualHealthPoint;
     }
 
     public float GetMaximumStatePoint()
