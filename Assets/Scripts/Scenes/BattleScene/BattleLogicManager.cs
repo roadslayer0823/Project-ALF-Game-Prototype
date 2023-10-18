@@ -1,4 +1,3 @@
-using UnityEngine;
 using Subskill = DatabaseManager.Subskill;
 
 public class BattleLogicManager
@@ -147,6 +146,7 @@ public class BattleLogicManager
             if (attackDamage > 0)
             {
                 target.MinusCurrentHealthPoint( attackDamage );
+                target.MinusVirtualHealthPoint( attackDamage );
             }
         }
 

@@ -10,6 +10,7 @@ public class CharacterInfoPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI healthPointValueText = null;
     [SerializeField] private TextMeshProUGUI statePointValueText = null;
     [SerializeField] private Image stressPercentageBar = null;
+    [SerializeField] private Image visualHPBar = null;
     [SerializeField] private Image healthPointBar = null;
     [SerializeField] private Image statePointBar = null;
     [SerializeField] private TextMeshProUGUI roundInfoText = null;
@@ -30,6 +31,7 @@ public class CharacterInfoPanel : MonoBehaviour
         // Health Point
         float _maximumHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
         float _currentHealthPoint = this.selectedCharacter.GetCurrentHealthPoint();
+        float _virtualHealthPoint = this.selectedCharacter.GetVirtualHealthPoint();
 
         if (_currentHealthPoint < 0)
         {
@@ -37,6 +39,8 @@ public class CharacterInfoPanel : MonoBehaviour
         }
         this.healthPointValueText.SetText( _currentHealthPoint.ToString() + " / " + _maximumHealthPoint);
         this.healthPointBar.fillAmount = _currentHealthPoint / _maximumHealthPoint;
+
+        this.visualHPBar.fillAmount = _virtualHealthPoint / _maximumHealthPoint;
 
         // State Point
         float _maximumStatePoint = this.selectedCharacter.GetMaximumStatePoint();
