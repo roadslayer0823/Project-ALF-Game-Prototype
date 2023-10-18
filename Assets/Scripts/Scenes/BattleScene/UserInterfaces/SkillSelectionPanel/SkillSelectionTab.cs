@@ -63,8 +63,7 @@ public class SkillSelectionTab : MonoBehaviour
             return;
         }
 
-        CharacterSubskill _characterSubskill = characterSkill.GetCharacterSubskillData();
-        this.skillInfoPanel.Show(_characterSubskill);
+        this.skillInfoPanel.Show(characterSkill);
     }
 
     public void HideSkillInfoPanel()
