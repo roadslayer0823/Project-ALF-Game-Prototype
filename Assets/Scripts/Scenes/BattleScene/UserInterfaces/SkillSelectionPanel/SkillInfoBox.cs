@@ -19,6 +19,7 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI evasionValue;
     [SerializeField] private TextMeshProUGUI stressDamageValue;
     [SerializeField] private TextMeshProUGUI skillDescription;
+    [SerializeField] private TextMeshProUGUI evasionStressValue;
 
     [Header("SkillInfoLabel")]
     [SerializeField] private TextMeshProUGUI attackDamage;
@@ -27,6 +28,7 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI accuracy;
     [SerializeField] private TextMeshProUGUI evasion;
     [SerializeField] private TextMeshProUGUI stressDamage;
+    [SerializeField] private TextMeshProUGUI evasionStress;
 
     [Header("SkillInfoBox")]
     [SerializeField] private GameObject skillDataBox = null;
@@ -131,6 +133,16 @@ public class SkillInfoBox : MonoBehaviour
         else
         {
             this.evasion.gameObject.SetActive(false);
+        }
+
+        if (_subskillData.EvasionStress > 1) // Evasion Stress
+        {
+            this.evasionStress.gameObject.SetActive(true);
+            this.evasionStressValue.SetText("+" + (_subskillData.EvasionStress).ToString());
+        }
+        else
+        {
+            this.evasionStress.gameObject.SetActive(false);
         }
 
         if (_subskillData.StressDamage > 1) // Stress Damage
