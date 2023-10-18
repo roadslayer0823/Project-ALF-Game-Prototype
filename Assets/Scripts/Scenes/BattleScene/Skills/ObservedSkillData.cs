@@ -18,9 +18,10 @@ public class ObservedSkillData
         this.currentObservedRate = 0.0f;
     }
 
-    public void IncreaseObservedRate( float amount )
+    public float IncreaseObservedRate( float amount )
     {
         this.currentObservedRate = Mathf.Clamp( this.currentObservedRate + amount, 0.0f, this.maximumObservedRate );
+        return this.currentObservedRate;
     }
 
     public int GetFeatureId()

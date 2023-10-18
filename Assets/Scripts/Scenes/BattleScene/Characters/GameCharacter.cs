@@ -42,6 +42,7 @@ public class GameCharacter : MonoBehaviour
     protected Action onCharacterInfoUpdated = null;
 
     private CharacterSkill currentSkill = null;
+    private int currentSkillStatIncrement = 0;
     private GameCharacter currentAttacker = null;
     private float skillCountdownTime = 0.0f;
     private int counterAttacks = 0;
@@ -581,9 +582,39 @@ public class GameCharacter : MonoBehaviour
         return this.currentSkill;
     }
 
+    public void SetCurrentSkillStatIncrement( int currentSkillStatIncrement )
+    {
+        this.currentSkillStatIncrement = currentSkillStatIncrement;
+    }
+
+    public int GetCurrentSkillStatIncrement()
+    {
+        return this.currentSkillStatIncrement;
+    }
+
     public void SetCurrentAttacker( GameCharacter currentAttacker )
     {
         this.currentAttacker = currentAttacker;
+        this.currentSkillStatIncrement = 0;
+
+        if (this.currentAttacker != null)
+        {
+            CharacterSkill _currentAttackerSkill = this.currentAttacker.GetCurrentSkill();
+            for (int i = 0; i < this.selectedBackendSkillList.Count; i++)
+            {
+                CharacterSkill _backendSkill = this.selectedBackendSkillList[ i ];
+                if (_backendSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+                {
+                    ObservedSkillData _observedSkillData = _backendSkill.GetObservedSkillData( _currentAttackerSkill.GetCharacterSubskillData().GetSubskillData().FeatureId );
+                    if (_observedSkillData != null)
+                    {
+                        this.currentSkillStatIncrement = Mathf.FloorToInt( _observedSkillData.GetCurrentObservedRate() );
+                    }
+
+                    break;
+                }
+            }
+        }
     }
 
     public GameCharacter GetCurrentAttacker()

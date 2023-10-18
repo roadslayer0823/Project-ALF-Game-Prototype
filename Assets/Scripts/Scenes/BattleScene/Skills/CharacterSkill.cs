@@ -85,12 +85,12 @@ public class CharacterSkill
 
 #region Observed Skill Data
 
-    public void AddObservedSkillData( int featureId, string skillName, Skill.SkillType skillType, float observedRate )
+    public float AddObservedSkillData( int featureId, string skillName, Skill.SkillType skillType, float observedRate )
     {
         if (skillType != Skill.SkillType.active
             && skillType != Skill.SkillType.backend)
         {
-            return;
+            return 0.0f;
         }
 
         int _numberOfSkillDataMatched = 0;
@@ -140,7 +140,7 @@ public class CharacterSkill
             this.observedSkillDataList.Add( _skillDataFound );
         }
 
-        _skillDataFound.IncreaseObservedRate( observedRate );
+        return _skillDataFound.IncreaseObservedRate( observedRate );
     }
 
     public ObservedSkillData GetObservedSkillData( int featureId )
