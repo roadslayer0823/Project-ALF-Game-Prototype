@@ -79,6 +79,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (_attacker.GetIsInBreakStatus())
         {
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>正在處於<color={ BattleLog.KEYWORD_COLOR_CODE }>崩潰狀態</color>。" );
             _attacker.MinusBreakStatusRemainingATLs();
             yield break;
         }
@@ -285,6 +286,8 @@ public class BattleAnimationManager : MonoBehaviour
                     bool _hasStatePointDamage = false;
                     if (_winner != null)
                     {
+                        BattleLog.Instance.AddOnScreenBattleLog( $"迎擊結果為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _winner.GetCharacterName() }</color>勝利。" );
+
                         RangeType _attackTargetRangeType = _repulseSkill.GetCharacterSubskillData().GetSubskillData().Range;
 
                         if (_attackerRangeType == RangeType.melee)
@@ -338,6 +341,8 @@ public class BattleAnimationManager : MonoBehaviour
                     }
                     else
                     {
+                        BattleLog.Instance.AddOnScreenBattleLog( $"迎擊結果為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>和<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>打平。" );
+
                         OnHitWithNoDamage( _attacker, _attackTarget );
                         OnHitWithNoDamage( _attackTarget, _attacker );
                     }

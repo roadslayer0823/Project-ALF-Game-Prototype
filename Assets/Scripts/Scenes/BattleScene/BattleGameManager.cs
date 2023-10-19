@@ -169,6 +169,8 @@ public class BattleGameManager : MonoBehaviour
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_BREAK );
                 this.battleFlowManager.GetCurrentRound().UpdateATLSlotStatuses( gameCharacter, false );
 
+                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacter.GetCharacterName() }</color>陷入<color={ BattleLog.KEYWORD_COLOR_CODE }>崩潰狀態</color>。" );
+
                 break;
 
             case BattleAnimationManager.AnimationEvent.OnSkillBeingObserved:

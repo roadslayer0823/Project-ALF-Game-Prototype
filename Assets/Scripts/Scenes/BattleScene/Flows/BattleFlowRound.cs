@@ -122,10 +122,13 @@ public class BattleFlowRound
     public void GoToTargetATL( BattleFlowATL targetATL, bool isEndable )
     {
         bool _hasTargetATL = false;
-        BattleFlowATL _currentATL = null;
+        BattleFlowATL _currentATL = GetCurrentATL();
 
         do
         {
+            _currentATL?.Finish();
+
+            this.flowATLIndex++;
             _currentATL = GetCurrentATL();
 
             if (_currentATL == null)
@@ -141,11 +144,6 @@ public class BattleFlowRound
                 _hasTargetATL = true;
                 _currentATL.GetATLSlot().ShowSelectionHighlight();
                 break;
-            }
-            else
-            {
-                _currentATL.Finish();
-                this.flowATLIndex++;
             }
         }
         while ( true );
