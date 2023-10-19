@@ -41,8 +41,6 @@ public class ObservedSkillBox : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("Click observed skill box.");
-
         if (this.isSelected)
         {
             this.selectionHighlight.gameObject.SetActive(false);
