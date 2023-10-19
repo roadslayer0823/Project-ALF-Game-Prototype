@@ -36,6 +36,8 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private float maximumObservedRate = 0.0f;
         private int maximumObservedActiveSkills = 0;
         private int maximumObservedBackendSkills = 0;
+        private float observationRateDeductionPerRound = 0.0f;
+        private int observationRateDeductionStartRound = 0;
 
         private const string NUMBER_OF_ATL_SLOTS = "number_of_atl_slots";
         private const string MAXIMUM_SELECTED_ACTIVE_SKILLS = "maximum_selected_active_skills";
@@ -51,6 +53,8 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private const string MAXIMUM_OBSERVED_RATE = "maximum_observed_rate";
         private const string MAXIMUM_OBSERVED_ACTIVE_SKILLS = "maximum_observed_active_skills";
         private const string MAXIMUM_OBSERVED_BACKEND_SKILLS = "maximum_observed_backend_skills";
+        private const string OBSERVATION_RATE_DEDUCTION_PER_ROUND = "observation_rate_deduction_per_round";
+        private const string OBSERVATION_RATE_DEDUCTION_START_ROUND = "observation_rate_deduction_start_round";
 
         public Battle( List<Configuration> battleConfigurationList )
         {
@@ -106,6 +110,14 @@ public class GameConfiguration : Singleton<GameConfiguration>
 
                     case MAXIMUM_OBSERVED_BACKEND_SKILLS:
                         this.maximumObservedBackendSkills = ( int )_configurationValue;
+                        break;
+
+                    case OBSERVATION_RATE_DEDUCTION_PER_ROUND:
+                        observationRateDeductionPerRound = _configurationValue;
+                        break;
+
+                    case OBSERVATION_RATE_DEDUCTION_START_ROUND:
+                        observationRateDeductionStartRound = ( int )_configurationValue;
                         break;
 
                     default:
@@ -182,6 +194,16 @@ public class GameConfiguration : Singleton<GameConfiguration>
         public int GetMaximumObservedBackendSkills()
         {
             return this.maximumObservedBackendSkills;
+        }
+
+        public float GetObservationRateDeductionPerRound()
+        {
+            return this.observationRateDeductionPerRound;
+        }
+
+        public int GetObservationRateDeductionStartRound()
+        {
+            return this.observationRateDeductionStartRound;
         }
     }
 

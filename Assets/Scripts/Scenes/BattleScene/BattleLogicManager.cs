@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using UnityEngine;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
@@ -392,5 +394,38 @@ public class BattleLogicManager
     public static bool HasGameCharacterReachedCounterAttackLimit( GameCharacter gameCharacter )
     {
         return ( gameCharacter.GetCounterAttacks() >= 1 );
+    }
+
+    public static void OnExecutionPhaseFinished( List<GameCharacter> gameCharacters )
+    {
+        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
+        float observationRateDeductionPerRound = _battleConfiguration.GetObservationRateDeductionPerRound();
+        int _observationRateDeductionStartRound = _battleConfiguration.GetObservationRateDeductionStartRound();
+
+        for (int i = 0; i < gameCharacters.Count; i++)
+        {
+            GameCharacter _gameCharacter = gameCharacters[ i ];
+            CharacterSkill[] _gameCharacterSkills = _gameCharacter.GetSkills();
+            for (int j = 0; j < _gameCharacterSkills.Length; j++)
+            {
+                CharacterSkill _gameCharacterSkill = _gameCharacterSkills[ j ];
+
+                List<ObservedSkillData> _observedSkillDataList = _gameCharacterSkill.GetObservedSkillDataList();
+                for (int k = 0; k < _observedSkillDataList.Count; k++)
+                {
+                    ObservedSkillData _observedSkillData = _observedSkillDataList[ k ];
+                    if (_observedSkillData.IncreaseRoundNumber() >= _observationRateDeductionStartRound)
+                    {
+                        _observedSkillData.DecreaseObservedRate( observationRateDeductionPerRound );
+
+                        BattleLog.Instance.AddOnScreenBattleLog( "<color=#FFFF00>" + _gameCharacter.GetCharacterName() + "</color>對<color=#FFFF00>" + _observedSkillData.GetSkillName()
+                                                                 + "</color>的看破值減少<color=#FFFF00>" + observationRateDeductionPerRound.ConvertToIntegerInPercentage()
+                                                                 + "%</color>至<color=#FFFF00>" + _observedSkillData.GetCurrentObservedRate().ConvertToIntegerInPercentage() + "%</color>。" );
+                    }
+                }
+
+                _gameCharacterSkill.CleanUpObservedSkillDataList();
+            }
+        }
     }
 }

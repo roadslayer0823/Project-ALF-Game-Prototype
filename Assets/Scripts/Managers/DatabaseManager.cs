@@ -665,6 +665,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("evasion")]
         public int Evasion { get; private set; }
 
+        [JsonProperty("evasion_stress")]
+        public int EvasionStress { get; private set; }
+
         [JsonProperty("effect_area")]
         [HideInInspector] public string EffectAreaString { get; private set; }
         public enum EffectAreaEnum
