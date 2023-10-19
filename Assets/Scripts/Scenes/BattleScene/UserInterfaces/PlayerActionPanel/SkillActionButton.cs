@@ -20,9 +20,9 @@ public class SkillActionButton : MonoBehaviour
     [SerializeField] private CountdownTimer countdownTimer = null;
 
     private CharacterSkill selectedSkill = null;
-    private Action<CharacterSkill> onActionButtonClickedCallback = null;
+    private Action<SkillActionButton> onActionButtonClickedCallback = null;
 
-    public void Initialize( Action<CharacterSkill> onActionButtonClickedCallback )
+    public void Initialize( Action<SkillActionButton> onActionButtonClickedCallback )
     {
         this.onActionButtonClickedCallback = onActionButtonClickedCallback;
 
@@ -155,7 +155,7 @@ public class SkillActionButton : MonoBehaviour
 
     public void ClickOnActionButton()
     {
-        this.onActionButtonClickedCallback?.Invoke( selectedSkill );
+        this.onActionButtonClickedCallback?.Invoke( this );
     }
 
     public void SetOnClick(UnityAction callbackFunction)
