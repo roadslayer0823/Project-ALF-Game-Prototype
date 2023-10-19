@@ -157,6 +157,11 @@ public class CharacterSkill
         return null;
     }
 
+    public void CleanUpObservedSkillDataList()
+    {
+        this.observedSkillDataList.RemoveAll( ( x ) => ( x.GetCurrentObservedRate() <= 0 ) );
+    }
+
     public void ClearObservedSkillDataList()
     {
         this.observedSkillDataList.Clear();

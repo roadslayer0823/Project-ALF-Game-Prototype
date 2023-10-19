@@ -114,6 +114,12 @@ public class BattleGameManager : MonoBehaviour
 
     public void OnExecutionPhaseFinished()
     {
+        List<GameCharacter> _characters = new List<GameCharacter>();
+        _characters.AddRange( this.playerCharacterList );
+        _characters.AddRange( this.enemyCharacterList );
+
+        BattleLogicManager.OnExecutionPhaseFinished( _characters );
+
         this.battleUiManager.HideSkillSlotListPanel();
         this.battleUiManager.HideATLSlotListPanel();
         this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( false );
@@ -176,7 +182,7 @@ public class BattleGameManager : MonoBehaviour
 
                 BattleLog.Instance.AddOnScreenBattleLog( "<color=#FFFF00>" + gameCharacter.GetCharacterName() + "</color>使用<color=#FFFF00>" + _gameCharacterCurrentSubskillData.DisplayName + "</color>（看破技能）來看破<color=#FFFF00>"
                                                          + _currentCaster.GetCharacterName() + "</color>使用的<color=#FFFF00>" + _currentCasterSubskillData.DisplayName
-                                                         + "</color>和對<color=#FFFF00>" + _currentCasterSubskillData.DisplayName + "</color>的看破值現為<color=#FFFF00>" + Mathf.RoundToInt( _currentObservedRate * 100 ) + "%</color>。" );
+                                                         + "</color>和對<color=#FFFF00>" + _currentCasterSubskillData.DisplayName + "</color>的看破值現為<color=#FFFF00>" + _currentObservedRate.ConvertToIntegerInPercentage() + "%</color>。" );
 
                 break;
         }

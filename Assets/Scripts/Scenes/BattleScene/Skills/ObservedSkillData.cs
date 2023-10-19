@@ -8,6 +8,7 @@ public class ObservedSkillData
     private Skill.SkillType skillType = Skill.SkillType.none;
     private float maximumObservedRate = 0.0f;
     private float currentObservedRate = 0.0f;
+    private int roundNumber = 0;
 
     public ObservedSkillData( int featureId, string skillName, Skill.SkillType skillType, float maximumObservedRate )
     {
@@ -16,12 +17,25 @@ public class ObservedSkillData
         this.skillType = skillType;
         this.maximumObservedRate = maximumObservedRate;
         this.currentObservedRate = 0.0f;
+        this.roundNumber = 0;
     }
 
     public float IncreaseObservedRate( float amount )
     {
         this.currentObservedRate = Mathf.Clamp( this.currentObservedRate + amount, 0.0f, this.maximumObservedRate );
         return this.currentObservedRate;
+    }
+
+    public float DecreaseObservedRate( float amount )
+    {
+        this.currentObservedRate = Mathf.Clamp( this.currentObservedRate - amount, 0.0f, this.maximumObservedRate );
+        return this.currentObservedRate;
+    }
+
+    public int IncreaseRoundNumber()
+    {
+        this.roundNumber++;
+        return this.roundNumber;
     }
 
     public int GetFeatureId()
@@ -42,5 +56,10 @@ public class ObservedSkillData
     public float GetCurrentObservedRate()
     {
         return this.currentObservedRate;
+    }
+
+    public int GetRoundNumber()
+    {
+        return this.roundNumber;
     }
 }
