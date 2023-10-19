@@ -25,8 +25,9 @@ public class BattleLogicManager
         float _maxStatePointUp = _subskillData.MaxStatePointUp * _battleConfiguration.GetMaxStatePointUpMultiplier();
         caster.AddMaximumStatePoint( _maxStatePointUp );
 
-        log = "<color=#FFFF00>" + caster.GetCharacterName() + "</color>" + "對" + "<color=#FFFF00>" + target.GetCharacterName() + "</color>" + "使出了"
-            + "<color=#FFFF00>" + _subskillData.DisplayName + "</color>";
+        log = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + caster.GetCharacterName() + "</color>" + "對"
+            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + target.GetCharacterName() + "</color>" + "使出了"
+            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _subskillData.DisplayName + "</color>";
 
         string _skillTypeLog = "";
 
@@ -122,7 +123,7 @@ public class BattleLogicManager
 
         if (_statePointCost > 0)
         {
-            _extraLog += "，消耗了<color=#FFFF00>" + _statePointCost + TerminologyManager.STATE_POINT + "</color>";
+            _extraLog += "，消耗了" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _statePointCost + TerminologyManager.STATE_POINT + "</color>";
         }
 
         if (_maxStatePointUp > 0)
@@ -132,7 +133,7 @@ public class BattleLogicManager
                 _extraLog += "和";
             }
 
-            _extraLog += "提升了<color=#FFFF00>" + _maxStatePointUp + "最大" + TerminologyManager.STATE_POINT +"</color>";
+            _extraLog += "提升了" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _maxStatePointUp + "最大" + TerminologyManager.STATE_POINT +"</color>";
         }
 
         if (_extraLog != "")
@@ -219,7 +220,7 @@ public class BattleLogicManager
         string _extraLog = "";
         if (attackDamage > 0)
         {
-            _extraLog += "<color=#FFFF00>" + attackDamage + "HP傷害</color>";
+            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + attackDamage + "HP傷害</color>";
         }
 
         if (stressDamage > 0)
@@ -229,7 +230,7 @@ public class BattleLogicManager
                 _extraLog += "、";
             }
 
-            _extraLog += "<color=#FFFF00>" + stressDamage + "負荷傷害</color>";
+            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + stressDamage + "負荷傷害</color>";
         }
 
         if (statePointDamage > 0)
@@ -239,12 +240,12 @@ public class BattleLogicManager
                 _extraLog += "、";
             }
 
-            _extraLog += "<color=#FFFF00>" + statePointDamage + TerminologyManager.STATE_POINT + "傷害</color>";
+            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + statePointDamage + TerminologyManager.STATE_POINT + "傷害</color>";
         }
 
         if (_extraLog != "")
         {
-            log += "<color=#FFFF00>" + target.GetCharacterName() + "</color>受到了" + _extraLog + "。";
+            log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + target.GetCharacterName() + "</color>受到了" + _extraLog + "。";
         }
     }
 
@@ -418,9 +419,10 @@ public class BattleLogicManager
                     {
                         _observedSkillData.DecreaseObservedRate( observationRateDeductionPerRound );
 
-                        BattleLog.Instance.AddOnScreenBattleLog( "<color=#FFFF00>" + _gameCharacter.GetCharacterName() + "</color>對<color=#FFFF00>" + _observedSkillData.GetSkillName()
-                                                                 + "</color>的看破值減少<color=#FFFF00>" + observationRateDeductionPerRound.ConvertToIntegerInPercentage()
-                                                                 + "%</color>至<color=#FFFF00>" + _observedSkillData.GetCurrentObservedRate().ConvertToIntegerInPercentage() + "%</color>。" );
+                        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _gameCharacter.GetCharacterName() + "</color>對"
+                                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _observedSkillData.GetSkillName() + "</color>的看破值減少"
+                                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + observationRateDeductionPerRound.ConvertToIntegerInPercentage() + "%</color>至"
+                                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _observedSkillData.GetCurrentObservedRate().ConvertToIntegerInPercentage() + "%</color>。" );
                     }
                 }
 

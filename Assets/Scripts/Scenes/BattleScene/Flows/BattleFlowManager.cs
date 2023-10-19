@@ -46,6 +46,8 @@ public class BattleFlowManager : MonoBehaviour
 
         // For next round.
         this.isPlayerFirst = !( this.isPlayerFirst );
+
+        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { this.currentRound.GetRoundNumber() } 回合開始 】</color>" );
     }
 
     public IEnumerator RunBattleAnimation( BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )
@@ -80,6 +82,7 @@ public class BattleFlowManager : MonoBehaviour
     public void OnNewATLStarted()
     {
         this.battleGameManager.OnNewATLStarted();
+        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { this.currentRound.GetRoundNumber() } 回合的 ATL { this.currentRound.GetCurrentATL().GetATLNumber() } 】</color>" );
     }
 
     public PlayerCharacter GetNextPlayerCharacter()

@@ -114,6 +114,8 @@ public class BattleGameManager : MonoBehaviour
 
     public void OnExecutionPhaseFinished()
     {
+        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { this.battleFlowManager.GetCurrentRound().GetRoundNumber() } 回合結束 】</color>" );
+
         List<GameCharacter> _characters = new List<GameCharacter>();
         _characters.AddRange( this.playerCharacterList );
         _characters.AddRange( this.enemyCharacterList );
@@ -180,9 +182,9 @@ public class BattleGameManager : MonoBehaviour
                 float _currentObservedRate = _gameCharacterCurrentSkill.AddObservedSkillData( _currentCasterSubskillData.FeatureId, _currentCasterSubskillData.DisplayName, _currentCasterSkill.GetSkillData().skillType,
                                                                                               _gameCharacterCurrentSubskillData.ObservationRate );
 
-                BattleLog.Instance.AddOnScreenBattleLog( "<color=#FFFF00>" + gameCharacter.GetCharacterName() + "</color>使用<color=#FFFF00>" + _gameCharacterCurrentSubskillData.DisplayName + "</color>（看破技能）來看破<color=#FFFF00>"
-                                                         + _currentCaster.GetCharacterName() + "</color>使用的<color=#FFFF00>" + _currentCasterSubskillData.DisplayName
-                                                         + "</color>和對<color=#FFFF00>" + _currentCasterSubskillData.DisplayName + "</color>的看破值現為<color=#FFFF00>" + _currentObservedRate.ConvertToIntegerInPercentage() + "%</color>。" );
+                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + gameCharacter.GetCharacterName() + "</color>使用" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _gameCharacterCurrentSubskillData.DisplayName + "</color>（看破技能）來看破"
+                                                         + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _currentCaster.GetCharacterName() + "</color>使用的" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _currentCasterSubskillData.DisplayName + "</color>和對"
+                                                         + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _currentCasterSubskillData.DisplayName + "</color>的看破值現為" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _currentObservedRate.ConvertToIntegerInPercentage() + "%</color>。" );
 
                 break;
         }

@@ -368,9 +368,9 @@ public class BattleAnimationManager : MonoBehaviour
                         _derivedSkill = _winner.GetCurrentSkill().GetCharacterSubskillData().GetSelectedDerivedSkill();
                     }
 
-                    if (_attackerRangeType == RangeType.melee)
+                    if (_winner != null)
                     {
-                        if (_winner != null)
+                        if (_winner == _attacker || _attackerRangeType == RangeType.melee)
                         {
                             if (_winner.GetCurrentCharacterActionType() == GameCharacter.CharacterActionType.Derive)
                             {

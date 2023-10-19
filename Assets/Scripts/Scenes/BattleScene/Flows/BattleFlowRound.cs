@@ -32,7 +32,7 @@ public class BattleFlowRound
 
         for (int i = 0; i < GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots(); i++)
         {
-            BattleFlowATL _atl = new BattleFlowATL( ( _isPlayer ) ? this.battleFlowManager.GetNextPlayerCharacter() : this.battleFlowManager.GetNextEnemyCharacter() );
+            BattleFlowATL _atl = new BattleFlowATL( i + 1, ( _isPlayer ) ? this.battleFlowManager.GetNextPlayerCharacter() : this.battleFlowManager.GetNextEnemyCharacter() );
             _atl.SetAttackTarget( ( _isPlayer ) ? this.battleFlowManager.GetNextEnemyCharacter() : this.battleFlowManager.GetNextPlayerCharacter() );
             _atlList.Add( _atl );
 
