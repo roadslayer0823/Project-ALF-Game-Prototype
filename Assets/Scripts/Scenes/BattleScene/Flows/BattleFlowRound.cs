@@ -32,7 +32,7 @@ public class BattleFlowRound
 
         for (int i = 0; i < GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots(); i++)
         {
-            BattleFlowATL _atl = new BattleFlowATL( ( _isPlayer ) ? this.battleFlowManager.GetNextPlayerCharacter() : this.battleFlowManager.GetNextEnemyCharacter() );
+            BattleFlowATL _atl = new BattleFlowATL( i + 1, ( _isPlayer ) ? this.battleFlowManager.GetNextPlayerCharacter() : this.battleFlowManager.GetNextEnemyCharacter() );
             _atl.SetAttackTarget( ( _isPlayer ) ? this.battleFlowManager.GetNextEnemyCharacter() : this.battleFlowManager.GetNextPlayerCharacter() );
             _atlList.Add( _atl );
 
@@ -122,10 +122,13 @@ public class BattleFlowRound
     public void GoToTargetATL( BattleFlowATL targetATL, bool isEndable )
     {
         bool _hasTargetATL = false;
-        BattleFlowATL _currentATL = null;
+        BattleFlowATL _currentATL = GetCurrentATL();
 
         do
         {
+            _currentATL?.Finish();
+
+            this.flowATLIndex++;
             _currentATL = GetCurrentATL();
 
             if (_currentATL == null)
@@ -141,11 +144,6 @@ public class BattleFlowRound
                 _hasTargetATL = true;
                 _currentATL.GetATLSlot().ShowSelectionHighlight();
                 break;
-            }
-            else
-            {
-                _currentATL.Finish();
-                this.flowATLIndex++;
             }
         }
         while ( true );

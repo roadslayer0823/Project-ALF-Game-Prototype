@@ -91,7 +91,7 @@ public class SkillInfoBox : MonoBehaviour
         this.displayName.SetText(_subskillData.DisplayName);
 
         //State Point Title
-        this.statePointCostTitle.SetText(TerminologyManager.STATE_POINT+"點數");
+        this.statePointCostTitle.SetText(TerminologyManager.STATE_POINT+"消耗");
 
         if (_subskillData.AttackDamage > 0) // Attack Damage
         {
@@ -146,7 +146,7 @@ public class SkillInfoBox : MonoBehaviour
         if (_subskillData.EvasionStress > 1) // Evasion Stress
         {
             this.evasionStress.gameObject.SetActive(true);
-            this.evasionStressValue.SetText("+" + (_subskillData.EvasionStress).ToString());
+            this.evasionStressValue.SetText((_subskillData.EvasionStress).ToString());
         }
         else
         {
@@ -156,7 +156,7 @@ public class SkillInfoBox : MonoBehaviour
         if (_subskillData.StressDamage > 1) // Stress Damage
         {
             this.stressDamage.gameObject.SetActive(true);
-            this.stressDamageValue.SetText("+" + (_subskillData.StressDamage - 1).ToString());
+            this.stressDamageValue.SetText((_subskillData.StressDamage - 1).ToString());
         }
         else
         {

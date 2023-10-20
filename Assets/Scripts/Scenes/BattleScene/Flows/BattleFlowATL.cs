@@ -10,14 +10,16 @@ public class BattleFlowATL
     private int partNumber = 0;
     private float animationDuration = 0.0f;
     private float animationStartTime = 0.0f;
+    private int atlNumber = 0;
     private ATLSlot atlSlot = null;
     private bool isATLSlotExecuted = false;
     private bool isSkillSlotSwipedManually = false;
 
     private CharacterSkill selectedSkill = null;
 
-    public BattleFlowATL( GameCharacter selectedCharacter )
+    public BattleFlowATL( int atlNumber, GameCharacter selectedCharacter )
     {
+        this.atlNumber = atlNumber;
         this.selectedCharacter = selectedCharacter;
     }
 
@@ -82,14 +84,19 @@ public class BattleFlowATL
         return this.attackTarget;
     }
 
-    public ATLSlot GetATLSlot()
+    public int GetATLNumber()
     {
-        return atlSlot;
+        return this.atlNumber;
     }
 
-    public void SetATLSlot(ATLSlot atlSlot)
+    public void SetATLSlot( ATLSlot atlSlot )
     {
         this.atlSlot = atlSlot;
+    }
+
+    public ATLSlot GetATLSlot()
+    {
+        return this.atlSlot;
     }
 
     public bool GetIsATLSlotExecuted()

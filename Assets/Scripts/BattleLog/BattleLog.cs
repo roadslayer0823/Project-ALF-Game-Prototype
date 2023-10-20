@@ -15,7 +15,10 @@ public class BattleLog : Singleton<BattleLog>
     private List<TextMeshProUGUI> battleLogTextList = new List<TextMeshProUGUI>();
     private List<Image> lineBreakList = new List<Image>();
 
-    private void Start()
+    public const string KEYWORD_COLOR_CODE = "#FFFF00";
+    public const string SPECIAL_COLOR_CODE = "#FFAAFF";
+
+    void Start()
     {
         this.clearAllButton.onClick.AddListener(OnClearAllButtonClick);
     }
