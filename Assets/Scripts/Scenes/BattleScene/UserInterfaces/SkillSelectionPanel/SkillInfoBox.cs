@@ -20,6 +20,7 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI stressDamageValue;
     [SerializeField] private TextMeshProUGUI skillDescription;
     [SerializeField] private TextMeshProUGUI evasionStressValue;
+    [SerializeField] private TextMeshProUGUI statePointDamageValue;
 
     [Header("SkillInfoLabel")]
     [SerializeField] private TextMeshProUGUI attackDamage;
@@ -29,6 +30,7 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI evasion;
     [SerializeField] private TextMeshProUGUI stressDamage;
     [SerializeField] private TextMeshProUGUI evasionStress;
+    [SerializeField] private TextMeshProUGUI statePointDamage;
 
     [Header("SkillInfoBox")]
     [SerializeField] private GameObject skillDataBox = null;
@@ -153,6 +155,16 @@ public class SkillInfoBox : MonoBehaviour
         else
         {
             this.stressDamage.gameObject.SetActive(false);
+        }
+
+        if (_subskillData.StatePointDamage > 1) // State Point Damage
+        {
+            this.statePointDamage.gameObject.SetActive(true);
+            this.statePointDamageValue.SetText((_subskillData.StatePointDamage).ToString());
+        }
+        else
+        {
+            this.statePointDamage.gameObject.SetActive(false);
         }
 
         if (_subskillData.Description == "-") // Description
