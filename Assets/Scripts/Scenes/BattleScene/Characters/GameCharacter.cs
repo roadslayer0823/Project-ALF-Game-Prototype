@@ -472,6 +472,11 @@ public class GameCharacter : MonoBehaviour
             return false;
         }
 
+        if (this.currentStatePoint <= 0)
+        {
+            return false;
+        }
+
         return true;
     }
 
