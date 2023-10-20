@@ -5,6 +5,7 @@ public class GameCharacterInfoBox : MonoBehaviour
 {
     [SerializeField] private GameCharacter selectedCharacter = null;
     [SerializeField] private SpriteRenderer healthPointFiller = null;
+    [SerializeField] private SpriteRenderer virtualHealthPointFiller = null;
     [SerializeField] private TextMeshPro healthPointLabel = null;
     [SerializeField] private SpriteRenderer statePointFiller = null;
     [SerializeField] private TextMeshPro statePointLabel = null;
@@ -40,6 +41,7 @@ public class GameCharacterInfoBox : MonoBehaviour
         }
 
         UpdateBar( this.selectedCharacter.GetCurrentHealthPoint(), this.selectedCharacter.GetMaximumHealthPoint(), this.healthPointFiller, this.healthPointLabel, false );
+        UpdateBar( this.selectedCharacter.GetVirtualHealthPoint(), this.selectedCharacter.GetMaximumHealthPoint(), this.virtualHealthPointFiller, null, false );
         UpdateBar( this.selectedCharacter.GetCurrentStatePoint(), this.selectedCharacter.GetMaximumStatePoint(), this.statePointFiller, this.statePointLabel, true );
         UpdateBar( this.selectedCharacter.GetCurrentStressValue(), this.selectedCharacter.GetMaximumStressValue(), this.stressValueFiller, this.stressValueLabel, false );
 
@@ -117,7 +119,10 @@ public class GameCharacterInfoBox : MonoBehaviour
             }
         }
 
-        label.SetText( Mathf.CeilToInt( _currentValue ) + " / " + Mathf.CeilToInt( maximumValue ) );
+        if (label != null)
+        {
+            label.SetText(Mathf.CeilToInt(_currentValue) + " / " + Mathf.CeilToInt(maximumValue));
+        }
 
         float _percentage = currentValue / maximumValue;
         filler.size = new Vector2( ( _percentage > 0 ) ? _percentage * 10.0f : 0.0f, filler.size.y );
