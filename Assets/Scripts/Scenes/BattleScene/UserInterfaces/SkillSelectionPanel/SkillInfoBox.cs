@@ -183,6 +183,7 @@ public class SkillInfoBox : MonoBehaviour
 
         if (characterSkill.GetObservedSkillDataList().Count == 0)
         {
+            this.noRecordFoundText.SetText("暫無記錄");
             this.noRecordFoundText.gameObject.SetActive(true);
         }
         else

@@ -10,6 +10,7 @@ public class SkillSelectionListBox : MonoBehaviour
     [SerializeField] private RectTransform skillSelectionBoxContainer = null;
     [SerializeField] private SkillSelectionBox skillSelectionBoxPrefab = null;
     [SerializeField] private RectTransform containerContent = null;
+    [SerializeField] private TextMeshProUGUI emptyListText = null;
 
     private SkillSelectionTab skillSelectionTab = null;
     private List<SkillSelectionBox> skillSelectionBoxList = null;
@@ -49,6 +50,8 @@ public class SkillSelectionListBox : MonoBehaviour
         HideRepulseSkillList();
         HideDerivedSkillList();
         HideCounterSkillList();
+
+        this.emptyListText.gameObject.SetActive(false);
     }
 
     // Hide main list for the active and backend character skill 
@@ -80,6 +83,8 @@ public class SkillSelectionListBox : MonoBehaviour
         }
 
         SetupRepulseSkillSelectionBoxList();
+
+        EmptyListHandler(this.repulseSkillSelectionBoxList);
 
         for (int i = 0; i < this.repulseSkillSelectionBoxList.Count; i++)
         {
@@ -122,6 +127,8 @@ public class SkillSelectionListBox : MonoBehaviour
 
         SetupDerivedSkillSelectionBoxList();
 
+        EmptyListHandler(this.derivedSkillSelectionBoxList);
+
         for (int i = 0; i < this.derivedSkillSelectionBoxList.Count; i++)
         {
             SkillSelectionBox _skillSelectionBox = this.derivedSkillSelectionBoxList[i];
@@ -162,6 +169,8 @@ public class SkillSelectionListBox : MonoBehaviour
         }
 
         SetupCounterSkillSelectionBoxList();
+
+        EmptyListHandler(this.counterSkillSelectionBoxList);
 
         for (int i = 0; i < this.counterSkillSelectionBoxList.Count; i++)
         {
@@ -311,6 +320,8 @@ public class SkillSelectionListBox : MonoBehaviour
 
                 this.skillSelectionBoxList.Add(skillSelectionBox);
             }
+
+            this.isLastSelectedCharacterSkillChanged = false;
         }
     }
 
@@ -336,8 +347,6 @@ public class SkillSelectionListBox : MonoBehaviour
                     _skillSelectionBox.Initialize(this, _repulseSkill);
 
                     this.repulseSkillSelectionBoxList.Add(_skillSelectionBox);
-
-                    this.isLastSelectedCharacterSkillChanged = false;
 
                     if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() == null)
                     {
@@ -384,8 +393,6 @@ public class SkillSelectionListBox : MonoBehaviour
 
                     this.derivedSkillSelectionBoxList.Add(_skillSelectionBox);
 
-                    this.isLastSelectedCharacterSkillChanged = false;
-
                     if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedDerivedSkill()?.GetCharacterSubskillData().GetSubskillData().Id == _derivedSkill.GetCharacterSubskillData().GetSubskillData().Id)
                     {
                         _skillSelectionBox.SetSkillSelectionText("ON");
@@ -424,8 +431,6 @@ public class SkillSelectionListBox : MonoBehaviour
 
                     this.counterSkillSelectionBoxList.Add(_skillSelectionBox);
 
-                    this.isLastSelectedCharacterSkillChanged = false;
-
                     if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedCounterSkill()?.GetCharacterSubskillData().GetSubskillData().Id == _counterSkill.GetCharacterSubskillData().GetSubskillData().Id)
                     {
                         _skillSelectionBox.SetSkillSelectionText("ON");
@@ -452,6 +457,19 @@ public class SkillSelectionListBox : MonoBehaviour
             }
 
             skillSelectionBoxList = null;
+        }
+    }
+
+    private void EmptyListHandler(List<SkillSelectionBox> boxListToCheck)
+    {
+        if (boxListToCheck.Count == 0)
+        {
+            this.emptyListText.SetText("暫無技能");
+            this.emptyListText.gameObject.SetActive(true);
+        }
+        else
+        {
+            this.emptyListText.gameObject.SetActive(false);
         }
     }
 
