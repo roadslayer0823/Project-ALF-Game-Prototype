@@ -39,6 +39,7 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private GameObject observedSkillInfo = null;
     [SerializeField] private ObservedSkillBox observedSkillBoxPrefab = null;
     [SerializeField] private RectTransform observedSkillListContent = null;
+    [SerializeField] private TextMeshProUGUI noRecordFoundText = null;
 
     private List<ObservedSkillBox> observedSkillBoxList = new List<ObservedSkillBox>();
 
@@ -180,17 +181,25 @@ public class SkillInfoBox : MonoBehaviour
 
         ClearObservedSkillList();
 
-        Debug.Log("No of element: " + characterSkill.GetObservedSkillDataList().Count);
-
-        // Initialize the SkillSelectionBox so that the skill can be display on it respectively. 
-        for (int i = 0; i < characterSkill.GetObservedSkillDataList().Count; i++)
+        if (characterSkill.GetObservedSkillDataList().Count == 0)
         {
-            ObservedSkillData _observedSkillData = characterSkill.GetObservedSkillDataList()[i];
+            this.noRecordFoundText.SetText("暫無記錄");
+            this.noRecordFoundText.gameObject.SetActive(true);
+        }
+        else
+        {
+            this.noRecordFoundText.gameObject.SetActive(false);
 
-            ObservedSkillBox _observedSkillBox = Instantiate(this.observedSkillBoxPrefab, this.observedSkillListContent, false);
-            _observedSkillBox.Initialize(_observedSkillData);
+            // Initialize the ObservedSkillBox so that the skill can be display on it respectively. 
+            for (int i = 0; i < characterSkill.GetObservedSkillDataList().Count; i++)
+            {
+                ObservedSkillData _observedSkillData = characterSkill.GetObservedSkillDataList()[i];
 
-            this.observedSkillBoxList.Add(_observedSkillBox);
+                ObservedSkillBox _observedSkillBox = Instantiate(this.observedSkillBoxPrefab, this.observedSkillListContent, false);
+                _observedSkillBox.Initialize(_observedSkillData);
+
+                this.observedSkillBoxList.Add(_observedSkillBox);
+            }
         }
     }
 

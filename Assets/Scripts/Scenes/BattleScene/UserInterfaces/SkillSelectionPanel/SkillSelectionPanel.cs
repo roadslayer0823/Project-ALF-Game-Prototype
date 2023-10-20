@@ -140,18 +140,18 @@ public class SkillSelectionPanel : MonoBehaviour
         if (_skillType == Skill.SkillType.active)
         {
             if (this.selectedActiveSkillList.Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills())
-             {
+            {
                 this.selectedActiveSkillList.Add(skillSelectionBox);
 
                 skillSelectionBox.SetSkillSelectionText("ON");
                 skillSelectionBox.BringToFront();
 
                 UpdateSkillSelectionListOrder(this.selectedActiveSkillList);
-             }
-             else
-             {
-                 skillSelectionBox.MarkDeselected();
-             }
+            }
+            else
+            {
+                skillSelectionBox.MarkDeselected();
+            }
         }
         else if (_skillType == Skill.SkillType.repulse) // repulse skill
         {
@@ -269,6 +269,11 @@ public class SkillSelectionPanel : MonoBehaviour
             this.selectedBackendSkillList.Remove(skillSelectionBox);
 
             skillSelectionBox.SetSkillSelectionText("");
+
+            if (skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+            {
+                skillSelectionBox.GetCharacterSkill().ClearObservedSkillDataList();
+            }
 
             UpdateSkillSelectionListOrder(this.selectedBackendSkillList);
         }
