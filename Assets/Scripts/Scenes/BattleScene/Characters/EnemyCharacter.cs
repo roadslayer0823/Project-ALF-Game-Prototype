@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
 using SkillType = DatabaseManager.Skill.SkillType;
+using Subskill = DatabaseManager.Subskill;
 
 public class EnemyCharacter : GameCharacter
 {
@@ -102,10 +103,21 @@ public class EnemyCharacter : GameCharacter
                 {
                     base.SetCurrentCharacterActionType( CharacterActionType.Repulse );
                 }
-                else if (base.IsAbleToDefend() && Random.value < 0.8f)
+                else
                 {
-                    base.SetCurrentCharacterActionType( CharacterActionType.Backend );
-                    base.SetCurrentSkill( base.selectedBackendSkillList[ Random.Range( 0, base.selectedBackendSkillList.Count ) ] );
+                    CharacterSkill _skill = base.selectedBackendSkillList[ Random.Range( 0, base.selectedBackendSkillList.Count ) ];
+                    Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
+
+                    if (_subskillData.IsDefendingSkill)
+                    {
+                        base.SetCurrentCharacterActionType( CharacterActionType.Defend );
+                    }
+                    else if (_subskillData.IsEvadingSkill)
+                    {
+                        base.SetCurrentCharacterActionType( CharacterActionType.Evade );
+                    }
+
+                    base.SetCurrentSkill( _skill );
                 }
 
                 break;

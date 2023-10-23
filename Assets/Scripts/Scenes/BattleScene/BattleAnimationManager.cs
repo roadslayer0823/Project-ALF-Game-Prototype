@@ -392,7 +392,8 @@ public class BattleAnimationManager : MonoBehaviour
 
                     break;
 
-                case GameCharacter.CharacterActionType.Backend:
+                case GameCharacter.CharacterActionType.Defend:
+                case GameCharacter.CharacterActionType.Evade:
 
                     yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attackTarget.GetCurrentSkill() ) );
 
@@ -439,7 +440,7 @@ public class BattleAnimationManager : MonoBehaviour
                                                                             out _winner, out _loser );
                     }
 
-                    BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _winner == _attacker, out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
+                    BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _winner == _attacker, _loser.GetCurrentCharacterActionType(), out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
                     BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                     if (_winner == _attacker)

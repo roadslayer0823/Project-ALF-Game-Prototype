@@ -188,6 +188,7 @@ public class BattleLogicManager
         statePointDamage = 0;
 
         CharacterSkill _skill = caster.GetCurrentSkill();
+        bool _isActualDamage = false;
 
         if (hasAttackDamage)
         {
@@ -195,7 +196,13 @@ public class BattleLogicManager
             if (attackDamage > 0)
             {
                 target.MinusCurrentHealthPoint( attackDamage );
-                target.MinusVirtualHealthPoint( attackDamage );
+
+                if (actionType != GameCharacter.CharacterActionType.Repulse
+                    && actionType != GameCharacter.CharacterActionType.Defend)
+                {
+                    target.MinusVirtualHealthPoint( attackDamage );
+                    _isActualDamage = true;
+                }
             }
         }
 
@@ -220,7 +227,7 @@ public class BattleLogicManager
         string _extraLog = "";
         if (attackDamage > 0)
         {
-            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + attackDamage + "HP傷害</color>";
+            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ attackDamage }HP傷害</color>（{ ( ( _isActualDamage ) ? "實傷" : "虛傷" ) }）";
         }
 
         if (stressDamage > 0)
@@ -230,7 +237,7 @@ public class BattleLogicManager
                 _extraLog += "、";
             }
 
-            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + stressDamage + "負荷傷害</color>";
+            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ stressDamage }負荷傷害</color>";
         }
 
         if (statePointDamage > 0)
@@ -240,12 +247,12 @@ public class BattleLogicManager
                 _extraLog += "、";
             }
 
-            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + statePointDamage + TerminologyManager.STATE_POINT + "傷害</color>";
+            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ statePointDamage }{ TerminologyManager.STATE_POINT }傷害</color>";
         }
 
         if (_extraLog != "")
         {
-            log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + target.GetCharacterName() + "</color>受到了" + _extraLog + "。";
+            log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>受到了{ _extraLog }。";
         }
     }
 

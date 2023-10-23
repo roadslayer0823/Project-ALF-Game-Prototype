@@ -242,10 +242,15 @@ public class PlayerActionPanel : MonoBehaviour
         this.selectedGameCharacter.SetCurrentSkill( _skill );
 
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
-        if (_subskillData.IsDefendingSkill || _subskillData.IsEvadingSkill)
+        if (_subskillData.IsDefendingSkill)
         {
             DisableQTEAndSkillActionButtons();
-            this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Backend );
+            this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Defend );
+        }
+        else if (_subskillData.IsEvadingSkill)
+        {
+            DisableQTEAndSkillActionButtons();
+            this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Evade );
         }
         else if (_subskillData.IsObservingSkill)
         {
