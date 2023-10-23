@@ -227,7 +227,7 @@ public class BattleLogicManager
         string _extraLog = "";
         if (attackDamage > 0)
         {
-            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ attackDamage }HP傷害</color>（{ ( ( _isActualDamage ) ? "實傷" : "虛傷" ) }）";
+            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ attackDamage }HP值傷害</color>（{ ( ( _isActualDamage ) ? "實傷" : "虛傷" ) }）";
         }
 
         if (stressDamage > 0)
@@ -237,7 +237,7 @@ public class BattleLogicManager
                 _extraLog += "、";
             }
 
-            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ stressDamage }負荷傷害</color>";
+            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ stressDamage }%負荷值傷害</color>";
         }
 
         if (statePointDamage > 0)
@@ -402,6 +402,44 @@ public class BattleLogicManager
     public static bool HasGameCharacterReachedCounterAttackLimit( GameCharacter gameCharacter )
     {
         return ( gameCharacter.GetCounterAttacks() >= 1 );
+    }
+
+    public static void OnNewRoundStarted( List<GameCharacter> gameCharacters )
+    {
+        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
+        int _stressValueDecreaseOnRoundStart = _battleConfiguration.GetStressValueDecreaseOnRoundStart();
+        float _healthPointRegenerationRateOnRoundStart = _battleConfiguration.GetHealthPointRegenerationRateOnRoundStart();
+        int _maximumStatePointIncreaseOnRoundStart = _battleConfiguration.GetMaximumStatePointIncreaseOnRoundStart();
+
+        for (int i = 0; i < gameCharacters.Count; i++)
+        {
+            GameCharacter _gameCharacter = gameCharacters[ i ];
+
+            float _currentStressValueDecreased = _gameCharacter.MinusCurrentStressValue( _stressValueDecreaseOnRoundStart );
+            float _currentHealthPointRecovered = _gameCharacter.RecoverCurrentHealthPoint( _gameCharacter.GetMaximumHealthPoint() * _healthPointRegenerationRateOnRoundStart );
+
+            string _extraLog = "";
+            float _currentStatePoint = _gameCharacter.GetCurrentStatePoint();
+            if (_currentStatePoint < 0)
+            {
+                float _maximumStatePointDecreased = _gameCharacter.MinusMaximumStatePoint( Mathf.Abs( _currentStatePoint ) );
+                _extraLog = $"因<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>為負數而導致"
+                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>最大{ TerminologyManager.STATE_POINT }</color>"
+                            + $"減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointDecreased }</color>至"
+                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetMaximumStatePoint() }</color>，";
+            }
+
+            float _maximumStatePointIncreased = _gameCharacter.AddMaximumStatePoint( _maximumStatePointIncreaseOnRoundStart );
+            _gameCharacter.SetCurrentStatePointToMaximum();
+            _gameCharacter.ResetCounterAttacks();
+
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _gameCharacter.GetCharacterName() + "</color>"
+                                                     + ( ( _currentStressValueDecreased > 0 ) ? $"減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _currentStressValueDecreased }%負荷值</color>，" : "" )
+                                                     + ( ( _currentHealthPointRecovered > 0 ) ? $"回復了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _currentHealthPointRecovered }虛傷值</color>，" : "" )
+                                                     + _extraLog
+                                                     + ( ( _maximumStatePointIncreased > 0 ) ? $"提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointIncreased }最大{ TerminologyManager.STATE_POINT }</color>，" : "" )
+                                                     + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>已回復至最大值。" );
+        }
     }
 
     public static void OnExecutionPhaseFinished( List<GameCharacter> gameCharacters )

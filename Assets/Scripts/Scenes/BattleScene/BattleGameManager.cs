@@ -134,22 +134,13 @@ public class BattleGameManager : MonoBehaviour
     {
         this.battleUiManager.GetCharacterInfoPanel().ShowRoundInfoText( isPlayerFirst );
 
-        List<GameCharacter> _characters = new List<GameCharacter>();
-        _characters.AddRange( this.playerCharacterList );
-        _characters.AddRange( this.enemyCharacterList );
-
-        for (int i = 0; i < _characters.Count; i++)
+        if (battleFlowManager.GetCurrentRound().GetRoundNumber() > 1)
         {
-            GameCharacter _character = _characters[ i ];
+            List<GameCharacter> _characters = new List<GameCharacter>();
+            _characters.AddRange( this.playerCharacterList );
+            _characters.AddRange( this.enemyCharacterList );
 
-            float _currentStatePoint = _character.GetCurrentStatePoint();
-            if (_currentStatePoint < 0)
-            {
-                _character.MinusMaximumStatePoint( Mathf.Abs( _currentStatePoint ) );
-            }
-
-            _character.SetCurrentStatePointToMaximum();
-            _character.ResetCounterAttacks();
+            BattleLogicManager.OnNewRoundStarted( _characters );
         }
     }
 

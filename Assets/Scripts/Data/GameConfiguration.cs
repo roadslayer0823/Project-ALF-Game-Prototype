@@ -38,6 +38,9 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private int maximumObservedBackendSkills = 0;
         private float observationRateDeductionPerRound = 0.0f;
         private int observationRateDeductionStartRound = 0;
+        private int stressValueDecreaseOnRoundStart = 0;
+        private float healthPointRegenerationRateOnRoundStart = 0.0f;
+        private int maximumStatePointIncreaseOnRoundStart = 0;
 
         private const string NUMBER_OF_ATL_SLOTS = "number_of_atl_slots";
         private const string MAXIMUM_SELECTED_ACTIVE_SKILLS = "maximum_selected_active_skills";
@@ -55,6 +58,9 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private const string MAXIMUM_OBSERVED_BACKEND_SKILLS = "maximum_observed_backend_skills";
         private const string OBSERVATION_RATE_DEDUCTION_PER_ROUND = "observation_rate_deduction_per_round";
         private const string OBSERVATION_RATE_DEDUCTION_START_ROUND = "observation_rate_deduction_start_round";
+        private const string STRESS_VALUE_DECREASE_ON_ROUND_START = "stress_value_decrease_on_round_start";
+        private const string HEALTH_POINT_REGENERATION_RATE_ON_ROUND_START = "health_point_regeneration_rate_on_round_start";
+        private const string MAXIMUM_STATE_POINT_INCREASE_ON_ROUND_START = "maximum_state_point_increase_on_round_start";
 
         public Battle( List<Configuration> battleConfigurationList )
         {
@@ -118,6 +124,18 @@ public class GameConfiguration : Singleton<GameConfiguration>
 
                     case OBSERVATION_RATE_DEDUCTION_START_ROUND:
                         observationRateDeductionStartRound = ( int )_configurationValue;
+                        break;
+
+                    case STRESS_VALUE_DECREASE_ON_ROUND_START:
+                        stressValueDecreaseOnRoundStart = ( int )_configurationValue;
+                        break;
+
+                    case HEALTH_POINT_REGENERATION_RATE_ON_ROUND_START:
+                        healthPointRegenerationRateOnRoundStart = ( float )_configurationValue;
+                        break;
+
+                    case MAXIMUM_STATE_POINT_INCREASE_ON_ROUND_START:
+                        maximumStatePointIncreaseOnRoundStart = ( int )_configurationValue;
                         break;
 
                     default:
@@ -204,6 +222,21 @@ public class GameConfiguration : Singleton<GameConfiguration>
         public int GetObservationRateDeductionStartRound()
         {
             return this.observationRateDeductionStartRound;
+        }
+
+        public int GetStressValueDecreaseOnRoundStart()
+        {
+            return this.stressValueDecreaseOnRoundStart;
+        }
+
+        public float GetHealthPointRegenerationRateOnRoundStart()
+        {
+            return this.healthPointRegenerationRateOnRoundStart;
+        }
+
+        public int GetMaximumStatePointIncreaseOnRoundStart()
+        {
+            return this.maximumStatePointIncreaseOnRoundStart;
         }
     }
 
