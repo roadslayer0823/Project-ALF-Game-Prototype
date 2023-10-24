@@ -648,7 +648,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public int MaxStatePointUp { get; private set; }
 
         [JsonProperty("state_point_cost")]
-        public int StatePointCost { get; private set; }
+        public float StatePointCost { get; private set; }
 
         [JsonProperty("stress_damage")]
         public int StressDamage { get; private set; }

@@ -414,7 +414,7 @@ public class BattleAnimationManager : MonoBehaviour
                     }
 
                     CharacterSkill _attackTargetSkill = _attackTarget.GetCurrentSkill();
-                    BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
+                    BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, _attackTarget.GetCurrentCharacterActionType(), out _log );
                     currentCaster = _attackTarget;
 
                     BattleLog.Instance.AddOnScreenBattleLog( _log );

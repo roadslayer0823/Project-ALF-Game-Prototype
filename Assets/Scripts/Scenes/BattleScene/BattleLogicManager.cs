@@ -15,11 +15,25 @@ public class BattleLogicManager
 
     public static void ExecuteCasterSkillOnUse( GameCharacter caster, GameCharacter target, out string log )
     {
+        ExecuteCasterSkillOnUse( caster, target, GameCharacter.CharacterActionType.None, out log );
+    }
+
+    public static void ExecuteCasterSkillOnUse( GameCharacter caster, GameCharacter target, GameCharacter.CharacterActionType actionType, out string log )
+    {
         CharacterSkill _skill = caster.GetCurrentSkill();
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
         GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
 
         float _statePointCost = _subskillData.StatePointCost * _battleConfiguration.GetStatePointCostMultiplier();
+        string _evasionStressLog = "";
+
+        if (actionType == GameCharacter.CharacterActionType.Evade)
+        {
+            int _evasionStress = target.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().EvasionStress;
+            _statePointCost += _evasionStress;
+            _evasionStressLog = $"（迴避壓力：{ _evasionStress }）";
+        }
+
         caster.MinusCurrentStatePoint( _statePointCost, false );
 
         float _maxStatePointUp = _subskillData.MaxStatePointUp * _battleConfiguration.GetMaxStatePointUpMultiplier();
@@ -124,6 +138,11 @@ public class BattleLogicManager
         if (_statePointCost > 0)
         {
             _extraLog += "，消耗了" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _statePointCost + TerminologyManager.STATE_POINT + "</color>";
+
+            if (_evasionStressLog != "")
+            {
+                _extraLog += _evasionStressLog;
+            }
         }
 
         if (_maxStatePointUp > 0)
