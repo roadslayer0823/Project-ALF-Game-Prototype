@@ -494,4 +494,14 @@ public class BattleLogicManager
             }
         }
     }
+
+    public static void OnCharacterEnteredIntoBreakStatus( GameCharacter gameCharacter )
+    {
+        float _difference = gameCharacter.ClearVirtualHealthPoint();
+        if (_difference > 0)
+        {
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacter.GetCharacterName() }</color>的HP值裡尚未回復的"
+                                                     + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _difference }虛傷值</color>全數轉化為<color={ BattleLog.KEYWORD_COLOR_CODE }>實傷值</color>。" );
+        }
+    }
 }

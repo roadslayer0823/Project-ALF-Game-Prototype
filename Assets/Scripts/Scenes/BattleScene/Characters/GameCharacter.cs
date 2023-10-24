@@ -167,10 +167,14 @@ public class GameCharacter : MonoBehaviour
         this.onCharacterInfoUpdated?.Invoke();
     }
 
-    public void ClearVirtualHealthPoint()
+    public float ClearVirtualHealthPoint()
     {
+        float _difference = this.virtualHealthPoint - this.currentHealthPoint;
+
         this.virtualHealthPoint = this.currentHealthPoint;
         this.onCharacterInfoUpdated?.Invoke();
+
+        return _difference;
     }
 
     public void AddCurrentStatePoint( float amount )
@@ -535,6 +539,7 @@ public class GameCharacter : MonoBehaviour
     {
         this.breakStatusRemainingATLs = numberOfATLs;
         TriggerEvent( AnimationEvent.OnBeingInBreakStatus );
+        BattleLogicManager.OnCharacterEnteredIntoBreakStatus( this );
     }
 
     public void ShowPopUpDisplayInfo( string text, Color textColor )
