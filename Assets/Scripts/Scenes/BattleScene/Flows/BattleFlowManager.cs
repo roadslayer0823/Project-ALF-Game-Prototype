@@ -40,14 +40,14 @@ public class BattleFlowManager : MonoBehaviour
             _roundNumber = this.currentRound.GetRoundNumber();
         }
 
-        this.battleGameManager.OnNewRoundStarted( this.isPlayerFirst );
         this.currentRound = new BattleFlowRound( this, _roundNumber + 1, this.isPlayerFirst, OnCurrentRoundPhaseChanged );
+
+        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { this.currentRound.GetRoundNumber() } 回合開始 】</color>" );
+        this.battleGameManager.OnNewRoundStarted( this.isPlayerFirst );
         this.currentRound.SetCurrentPhase( BattleFlowRound.PhaseType.Preparation );
 
         // For next round.
         this.isPlayerFirst = !( this.isPlayerFirst );
-
-        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { this.currentRound.GetRoundNumber() } 回合開始 】</color>" );
     }
 
     public IEnumerator RunBattleAnimation( BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )

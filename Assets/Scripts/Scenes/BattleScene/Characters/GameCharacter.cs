@@ -60,7 +60,8 @@ public class GameCharacter : MonoBehaviour
         Repulse,
         Derive,
         Counter,
-        Backend
+        Defend,
+        Evade
     }
 
     public void Initialize( Character characterData, GameObject ownContainer, GameObject opponentContainer, Action<AnimationEvent,GameCharacter> onEventTriggeredCallback = null )
@@ -108,13 +109,29 @@ public class GameCharacter : MonoBehaviour
     {
     }
 
-    public void AddCurrentHealthPoint( float amount )
+    public float AddCurrentHealthPoint( float amount )
+    {
+        return AddCurrentHealthPoint( amount, this.maximumHealthPoint );
+    }
+
+    public float RecoverCurrentHealthPoint( float amount )
+    {
+        return AddCurrentHealthPoint( amount, this.virtualHealthPoint );
+    }
+
+    public float AddCurrentHealthPoint( float amount, float maximumAmount )
     {
         if (amount > 0)
         {
-            this.currentHealthPoint = Mathf.Clamp( this.currentHealthPoint + amount, 0.0f, this.maximumHealthPoint );
+            float _lastValue = this.currentHealthPoint;
+
+            this.currentHealthPoint = Mathf.Clamp( this.currentHealthPoint + amount, 0.0f, maximumAmount );
             this.onCharacterInfoUpdated?.Invoke();
+
+            return ( this.currentHealthPoint - _lastValue );
         }
+
+        return 0.0f;
     }
 
     public void MinusCurrentHealthPoint( float amount )
@@ -193,19 +210,27 @@ public class GameCharacter : MonoBehaviour
         this.onCharacterInfoUpdated?.Invoke();
     }
 
-    public void AddMaximumStatePoint( float amount )
+    public float AddMaximumStatePoint( float amount )
     {
         if (amount > 0)
         {
+            float _lastValue = this.maximumStatePoint;
+
             this.maximumStatePoint += amount;
             this.onCharacterInfoUpdated?.Invoke();
+
+            return ( this.maximumStatePoint - _lastValue );
         }
+
+        return 0.0f;
     }
 
-    public void MinusMaximumStatePoint( float amount )
+    public float MinusMaximumStatePoint( float amount )
     {
         if (amount > 0)
         {
+            float _lastValue = this.maximumStatePoint;
+
             this.maximumStatePoint -= amount;
 
             float _lowestMaximumStatePoint = GameConfiguration.Instance.GetBattleConfiguration().GetLowestMaximumStatePoint();
@@ -215,7 +240,11 @@ public class GameCharacter : MonoBehaviour
             }
 
             this.onCharacterInfoUpdated?.Invoke();
+
+            return ( _lastValue - this.maximumStatePoint );
         }
+
+        return 0.0f;
     }
 
     public void AddCurrentStressValue( float amount )
@@ -242,13 +271,25 @@ public class GameCharacter : MonoBehaviour
         }
     }
 
-    public void MinusCurrentStressValue( float amount )
+    public float MinusCurrentStressValue( float amount )
     {
         if (amount > 0)
         {
+            float _lastValue = this.currentStressValue;
+
             this.currentStressValue -= amount;
+
+            if (this.currentStressValue < 0)
+            {
+                this.currentStressValue = 0.0f;
+            }
+
             this.onCharacterInfoUpdated?.Invoke();
+
+            return ( _lastValue - this.currentStressValue );
         }
+
+        return 0.0f;
     }
 
     public void MinusBreakStatusRemainingATLs()
@@ -468,6 +509,11 @@ public class GameCharacter : MonoBehaviour
     public bool IsAbleToEvade()
     {
         if (this.GetIsInBreakStatus())
+        {
+            return false;
+        }
+
+        if (this.currentStatePoint <= 0)
         {
             return false;
         }
