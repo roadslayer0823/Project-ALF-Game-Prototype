@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 
@@ -29,8 +28,8 @@ public class DebugMenuPanel : MonoBehaviour
     //display function
     public void Start()
     {
-        playerStateList.ClearOptions();
-        enemyStateList.ClearOptions();
+        this.playerStateList.ClearOptions();
+        this.enemyStateList.ClearOptions();
 
         var stateNames = new List<string>
         {
@@ -40,11 +39,11 @@ public class DebugMenuPanel : MonoBehaviour
             "虛傷"
         };
 
-        playerStateList.AddOptions(stateNames);
-        enemyStateList.AddOptions(stateNames);
+        this.playerStateList.AddOptions(stateNames);
+        this.enemyStateList.AddOptions(stateNames);
 
-        selectedPlayerState = "參數";
-        selectedEnemyState = "參數";
+        this.selectedPlayerState = "參數";
+        this.selectedEnemyState = "參數";
     }
 
     public void Show()
@@ -72,16 +71,16 @@ public class DebugMenuPanel : MonoBehaviour
     //state value calculation
     public void OnPlayerStateListChange()
     {
-        selectedPlayerState = playerStateList.options[playerStateList.value].text;
-        isPlayerState = true;
-        isEnemyState = false;
+        this.selectedPlayerState = playerStateList.options[playerStateList.value].text;
+        this.isPlayerState = true;
+        this.isEnemyState = false;
     }
 
     public void OnEnemyStateListChange()
     {
-        selectedEnemyState = enemyStateList.options[enemyStateList.value].text;
-        isPlayerState = false;
-        isEnemyState = true;
+        this.selectedEnemyState = enemyStateList.options[enemyStateList.value].text;
+        this.isPlayerState = false;
+        this.isEnemyState = true;
     }
 
     public void OnPlayerStateValueChange()
