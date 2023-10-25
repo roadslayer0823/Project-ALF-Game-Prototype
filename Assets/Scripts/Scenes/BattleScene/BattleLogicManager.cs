@@ -273,6 +273,16 @@ public class BattleLogicManager
         {
             log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>受到了{ _extraLog }。";
         }
+
+        if (hasAttackDamage && target.GetIsInBreakStatus())
+        {
+            float _difference = target.ClearVirtualHealthPoint();
+            if (_difference > 0)
+            {
+                log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>的HP值裡尚未回復的"
+                    + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _difference }虛傷值</color>全數轉化為<color={ BattleLog.KEYWORD_COLOR_CODE }>實傷值</color>。";
+            }
+        }
     }
 
     public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target, GameCharacter.CharacterActionType actionType )
@@ -497,11 +507,5 @@ public class BattleLogicManager
 
     public static void OnCharacterEnteredIntoBreakStatus( GameCharacter gameCharacter )
     {
-        float _difference = gameCharacter.ClearVirtualHealthPoint();
-        if (_difference > 0)
-        {
-            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacter.GetCharacterName() }</color>的HP值裡尚未回復的"
-                                                     + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _difference }虛傷值</color>全數轉化為<color={ BattleLog.KEYWORD_COLOR_CODE }>實傷值</color>。" );
-        }
     }
 }
