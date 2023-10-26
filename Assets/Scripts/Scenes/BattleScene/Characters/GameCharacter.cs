@@ -500,36 +500,26 @@ public class GameCharacter : MonoBehaviour
         return true;
     }
 
-    public bool IsAbleToDefend()
+    public bool IsAbleToUseBackendSkill( CharacterSkill backendSkill )
     {
         if (this.GetIsInBreakStatus())
         {
             return false;
         }
 
-        return true;
-    }
-
-    public bool IsAbleToEvade()
-    {
-        if (this.GetIsInBreakStatus())
+        Subskill _backendSubskillData = backendSkill.GetCharacterSubskillData().GetSubskillData();
+        if (_backendSubskillData.IsEvadingSkill)
         {
-            return false;
-        }
+            if (this.currentStatePoint <= 0)
+            {
+                return false;
+            }
 
-        if (this.currentStatePoint <= 0)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public bool IsAbleToObserve()
-    {
-        if (this.GetIsInBreakStatus())
-        {
-            return false;
+            Subskill _attackerSubskillData = this.currentAttacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+            if (( int )_attackerSubskillData.EffectType > ( int )_backendSubskillData.EffectType)
+            {
+                return false;
+            }
         }
 
         return true;

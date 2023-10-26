@@ -546,6 +546,7 @@ public class BattleAnimationManager : MonoBehaviour
 
     private IEnumerator RunDerivedSkill( CharacterSkill derivedSkill, GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound battleFlowRound )
     {
+        attackTarget.Reset();
         attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
 
         string _log = "";
@@ -556,8 +557,6 @@ public class BattleAnimationManager : MonoBehaviour
         currentCaster = attacker;
 
         BattleLog.Instance.AddOnScreenBattleLog( _log );
-
-        yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
 
         attacker.GetSortingGroup().sortingOrder = 3;
         attackTarget.GetSortingGroup().sortingOrder = 1;
@@ -571,6 +570,8 @@ public class BattleAnimationManager : MonoBehaviour
             SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( derivedSkill.GetCharacterSubskillData().GetSubskillData().Id );
             string _characterPartB = _skillAnimation.CharacterPartB;
             string _skillEffectPartB = _skillAnimation.SkillEffectPartB;
+
+            yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
 
             if (_characterPartB != NO_ANIMATION)
             {
@@ -594,22 +595,26 @@ public class BattleAnimationManager : MonoBehaviour
             attacker.ShowCharacterObject();
             ChangeToBackgroundPartA();
             attacker.GetOpponentContainer().SetActive( false );
+            yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
             yield return StartCoroutine( PlayCharacterAnimation( attacker, "Attack" ) );
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
             yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_A" ) );
             attacker.HideCharacterObject();
+
             ChangeToBackgroundPartB();
             attacker.GetOpponentContainer().SetActive( true );
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
             StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME ) );
             yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_B" ) );
             attacker.ShowCharacterObject();
+
             ChangeToBackgroundPartA();
             attacker.GetOpponentContainer().SetActive( false );
             yield return StartCoroutine( PlayCharacterAnimation( attacker, DERIVE_ANIMATION_NAME ) );
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
             yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_C" ) );
             attacker.HideCharacterObject();
+
             ChangeToBackgroundPartB();
             attacker.GetOpponentContainer().SetActive( true );
             StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME ) );
@@ -827,6 +832,11 @@ public class BattleAnimationManager : MonoBehaviour
     private bool CheckHasTimeStop( CharacterSkill characterSkill )
     {
         Subskill _subskillData = characterSkill.GetCharacterSubskillData().GetSubskillData();
+
+        if (_subskillData.Speed > 1)
+        {
+            return true;
+        }
 
         if (_subskillData.Strength > 1)
         {
