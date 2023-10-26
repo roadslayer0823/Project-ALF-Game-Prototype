@@ -30,8 +30,8 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private float breakDamageMultiplier = 0.0f;
         private float maxStatePointUpMultiplier = 0.0f;
         private float statePointCostMultiplier = 0.0f;
-        private float stressDamageMultiplier = 0.0f;
-        private float stateDamageMultiplier = 0.0f;
+        private float statePointDamageMultiplier = 0.0f;
+        private float stressValueDamageMultiplier = 0.0f;
         private float lowestMaximumStatePoint = 0.0f;
         private float maximumObservedRate = 0.0f;
         private int maximumObservedActiveSkills = 0;
@@ -50,8 +50,8 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private const string BREAK_DAMAGE_MULTIPLIER = "break_damage_multiplier";
         private const string MAX_STATE_POINT_UP_MULTIPLIER = "max_state_point_up_multiplier";
         private const string STATE_POINT_COST_MULTIPLIER = "state_point_cost_multiplier";
-        private const string STRESS_DAMAGE_MULTIPLIER = "stress_damage_multiplier";
-        private const string STATE_DAMAGE_MULTIPLIER = "state_damage_multiplier";
+        private const string STATE_POINT_DAMAGE_MULTIPLIER = "state_point_damage_multiplier";
+        private const string STRESS_VALUE_DAMAGE_MULTIPLIER = "stress_value_damage_multiplier";
         private const string LOWEST_MAXIMUM_STATE_POINT = "lowest_maximum_state_point";
         private const string MAXIMUM_OBSERVED_RATE = "maximum_observed_rate";
         private const string MAXIMUM_OBSERVED_ACTIVE_SKILLS = "maximum_observed_active_skills";
@@ -95,11 +95,11 @@ public class GameConfiguration : Singleton<GameConfiguration>
                     case STATE_POINT_COST_MULTIPLIER:
                         this.statePointCostMultiplier = _configurationValue;
                         break;
-                    case STRESS_DAMAGE_MULTIPLIER:
-                        this.stressDamageMultiplier = _configurationValue;
+                    case STATE_POINT_DAMAGE_MULTIPLIER:
+                        this.statePointDamageMultiplier = _configurationValue;
                         break;
-                    case STATE_DAMAGE_MULTIPLIER:
-                        this.stateDamageMultiplier = _configurationValue;
+                    case STRESS_VALUE_DAMAGE_MULTIPLIER:
+                        this.stressValueDamageMultiplier = _configurationValue;
                         break;
 
                     case LOWEST_MAXIMUM_STATE_POINT:
@@ -184,14 +184,14 @@ public class GameConfiguration : Singleton<GameConfiguration>
             return this.statePointCostMultiplier;
         }
 
-        public float GetStressDamageMultiplier()
+        public float GetStatePointDamageMultiplier()
         {
-            return this.stressDamageMultiplier;
+            return this.statePointDamageMultiplier;
         }
 
-        public float GetStateDamageMultiplier()
+        public float GetStressValueDamageMultiplier()
         {
-            return this.stateDamageMultiplier;
+            return this.stressValueDamageMultiplier;
         }
 
         public float GetLowestMaximumStatePoint()

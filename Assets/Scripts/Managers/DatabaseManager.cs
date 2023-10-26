@@ -642,19 +642,22 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public RangeType Range;
 
         [JsonProperty("attack_damage")]
-        public int AttackDamage { get; private set; }
+        public float AttackDamage { get; private set; }
 
         [JsonProperty("max_state_point_up")]
-        public int MaxStatePointUp { get; private set; }
+        public float MaxStatePointUp { get; private set; }
 
         [JsonProperty("state_point_cost")]
         public float StatePointCost { get; private set; }
 
-        [JsonProperty("stress_damage")]
-        public int StressDamage { get; private set; }
-
         [JsonProperty("state_point_damage")]
-        public int StatePointDamage { get; private set; }
+        public float StatePointDamage { get; private set; }
+
+        [JsonProperty("stress_value_damage")]
+        public float StressValueDamage { get; private set; }
+
+        [JsonProperty("evasion_stress")]
+        public float EvasionStress { get; private set; }
 
         [JsonProperty("strength")]
         public int Strength { get; private set; }
@@ -664,9 +667,6 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
         [JsonProperty("evasion")]
         public int Evasion { get; private set; }
-
-        [JsonProperty("evasion_stress")]
-        public int EvasionStress { get; private set; }
 
         [JsonProperty("effect_area")]
         [HideInInspector] public string EffectAreaString { get; private set; }

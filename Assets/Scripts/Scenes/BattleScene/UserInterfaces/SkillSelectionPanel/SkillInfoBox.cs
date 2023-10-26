@@ -155,10 +155,10 @@ public class SkillInfoBox : MonoBehaviour
             this.evasionStress.gameObject.SetActive(false);
         }
 
-        if (_subskillData.StressDamage > 1) // Stress Damage
+        if (_subskillData.StressValueDamage > 1) // Stress Value Damage
         {
             this.stressDamage.gameObject.SetActive(true);
-            this.stressDamageValue.SetText((_subskillData.StressDamage - 1).ToString());
+            this.stressDamageValue.SetText((_subskillData.StressValueDamage - 1).ToString());
         }
         else
         {

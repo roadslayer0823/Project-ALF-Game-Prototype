@@ -160,7 +160,17 @@ public class BattleGameManager : MonoBehaviour
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_BREAK );
                 this.battleFlowManager.GetCurrentRound().UpdateATLSlotStatuses( gameCharacter, false );
 
-                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacter.GetCharacterName() }</color>陷入<color={ BattleLog.KEYWORD_COLOR_CODE }>崩潰狀態</color>。" );
+                string _breakType = "";
+                if (gameCharacter.GetIsBreakStatusCausedByStatePoint())
+                {
+                    _breakType = TerminologyManager.STATE_BREAK;
+                }
+                else if (gameCharacter.GetIsBreakStatusCausedByStressValue())
+                {
+                    _breakType = TerminologyManager.STRESS_BREAK;
+                }
+
+                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacter.GetCharacterName() }</color>陷入<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _breakType }狀態</color>。" );
 
                 break;
 

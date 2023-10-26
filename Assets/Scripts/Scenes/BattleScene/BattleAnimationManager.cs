@@ -193,7 +193,7 @@ public class BattleAnimationManager : MonoBehaviour
             GameCharacter _loser = null;
             CharacterSkill _derivedSkill = null;
             float _attackDamage = 0;
-            float _stressDamage = 0;
+            float _stressValueDamage = 0;
             float _statePointDamage = 0;
 
             if (_attackTarget.GetIsInBreakStatus())
@@ -221,12 +221,12 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
                     }
 
-                    BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
+                    BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget, true, out _attackDamage, out _stressValueDamage, out _statePointDamage, out _log );
                     BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                     this.cameraEffect.Shake();
                     AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                    yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
+                    yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressValueDamage, _statePointDamage ) );
                     yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
 
                     if (CheckHasBattleEnded( battleGameManager ))
@@ -282,7 +282,7 @@ public class BattleAnimationManager : MonoBehaviour
                                                                         out _winner, out _loser );
 
                     bool _hasAttackDamage = false;
-                    bool _hasStressDamage = false;
+                    bool _hasStressValueDamage = false;
                     bool _hasStatePointDamage = false;
                     if (_winner != null)
                     {
@@ -295,7 +295,7 @@ public class BattleAnimationManager : MonoBehaviour
                             if (_attackTargetRangeType == RangeType.melee)
                             {
                                 _hasAttackDamage = true;
-                                _hasStressDamage = true;
+                                _hasStressValueDamage = true;
                                 _hasStatePointDamage = true;
                                 OnHitWithNoDamage( _winner, _loser );
                             }
@@ -304,7 +304,7 @@ public class BattleAnimationManager : MonoBehaviour
                                 if (_winner == _attackTarget)
                                 {
                                     _hasAttackDamage = true;
-                                    _hasStressDamage = true;
+                                    _hasStressValueDamage = true;
                                     _hasStatePointDamage = true;
                                 }
                                 else
@@ -320,7 +320,7 @@ public class BattleAnimationManager : MonoBehaviour
                                 if (_winner == _attacker)
                                 {
                                     _hasAttackDamage = true;
-                                    _hasStressDamage = true;
+                                    _hasStressValueDamage = true;
                                     _hasStatePointDamage = true;
                                 }
                                 else
@@ -331,12 +331,12 @@ public class BattleAnimationManager : MonoBehaviour
                             else if (_attackTargetRangeType == RangeType.ranged)
                             {
                                 _hasAttackDamage = true;
-                                _hasStressDamage = true;
+                                _hasStressValueDamage = true;
                                 _hasStatePointDamage = true;
                             }
                         }
 
-                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, GameCharacter.CharacterActionType.Repulse, _hasAttackDamage, _hasStressDamage, _hasStatePointDamage, out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
+                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, GameCharacter.CharacterActionType.Repulse, _hasAttackDamage, _hasStressValueDamage, _hasStatePointDamage, out _attackDamage, out _stressValueDamage, out _statePointDamage, out _log );
                         BattleLog.Instance.AddOnScreenBattleLog( _log );
                     }
                     else
@@ -358,7 +358,7 @@ public class BattleAnimationManager : MonoBehaviour
                         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_"
                                                                                      + ( ( _attacker is PlayerCharacter ) ? "Left" : "Right" ),
-                                                                                     _attackDamage, _stressDamage, _statePointDamage ) );
+                                                                                     _attackDamage, _stressValueDamage, _statePointDamage ) );
                     }
 
                     yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
@@ -440,7 +440,7 @@ public class BattleAnimationManager : MonoBehaviour
                                                                             out _winner, out _loser );
                     }
 
-                    BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _winner == _attacker, _loser.GetCurrentCharacterActionType(), out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
+                    BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _winner == _attacker, _loser.GetCurrentCharacterActionType(), out _attackDamage, out _stressValueDamage, out _statePointDamage, out _log );
                     BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                     if (_winner == _attacker)
@@ -457,7 +457,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                         this.cameraEffect.Shake();
                         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                        yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
+                        yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressValueDamage, _statePointDamage ) );
                         yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
 
                         if (CheckHasBattleEnded( battleGameManager ))
@@ -563,7 +563,7 @@ public class BattleAnimationManager : MonoBehaviour
         attackTarget.GetSortingGroup().sortingOrder = 1;
 
         float _attackDamage = 0;
-        float _stressDamage = 0;
+        float _stressValueDamage = 0;
         float _statePointDamage = 0;
 
         if (derivedSkill.GetCharacterSubskillData().GetSubskillData().Range == RangeType.melee)
@@ -582,12 +582,12 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlaySkillEffectAnimation( attacker, _skillEffectPartB ) );
             }
 
-            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
+            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressValueDamage, out _statePointDamage, out _log );
             BattleLog.Instance.AddOnScreenBattleLog( _log );
 
             this.cameraEffect.Shake();
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-            yield return StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressDamage, _statePointDamage ) );
+            yield return StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressValueDamage, _statePointDamage ) );
         }
         else
         {
@@ -615,13 +615,13 @@ public class BattleAnimationManager : MonoBehaviour
             StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME ) );
             yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_D" ) );
 
-            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressDamage, out _statePointDamage, out _log );
+            BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressValueDamage, out _statePointDamage, out _log );
             BattleLog.Instance.AddOnScreenBattleLog( _log );
 
             this.cameraEffect.Shake();
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
             yield return null;
-            StartCoroutine( ShowPopUpDisplayInfo( attackTarget, _attackDamage, _stressDamage, _statePointDamage ) );
+            StartCoroutine( ShowPopUpDisplayInfo( attackTarget, _attackDamage, _stressValueDamage, _statePointDamage ) );
             yield return new WaitForSeconds( 0.7f );
         }
 

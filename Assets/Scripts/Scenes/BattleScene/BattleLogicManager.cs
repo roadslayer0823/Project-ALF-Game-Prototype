@@ -22,21 +22,20 @@ public class BattleLogicManager
     {
         CharacterSkill _skill = caster.GetCurrentSkill();
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
-        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
 
-        float _statePointCost = _subskillData.StatePointCost * _battleConfiguration.GetStatePointCostMultiplier();
+        float _statePointCost = GetStatePointCost( _subskillData );
         string _evasionStressLog = "";
 
         if (actionType == GameCharacter.CharacterActionType.Evade)
         {
-            int _evasionStress = target.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().EvasionStress;
+            float _evasionStress = target.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().EvasionStress;
             _statePointCost += _evasionStress;
             _evasionStressLog = $"（迴避壓力：{ _evasionStress }）";
         }
 
         caster.MinusCurrentStatePoint( _statePointCost, false );
 
-        float _maxStatePointUp = _subskillData.MaxStatePointUp * _battleConfiguration.GetMaxStatePointUpMultiplier();
+        float _maxStatePointUp = GetMaxStatePointUp( _subskillData );
         caster.AddMaximumStatePoint( _maxStatePointUp );
 
         log = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + caster.GetCharacterName() + "</color>" + "對"
@@ -187,24 +186,25 @@ public class BattleLogicManager
     }
 
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage,
-                                                out float attackDamage, out float stressDamage, out float statePointDamage, out string log )
+                                                out float attackDamage, out float stressValueDamage, out float statePointDamage, out string log )
     {
-        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, GameCharacter.CharacterActionType.None, out attackDamage, out stressDamage, out statePointDamage, out log );
+        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, GameCharacter.CharacterActionType.None, out attackDamage, out stressValueDamage, out statePointDamage, out log );
     }
 
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage, GameCharacter.CharacterActionType actionType,
-                                                out float attackDamage, out float stressDamage, out float statePointDamage, out string log )
+                                                out float attackDamage, out float stressValueDamage, out float statePointDamage, out string log )
     {
-        ExecuteCasterSkillOnHit( caster, target, actionType, hasAttackDamage, true, true, out attackDamage, out stressDamage, out statePointDamage, out log );
+        ExecuteCasterSkillOnHit( caster, target, actionType, hasAttackDamage, true, true, out attackDamage, out stressValueDamage, out statePointDamage, out log );
     }
 
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, GameCharacter.CharacterActionType actionType,
-                                                bool hasAttackDamage, bool hasStressDamage, bool hasStatePointDamage,
-                                                out float attackDamage, out float stressDamage, out float statePointDamage, out string log )
+                                                bool hasAttackDamage, bool hasStressValueDamage, bool hasStatePointDamage,
+                                                out float attackDamage, out float stressValueDamage, out float statePointDamage, out string log )
     {
         attackDamage = 0;
-        stressDamage = 0;
+        stressValueDamage = 0;
         statePointDamage = 0;
+        log = "";
 
         CharacterSkill _skill = caster.GetCurrentSkill();
         bool _isActualDamage = false;
@@ -226,37 +226,35 @@ public class BattleLogicManager
         }
 
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
-        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
 
         // If the target does not take the health damage, then it will take the stress damage.
-        if (!hasAttackDamage && hasStressDamage)
+        if (!hasAttackDamage && hasStressValueDamage)
         {
-            stressDamage = _subskillData.StressDamage * _battleConfiguration.GetStressDamageMultiplier();
-            target.AddCurrentStressValue( stressDamage );
+            stressValueDamage = GetStressValueDamage( _subskillData );
+            target.AddCurrentStressValue( stressValueDamage );
         }
 
         if (hasStatePointDamage)
         {
-            statePointDamage = _subskillData.StatePointDamage * _battleConfiguration.GetStateDamageMultiplier();
+            statePointDamage = GetStatePointDamage( _subskillData );
             target.MinusCurrentStatePoint( statePointDamage, true );
         }
 
-        log = "";
-
         string _extraLog = "";
+
         if (attackDamage > 0)
         {
             _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ attackDamage }HP值傷害</color>（{ ( ( _isActualDamage ) ? "實傷" : "虛傷" ) }）";
         }
 
-        if (stressDamage > 0)
+        if (stressValueDamage > 0)
         {
             if (_extraLog != "")
             {
                 _extraLog += "、";
             }
 
-            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ stressDamage }%負荷值傷害</color>";
+            _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ stressValueDamage }%負荷值傷害</color>";
         }
 
         if (statePointDamage > 0)
@@ -273,13 +271,23 @@ public class BattleLogicManager
         {
             log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>受到了{ _extraLog }。";
         }
+
+        if (hasAttackDamage && target.GetIsInBreakStatus())
+        {
+            float _difference = target.ClearVirtualHealthPoint();
+            if (_difference > 0)
+            {
+                log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>的HP值裡尚未回復的"
+                    + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _difference }虛傷值</color>全數轉化為<color={ BattleLog.KEYWORD_COLOR_CODE }>實傷值</color>。";
+            }
+        }
     }
 
     public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target, GameCharacter.CharacterActionType actionType )
     {
         GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
 
-        float _attackDamage = ( ( skill.GetCharacterSubskillData().GetSubskillData().AttackDamage * _battleConfiguration.GetAttackDamageMultiplier() )
+        float _attackDamage = ( GetAttackDamage( skill.GetCharacterSubskillData().GetSubskillData() )
                               * ( ( target.GetIsInBreakStatus() ) ? _battleConfiguration.GetBreakDamageMultiplier() : 1.0f ) );
 
         CharacterSkill _targetSkill = target.GetCurrentSkill();
@@ -296,7 +304,7 @@ public class BattleLogicManager
             if (actionType == GameCharacter.CharacterActionType.Repulse
                 && _targetSubskillData.FailedRepulseDamageRate > 0)
             {
-                _attackDamage -= _targetSubskillData.AttackDamage * _battleConfiguration.GetAttackDamageMultiplier() * _targetSubskillData.FailedRepulseDamageRate;
+                _attackDamage -= GetAttackDamage( _targetSubskillData ) * _targetSubskillData.FailedRepulseDamageRate;
             }
         }
 
@@ -493,5 +501,34 @@ public class BattleLogicManager
                 _gameCharacterSkill.CleanUpObservedSkillDataList();
             }
         }
+    }
+
+    public static void OnCharacterEnteredIntoBreakStatus( GameCharacter gameCharacter )
+    {
+    }
+
+    public static float GetAttackDamage( Subskill subskillData )
+    {
+        return ( subskillData.AttackDamage * GameConfiguration.Instance.GetBattleConfiguration().GetAttackDamageMultiplier() );
+    }
+
+    public static float GetStatePointCost( Subskill subskillData )
+    {
+        return ( subskillData.StatePointCost * GameConfiguration.Instance.GetBattleConfiguration().GetStatePointCostMultiplier() );
+    }
+
+    public static float GetMaxStatePointUp( Subskill subskillData )
+    {
+        return ( subskillData.MaxStatePointUp * GameConfiguration.Instance.GetBattleConfiguration().GetMaxStatePointUpMultiplier() );
+    }
+
+    public static float GetStatePointDamage( Subskill subskillData )
+    {
+        return ( subskillData.StatePointDamage * GameConfiguration.Instance.GetBattleConfiguration().GetStatePointDamageMultiplier() );
+    }
+
+    public static float GetStressValueDamage( Subskill subskillData )
+    {
+        return ( subskillData.StressValueDamage * GameConfiguration.Instance.GetBattleConfiguration().GetStressValueDamageMultiplier() );
     }
 }
