@@ -20,7 +20,7 @@ public class PlayerCharacter : GameCharacter
 
             case AnimationEvent.OnActiveSkillStarted:
 
-                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Observation, base.IsAbleToObserve() );
+                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Observation, true );
 
                 break;
 
@@ -34,29 +34,45 @@ public class PlayerCharacter : GameCharacter
             case AnimationEvent.OnRepulseWin:
 
                 CharacterSkill _derivedSkill = null;
-                bool _isAbleToDerive = base.IsAbleToDerive( out _derivedSkill );
-
-                _playerActionPanel.ShowQTEActionButton( _derivedSkill, base.GetSkillCountdownTime() );
+                if (base.IsAbleToDerive( out _derivedSkill ))
+                {
+                    _playerActionPanel.ShowQTEActionButton( _derivedSkill, base.GetSkillCountdownTime() );
+                }
+                else
+                {
+                    _playerActionPanel.HideQTEActionButton();
+                }
 
                 break;
 
             case AnimationEvent.OnDefensePartA:
 
                 CharacterSkill _repulseSkill = null;
-                bool _isAbleToRepulse = base.IsAbleToRepulse( _nextATL, out _repulseSkill );
+                if (base.IsAbleToRepulse( _nextATL, out _repulseSkill ))
+                {
+                    _playerActionPanel.ShowQTEActionButton( _repulseSkill, base.GetSkillCountdownTime() );
+                }
+                else
+                {
+                    _playerActionPanel.HideQTEActionButton();
+                }
 
-                _playerActionPanel.ShowQTEActionButton( _repulseSkill, base.GetSkillCountdownTime() );
-                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Defense, base.IsAbleToDefend(), base.GetSkillCountdownTime() );
-                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Evasion, base.IsAbleToEvade(), base.GetSkillCountdownTime() );
+                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Defense, true, base.GetSkillCountdownTime() );
+                _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Evasion, true, base.GetSkillCountdownTime() );
 
                 break;
 
             case AnimationEvent.OnDefenseWin:
 
                 CharacterSkill _counterSkill = null;
-                bool _isAbleToCounter = base.IsAbleToCounter( out _counterSkill );
-
-                _playerActionPanel.ShowQTEActionButton( _counterSkill, base.GetSkillCountdownTime() );
+                if (base.IsAbleToCounter( out _counterSkill ))
+                {
+                    _playerActionPanel.ShowQTEActionButton( _counterSkill, base.GetSkillCountdownTime() );
+                }
+                else
+                {
+                    _playerActionPanel.HideQTEActionButton();
+                }
 
                 break;
 

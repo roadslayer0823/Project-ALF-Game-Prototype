@@ -63,6 +63,23 @@ public class GameCharacterInfoBox : MonoBehaviour
                     int _skillStatIncrement = selectedCharacter.GetCurrentSkillStatIncrement();
 
                     _skillInfoString = "<size=120%><color=#FFFF00><b>" + _subskillData.DisplayName + "</b></color></size>";
+
+                    int _speed = _subskillData.Speed + _skillStatIncrement;
+                    string _speedLevelText = TerminologyManager.GetSpeedLevelText( _speed );
+                    if (_speed > 1)
+                    {
+                        _skillInfoString += "\n";
+
+                        if (_skillStatIncrement > 0)
+                        {
+                            _skillInfoString += "<color=#FFFF00>" + _speedLevelText + "</color>";
+                        }
+                        else
+                        {
+                            _skillInfoString += _speedLevelText;
+                        }
+                    }
+
                     _skillInfoString += ( _subskillData.Strength > 1 ) ? "\n強度 +" + ( _subskillData.Strength - 1 ) : "";
 
                     if (_skillStatIncrement > 0 && _subskillData.Strength > 0)

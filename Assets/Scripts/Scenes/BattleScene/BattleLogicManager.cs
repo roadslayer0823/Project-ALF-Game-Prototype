@@ -82,44 +82,21 @@ public class BattleLogicManager
             log += " （" + _skillTypeLog;
         }
 
-        string _skillStatLog = "";
+        string _skillStatLog = "：" + TerminologyManager.GetSpeedLevelText( _subskillData.Speed );
 
         if (_subskillData.Strength > 1)
         {
-            if (_skillStatLog == "")
-            {
-                _skillStatLog += "：";
-            }
-
-            _skillStatLog += $"強度+{ _subskillData.Strength - 1 }";
+            _skillStatLog += $"，強度+{ _subskillData.Strength - 1 }";
         }
 
         if (_subskillData.Accuracy > 1)
         {
-            if (_skillStatLog == "")
-            {
-                _skillStatLog += "：";
-            }
-            else
-            {
-                _skillStatLog += "，";
-            }
-
-            _skillStatLog += $"命中+{ _subskillData.Accuracy - 1 }";
+            _skillStatLog += $"，命中+{ _subskillData.Accuracy - 1 }";
         }
 
         if (_subskillData.Evasion > 1)
         {
-            if (_skillStatLog == "")
-            {
-                _skillStatLog += "：";
-            }
-            else
-            {
-                _skillStatLog += "，";
-            }
-
-            _skillStatLog += $"迴避+{ _subskillData.Evasion - 1 }";
+            _skillStatLog += $"，迴避+{ _subskillData.Evasion - 1 }";
         }
 
         if (_skillStatLog != "")
@@ -272,13 +249,29 @@ public class BattleLogicManager
             log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>受到了{ _extraLog }。";
         }
 
-        if (hasAttackDamage && target.GetIsInBreakStatus())
+        if (target.GetIsInBreakStatus())
         {
-            float _difference = target.ClearVirtualHealthPoint();
-            if (_difference > 0)
+            string _breakType = "";
+
+            if (target.GetIsBreakStatusCausedByStatePoint())
             {
-                log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>的HP值裡尚未回復的"
-                    + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _difference }虛傷值</color>全數轉化為<color={ BattleLog.KEYWORD_COLOR_CODE }>實傷值</color>。";
+                _breakType = TerminologyManager.STATE_BREAK;
+            }
+            else if (target.GetIsBreakStatusCausedByStressValue())
+            {
+                _breakType = TerminologyManager.STRESS_BREAK;
+            }
+
+            log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>陷入<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _breakType }狀態</color>。";
+
+            if (hasAttackDamage)
+            {
+                float _difference = target.ClearVirtualHealthPoint();
+                if (_difference > 0)
+                {
+                    log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>的HP值裡尚未回復的"
+                        + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _difference }虛傷值</color>全數轉化為<color={ BattleLog.KEYWORD_COLOR_CODE }>實傷值</color>。";
+                }
             }
         }
     }
@@ -316,6 +309,7 @@ public class BattleLogicManager
         return _attackDamage;
     }
 
+    /*
     public static void CompareCharacterSkillAttributes( ActionType actionType, GameCharacter attacker, GameCharacter defender,
                                                         out GameCharacter winner, out GameCharacter loser )
     {
@@ -388,6 +382,98 @@ public class BattleLogicManager
                     {
                         winner = attacker;
                     }
+                }
+
+                break;
+        }
+
+        if (winner == attacker)
+        {
+            loser = defender;
+        }
+        else if (winner == defender)
+        {
+            loser = attacker;
+        }
+    }
+    */
+
+    public static void CompareCharacterSkillAttributes( ActionType actionType, GameCharacter attacker, GameCharacter defender,
+                                                        out GameCharacter winner, out GameCharacter loser )
+    {
+        winner = null;
+        loser = null;
+
+        int _attackerSkillStatIncrement = attacker.GetCurrentSkillStatIncrement();
+        Subskill _attackerSubskillData = attacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        int _attackerSkillSpeed = _attackerSubskillData.Speed + _attackerSkillStatIncrement;
+        int _attackerSkillStrength = _attackerSubskillData.Strength + _attackerSkillStatIncrement;
+        int _attackerSkillEffectType = ( int )_attackerSubskillData.EffectType;
+
+        int _defenderSkillStatIncrement = defender.GetCurrentSkillStatIncrement();
+        Subskill _defenderSubskillData = defender.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        int _defenderSkillSpeed = _defenderSubskillData.Speed + _defenderSkillStatIncrement;
+        int _defenderSkillStrength = _defenderSubskillData.Strength + _defenderSkillStatIncrement;
+        int _defenderSkillEffectType = ( int )_defenderSubskillData.EffectType;
+
+        switch ( actionType )
+        {
+            case ActionType.Repulse:
+
+                if (_attackerSkillSpeed > _defenderSkillSpeed)
+                {
+                    winner = attacker;
+                }
+                else
+                {
+                    if (_attackerSkillStrength > _defenderSkillStrength)
+                    {
+                        winner = attacker;
+                    }
+                    else if (_attackerSkillStrength < _defenderSkillStrength)
+                    {
+                        winner = defender;
+                    }
+                }
+
+                break;
+
+            case ActionType.Defend:
+
+                if (_attackerSkillSpeed > _defenderSkillSpeed)
+                {
+                    winner = attacker;
+                }
+                else
+                {
+                    if (_attackerSkillEffectType > _defenderSkillEffectType)
+                    {
+                        winner = attacker;
+                    }
+                    else
+                    {
+                        if (_attackerSkillStrength > _defenderSkillStrength)
+                        {
+                            winner = attacker;
+                        }
+                        else
+                        {
+                            winner = defender;
+                        }
+                    }
+                }
+
+                break;
+
+            case ActionType.Evade:
+
+                if (_attackerSkillSpeed > _defenderSkillSpeed)
+                {
+                    winner = attacker;
+                }
+                else
+                {
+                    winner = defender;
                 }
 
                 break;

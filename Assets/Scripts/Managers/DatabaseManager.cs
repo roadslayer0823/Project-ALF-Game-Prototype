@@ -659,14 +659,17 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("evasion_stress")]
         public float EvasionStress { get; private set; }
 
+        [JsonProperty("speed")]
+        public int Speed { get; private set; }
+
         [JsonProperty("strength")]
         public int Strength { get; private set; }
 
         [JsonProperty("accuracy")]
-        public int Accuracy { get; private set; }
+        [Obsolete] public int Accuracy { get; private set; }
 
         [JsonProperty("evasion")]
-        public int Evasion { get; private set; }
+        [Obsolete] public int Evasion { get; private set; }
 
         [JsonProperty("effect_area")]
         [HideInInspector] public string EffectAreaString { get; private set; }

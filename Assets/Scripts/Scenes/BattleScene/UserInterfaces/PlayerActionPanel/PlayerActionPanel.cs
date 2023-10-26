@@ -221,7 +221,7 @@ public class PlayerActionPanel : MonoBehaviour
                     || ( skillActionButtonType == SkillActionButtonType.Evasion && _subskillData.IsEvadingSkill )
                     || ( skillActionButtonType == SkillActionButtonType.Observation && _subskillData.IsObservingSkill ))
                 {
-                    if (isActionButtonEnabled)
+                    if (isActionButtonEnabled && selectedGameCharacter.IsAbleToUseBackendSkill( _skill ))
                     {
                         _skillActionButton.EnableActionButton( countdownTime );
                     }

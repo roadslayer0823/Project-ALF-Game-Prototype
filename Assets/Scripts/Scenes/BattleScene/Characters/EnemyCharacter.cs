@@ -108,16 +108,19 @@ public class EnemyCharacter : GameCharacter
                     CharacterSkill _skill = base.selectedBackendSkillList[ Random.Range( 0, base.selectedBackendSkillList.Count ) ];
                     Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
 
-                    if (_subskillData.IsDefendingSkill)
+                    if (base.IsAbleToUseBackendSkill( _skill ))
                     {
-                        base.SetCurrentCharacterActionType( CharacterActionType.Defend );
-                    }
-                    else if (_subskillData.IsEvadingSkill)
-                    {
-                        base.SetCurrentCharacterActionType( CharacterActionType.Evade );
-                    }
+                        if (_subskillData.IsDefendingSkill)
+                        {
+                            base.SetCurrentCharacterActionType( CharacterActionType.Defend );
+                        }
+                        else if (_subskillData.IsEvadingSkill)
+                        {
+                            base.SetCurrentCharacterActionType( CharacterActionType.Evade );
+                        }
 
-                    base.SetCurrentSkill( _skill );
+                        base.SetCurrentSkill( _skill );
+                    }
                 }
 
                 break;
