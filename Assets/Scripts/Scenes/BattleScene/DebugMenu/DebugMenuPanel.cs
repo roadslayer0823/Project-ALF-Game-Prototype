@@ -34,9 +34,10 @@ public class DebugMenuPanel : MonoBehaviour
         var stateNames = new List<string>
         {
             "參數",
+            "虛傷",
             "當前以太值",
             "當前負荷值",
-            "虛傷"
+            "當前生命值"
         };
 
         this.playerStateList.AddOptions(stateNames);
@@ -142,7 +143,34 @@ public class DebugMenuPanel : MonoBehaviour
             }
             else if (stateNames == "虛傷")
             {
-                playerCharacter.MinusCurrentHealthPoint(newStateValue);
+                if (playerCharacter.GetCurrentHealthPoint() >= playerCharacter.GetVirtualHealthPoint())
+                {
+                    playerCharacter.MinusCurrentHealthPoint(newStateValue);
+                }
+                else if (playerCharacter.GetCurrentHealthPoint() <= playerCharacter.GetVirtualHealthPoint())
+                {
+                    playerCharacter.AddCurrentHealthPoint(newStateValue);
+
+                    if(playerCharacter.GetVirtualHealthPoint() == 0)
+                    {
+                        playerCharacter.AddVirtualHealthPoint(newStateValue);
+                    }
+                }
+            }
+
+            else if (stateNames == "當前生命值")
+            {
+                float _difference = newStateValue - playerCharacter.GetCurrentHealthPoint();
+                if (_difference > 0)
+                {
+                    playerCharacter.AddCurrentHealthPoint(_difference);
+                    playerCharacter.AddVirtualHealthPoint(newStateValue - playerCharacter.GetVirtualHealthPoint());
+                }
+                else if (_difference < 0)
+                {
+                    playerCharacter.MinusCurrentHealthPoint(Mathf.Abs(_difference));
+                    playerCharacter.ClearVirtualHealthPoint();
+                }
             }
         }
 
@@ -170,8 +198,36 @@ public class DebugMenuPanel : MonoBehaviour
 
             else if (stateNames == "虛傷")
             {
-                enemyCharacter.MinusCurrentHealthPoint(newStateValue);
+                if (enemyCharacter.GetCurrentHealthPoint() >= enemyCharacter.GetVirtualHealthPoint())
+                {
+                    enemyCharacter.MinusCurrentHealthPoint(newStateValue);
+                }
+                else if (enemyCharacter.GetCurrentHealthPoint() <= enemyCharacter.GetVirtualHealthPoint())
+                {
+                    enemyCharacter.AddCurrentHealthPoint(newStateValue);
+
+                    if (enemyCharacter.GetVirtualHealthPoint() == 0)
+                    {
+                        enemyCharacter.AddVirtualHealthPoint(newStateValue);
+                    }
+                }
             }
+
+            else if (stateNames == "當前生命值")
+            {
+                float _difference = newStateValue - playerCharacter.GetCurrentHealthPoint();
+                if (_difference > 0)
+                {
+                    playerCharacter.AddCurrentHealthPoint(_difference);
+                    playerCharacter.AddVirtualHealthPoint(newStateValue - playerCharacter.GetVirtualHealthPoint());
+                }
+                else if (_difference < 0)
+                {
+                    playerCharacter.MinusCurrentHealthPoint(Mathf.Abs(_difference));
+                    playerCharacter.ClearVirtualHealthPoint();
+                }
+            }
+
         }
     }
 
