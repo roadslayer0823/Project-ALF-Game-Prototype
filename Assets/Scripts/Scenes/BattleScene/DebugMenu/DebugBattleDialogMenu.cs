@@ -32,21 +32,21 @@ public class DebugBattleDialogMenu : MonoBehaviour
         this.container.SetActive(false);
     }
 
-    public void Attacker()
+    public void ClickToSelectAttacker()
     {
-        onResultCallBack?.Invoke(ResultType.AttackerWins);
+        this.onResultCallBack?.Invoke(ResultType.AttackerWins);
         Hide();
     }
 
-    public void Defender()
+    public void ClickToSelectDefender()
     {
-        onResultCallBack?.Invoke(ResultType.DefenderWins);
+        this.onResultCallBack?.Invoke(ResultType.DefenderWins);
         Hide();
     }
 
-    public void Draw()
+    public void ClickToSelectDraw()
     {
-        onResultCallBack?.Invoke(ResultType.Draw);
+        this.onResultCallBack?.Invoke(ResultType.Draw);
         Hide();
     }
 }
