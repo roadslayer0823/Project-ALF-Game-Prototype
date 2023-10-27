@@ -527,7 +527,25 @@ public class SkillSelectionPanel : MonoBehaviour
             {
                 CharacterSkill _repulseSkill = _repulseSkillList[0];
 
+                if (_selectedDerivedSkill != null)
+                {
+                    _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_selectedDerivedSkill);
+                }
+                else
+                {
+                    if (_derivedSkillList.Count == 0)
+                    {
+                        _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(null);
+                    }
+                    else
+                    {
+                        _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_derivedSkillList[0]);
+                    }
+                    
+                }
+
                 _characterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_repulseSkill);
+                _selectedRepulseSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
             }
 
             if (_selectedDerivedSkill == null && _derivedSkillList.Count > 0)
@@ -535,6 +553,13 @@ public class SkillSelectionPanel : MonoBehaviour
                 CharacterSkill _derivedSkill = _derivedSkillList[0];
 
                 _characterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_derivedSkill);
+
+                _selectedDerivedSkill = _derivedSkill;
+            }
+
+            if (_selectedRepulseSkill != null && _selectedRepulseSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
+            {
+                _selectedRepulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_selectedDerivedSkill);
             }
         }
 
