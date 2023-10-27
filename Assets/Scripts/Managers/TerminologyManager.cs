@@ -26,7 +26,7 @@ public class TerminologyManager
 
             case 3:
 
-                _speedLevelText = "訊速";
+                _speedLevelText = "迅速";
 
                 break;
 
