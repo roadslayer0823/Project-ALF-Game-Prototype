@@ -280,6 +280,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
             foreach (Subskill subskill in this.subskillList)
             {
+                subskill.IsAvailable = bool.Parse(subskill.IsAvailableString);
                 subskill.Range = (Subskill.RangeType)Enum.Parse(typeof(Subskill.RangeType), subskill.RangeString);
                 subskill.EffectArea = (Subskill.EffectAreaEnum)Enum.Parse(typeof(Subskill.EffectAreaEnum), subskill.EffectAreaString);
                 subskill.EffectType = (Subskill.EffectTypeEnum)Enum.Parse(typeof(Subskill.EffectTypeEnum), subskill.EffectTypeString);
@@ -597,6 +598,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
     {
         [JsonProperty("id")]
         public string Id { get; private set; }
+
+        [JsonProperty("is_available")]
+        [HideInInspector] public string IsAvailableString { get; private set; }
+        public bool IsAvailable;
 
         [JsonProperty("reference")]
         public string Reference { get; private set; }
