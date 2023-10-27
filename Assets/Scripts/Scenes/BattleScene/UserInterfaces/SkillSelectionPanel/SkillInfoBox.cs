@@ -95,20 +95,20 @@ public class SkillInfoBox : MonoBehaviour
         //State Point Title
         this.statePointCostTitle.SetText(TerminologyManager.STATE_POINT+"消耗");
 
-        if (_subskillData.AttackDamage > 0) // Attack Damage
+        if (BattleLogicManager.GetAttackDamage(_subskillData) > 0) // Attack Damage
         {
             this.attackDamage.gameObject.SetActive(true);
-            this.attackDamageValue.SetText(_subskillData.AttackDamage.ToString());
+            this.attackDamageValue.SetText(BattleLogicManager.GetAttackDamage(_subskillData).ToString());
         }
         else
         {
             this.attackDamage.gameObject.SetActive(false);
         }
 
-        if (_subskillData.StatePointCost > 0) // State Point Cost
+        if (BattleLogicManager.GetStatePointCost(_subskillData) > 0) // State Point Cost
         {
             this.statePointCost.gameObject.SetActive(true);
-            this.statePointCostValue.SetText(_subskillData.StatePointCost.ToString());
+            this.statePointCostValue.SetText(BattleLogicManager.GetStatePointCost(_subskillData).ToString());
         }
         else
         {
@@ -155,20 +155,20 @@ public class SkillInfoBox : MonoBehaviour
             this.evasionStress.gameObject.SetActive(false);
         }
 
-        if (_subskillData.StressValueDamage > 1) // Stress Value Damage
+        if (BattleLogicManager.GetStressValueDamage(_subskillData) > 1) // Stress Value Damage
         {
             this.stressDamage.gameObject.SetActive(true);
-            this.stressDamageValue.SetText((_subskillData.StressValueDamage - 1).ToString());
+            this.stressDamageValue.SetText(BattleLogicManager.GetStressValueDamage(_subskillData).ToString());
         }
         else
         {
             this.stressDamage.gameObject.SetActive(false);
         }
 
-        if (_subskillData.StatePointDamage > 1) // State Point Damage
+        if (BattleLogicManager.GetStatePointDamage(_subskillData) > 1) // State Point Damage
         {
             this.statePointDamage.gameObject.SetActive(true);
-            this.statePointDamageValue.SetText((_subskillData.StatePointDamage).ToString());
+            this.statePointDamageValue.SetText(BattleLogicManager.GetStatePointDamage(_subskillData).ToString());
         }
         else
         {
