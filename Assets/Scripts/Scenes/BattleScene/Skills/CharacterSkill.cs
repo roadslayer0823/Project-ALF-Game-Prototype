@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
@@ -30,6 +31,9 @@ public class CharacterSkill
                 this.characterSubskillList.Add(new CharacterSubskill(subskill, owner));
             }
         }
+
+        //Sort the skill based on skill level
+        this.characterSubskillList = this.characterSubskillList.OrderBy(subskill => subskill.GetSubskillData().Level).ToList();
     }
 
     public Skill GetSkillData()
@@ -69,9 +73,60 @@ public class CharacterSkill
         this.selectedSkillLevel = selectedSkillLevel;
     }
 
+    public int GetMinumumSkillLevel()
+    {
+        int _totalSubskill = this.characterSubskillList.Count;
+        int _skillLevel = 1;
+
+        for (int i = 0; i < _totalSubskill; i++)
+        {
+            CharacterSubskill _characterSubskill = this.characterSubskillList[i];
+            if (_characterSubskill.GetSubskillData().Level == _skillLevel && _characterSubskill.GetSubskillData().IsAvailable)
+            {
+                return _skillLevel;
+            }
+            else if (_characterSubskill.GetSubskillData().Level != _skillLevel && _characterSubskill.GetSubskillData().IsAvailable)
+            {
+                return _skillLevel = _characterSubskill.GetSubskillData().Level;
+            }
+        }
+
+        return 0;
+    }
+
     public int GetMaximumSkillLevel()
     {
-        return this.characterSubskillList.Count;
+        int _totalSubskill = this.characterSubskillList.Count;
+        int _skillLevel = this.characterSubskillList[_totalSubskill -1].GetSubskillData().Level;
+
+        for (int i = _totalSubskill - 1; i >= 0; i--)
+        {
+            CharacterSubskill _characterSubskill = this.characterSubskillList[i];
+            if (_characterSubskill.GetSubskillData().Level == _skillLevel && _characterSubskill.GetSubskillData().IsAvailable)
+            {
+                return _skillLevel;
+            }
+            else if (_characterSubskill.GetSubskillData().Level != _skillLevel && _characterSubskill.GetSubskillData().IsAvailable)
+            {
+                return _skillLevel = _characterSubskill.GetSubskillData().Level;
+            }
+        }
+
+        return 0;
+    }
+
+    public bool IsSkillLevelAvailable(int skillLevel)
+    {
+        for (int i = 0; i < this.characterSubskillList.Count; i++)
+        {
+            CharacterSubskill _characterSubskill = this.characterSubskillList[i];
+            if (_characterSubskill.GetSubskillData().Level == skillLevel && _characterSubskill.GetSubskillData().IsAvailable)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public bool IsSkillAvailable( bool canDefend, bool canEvade, bool canObserve )

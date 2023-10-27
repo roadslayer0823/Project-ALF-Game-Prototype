@@ -314,11 +314,16 @@ public class SkillSelectionListBox : MonoBehaviour
             // Initialize the SkillSelectionBox so that the skill can be display on it respectively. 
             for (int i = 0; i < characterSkills.Length; i++)
             {
-                SkillSelectionBox skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
+                CharacterSkill _characterSkill = characterSkills[i];
 
-                skillSelectionBox.Initialize(this, characterSkills[i]);
+                if (_characterSkill.GetMinumumSkillLevel() != 0)
+                {
+                    SkillSelectionBox skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 
-                this.skillSelectionBoxList.Add(skillSelectionBox);
+                    skillSelectionBox.Initialize(this, _characterSkill);
+
+                    this.skillSelectionBoxList.Add(skillSelectionBox);
+                }
             }
 
             this.isLastSelectedCharacterSkillChanged = false;
@@ -341,13 +346,22 @@ public class SkillSelectionListBox : MonoBehaviour
                 for (int i = 0; i < _repulseSkillList.Count; i++)
                 {
                     CharacterSkill _repulseSkill = _repulseSkillList[i];
+                    SkillSelectionBox _skillSelectionBox = null;
 
-                    SkillSelectionBox _skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
+                    if (_repulseSkill.GetMinumumSkillLevel() != 0)
+                    {
+                        _skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 
-                    _skillSelectionBox.Initialize(this, _repulseSkill);
+                        _skillSelectionBox.Initialize(this, _repulseSkill);
 
-                    this.repulseSkillSelectionBoxList.Add(_skillSelectionBox);
+                        this.repulseSkillSelectionBoxList.Add(_skillSelectionBox);
+                    }
 
+                    if (_skillSelectionBox == null)
+                    {
+                        return;
+                    }
+                    
                     if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() == null)
                     {
                         this.lastSelectedCharacterSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_repulseSkill);
@@ -386,14 +400,30 @@ public class SkillSelectionListBox : MonoBehaviour
                 for (int i = 0; i < _derivedSkillList.Count; i++)
                 {
                     CharacterSkill _derivedSkill = _derivedSkillList[i];
+                    SkillSelectionBox _skillSelectionBox = null;
 
-                    SkillSelectionBox _skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
+                    if (_derivedSkill.GetMinumumSkillLevel() != 0)
+                    {
+                        _skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 
-                    _skillSelectionBox.Initialize(this, _derivedSkill);
+                        _skillSelectionBox.Initialize(this, _derivedSkill);
 
-                    this.derivedSkillSelectionBoxList.Add(_skillSelectionBox);
+                        this.derivedSkillSelectionBoxList.Add(_skillSelectionBox);
+                    }
 
-                    if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedDerivedSkill()?.GetCharacterSubskillData().GetSubskillData().Id == _derivedSkill.GetCharacterSubskillData().GetSubskillData().Id)
+                    if (_skillSelectionBox == null)
+                    {
+                        return;
+                    }
+
+                    if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
+                    {
+                        this.lastSelectedCharacterSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_derivedSkill);
+                        _skillSelectionBox.SetSkillSelectionText("ON");
+                        _skillSelectionBox.MarkSelected();
+                        _skillSelectionBox.transform.SetAsFirstSibling();
+                    }
+                    else if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedDerivedSkill()?.GetCharacterSubskillData().GetSubskillData().Id == _derivedSkill.GetCharacterSubskillData().GetSubskillData().Id)
                     {
                         _skillSelectionBox.SetSkillSelectionText("ON");
                         _skillSelectionBox.MarkSelected();
@@ -424,12 +454,21 @@ public class SkillSelectionListBox : MonoBehaviour
                 for (int i = 0; i < _counterSkillList.Count; i++)
                 {
                     CharacterSkill _counterSkill = _counterSkillList[i];
+                    SkillSelectionBox _skillSelectionBox = null;
 
-                    SkillSelectionBox _skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
+                    if (_counterSkill.GetMinumumSkillLevel() != 0)
+                    {
+                        _skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 
-                    _skillSelectionBox.Initialize(this, _counterSkill);
+                        _skillSelectionBox.Initialize(this, _counterSkill);
 
-                    this.counterSkillSelectionBoxList.Add(_skillSelectionBox);
+                        this.counterSkillSelectionBoxList.Add(_skillSelectionBox);
+                    }
+
+                    if (_skillSelectionBox == null)
+                    {
+                        return;
+                    }
 
                     if (this.lastSelectedCharacterSkill.GetCharacterSubskillData().GetSelectedCounterSkill()?.GetCharacterSubskillData().GetSubskillData().Id == _counterSkill.GetCharacterSubskillData().GetSubskillData().Id)
                     {
