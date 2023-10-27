@@ -80,32 +80,10 @@ public class PlayerActionPanel : MonoBehaviour
 
     private void OnQTEButtonClicked()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
 
         DisableQTEAndSkillActionButtons();
-
-        Skill _skillData = this.qteSkill.GetSkillData();
-
-        switch ( _skillData.skillType )
-        {
-            case Skill.SkillType.repulse:
-
-                this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Repulse );
-
-                break;
-
-            case Skill.SkillType.derived:
-
-                this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Derive );
-
-                break;
-
-            case Skill.SkillType.counter:
-
-                this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Counter );
-
-                break;
-        }
+        this.selectedGameCharacter.SetCurrentSkill( this.qteSkill );
     }
 
     public void ShowPreparationSection()
@@ -242,15 +220,9 @@ public class PlayerActionPanel : MonoBehaviour
         this.selectedGameCharacter.SetCurrentSkill( _skill );
 
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
-        if (_subskillData.IsDefendingSkill)
+        if (_subskillData.IsDefendingSkill || _subskillData.IsEvadingSkill)
         {
             DisableQTEAndSkillActionButtons();
-            this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Defend );
-        }
-        else if (_subskillData.IsEvadingSkill)
-        {
-            DisableQTEAndSkillActionButtons();
-            this.selectedGameCharacter.SetCurrentCharacterActionType( GameCharacter.CharacterActionType.Evade );
         }
         else if (_subskillData.IsObservingSkill)
         {

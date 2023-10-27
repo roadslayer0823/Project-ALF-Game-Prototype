@@ -157,19 +157,16 @@ public class DebugMenuPanel : MonoBehaviour
                     }
                 }
             }
-
             else if (stateNames == "當前生命值")
             {
                 float _difference = newStateValue - playerCharacter.GetCurrentHealthPoint();
                 if (_difference > 0)
                 {
                     playerCharacter.AddCurrentHealthPoint(_difference);
-                    playerCharacter.AddVirtualHealthPoint(newStateValue - playerCharacter.GetVirtualHealthPoint());
                 }
                 else if (_difference < 0)
                 {
                     playerCharacter.MinusCurrentHealthPoint(Mathf.Abs(_difference));
-                    playerCharacter.ClearVirtualHealthPoint();
                 }
             }
         }

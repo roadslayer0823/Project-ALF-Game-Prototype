@@ -1,4 +1,3 @@
-using UnityEngine;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
 
 public class PlayerCharacter : GameCharacter
@@ -6,8 +5,6 @@ public class PlayerCharacter : GameCharacter
     public override void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
     {
         BattleUiManager _battleUiManager = battleGameManager.GetBattleUiManager();
-        BattleFlowManager _battleFlowManager = battleGameManager.GetBattleFlowManager();
-        BattleFlowATL _nextATL = _battleFlowManager.GetCurrentRound().GetNextATL( this );
         PlayerActionPanel _playerActionPanel = _battleUiManager.GetPlayerActionPanel();
 
         switch ( animationEvent )
@@ -48,7 +45,7 @@ public class PlayerCharacter : GameCharacter
             case AnimationEvent.OnDefensePartA:
 
                 CharacterSkill _repulseSkill = null;
-                if (base.IsAbleToRepulse( _nextATL, out _repulseSkill ))
+                if (base.IsAbleToRepulse( battleGameManager.GetBattleFlowManager(), out _repulseSkill ))
                 {
                     _playerActionPanel.ShowQTEActionButton( _repulseSkill, base.GetSkillCountdownTime() );
                 }

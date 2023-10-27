@@ -31,7 +31,6 @@ public class GameCharacter : MonoBehaviour
     protected CharacterSkill[] skills = null;
     protected List<CharacterSkill> selectedActiveSkillList = null;
     protected List<CharacterSkill> selectedBackendSkillList = null;
-    protected CharacterActionType currentCharacterActionType = CharacterActionType.None;
 
     protected GameObject ownContainer = null;
     protected GameObject opponentContainer = null;
@@ -126,6 +125,12 @@ public class GameCharacter : MonoBehaviour
             float _lastValue = this.currentHealthPoint;
 
             this.currentHealthPoint = Mathf.Clamp( this.currentHealthPoint + amount, 0.0f, maximumAmount );
+
+            if (this.virtualHealthPoint < this.currentHealthPoint)
+            {
+                this.virtualHealthPoint = this.currentHealthPoint;
+            }
+
             this.onCharacterInfoUpdated?.Invoke();
 
             return ( this.currentHealthPoint - _lastValue );
@@ -407,12 +412,12 @@ public class GameCharacter : MonoBehaviour
         this.onEventTriggeredCallback?.Invoke( animationEvent, this );
     }
 
-    public bool IsAbleToRepulse( BattleFlowATL nextATL )
+    public bool IsAbleToRepulse( BattleFlowManager battleFlowManager )
     {
-        return IsAbleToRepulse( nextATL, out _ );
+        return IsAbleToRepulse( battleFlowManager, out _ );
     }
 
-    public bool IsAbleToRepulse( BattleFlowATL nextATL, out CharacterSkill repulseSkill )
+    public bool IsAbleToRepulse( BattleFlowManager battleFlowManager, out CharacterSkill repulseSkill )
     {
         repulseSkill = null;
 
@@ -427,12 +432,38 @@ public class GameCharacter : MonoBehaviour
             return false;
         }
 
-        if (nextATL == null)
-        {
-            return false;
-        }
+        bool _needToFindRepulseSkillWithWideEffect = ( _attackerSubskillData.EffectType == Subskill.EffectTypeEnum.wide );
+        BattleFlowRound _battleFlowRound = battleFlowManager.GetCurrentRound();
+        BattleFlowATL _nextATL = null;
+        int _nextATLIndex = -1;
 
-        repulseSkill = nextATL.GetSelectedSkill().GetCharacterSubskillData().GetSelectedRepulseSkill();
+        do
+        {
+            if (_nextATLIndex == -1)
+            {
+                _nextATL = _battleFlowRound.GetNextATL( this, out _nextATLIndex );
+            }
+            else
+            {
+                _nextATL = _battleFlowRound.GetNextATL( this, _nextATLIndex, out _nextATLIndex );
+            }
+
+            if (_nextATL == null)
+            {
+                break;
+            }
+
+            repulseSkill = _nextATL.GetSelectedSkill().GetCharacterSubskillData().GetSelectedRepulseSkill();
+
+            if (_needToFindRepulseSkillWithWideEffect)
+            {
+                if (repulseSkill.GetCharacterSubskillData().GetSubskillData().EffectType == Subskill.EffectTypeEnum.wide)
+                {
+                    repulseSkill = null;
+                }
+            }
+        }
+        while (repulseSkill == null);
 
         if (repulseSkill == null)
         {
@@ -633,25 +664,9 @@ public class GameCharacter : MonoBehaviour
         return this.skillEffectAnimator;
     }
 
-    public void SetCurrentCharacterActionType( CharacterActionType currentCharacterActionType )
-    {
-        this.currentCharacterActionType = currentCharacterActionType;
-    }
-
-    public CharacterActionType GetCurrentCharacterActionType()
-    {
-        return this.currentCharacterActionType;
-    }
-
-    public void SetCurrentSkill( CharacterSkill currentSkill, GameCharacter attackTarget = null )
+    public void SetCurrentSkill( CharacterSkill currentSkill )
     {
         this.currentSkill = currentSkill;
-
-        if (attackTarget != null)
-        {
-            attackTarget.SetCurrentAttacker( this );
-        }
-
         this.onCharacterInfoUpdated?.Invoke();
     }
 
@@ -757,7 +772,6 @@ public class GameCharacter : MonoBehaviour
 
     public void Reset()
     {
-        this.currentCharacterActionType = CharacterActionType.None;
         SetCurrentSkill( null );
         SetCurrentAttacker( null );
     }

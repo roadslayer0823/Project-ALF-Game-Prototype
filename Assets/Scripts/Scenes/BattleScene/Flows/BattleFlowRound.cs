@@ -219,6 +219,11 @@ public class BattleFlowRound
         return GetNextATL( gameCharacter, this.flowATLIndex );
     }
 
+    public BattleFlowATL GetNextATL( GameCharacter gameCharacter, out int nextATLIndex )
+    {
+        return GetNextATL( gameCharacter, this.flowATLIndex, out nextATLIndex );
+    }
+
     public BattleFlowATL GetNextATL( GameCharacter gameCharacter, int fromATLIndex )
     {
         return GetNextATL( gameCharacter, fromATLIndex, out _ );

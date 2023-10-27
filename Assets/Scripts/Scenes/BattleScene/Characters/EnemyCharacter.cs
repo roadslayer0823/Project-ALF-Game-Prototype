@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
 using SkillType = DatabaseManager.Skill.SkillType;
-using Subskill = DatabaseManager.Subskill;
 
 public class EnemyCharacter : GameCharacter
 {
@@ -76,9 +75,6 @@ public class EnemyCharacter : GameCharacter
 
     public override void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
     {
-        BattleFlowManager _battleFlowManager = battleGameManager.GetBattleFlowManager();
-        BattleFlowATL _nextATL = _battleFlowManager.GetCurrentRound().GetNextATL( this );
-
         switch ( animationEvent )
         {
             case AnimationEvent.SetCharacter:
@@ -87,38 +83,26 @@ public class EnemyCharacter : GameCharacter
             case AnimationEvent.OnAttackPartB:
             case AnimationEvent.OnRepulseWin:
 
-                if (base.IsAbleToDerive())
+                CharacterSkill _derivedSkill = null;
+                if (base.IsAbleToDerive( out _derivedSkill ) && Random.value < 0.8f)
                 {
-                    if (Random.value < 0.8f)
-                    {
-                        base.SetCurrentCharacterActionType( CharacterActionType.Derive );
-                    }
+                    base.SetCurrentSkill( _derivedSkill );
                 }
 
                 break;
 
             case AnimationEvent.OnDefensePartA:
 
-                if (base.IsAbleToRepulse( _nextATL ) && Random.value < 0.8f)
+                CharacterSkill _repulseSkill = null;
+                if (base.IsAbleToRepulse( battleGameManager.GetBattleFlowManager(), out _repulseSkill ) && Random.value < 0.8f)
                 {
-                    base.SetCurrentCharacterActionType( CharacterActionType.Repulse );
+                    base.SetCurrentSkill( _repulseSkill );
                 }
                 else
                 {
                     CharacterSkill _skill = base.selectedBackendSkillList[ Random.Range( 0, base.selectedBackendSkillList.Count ) ];
-                    Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
-
                     if (base.IsAbleToUseBackendSkill( _skill ))
                     {
-                        if (_subskillData.IsDefendingSkill)
-                        {
-                            base.SetCurrentCharacterActionType( CharacterActionType.Defend );
-                        }
-                        else if (_subskillData.IsEvadingSkill)
-                        {
-                            base.SetCurrentCharacterActionType( CharacterActionType.Evade );
-                        }
-
                         base.SetCurrentSkill( _skill );
                     }
                 }
@@ -127,12 +111,10 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnDefenseWin:
 
-                if (base.IsAbleToCounter())
+                CharacterSkill _counterSkill = null;
+                if (base.IsAbleToCounter( out _counterSkill ) && Random.value < 0.8f)
                 {
-                    if (Random.value < 0.8f)
-                    {
-                        base.SetCurrentCharacterActionType( CharacterActionType.Counter );
-                    }
+                    base.SetCurrentSkill( _counterSkill );
                 }
 
                 break;
