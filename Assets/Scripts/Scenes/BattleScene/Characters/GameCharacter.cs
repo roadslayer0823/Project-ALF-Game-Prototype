@@ -25,6 +25,7 @@ public class GameCharacter : MonoBehaviour
     protected float virtualHealthPoint = 0.0f;
     protected float originalStatePoint = 0.0f;
     protected float maximumStatePoint = 0.0f;
+    protected float minimumStatePoint = 0.0f;
     protected float currentStatePoint = 0.0f;
     protected float maximumStressValue = 0.0f;
     protected float currentStressValue = 0.0f;
@@ -49,6 +50,7 @@ public class GameCharacter : MonoBehaviour
     private int breakStatusRemainingATLs = 0;
     private bool isBreakStatusCausedByStatePoint = false;
     private bool isBreakStatusCausedByStressValue = false;
+    private bool isAbleToUseSkill = false;
     private List<PopUpDisplayInfo> popUpDisplayInfoList = new List<PopUpDisplayInfo>();
 
     private const string AUDIO_ID_BREAK = "break";
@@ -77,6 +79,7 @@ public class GameCharacter : MonoBehaviour
         this.virtualHealthPoint = this.maximumHealthPoint;
         this.originalStatePoint = characterData.MaximumStatePoint;
         this.maximumStatePoint = this.originalStatePoint;
+        this.minimumStatePoint = GameConfiguration.Instance.GetBattleConfiguration().GetMinimumCurrentStatePoint();
         this.currentStatePoint = this.maximumStatePoint;
         this.maximumStressValue = characterData.MaximumStressValue;
         this.currentStressValue = 0.0f;
@@ -182,11 +185,16 @@ public class GameCharacter : MonoBehaviour
         return _difference;
     }
 
+    private void SetCurrentStatePoint( float amount )
+    {
+        this.currentStatePoint = Mathf.Clamp( amount, this.minimumStatePoint, this.maximumStatePoint );
+    }
+
     public void AddCurrentStatePoint( float amount )
     {
         if (amount > 0)
         {
-            this.currentStatePoint = Mathf.Clamp( this.currentStatePoint + amount, 0.0f, this.maximumStatePoint );
+            SetCurrentStatePoint( this.currentStatePoint + amount );
             this.onCharacterInfoUpdated?.Invoke();
         }
     }
@@ -195,7 +203,7 @@ public class GameCharacter : MonoBehaviour
     {
         if (amount > 0)
         {
-            this.currentStatePoint -= amount;
+            SetCurrentStatePoint( this.currentStatePoint - amount );
 
             if (BattleLogicManager.IsGameCharacterInBreakStatus( this, onHit ))
             {
@@ -667,6 +675,7 @@ public class GameCharacter : MonoBehaviour
     public void SetCurrentSkill( CharacterSkill currentSkill )
     {
         this.currentSkill = currentSkill;
+        this.isAbleToUseSkill = true;
         this.onCharacterInfoUpdated?.Invoke();
     }
 
@@ -713,6 +722,17 @@ public class GameCharacter : MonoBehaviour
     public GameCharacter GetCurrentAttacker()
     {
         return this.currentAttacker;
+    }
+
+    public void SetIsAbleToUseSkill( bool isAbleToUseSkill )
+    {
+        this.isAbleToUseSkill = isAbleToUseSkill;
+        this.onCharacterInfoUpdated?.Invoke();
+    }
+
+    public bool GetIsAbleToUseSkill()
+    {
+        return this.isAbleToUseSkill;
     }
 
     public void SetSkillCountdownTime( float skillCountdownTime )

@@ -13,6 +13,11 @@ public class BattleLogicManager
         Evade
     }
 
+    public static bool IsAbleToUseSkill( GameCharacter caster )
+    {
+        return ( caster.GetCurrentStatePoint() > GameConfiguration.Instance.GetBattleConfiguration().GetMinimumCurrentStatePoint() );
+    }
+
     public static void ExecuteCasterSkillOnUse( GameCharacter caster, GameCharacter target, out string log )
     {
         CharacterSkill _casterSkill = caster.GetCurrentSkill();
@@ -41,47 +46,8 @@ public class BattleLogicManager
 
         log = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + caster.GetCharacterName() + "</color>" + "對"
             + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + target.GetCharacterName() + "</color>" + "使出了"
-            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _casterSubskillData.DisplayName + "</color>";
-
-        string _skillTypeLog = "";
-
-        switch ( _casterSkillData.skillType )
-        {
-            case Skill.SkillType.active:
-
-                _skillTypeLog = "主動技能";
-
-                break;
-
-            case Skill.SkillType.backend:
-
-                _skillTypeLog = "後台技能";
-
-                break;
-
-            case Skill.SkillType.repulse:
-
-                _skillTypeLog = "迎擊技能";
-
-                break;
-
-            case Skill.SkillType.derived:
-
-                _skillTypeLog = "派生技能";
-
-                break;
-
-            case Skill.SkillType.counter:
-
-                _skillTypeLog = "反擊技能";
-
-                break;
-        }
-
-        if (_skillTypeLog != "")
-        {
-            log += " （" + _skillTypeLog;
-        }
+            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _casterSubskillData.DisplayName + "</color>"
+            + " （" + TerminologyManager.GetSkillTypeText( _casterSkillData.skillType );
 
         string _skillStatLog = "：";
 
@@ -118,10 +84,7 @@ public class BattleLogicManager
             log += _skillStatLog;
         }
 
-        if (_skillTypeLog != "")
-        {
-            log += "）";
-        }
+        log += "）";
 
         string _extraLog = "";
 
