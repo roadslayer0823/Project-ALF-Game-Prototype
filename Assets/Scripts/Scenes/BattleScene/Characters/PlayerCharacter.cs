@@ -45,9 +45,10 @@ public class PlayerCharacter : GameCharacter
             case AnimationEvent.OnDefensePartA:
 
                 CharacterSkill _repulseSkill = null;
-                if (base.IsAbleToRepulse( battleGameManager.GetBattleFlowManager(), out _repulseSkill ))
+                bool _isSpecial = false;
+                if (base.IsAbleToRepulse( battleGameManager, out _repulseSkill, out _isSpecial ))
                 {
-                    _playerActionPanel.ShowQTEActionButton( _repulseSkill, base.GetSkillCountdownTime() );
+                    _playerActionPanel.ShowQTEActionButton( _repulseSkill, base.GetSkillCountdownTime(), _isSpecial );
                 }
                 else
                 {

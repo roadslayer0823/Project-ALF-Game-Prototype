@@ -71,8 +71,13 @@ public class SkillSlotListPanel : MonoBehaviour
     {
         foreach (SkillSlot slot in skillSlots)
         {
-            slot.SetSkillSlotText("");
+            slot.Clear();
         }
+    }
+
+    public SkillSlot[] GetSkillSlots()
+    {
+        return this.skillSlots;
     }
 
     private void Swipe()

@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -21,15 +19,14 @@ public class SkillSlot : MonoBehaviour
         return this.selectedSkill;
     }
 
-    public void SetSkillSlotText(string slotText)
+    public void SetSkillSlotText( string slotText )
     {
-        if (slotText == "")
-        {
-            this.skillSlotText.SetText("NODATA");
-        }
-        else
-        {
-            this.skillSlotText.SetText(slotText);
-        }
+        this.skillSlotText.SetText( slotText );
+    }
+
+    public void Clear()
+    {
+        this.selectedSkill = null;
+        this.skillSlotText.SetText( "NODATA" );
     }
 }

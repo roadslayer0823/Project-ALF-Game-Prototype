@@ -267,7 +267,7 @@ public class BattleAnimationManager : MonoBehaviour
                     BattleFlowATL _attackTargetNextATL = battleFlowRound.GetNextATL( _attackTarget );
                     battleFlowRound.GoToTargetATL( _attackTargetNextATL, false );
 
-                    CharacterSkill _repulseSkill = _attackTargetNextATL.GetSelectedSkill().GetCharacterSubskillData().GetSelectedRepulseSkill();
+                    CharacterSkill _repulseSkill = _attackTarget.GetCurrentSkill();
                     BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
                     currentCaster = _attackTarget;
 
@@ -533,6 +533,7 @@ public class BattleAnimationManager : MonoBehaviour
             {
                 _attacker = _winner;
                 _attackTarget = _loser;
+                _attackTarget.Reset();
 
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
 

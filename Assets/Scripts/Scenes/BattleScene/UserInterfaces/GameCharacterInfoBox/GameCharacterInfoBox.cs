@@ -1,5 +1,7 @@
 using UnityEngine;
 using TMPro;
+using Skill = DatabaseManager.Skill;
+using Subskill = DatabaseManager.Subskill;
 
 public class GameCharacterInfoBox : MonoBehaviour
 {
@@ -59,10 +61,24 @@ public class GameCharacterInfoBox : MonoBehaviour
                 CharacterSubskill _characterSubskillData = _characterSkill.GetCharacterSubskillData();
                 if (_characterSubskillData != null)
                 {
-                    DatabaseManager.Subskill _subskillData = _characterSubskillData.GetSubskillData();
+                    Subskill _subskillData = _characterSubskillData.GetSubskillData();
                     int _skillStatIncrement = selectedCharacter.GetCurrentSkillStatIncrement();
 
                     _skillInfoString = "<size=120%><color=#FFFF00><b>" + _subskillData.DisplayName + "</b></color></size>";
+
+                    if (_subskillData.EffectType == Subskill.EffectTypeEnum.wide)
+                    {
+                        _skillInfoString += "\n";
+
+                        Skill _skillData = _characterSkill.GetSkillData();
+                        if (_skillData.skillType == Skill.SkillType.repulse
+                            || _skillData.skillType == Skill.SkillType.backend)
+                        {
+                            _skillInfoString += "對";
+                        }
+
+                        _skillInfoString += "廣角";
+                    }
 
                     int _speed = _subskillData.Speed + _skillStatIncrement;
                     string _speedLevelText = TerminologyManager.GetSpeedLevelText( _speed );
@@ -115,8 +131,6 @@ public class GameCharacterInfoBox : MonoBehaviour
 
                         _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color>";
                     }
-
-                    _skillInfoString += ( _subskillData.EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide ) ? "\n廣角" : "";
                 }
             }
         }

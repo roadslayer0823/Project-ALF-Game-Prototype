@@ -16,6 +16,7 @@ public class BattleLogicManager
     public static void ExecuteCasterSkillOnUse( GameCharacter caster, GameCharacter target, out string log )
     {
         CharacterSkill _casterSkill = caster.GetCurrentSkill();
+        Skill _casterSkillData = _casterSkill.GetSkillData();
         Subskill _casterSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
 
         float _statePointCost = GetStatePointCost( _casterSubskillData );
@@ -44,7 +45,7 @@ public class BattleLogicManager
 
         string _skillTypeLog = "";
 
-        switch ( _casterSkill.GetSkillData().skillType )
+        switch ( _casterSkillData.skillType )
         {
             case Skill.SkillType.active:
 
@@ -82,7 +83,20 @@ public class BattleLogicManager
             log += " （" + _skillTypeLog;
         }
 
-        string _skillStatLog = "：" + TerminologyManager.GetSpeedLevelText( _casterSubskillData.Speed );
+        string _skillStatLog = "：";
+
+        if (_casterSubskillData.EffectType == Subskill.EffectTypeEnum.wide)
+        {
+            if (_casterSkillData.skillType == Skill.SkillType.repulse
+                || _casterSkillData.skillType == Skill.SkillType.backend)
+            {
+                _skillStatLog += "對";
+            }
+
+            _skillStatLog += "廣角，";
+        }
+
+        _skillStatLog += TerminologyManager.GetSpeedLevelText( _casterSubskillData.Speed );
 
         if (_casterSubskillData.Strength > 1)
         {
