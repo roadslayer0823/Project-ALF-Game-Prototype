@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
 public class PlayerActionPanel : MonoBehaviour
@@ -116,7 +115,7 @@ public class PlayerActionPanel : MonoBehaviour
         this.executeButton.interactable = false;
     }
 
-    public void ShowQTEActionButton( CharacterSkill qteSkill, float countdownTime )
+    public void ShowQTEActionButton( CharacterSkill qteSkill, float countdownTime, bool hasSpecialIcon = false )
     {
         HideQTEActionButton();
 
@@ -127,7 +126,16 @@ public class PlayerActionPanel : MonoBehaviour
             this.qteButton.SetupQTESkillActionButton( qteSkill );
             this.qteButton.GetCountdownTimer().StartCountdownTimer( countdownTime );
 
-            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_PASSIVE_FLASH);
+            if (hasSpecialIcon)
+            {
+                this.qteButton.ShowSpecialIcon();
+            }
+            else
+            {
+                this.qteButton.HideSpecialIcon();
+            }
+
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_PASSIVE_FLASH );
         }
     }
 

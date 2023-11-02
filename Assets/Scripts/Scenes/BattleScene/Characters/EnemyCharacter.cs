@@ -94,7 +94,7 @@ public class EnemyCharacter : GameCharacter
             case AnimationEvent.OnDefensePartA:
 
                 CharacterSkill _repulseSkill = null;
-                if (base.IsAbleToRepulse( battleGameManager.GetBattleFlowManager(), out _repulseSkill ) && Random.value < 0.8f)
+                if (base.IsAbleToRepulse( battleGameManager, out _repulseSkill, out _ ) && Random.value < 0.8f)
                 {
                     base.SetCurrentSkill( _repulseSkill );
                 }

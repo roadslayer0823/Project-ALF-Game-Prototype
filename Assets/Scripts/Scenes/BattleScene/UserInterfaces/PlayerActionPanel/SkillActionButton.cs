@@ -18,6 +18,7 @@ public class SkillActionButton : MonoBehaviour
     [SerializeField] private GameObject accuracy = null;
     [SerializeField] private GameObject evasion = null;
     [SerializeField] private CountdownTimer countdownTimer = null;
+    [SerializeField] private GameObject specialIconObject = null;
 
     private CharacterSkill selectedSkill = null;
     private Action<SkillActionButton> onActionButtonClickedCallback = null;
@@ -161,6 +162,16 @@ public class SkillActionButton : MonoBehaviour
     public void SetOnClick(UnityAction callbackFunction)
     {
         this.actionButton.onClick.AddListener(callbackFunction);
+    }
+
+    public void ShowSpecialIcon()
+    {
+        this.specialIconObject.SetActive( true );
+    }
+
+    public void HideSpecialIcon()
+    {
+        this.specialIconObject.SetActive( false );
     }
 
     public CharacterSkill GetSelectedSkill()
