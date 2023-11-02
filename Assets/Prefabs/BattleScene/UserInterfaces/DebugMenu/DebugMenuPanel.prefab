@@ -2739,7 +2739,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5598917719164618234}
         m_TargetAssemblyTypeName: DebugMenuPanel, Assembly-CSharp
-        m_MethodName: OnConfirmButtonClick
+        m_MethodName: OnPlayerButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3008,7 +3008,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 5598917719164618234}
         m_TargetAssemblyTypeName: DebugMenuPanel, Assembly-CSharp
-        m_MethodName: OnConfirmButtonClick
+        m_MethodName: OnEnemyButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
