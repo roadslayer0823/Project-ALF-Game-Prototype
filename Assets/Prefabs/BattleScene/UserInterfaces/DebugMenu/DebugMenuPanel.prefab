@@ -3817,10 +3817,10 @@ MonoBehaviour:
   playerCharacter: {fileID: 0}
   enemyCharacter: {fileID: 0}
   container: {fileID: 7525882896127653738}
-  playerStateList: {fileID: 1382417245301751040}
-  enemyStateList: {fileID: 2545216359508503701}
-  playerStateValue: {fileID: 3876000834011107372}
-  enemyStateValue: {fileID: 6599399028679528178}
+  playerStatList: {fileID: 1382417245301751040}
+  enemyStatList: {fileID: 2545216359508503701}
+  playerStatValue: {fileID: 3876000834011107372}
+  enemyStatValue: {fileID: 6599399028679528178}
 --- !u!223 &2971328728000285138
 Canvas:
   m_ObjectHideFlags: 0
