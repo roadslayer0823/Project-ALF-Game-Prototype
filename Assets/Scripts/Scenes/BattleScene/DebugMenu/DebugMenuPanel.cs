@@ -4,32 +4,35 @@ using TMPro;
 
 public class DebugMenuPanel : MonoBehaviour
 {
-    [Header( "Settings" )]
+    [Header("Settings")]
     [SerializeField] private PlayerCharacter playerCharacter = null;
     [SerializeField] private EnemyCharacter enemyCharacter = null;
 
-    [Header( "References" )]
+    [Header("References")]
     [SerializeField] private GameObject container = null;
-    [SerializeField] private TMP_Dropdown playerStateList = null;
-    [SerializeField] private TMP_Dropdown enemyStateList = null;
-    [SerializeField] private TMP_InputField playerStateValue = null;
-    [SerializeField] private TMP_InputField enemyStateValue = null;
+    [SerializeField] private TMP_Dropdown playerStatList = null;
+    [SerializeField] private TMP_Dropdown enemyStatList = null;
+    [SerializeField] private TMP_InputField playerStatValue = null;
+    [SerializeField] private TMP_InputField enemyStatValue = null;
 
     //variable name
-    private string selectedPlayerState;
-    private string selectedEnemyState;
-    private float newPlayerStateValue;
-    private float newEnemyStateValue;
-    private bool isPlayerState;
-    private bool isEnemyState;
+    private string selectedPlayerStat;
+    private string selectedEnemyStat;
+    private float newPlayerStatValue;
+    private float newEnemyStatValue;
 
     private const string AUDIO_ID_CLICK = "click";
 
     //display function
     public void Start()
     {
-        this.playerStateList.ClearOptions();
-        this.enemyStateList.ClearOptions();
+        InitializeDropDowns(playerStatList);
+        InitializeDropDowns(enemyStatList);
+    }
+
+    private void InitializeDropDowns(TMP_Dropdown characterList)
+    {
+        characterList.ClearOptions();
 
         var stateNames = new List<string>
         {
@@ -40,53 +43,46 @@ public class DebugMenuPanel : MonoBehaviour
             "當前生命值"
         };
 
-        this.playerStateList.AddOptions(stateNames);
-        this.enemyStateList.AddOptions(stateNames);
-
-        this.selectedPlayerState = "參數";
-        this.selectedEnemyState = "參數";
+        characterList.AddOptions(stateNames);
     }
+
 
     public void Show()
     {
-        this.container.SetActive( true );
+        this.container.SetActive(true);
     }
 
     public void Hide()
     {
-        this.container.SetActive( false );
+        this.container.SetActive(false);
     }
 
     public void ClickToShow()
     {
-        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
         Show();
     }
 
     public void ClickToHide()
     {
-        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
         Hide();
     }
 
     //state value calculation
     public void OnPlayerStateListChange()
     {
-        this.selectedPlayerState = playerStateList.options[playerStateList.value].text;
-        this.isPlayerState = true;
-        this.isEnemyState = false;
+        this.selectedPlayerStat = playerStatList.options[playerStatList.value].text;
     }
 
     public void OnEnemyStateListChange()
     {
-        this.selectedEnemyState = enemyStateList.options[enemyStateList.value].text;
-        this.isPlayerState = false;
-        this.isEnemyState = true;
+        this.selectedEnemyStat = enemyStatList.options[enemyStatList.value].text;
     }
 
     public void OnPlayerStateValueChange()
     {
-        if(float.TryParse(playerStateValue.text, out newPlayerStateValue))
+        if (float.TryParse(playerStatValue.text, out newPlayerStatValue))
         {
             Debug.Log("press confirm button");
         }
@@ -98,7 +94,7 @@ public class DebugMenuPanel : MonoBehaviour
 
     public void OnEnemyStateValueChange()
     {
-        if (float.TryParse(enemyStateValue.text, out newEnemyStateValue))
+        if (float.TryParse(enemyStatValue.text, out newEnemyStatValue))
         {
             Debug.Log("press confirm button");
         }
@@ -110,135 +106,74 @@ public class DebugMenuPanel : MonoBehaviour
 
     public bool IsPlayerDropdownActive()
     {
-        return playerStateList.gameObject.activeSelf;
+        return playerStatList.gameObject.activeSelf;
     }
 
     public bool IsEnemyDropdownActive()
     {
-        return enemyStateList.gameObject.activeSelf;
+        return enemyStatList.gameObject.activeSelf;
     }
 
-    public void ChangeStateValue(string stateNames, float newStateValue)
+    public void ChangeStateValue(string stateNames, float newStateValue, GameCharacter characterType)
     {
-        if (isPlayerState == true)
+        if (stateNames == "當前以太值")
         {
-            if (stateNames == "當前以太值")
+            float _difference = newStateValue - characterType.GetCurrentStatePoint();
+            if (_difference > 0)
             {
-                float _difference = newStateValue - playerCharacter.GetCurrentStatePoint();
-                if (_difference > 0)
-                {
-                    playerCharacter.AddCurrentStatePoint(_difference);
-                }
-                else if (_difference < 0)
-                {
-                    playerCharacter.MinusCurrentStatePoint(Mathf.Abs(_difference), false);
-                }
+                characterType.AddCurrentStatePoint(_difference);
             }
-            else if (stateNames == "當前負荷值")
+            else if (_difference < 0)
             {
-                if (newStateValue > 0)
-                {
-                    playerCharacter.AddCurrentStressValue(newStateValue);
-                }
+                characterType.MinusCurrentStatePoint(Mathf.Abs(_difference), false);
             }
-            else if (stateNames == "虛傷")
+        }
+        else if (stateNames == "當前負荷值")
+        {
+            if (newStateValue > 0)
             {
-                if (playerCharacter.GetCurrentHealthPoint() >= playerCharacter.GetVirtualHealthPoint())
-                {
-                    playerCharacter.MinusCurrentHealthPoint(newStateValue);
-                }
-                else if (playerCharacter.GetCurrentHealthPoint() <= playerCharacter.GetVirtualHealthPoint())
-                {
-                    playerCharacter.AddCurrentHealthPoint(newStateValue);
+                characterType.AddCurrentStressValue(newStateValue);
+            }
+        }
+        else if (stateNames == "虛傷")
+        {
+            if (characterType.GetCurrentHealthPoint() >= characterType.GetVirtualHealthPoint())
+            {
+                characterType.MinusCurrentHealthPoint(newStateValue);
+            }
+            else if (characterType.GetCurrentHealthPoint() <= characterType.GetVirtualHealthPoint())
+            {
+                characterType.AddCurrentHealthPoint(newStateValue);
 
-                    if(playerCharacter.GetVirtualHealthPoint() == 0)
-                    {
-                        playerCharacter.AddVirtualHealthPoint(newStateValue);
-                    }
-                }
-            }
-            else if (stateNames == "當前生命值")
-            {
-                float _difference = newStateValue - playerCharacter.GetCurrentHealthPoint();
-                if (_difference > 0)
+                if (characterType.GetVirtualHealthPoint() == 0)
                 {
-                    playerCharacter.AddCurrentHealthPoint(_difference);
-                }
-                else if (_difference < 0)
-                {
-                    playerCharacter.MinusCurrentHealthPoint(Mathf.Abs(_difference));
+                    characterType.AddVirtualHealthPoint(newStateValue);
                 }
             }
         }
-
-        if (isEnemyState == true)
+        else if (stateNames == "當前生命值")
         {
-            if (stateNames == "當前以太值")
+            float _difference = newStateValue - characterType.GetCurrentHealthPoint();
+            if (_difference > 0)
             {
-                float _difference = newStateValue - enemyCharacter.GetCurrentStatePoint();
-                if (_difference > 0)
-                {
-                    enemyCharacter.AddCurrentStatePoint(_difference);
-                }
-                else if (_difference < 0)
-                {
-                    enemyCharacter.MinusCurrentStatePoint(Mathf.Abs(_difference), false);
-                }
+                characterType.AddCurrentHealthPoint(_difference);
+                characterType.AddVirtualHealthPoint(newStateValue - characterType.GetVirtualHealthPoint());
             }
-            else if (stateNames == "當前負荷值")
+            else if (_difference < 0)
             {
-                if (newStateValue > 0)
-                {
-                    enemyCharacter.AddCurrentStressValue(newStateValue);
-                }
+                characterType.MinusCurrentHealthPoint(Mathf.Abs(_difference));
+                characterType.ClearVirtualHealthPoint();
             }
-
-            else if (stateNames == "虛傷")
-            {
-                if (enemyCharacter.GetCurrentHealthPoint() >= enemyCharacter.GetVirtualHealthPoint())
-                {
-                    enemyCharacter.MinusCurrentHealthPoint(newStateValue);
-                }
-                else if (enemyCharacter.GetCurrentHealthPoint() <= enemyCharacter.GetVirtualHealthPoint())
-                {
-                    enemyCharacter.AddCurrentHealthPoint(newStateValue);
-
-                    if (enemyCharacter.GetVirtualHealthPoint() == 0)
-                    {
-                        enemyCharacter.AddVirtualHealthPoint(newStateValue);
-                    }
-                }
-            }
-
-            else if (stateNames == "當前生命值")
-            {
-                float _difference = newStateValue - playerCharacter.GetCurrentHealthPoint();
-                if (_difference > 0)
-                {
-                    playerCharacter.AddCurrentHealthPoint(_difference);
-                    playerCharacter.AddVirtualHealthPoint(newStateValue - playerCharacter.GetVirtualHealthPoint());
-                }
-                else if (_difference < 0)
-                {
-                    playerCharacter.MinusCurrentHealthPoint(Mathf.Abs(_difference));
-                    playerCharacter.ClearVirtualHealthPoint();
-                }
-            }
-
         }
     }
 
-    public void OnConfirmButtonClick()
+    public void OnPlayerButtonClick()
     {
-        if (IsPlayerDropdownActive() && isPlayerState == true)
-        {
-            ChangeStateValue(selectedPlayerState, newPlayerStateValue);
-            Debug.Log("我方"+selectedPlayerState);
-        }
-        else if (IsEnemyDropdownActive() && isEnemyState == true)
-        {
-            ChangeStateValue(selectedEnemyState, newEnemyStateValue);
-            Debug.Log("對方"+selectedEnemyState);
-        }
+        ChangeStateValue(selectedPlayerStat, newPlayerStatValue, playerCharacter);
+    }
+
+    public void OnEnemyButtonClick()
+    {
+        ChangeStateValue(selectedEnemyStat, newEnemyStatValue, enemyCharacter);
     }
 }
