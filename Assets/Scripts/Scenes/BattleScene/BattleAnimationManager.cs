@@ -121,6 +121,12 @@ public class BattleAnimationManager : MonoBehaviour
             }
             else if (_attacker is EnemyCharacter)
             {
+                _attackerRangeType = RangeType.melee;
+                _attackerCharacterPartA = "Attack_Part_A";
+                _attackerCharacterPartB = "Attack_Part_B";
+                _attackerSkillEffectPartA = "-";
+                _attackerSkillEffectPartB = "HittingEffect";
+
                 ChangeToBackgroundPartB();
             }
 
@@ -335,6 +341,11 @@ public class BattleAnimationManager : MonoBehaviour
                         BattleLog.Instance.AddOnScreenBattleLog( $"迎擊結果為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _winner.GetCharacterName() }</color>勝利。" );
 
                         RangeType _attackTargetRangeType = _repulseSkill.GetCharacterSubskillData().GetSubskillData().Range;
+
+                        if (_attackTarget is EnemyCharacter)
+                        {
+                            _attackTargetRangeType = RangeType.melee;
+                        }
 
                         if (_attackerRangeType == RangeType.melee)
                         {
@@ -620,13 +631,26 @@ public class BattleAnimationManager : MonoBehaviour
         float _statePointDamage = 0;
 
         Subskill _attackerSubskillData = attacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
-        if (_attackerSubskillData.Range == RangeType.melee)
+        RangeType _attackerRangeType = _attackerSubskillData.Range;
+
+        if (attacker is EnemyCharacter)
+        {
+            _attackerRangeType = RangeType.melee;
+        }
+
+        if (_attackerRangeType == RangeType.melee)
         {
             if (_isAbleToUseSkill)
             {
                 SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackerSubskillData.Id );
                 string _characterPartB = _skillAnimation.CharacterPartB;
                 string _skillEffectPartB = _skillAnimation.SkillEffectPartB;
+
+                if (attacker is EnemyCharacter)
+                {
+                    _characterPartB = "Attack_Part_B";
+                    _skillEffectPartB = "HittingEffect";
+                }
 
                 yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
 

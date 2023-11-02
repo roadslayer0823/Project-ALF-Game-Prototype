@@ -33,7 +33,7 @@ public class BattleLogicManager
             Subskill _targetSubskillData = _targetSkill.GetCharacterSubskillData().GetSubskillData();
             if (_targetSubskillData.IsEvadingSkill)
             {
-                float _evasionStress = _targetSubskillData.EvasionStress;
+                float _evasionStress = _targetSubskillData.EvasionStress * ( ( caster.HasEnergyMarker() ) ? _targetSubskillData.EnergyMarkerEvasionStressRate : 1.0f );
                 _statePointCost += _evasionStress;
                 _evasionStressLog = $"（迴避壓力：{ _evasionStress }）";
             }
@@ -149,8 +149,29 @@ public class BattleLogicManager
         log = "";
 
         CharacterSkill _casterSkill = caster.GetCurrentSkill();
+        Subskill _casterSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
         bool _isActualDamage = false;
         bool _isInBreakStatus = target.GetIsInBreakStatus();
+
+        int _energyMarkerAtl = _casterSubskillData.EnergyMarkerATL;
+        if (_energyMarkerAtl > 0)
+        {
+            bool _hasEnergyMarker = target.HasEnergyMarker();
+
+            target.SetEnergyMarkerRemainingATLs( _energyMarkerAtl );
+
+            if (_hasEnergyMarker)
+            {
+                log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>原本帶有的"
+                       + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>【能量殘響】的剩餘時間</color>被更新為"
+                       + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _energyMarkerAtl }個ATL</color>。";
+            }
+            else
+            {
+                log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>被加上"
+                       + $"將持續<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _energyMarkerAtl }個ATL的【能量殘響】</color>。";
+            }
+        }
 
         if (hasAttackDamage)
         {
@@ -174,18 +195,16 @@ public class BattleLogicManager
             }
         }
 
-        Subskill _casterSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
-
         // If the target does not take the health damage, then it will take the stress damage.
         if (!hasAttackDamage && hasStressValueDamage)
         {
-            stressValueDamage = GetStressValueDamage( _casterSubskillData );
+            stressValueDamage = GetStressValueDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f );
             target.AddCurrentStressValue( stressValueDamage );
         }
 
         if (hasStatePointDamage)
         {
-            statePointDamage = GetStatePointDamage( _casterSubskillData );
+            statePointDamage = GetStatePointDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f );
             target.MinusCurrentStatePoint( statePointDamage, true );
         }
 
@@ -263,7 +282,10 @@ public class BattleLogicManager
     {
         GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
 
+        Subskill subskillData = skill.GetCharacterSubskillData().GetSubskillData();
+
         float _attackDamage = ( GetAttackDamage( skill.GetCharacterSubskillData().GetSubskillData() )
+                              * ( ( target.HasEnergyMarker() ) ? subskillData.EnergyMarkerHealthDamageRate : 1.0f )
                               * ( ( target.GetIsInBreakStatus() ) ? _battleConfiguration.GetBreakDamageMultiplier() : 1.0f ) );
 
         CharacterSkill _targetSkill = target.GetCurrentSkill();
@@ -529,12 +551,38 @@ public class BattleLogicManager
             _gameCharacter.SetCurrentStatePointToMaximum();
             _gameCharacter.ResetCounterAttacks();
 
-            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _gameCharacter.GetCharacterName() + "</color>"
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetCharacterName() }</color>"
                                                      + ( ( _currentStressValueDecreased > 0 ) ? $"減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _currentStressValueDecreased }%負荷值</color>，" : "" )
                                                      + ( ( _currentHealthPointRecovered > 0 ) ? $"回復了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _currentHealthPointRecovered }虛傷值</color>，" : "" )
                                                      + _extraLog
                                                      + ( ( _maximumStatePointIncreased > 0 ) ? $"提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointIncreased }最大{ TerminologyManager.STATE_POINT }</color>，" : "" )
                                                      + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>已回復至最大值。" );
+        }
+    }
+
+    public static void OnNewATLStarted( List<GameCharacter> gameCharacters )
+    {
+        for (int i = 0; i < gameCharacters.Count; i++)
+        {
+            GameCharacter _gameCharacter = gameCharacters[ i ];
+
+            if (_gameCharacter.HasEnergyMarker())
+            {
+                _gameCharacter.MinusEnergyMarkerRemainingATLs();
+
+                int _energyMarkerRemainingATLs = _gameCharacter.GetEnergyMarkerRemainingATLs();
+                string _log = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetCharacterName() }</color>帶有的<color={ BattleLog.KEYWORD_COLOR_CODE }>【能量殘響】</color>";
+                if (_energyMarkerRemainingATLs > 0)
+                {
+                    _log += $"的剩餘時間為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _energyMarkerRemainingATLs }個 ATL。";
+                }
+                else
+                {
+                    _log += "的時限已到。";
+                }
+
+                BattleLog.Instance.AddOnScreenBattleLog( _log );
+            }
         }
     }
 

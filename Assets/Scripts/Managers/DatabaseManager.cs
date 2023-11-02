@@ -725,6 +725,25 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [HideInInspector] public string IsInterceptableString { get; private set; }
         public bool IsInterceptable;
 
+        [JsonProperty( "energy_marker_atl" )]
+        public int EnergyMarkerATL { get; private set; }
+
+        [JsonProperty( "will_remove_energy_marker" )]
+        [HideInInspector] public string WillRemoveEnergyMarkerString { get; private set; }
+        public bool WillRemoveEnergyMarker;
+
+        [JsonProperty( "energy_marker_health_damage_rate" )]
+        public float EnergyMarkerHealthDamageRate { get; private set; }
+
+        [JsonProperty( "energy_marker_state_damage_rate" )]
+        public float EnergyMarkerStateDamageRate { get; private set; }
+
+        [JsonProperty( "energy_marker_stress_damage_rate" )]
+        public float EnergyMarkerStressDamageRate { get; private set; }
+
+        [JsonProperty( "energy_marker_evasion_stress_rate" )]
+        public float EnergyMarkerEvasionStressRate { get; private set; }
+
         [JsonProperty("stress_resistance")]
         public int StressResistance { get; private set; }
 

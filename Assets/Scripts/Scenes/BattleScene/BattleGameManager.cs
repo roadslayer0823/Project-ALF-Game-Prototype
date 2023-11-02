@@ -116,11 +116,7 @@ public class BattleGameManager : MonoBehaviour
     {
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { this.battleFlowManager.GetCurrentRound().GetRoundNumber() } 回合結束 】</color>" );
 
-        List<GameCharacter> _characters = new List<GameCharacter>();
-        _characters.AddRange( this.playerCharacterList );
-        _characters.AddRange( this.enemyCharacterList );
-
-        BattleLogicManager.OnExecutionPhaseFinished( _characters );
+        BattleLogicManager.OnExecutionPhaseFinished( GetCharacterList() );
 
         this.battleUiManager.HideSkillSlotListPanel();
         this.battleUiManager.HideATLSlotListPanel();
@@ -136,16 +132,14 @@ public class BattleGameManager : MonoBehaviour
 
         if (battleFlowManager.GetCurrentRound().GetRoundNumber() > 1)
         {
-            List<GameCharacter> _characters = new List<GameCharacter>();
-            _characters.AddRange( this.playerCharacterList );
-            _characters.AddRange( this.enemyCharacterList );
-
-            BattleLogicManager.OnNewRoundStarted( _characters );
+            BattleLogicManager.OnNewRoundStarted( GetCharacterList() );
         }
     }
 
     public void OnNewATLStarted()
     {
+        BattleLogicManager.OnNewATLStarted( GetCharacterList() );
+
         this.battleUiManager.DisablePlayerActionPanelButtons();
     }
 
@@ -208,6 +202,15 @@ public class BattleGameManager : MonoBehaviour
     public List<EnemyCharacter> GetEnemyCharacterList()
     {
         return this.enemyCharacterList;
+    }
+
+    public List<GameCharacter> GetCharacterList()
+    {
+        List<GameCharacter> _characters = new List<GameCharacter>();
+        _characters.AddRange( this.playerCharacterList );
+        _characters.AddRange( this.enemyCharacterList );
+
+        return _characters;
     }
 
     public BattleUiManager GetBattleUiManager()

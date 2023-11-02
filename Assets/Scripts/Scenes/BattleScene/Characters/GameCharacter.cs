@@ -47,11 +47,16 @@ public class GameCharacter : MonoBehaviour
     private GameCharacter currentAttacker = null;
     private float skillCountdownTime = 0.0f;
     private int counterAttacks = 0;
+    private bool isAbleToUseSkill = false;
+    private List<PopUpDisplayInfo> popUpDisplayInfoList = new List<PopUpDisplayInfo>();
+
+    // Break Status
     private int breakStatusRemainingATLs = 0;
     private bool isBreakStatusCausedByStatePoint = false;
     private bool isBreakStatusCausedByStressValue = false;
-    private bool isAbleToUseSkill = false;
-    private List<PopUpDisplayInfo> popUpDisplayInfoList = new List<PopUpDisplayInfo>();
+
+    // Energy Marker
+    private int energyMarkerRemainingATLs = 0;
 
     private const string AUDIO_ID_BREAK = "break";
 
@@ -765,16 +770,6 @@ public class GameCharacter : MonoBehaviour
         return this.breakStatusRemainingATLs;
     }
 
-    public GameObject GetOwnContainer()
-    {
-        return this.ownContainer;
-    }
-
-    public GameObject GetOpponentContainer()
-    {
-        return this.opponentContainer;
-    }
-
     public bool GetIsInBreakStatus()
     {
         return ( this.breakStatusRemainingATLs > 0 );
@@ -788,6 +783,39 @@ public class GameCharacter : MonoBehaviour
     public bool GetIsBreakStatusCausedByStressValue()
     {
         return this.isBreakStatusCausedByStressValue;
+    }
+
+    public void SetEnergyMarkerRemainingATLs( int energyMarkerRemainingATLs )
+    {
+        this.energyMarkerRemainingATLs = energyMarkerRemainingATLs;
+    }
+
+    public void MinusEnergyMarkerRemainingATLs()
+    {
+        if (this.energyMarkerRemainingATLs > 0)
+        {
+            this.energyMarkerRemainingATLs--;
+        }
+    }
+
+    public int GetEnergyMarkerRemainingATLs()
+    {
+        return this.energyMarkerRemainingATLs;
+    }
+
+    public bool HasEnergyMarker()
+    {
+        return ( this.energyMarkerRemainingATLs > 0 );
+    }
+
+    public GameObject GetOwnContainer()
+    {
+        return this.ownContainer;
+    }
+
+    public GameObject GetOpponentContainer()
+    {
+        return this.opponentContainer;
     }
 
     public void Reset()
