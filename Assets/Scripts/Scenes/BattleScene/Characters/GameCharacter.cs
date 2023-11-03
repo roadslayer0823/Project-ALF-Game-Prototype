@@ -662,6 +662,19 @@ public class GameCharacter : MonoBehaviour
         return this.selectedBackendSkillList;
     }
 
+    public CharacterSkill GetSkillbySkillId(string idCheck)
+    {
+        foreach (CharacterSkill skill in skills)
+        {
+            if (idCheck == skill.GetSkillData().Id)
+            {
+                return skill;
+            }
+        }
+
+        return null;
+    }
+
     public SortingGroup GetSortingGroup()
     {
         return this.sortingGroup;

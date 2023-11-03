@@ -100,10 +100,13 @@ public class EnemyCharacter : GameCharacter
                 }
                 else
                 {
-                    CharacterSkill _skill = base.selectedBackendSkillList[ Random.Range( 0, base.selectedBackendSkillList.Count ) ];
-                    if (base.IsAbleToUseBackendSkill( _skill ))
+                    if(base.selectedBackendSkillList.Count > 0)
                     {
-                        base.SetCurrentSkill( _skill );
+                        CharacterSkill _skill = base.selectedBackendSkillList[Random.Range(0, base.selectedBackendSkillList.Count)];
+                        if (base.IsAbleToUseBackendSkill(_skill))
+                        {
+                            base.SetCurrentSkill(_skill);
+                        }
                     }
                 }
 
