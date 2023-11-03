@@ -14,9 +14,13 @@ public class SkillActionButton : MonoBehaviour
     [SerializeField] private TextMeshProUGUI strengthValue = null;
     [SerializeField] private TextMeshProUGUI accuracyValue = null;
     [SerializeField] private TextMeshProUGUI evasionValue = null;
+    [SerializeField] private TextMeshProUGUI speedValue = null;
+    [SerializeField] private TextMeshProUGUI effectTypeValue = null;
     [SerializeField] private GameObject strength = null;
     [SerializeField] private GameObject accuracy = null;
     [SerializeField] private GameObject evasion = null;
+    [SerializeField] private GameObject speed = null;
+    [SerializeField] private GameObject effectType = null;
     [SerializeField] private CountdownTimer countdownTimer = null;
     [SerializeField] private GameObject specialIconObject = null;
 
@@ -98,10 +102,12 @@ public class SkillActionButton : MonoBehaviour
         //Setup skill name
         this.actionSkillName.SetText(subskillData.DisplayName);
 
-        //Setup Strength, Accuracy and Evasion value
+        //Setup Strength, Accuracy, Evasion, Speed and Effect Type value
         int _strengthValue = subskillData.Strength;
         int _accuracyValue = subskillData.Accuracy;
         int _evasionValue = subskillData.Evasion;
+        int _speed = subskillData.Speed;
+        Subskill.EffectTypeEnum _effectType = subskillData.EffectType;
 
         if (_strengthValue > 1)
         {
@@ -132,6 +138,35 @@ public class SkillActionButton : MonoBehaviour
         {
             this.evasion.gameObject.SetActive(false);
         }
+
+        if (_speed > 0)
+        {
+            this.speed.gameObject.SetActive(true);
+            this.speedValue.SetText(TerminologyManager.GetSpeedLevelText(_speed));
+        }
+        else
+        {
+            this.speed.gameObject.SetActive(false);
+        }
+
+        if (_effectType != Subskill.EffectTypeEnum.none)
+        {
+            this.effectType.gameObject.SetActive(true);
+
+            if (_effectType == Subskill.EffectTypeEnum.basic)
+            {
+                this.effectTypeValue.SetText("普通");
+            }
+            else if (_effectType == Subskill.EffectTypeEnum.wide)
+            {
+                this.effectTypeValue.SetText("廣角");
+            }
+        }
+        else
+        {
+            this.effectType.gameObject.SetActive(false);
+        }
+
     }
 
     public void EnableActionButton( float countdownTime = 0.0f )
