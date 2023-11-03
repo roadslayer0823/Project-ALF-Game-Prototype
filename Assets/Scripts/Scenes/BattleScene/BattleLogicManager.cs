@@ -39,9 +39,10 @@ public class BattleLogicManager
             }
         }
 
+        _statePointCost = AdjustAmount( _statePointCost );
         caster.MinusCurrentStatePoint( _statePointCost, false );
 
-        float _maxStatePointUp = GetMaxStatePointUp( _casterSubskillData );
+        float _maxStatePointUp = AdjustAmount( GetMaxStatePointUp( _casterSubskillData ) );
         caster.AddMaximumStatePoint( _maxStatePointUp );
 
         log = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + caster.GetCharacterName() + "</color>" + "對"
@@ -175,7 +176,7 @@ public class BattleLogicManager
 
         if (hasAttackDamage)
         {
-            attackDamage = GetCurrentAttackDamage( _casterSkill, caster, target );
+            attackDamage = AdjustAmount( GetCurrentAttackDamage( _casterSkill, caster, target ) );
             if (attackDamage > 0)
             {
                 target.MinusCurrentHealthPoint( attackDamage );
@@ -198,13 +199,13 @@ public class BattleLogicManager
         // If the target does not take the health damage, then it will take the stress damage.
         if (!hasAttackDamage && hasStressValueDamage)
         {
-            stressValueDamage = GetStressValueDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f );
+            stressValueDamage = AdjustAmount( GetStressValueDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) );
             target.AddCurrentStressValue( stressValueDamage );
         }
 
         if (hasStatePointDamage)
         {
-            statePointDamage = GetStatePointDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f );
+            statePointDamage = AdjustAmount( GetStatePointDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
             target.MinusCurrentStatePoint( statePointDamage, true );
         }
 
@@ -275,6 +276,12 @@ public class BattleLogicManager
                         + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _difference }虛傷值</color>全數轉化為<color={ BattleLog.KEYWORD_COLOR_CODE }>實傷值</color>。";
                 }
             }
+        }
+
+        if (target.HasEnergyMarker() && _casterSubskillData.WillRemoveEnergyMarker)
+        {
+            target.RemoveEnergyMarker();
+            log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }的【能量殘響】被消去。</color>";
         }
     }
 
@@ -647,5 +654,10 @@ public class BattleLogicManager
     public static float GetStressValueDamage( Subskill subskillData )
     {
         return ( subskillData.StressValueDamage * GameConfiguration.Instance.GetBattleConfiguration().GetStressValueDamageMultiplier() );
+    }
+
+    public static float AdjustAmount( float amount )
+    {
+        return Mathf.Round( amount );
     }
 }

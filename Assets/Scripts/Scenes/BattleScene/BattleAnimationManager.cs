@@ -354,7 +354,7 @@ public class BattleAnimationManager : MonoBehaviour
                                 _hasAttackDamage = true;
                                 _hasStressValueDamage = true;
                                 _hasStatePointDamage = true;
-                                OnHitWithNoDamage( _winner, _loser );
+                                OnHitWithNoDamage( _loser, _winner );
                             }
                             else if (_attackTargetRangeType == RangeType.ranged)
                             {
@@ -366,7 +366,7 @@ public class BattleAnimationManager : MonoBehaviour
                                 }
                                 else
                                 {
-                                    OnHitWithNoDamage( _winner, _loser );
+                                    OnHitWithNoDamage( _loser, _winner );
                                 }
                             }
                         }
@@ -382,7 +382,7 @@ public class BattleAnimationManager : MonoBehaviour
                                 }
                                 else
                                 {
-                                    OnHitWithNoDamage( _winner, _loser );
+                                    OnHitWithNoDamage( _loser, _winner );
                                 }
                             }
                             else if (_attackTargetRangeType == RangeType.ranged)
@@ -530,6 +530,9 @@ public class BattleAnimationManager : MonoBehaviour
                     }
                     else if (_winner == _attackTarget)
                     {
+                        BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget, false, false, false, out _, out _, out _, out _log );
+                        BattleLog.Instance.AddOnScreenBattleLog( _log );
+
                         _skillCountdownTime = ( GetAttackAnimationLength( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBackendSkillAnimationSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                         _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
                         _attackTarget.TriggerEvent( AnimationEvent.OnDefenseWin );

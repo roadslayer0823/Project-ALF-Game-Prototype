@@ -230,7 +230,7 @@ public class PlayerActionPanel : MonoBehaviour
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
         if (_subskillData.IsDefendingSkill || _subskillData.IsEvadingSkill)
         {
-            DisableQTEAndSkillActionButtons();
+            DisableQTEAndSkillActionButtons( true );
         }
         else if (_subskillData.IsObservingSkill)
         {
@@ -239,16 +239,27 @@ public class PlayerActionPanel : MonoBehaviour
         }
     }
 
-    public void DisableQTEAndSkillActionButtons()
+    public void DisableQTEAndSkillActionButtons( bool ignoreObservedSkillButton = false )
     {
         HideQTEActionButton();
 
         for (int i = 0; i < this.skillActionButtons.Length; i++)
         {
             SkillActionButton _skillActionButton = this.skillActionButtons[ i ];
-            if (_skillActionButton.GetSelectedSkill() != null)
+            CharacterSkill _skill = _skillActionButton.GetSelectedSkill();
+            if (_skill != null)
             {
-                _skillActionButton.DisableActionButton();
+                bool _needToDisableActionButton = true;
+
+                if (ignoreObservedSkillButton && _skill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+                {
+                    _needToDisableActionButton = false;
+                }
+
+                if (_needToDisableActionButton)
+                {
+                    _skillActionButton.DisableActionButton();
+                }
             }
         }
     }

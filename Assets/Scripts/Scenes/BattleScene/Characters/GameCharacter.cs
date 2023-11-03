@@ -57,6 +57,7 @@ public class GameCharacter : MonoBehaviour
 
     // Energy Marker
     private int energyMarkerRemainingATLs = 0;
+    private bool hasJustAddedEnergyMarker = false;
 
     private const string AUDIO_ID_BREAK = "break";
 
@@ -801,13 +802,22 @@ public class GameCharacter : MonoBehaviour
     public void SetEnergyMarkerRemainingATLs( int energyMarkerRemainingATLs )
     {
         this.energyMarkerRemainingATLs = energyMarkerRemainingATLs;
+        this.hasJustAddedEnergyMarker = true;
+        this.onCharacterInfoUpdated?.Invoke();
     }
 
     public void MinusEnergyMarkerRemainingATLs()
     {
         if (this.energyMarkerRemainingATLs > 0)
         {
-            this.energyMarkerRemainingATLs--;
+            if (this.hasJustAddedEnergyMarker)
+            {
+                this.hasJustAddedEnergyMarker = false;
+            }
+            else
+            {
+                this.energyMarkerRemainingATLs--;
+            }
         }
     }
 
@@ -819,6 +829,12 @@ public class GameCharacter : MonoBehaviour
     public bool HasEnergyMarker()
     {
         return ( this.energyMarkerRemainingATLs > 0 );
+    }
+
+    public void RemoveEnergyMarker()
+    {
+        this.energyMarkerRemainingATLs = 0;
+        this.onCharacterInfoUpdated?.Invoke();
     }
 
     public GameObject GetOwnContainer()

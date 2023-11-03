@@ -80,6 +80,31 @@ public class EnemyCharacter : GameCharacter
             case AnimationEvent.SetCharacter:
                 break;
 
+            case AnimationEvent.OnActiveSkillStarted:
+
+                if (Random.value < 0.5f)
+                {
+                    bool _hasUsedObservedSkill = false;
+                    for (int i = 0; i < base.selectedBackendSkillList.Count; i++)
+                    {
+                        CharacterSkill _selectedBackendSkill = base.selectedBackendSkillList[ i ];
+                        if (_selectedBackendSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+                        {
+                            if (!_hasUsedObservedSkill)
+                            {
+                                base.SetCurrentSkill( _selectedBackendSkill );
+                                base.TriggerEvent( AnimationEvent.OnSkillBeingObserved );
+                                _hasUsedObservedSkill = true;
+                            }
+                        }
+                    }
+                }
+
+                break;
+
+            case AnimationEvent.OnActiveSkillFinished:
+                break;
+
             case AnimationEvent.OnAttackPartB:
             case AnimationEvent.OnRepulseWin:
 
@@ -100,12 +125,23 @@ public class EnemyCharacter : GameCharacter
                 }
                 else
                 {
-                    if(base.selectedBackendSkillList.Count > 0)
+                    List<CharacterSkill> _backendSkillList = new List<CharacterSkill>();
+
+                    for (int i = 0; i < base.selectedBackendSkillList.Count; i++)
                     {
-                        CharacterSkill _skill = base.selectedBackendSkillList[Random.Range(0, base.selectedBackendSkillList.Count)];
-                        if (base.IsAbleToUseBackendSkill(_skill))
+                        CharacterSkill _selectedBackendSkill = base.selectedBackendSkillList[ i ];
+                        if (!_selectedBackendSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
                         {
-                            base.SetCurrentSkill(_skill);
+                            _backendSkillList.Add( _selectedBackendSkill );
+                        }
+                    }
+
+                    if (_backendSkillList.Count > 0)
+                    {
+                        CharacterSkill _skill = _backendSkillList[ Random.Range( 0, _backendSkillList.Count ) ];
+                        if (base.IsAbleToUseBackendSkill( _skill ))
+                        {
+                            base.SetCurrentSkill( _skill );
                         }
                     }
                 }
