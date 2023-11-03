@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
@@ -14,12 +15,15 @@ public class DebugMenuPanel : MonoBehaviour
     [SerializeField] private TMP_Dropdown enemyStatList = null;
     [SerializeField] private TMP_InputField playerStatValue = null;
     [SerializeField] private TMP_InputField enemyStatValue = null;
+    [SerializeField] private TextMeshProUGUI enemyInputPlaceHolder = null;
+    [SerializeField] private TextMeshProUGUI changedSkillInfo = null;
+    [SerializeField] private TextMeshProUGUI playerInputPlaceHolder = null;
 
     //variable name
     private string selectedPlayerStat;
     private string selectedEnemyStat;
-    private float newPlayerStatValue;
-    private float newEnemyStatValue;
+    private string newPlayerStatValue;
+    private string newEnemyStatValue;
 
     private const string AUDIO_ID_CLICK = "click";
 
@@ -38,6 +42,7 @@ public class DebugMenuPanel : MonoBehaviour
         {
             "參數",
             "虛傷",
+            "當前技能",
             "當前以太值",
             "當前負荷值",
             "當前生命值"
@@ -55,6 +60,7 @@ public class DebugMenuPanel : MonoBehaviour
     public void Hide()
     {
         this.container.SetActive(false);
+        changedSkillInfo.text = null;
     }
 
     public void ClickToShow()
@@ -69,39 +75,41 @@ public class DebugMenuPanel : MonoBehaviour
         Hide();
     }
 
-    //state value calculation
+    //state value declaration
     public void OnPlayerStateListChange()
     {
         this.selectedPlayerStat = playerStatList.options[playerStatList.value].text;
+        if (selectedPlayerStat == "當前技能")
+        {
+            playerInputPlaceHolder.text = "無法使用此功能";
+        }
+        else
+        {
+            playerInputPlaceHolder.text = "輸入數值";
+        }
     }
 
     public void OnEnemyStateListChange()
     {
         this.selectedEnemyStat = enemyStatList.options[enemyStatList.value].text;
+        if(selectedEnemyStat == "當前技能")
+        {
+            enemyInputPlaceHolder.text = "輸入格式：技能ID-技能等級，...";
+        }
+        else
+        {
+            enemyInputPlaceHolder.text = "輸入數值";
+        }
     }
 
     public void OnPlayerStateValueChange()
     {
-        if (float.TryParse(playerStatValue.text, out newPlayerStatValue))
-        {
-            Debug.Log("press confirm button");
-        }
-        else
-        {
-            Debug.Log("plese insert the state value");
-        }
+        newPlayerStatValue = playerStatValue.text;
     }
 
     public void OnEnemyStateValueChange()
     {
-        if (float.TryParse(enemyStatValue.text, out newEnemyStatValue))
-        {
-            Debug.Log("press confirm button");
-        }
-        else
-        {
-            Debug.Log("plese insert the state value");
-        }
+        newEnemyStatValue = enemyStatValue.text;
     }
 
     public bool IsPlayerDropdownActive()
@@ -114,59 +122,141 @@ public class DebugMenuPanel : MonoBehaviour
         return enemyStatList.gameObject.activeSelf;
     }
 
-    public void ChangeStateValue(string stateNames, float newStateValue, GameCharacter characterType)
+    //state option
+    public void ChangeStateValue(string statNames, string newStatValue, GameCharacter characterObject)
     {
-        if (stateNames == "當前以太值")
+        if (statNames == "當前以太值") //current state point
         {
-            float _difference = newStateValue - characterType.GetCurrentStatePoint();
-            if (_difference > 0)
+            float value;
+            if (float.TryParse(newStatValue, out value))
             {
-                characterType.AddCurrentStatePoint(_difference);
-            }
-            else if (_difference < 0)
-            {
-                characterType.MinusCurrentStatePoint(Mathf.Abs(_difference), false);
-            }
-        }
-        else if (stateNames == "當前負荷值")
-        {
-            if (newStateValue > 0)
-            {
-                characterType.AddCurrentStressValue(newStateValue);
-            }
-        }
-        else if (stateNames == "虛傷")
-        {
-            if (characterType.GetCurrentHealthPoint() >= characterType.GetVirtualHealthPoint())
-            {
-                characterType.MinusCurrentHealthPoint(newStateValue);
-            }
-            else if (characterType.GetCurrentHealthPoint() <= characterType.GetVirtualHealthPoint())
-            {
-                characterType.AddCurrentHealthPoint(newStateValue);
-
-                if (characterType.GetVirtualHealthPoint() == 0)
+                float _difference = value - characterObject.GetCurrentStatePoint();
+                if (_difference > 0)
                 {
-                    characterType.AddVirtualHealthPoint(newStateValue);
+                    characterObject.AddCurrentStatePoint(_difference);
+                }
+                else if (_difference < 0)
+                {
+                    characterObject.MinusCurrentStatePoint(Mathf.Abs(_difference), false);
                 }
             }
         }
-        else if (stateNames == "當前生命值")
+        else if (statNames == "當前負荷值")//current stress point
         {
-            float _difference = newStateValue - characterType.GetCurrentHealthPoint();
-            if (_difference > 0)
+            float value;
+            if (float.TryParse(newStatValue, out value))
             {
-                characterType.AddCurrentHealthPoint(_difference);
-                characterType.AddVirtualHealthPoint(newStateValue - characterType.GetVirtualHealthPoint());
+                float _difference = value - characterObject.GetCurrentStressValue();
+                if (value > 0)
+                {
+                    characterObject.AddCurrentStressValue(value);
+                }
+                if (value < 0)
+                {
+                    characterObject.MinusCurrentStressValue(Mathf.Abs(_difference));
+                }
             }
-            else if (_difference < 0)
+
+        }
+        else if (statNames == "虛傷")//current virtual value
+        {
+            float value;
+            if (float.TryParse(newStatValue, out value))
             {
-                characterType.MinusCurrentHealthPoint(Mathf.Abs(_difference));
-                characterType.ClearVirtualHealthPoint();
+                if (characterObject.GetCurrentHealthPoint() >= characterObject.GetVirtualHealthPoint())
+                {
+                    characterObject.MinusCurrentHealthPoint(value);
+                }
+                else if (characterObject.GetCurrentHealthPoint() <= characterObject.GetVirtualHealthPoint())
+                {
+                    characterObject.AddCurrentHealthPoint(value);
+
+                    if (characterObject.GetVirtualHealthPoint() == 0)
+                    {
+                        characterObject.AddVirtualHealthPoint(value);
+                    }
+                }
             }
+        }
+        else if (statNames == "當前生命值")//current health
+        {
+            float value;
+            if (float.TryParse(newStatValue, out value))
+            {
+                float _difference = value - characterObject.GetCurrentHealthPoint();
+                if (_difference > 0)
+                {
+                    characterObject.AddCurrentHealthPoint(_difference);
+                    characterObject.AddVirtualHealthPoint(value - characterObject.GetVirtualHealthPoint());
+                }
+                else if (_difference < 0)
+                {
+                    characterObject.MinusCurrentHealthPoint(Mathf.Abs(_difference));
+                    characterObject.ClearVirtualHealthPoint();
+                }
+            }
+        }
+
+        else if (statNames == "當前技能" && characterObject is EnemyCharacter)//current enemy skill
+        {
+            characterObject.GetSelectedActiveSkillList().Clear();
+            characterObject.GetSelectedBackendSkillList().Clear();
+
+            string inputString = newStatValue;
+            string[] skillGroup = inputString.Split(new string[] { "," }, StringSplitOptions.None);
+            List<string> changedSkill = new List<string>();
+
+            foreach (string item in skillGroup)
+            {
+                string[] secondSplit = item.Split(new char[] { '-' });
+                if (secondSplit.Length >= 2)
+                {
+                    string skillId = secondSplit[0];
+                    string skillLevel = secondSplit[1];
+
+                    Debug.Log("skillId: " + skillId);
+                    Debug.Log("skilllevel: Level" + skillLevel);
+
+                    CharacterSkill characterSkill = characterObject.GetSkillbySkillId(skillId);
+                    characterSkill.SetSelectedSkillLevel(int.Parse(skillLevel));
+
+                    CharacterSkill repulseSkill = null;
+                    if (characterSkill.GetCharacterSubskillData().GetRepulseSkillList().Count > 0)
+                    {
+                        repulseSkill = characterSkill.GetCharacterSubskillData().GetRepulseSkillList()[0];
+                    }
+
+                    CharacterSkill derivedSkill = null;
+                    if (characterSkill.GetCharacterSubskillData().GetDerivedSkillList().Count > 0)
+                    {
+                        derivedSkill = characterSkill.GetCharacterSubskillData().GetDerivedSkillList()[0];
+                    }
+
+                    if (repulseSkill != null)
+                    {
+                        characterSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(repulseSkill);
+                    }
+
+                    if (derivedSkill != null)
+                    {
+                        characterSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(derivedSkill);
+                    }
+
+                    characterObject.AddSelectedSkill(characterSkill);
+
+                    changedSkill.Add(characterSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
+                }
+            }
+            string allChangedSkill = string.Join("\n", changedSkill);
+
+            changedSkillInfo.text = allChangedSkill;
+            Debug.Log(allChangedSkill);
+            Debug.Log("skill no. : " + characterObject.GetSelectedActiveSkillList().Count);
+            Debug.Log("Backend skill no. : " + characterObject.GetSelectedBackendSkillList().Count);
         }
     }
 
+    //change state
     public void OnPlayerButtonClick()
     {
         ChangeStateValue(selectedPlayerStat, newPlayerStatValue, playerCharacter);

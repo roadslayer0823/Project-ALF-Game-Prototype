@@ -68,6 +68,15 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         }
     }
 
+    public void onOptionExit()
+    {
+        if(isHolding == true)
+        {
+            passiveSkillName.text = "流向系統";
+            passiveSkillButton.color = Color.white;
+        }
+    }
+
     public void changeButtonColor()
     {
         if(passiveSkillName.text == "以太流")
@@ -81,14 +90,6 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         else if(passiveSkillName.text == "负荷流")
         {
             passiveSkillButton.color = stressPointSkillColor.color;
-        }
-    }
-
-    public void onOptionExit()
-    {
-        if (isSelecting == true && selectedOption != null && isHolding == true)
-        {
-            Debug.Log("選擇:" + selectedOption.text);
         }
     }
 }
