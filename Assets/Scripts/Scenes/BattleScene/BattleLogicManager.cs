@@ -151,6 +151,9 @@ public class BattleLogicManager
 
         CharacterSkill _casterSkill = caster.GetCurrentSkill();
         Subskill _casterSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
+        CharacterSkill _targetSkill = target.GetCurrentSkill();
+        Subskill _targetSubskillData = _targetSkill?.GetCharacterSubskillData().GetSubskillData();
+
         bool _isActualDamage = false;
         bool _isInBreakStatus = target.GetIsInBreakStatus();
 
@@ -183,14 +186,18 @@ public class BattleLogicManager
 
                 // When the target takes damage, if the target is not using the Repulse skill
                 // and Defending skill, the target will take the actual damage.
-                CharacterSkill _targetSkill = target.GetCurrentSkill();
                 if (_targetSkill != null)
                 {
-                    if (_targetSkill.GetSkillData().skillType != Skill.SkillType.repulse
-                        && !_targetSkill.GetCharacterSubskillData().GetSubskillData().IsDefendingSkill)
+                    if (_targetSkill.GetSkillData().skillType != Skill.SkillType.repulse)
                     {
-                        target.MinusVirtualHealthPoint( attackDamage );
-                        _isActualDamage = true;
+                        if (_targetSubskillData != null)
+                        {
+                            if (!_targetSubskillData.IsDefendingSkill)
+                            {
+                                target.MinusVirtualHealthPoint( attackDamage );
+                                _isActualDamage = true;
+                            }
+                        }
                     }
                 }
             }
@@ -239,6 +246,28 @@ public class BattleLogicManager
         if (_extraLog != "")
         {
             log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>受到了{ _extraLog }。";
+        }
+
+        if (_targetSkill != null)
+        {
+            if (_casterSkill.GetSkillData().skillType == Skill.SkillType.repulse
+                || _targetSkill.GetSkillData().skillType == Skill.SkillType.repulse)
+            {
+                if (_casterSubskillData.Range == Subskill.RangeType.melee)
+                {
+                    if (_targetSubskillData != null)
+                    {
+                        if (_targetSubskillData.Range == Subskill.RangeType.ranged)
+                        {
+                            float _maxStatePointUp = AdjustAmount( GetMaxStatePointUp( _casterSubskillData ) );
+                            caster.AddMaximumStatePoint( _maxStatePointUp );
+
+                            log += $"<color={BattleLog.KEYWORD_COLOR_CODE}>{caster.GetCharacterName()}</color>提升了"
+                                   + $"<color={BattleLog.KEYWORD_COLOR_CODE}>" + _maxStatePointUp + "最大" + TerminologyManager.STATE_POINT + "</color>。";
+                        }
+                    }
+                }
+            }
         }
 
         if (target.GetIsInBreakStatus())
