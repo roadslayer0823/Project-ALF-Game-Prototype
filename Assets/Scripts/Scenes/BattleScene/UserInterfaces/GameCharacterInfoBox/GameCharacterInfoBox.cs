@@ -17,6 +17,7 @@ public class GameCharacterInfoBox : MonoBehaviour
     [SerializeField] private GameObject breakStatusIndicator = null;
     [SerializeField] private GameObject breakStatusForStatePoint = null;
     [SerializeField] private GameObject breakStatusForStressValue = null;
+    [SerializeField] private TextMeshPro energyMarkerLabel = null;
 
     void Awake()
     {
@@ -50,6 +51,16 @@ public class GameCharacterInfoBox : MonoBehaviour
         this.breakStatusIndicator.SetActive( this.selectedCharacter.GetIsInBreakStatus() );
         this.breakStatusForStatePoint.SetActive( this.selectedCharacter.GetIsBreakStatusCausedByStatePoint() );
         this.breakStatusForStressValue.SetActive( this.selectedCharacter.GetIsBreakStatusCausedByStressValue() );
+
+        if (this.selectedCharacter.HasEnergyMarker())
+        {
+            this.energyMarkerLabel.SetText( $"能量殘響ATL：{ this.selectedCharacter.GetEnergyMarkerRemainingATLs() }" );
+            this.energyMarkerLabel.gameObject.SetActive( true );
+        }
+        else
+        {
+            this.energyMarkerLabel.gameObject.SetActive( false );
+        }
 
         string _skillInfoString = "";
 
