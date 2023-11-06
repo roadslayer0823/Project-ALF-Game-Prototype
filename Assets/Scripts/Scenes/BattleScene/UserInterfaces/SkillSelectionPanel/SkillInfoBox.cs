@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Subskill = DatabaseManager.Subskill;
+using Skill = DatabaseManager.Skill;
 using System.Collections.Generic;
 
 public class SkillInfoBox : MonoBehaviour
@@ -23,6 +24,7 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI evasionStressValue;
     [SerializeField] private TextMeshProUGUI statePointDamageValue;
     [SerializeField] private TextMeshProUGUI speedValue;
+    [SerializeField] private TextMeshProUGUI tagEffectType;
 
     [Header("SkillInfoLabel")]
     [SerializeField] private TextMeshProUGUI attackDamage;
@@ -186,6 +188,24 @@ public class SkillInfoBox : MonoBehaviour
         else
         {
             this.statePointDamage.gameObject.SetActive(false);
+        }
+
+        if (_subskillData.EffectType == Subskill.EffectTypeEnum.wide) // tag effect type
+        {
+            string effectType = "";
+            Skill _skillData = characterSkill.GetSkillData();
+            this.tagEffectType.gameObject.SetActive(true);
+
+            if (_skillData.skillType == Skill.SkillType.repulse || _skillData.skillType == Skill.SkillType.derived)
+            {
+                effectType += "對";
+            }
+            effectType += "廣角";
+            tagEffectType.text ="【" + effectType + "】";
+        }
+        else
+        {
+            this.tagEffectType.gameObject.SetActive(false);
         }
 
         if (_subskillData.Description == "-") // Description
