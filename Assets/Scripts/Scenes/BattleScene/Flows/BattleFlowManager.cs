@@ -110,4 +110,9 @@ public class BattleFlowManager : MonoBehaviour
     {
         return this.battleGameManager;
     }
+
+    public void SetIsPlayerFirst(bool isPlayerFirst)
+    {
+        this.isPlayerFirst = isPlayerFirst;
+    }
 }

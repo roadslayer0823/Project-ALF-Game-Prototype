@@ -131,6 +131,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 2121017327}
     m_Modifications:
     - target: {fileID: 5598917719164618234, guid: 4fc730eb8d0d74b01bbaee771bd19750, type: 3}
+      propertyPath: battleFlow
+      value: 
+      objectReference: {fileID: 1072763491}
+    - target: {fileID: 5598917719164618234, guid: 4fc730eb8d0d74b01bbaee771bd19750, type: 3}
       propertyPath: enemyCharacter
       value: 
       objectReference: {fileID: 946000569}
@@ -138,6 +142,10 @@ PrefabInstance:
       propertyPath: playerCharacter
       value: 
       objectReference: {fileID: 1236949912}
+    - target: {fileID: 5598917719164618234, guid: 4fc730eb8d0d74b01bbaee771bd19750, type: 3}
+      propertyPath: battleGameManager
+      value: 
+      objectReference: {fileID: 1979657850}
     - target: {fileID: 6563497908115018728, guid: 4fc730eb8d0d74b01bbaee771bd19750, type: 3}
       propertyPath: m_Name
       value: DebugMenuPanel
