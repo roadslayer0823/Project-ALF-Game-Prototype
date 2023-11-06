@@ -212,18 +212,17 @@ public class DebugMenuPanel : MonoBehaviour
             int value;
             if(int.TryParse(newStatValue, out value))
             {
+                bool _isPlayerFirst = (value == 2);
                 if (characterObject is PlayerCharacter)
                 {
-                    bool _isPlayerFirst = (value == 1);
-                    battleGameManager.GetBattleFlowManager().SetIsPlayerFirst(_isPlayerFirst);
-                    battleGameManager.GetBattleUiManager().GetCharacterInfoPanel().ShowRoundInfoText(_isPlayerFirst);
+                    _isPlayerFirst = (value == 1);
                 }
                 else if(characterObject is EnemyCharacter)
                 {
-                    bool _isPlayerFirst = (value == 2);
-                    battleGameManager.GetBattleFlowManager().SetIsPlayerFirst(_isPlayerFirst);
-                    battleGameManager.GetBattleUiManager().GetCharacterInfoPanel().ShowRoundInfoText(_isPlayerFirst);
+                    _isPlayerFirst = (value == 2);
                 }
+                battleGameManager.GetBattleFlowManager().SetIsPlayerFirst(_isPlayerFirst);
+                battleGameManager.GetBattleUiManager().GetCharacterInfoPanel().ShowRoundInfoText(_isPlayerFirst);
             }
         }
 
