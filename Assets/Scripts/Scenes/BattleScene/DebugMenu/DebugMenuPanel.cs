@@ -212,7 +212,7 @@ public class DebugMenuPanel : MonoBehaviour
             int value;
             if(int.TryParse(newStatValue, out value))
             {
-                bool _isPlayerFirst = (value == 2);
+                bool _isPlayerFirst = false;
                 if (characterObject is PlayerCharacter)
                 {
                     _isPlayerFirst = (value == 1);
