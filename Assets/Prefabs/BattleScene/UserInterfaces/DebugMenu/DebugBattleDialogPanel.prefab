@@ -169,8 +169,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 273.95782, y: 0}
-  m_SizeDelta: {x: 316.25522, y: 0}
+  m_AnchoredPosition: {x: 143.33333, y: 0}
+  m_SizeDelta: {x: 286.66666, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1928830863438220643
 GameObject:
@@ -207,8 +207,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2, y: 13.2502}
-  m_SizeDelta: {x: 751.5486, y: 256.7725}
+  m_AnchoredPosition: {x: 0, y: 15}
+  m_SizeDelta: {x: 800, y: 260}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4613906645155843667
 CanvasRenderer:
@@ -417,8 +417,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 769.7891, y: 0}
-  m_SizeDelta: {x: 316.25522, y: 0}
+  m_AnchoredPosition: {x: 656.6666, y: 0}
+  m_SizeDelta: {x: 286.66666, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &3071933523305507744
 GameObject:
@@ -544,7 +544,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7313231967045228950}
         m_TargetAssemblyTypeName: DebugBattleDialogMenu, Assembly-CSharp
-        m_MethodName: Attacker
+        m_MethodName: ClickToSelectAttacker
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -678,7 +678,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7313231967045228950}
         m_TargetAssemblyTypeName: DebugBattleDialogMenu, Assembly-CSharp
-        m_MethodName: Defender
+        m_MethodName: ClickToSelectDefender
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1068,8 +1068,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 521.8735, y: 0}
-  m_SizeDelta: {x: 316.25522, y: 0}
+  m_AnchoredPosition: {x: 400, y: 0}
+  m_SizeDelta: {x: 286.66666, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6563497908115018728
 GameObject:
@@ -1124,6 +1124,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   container: {fileID: 7525882896127653738}
+  attackerButtonObject: {fileID: 1831967471786491608}
+  defenderButtonObject: {fileID: 6505818629707527321}
+  drawButtonObject: {fileID: 2611865216616272667}
 --- !u!223 &2971328728000285138
 Canvas:
   m_ObjectHideFlags: 0
@@ -1199,8 +1202,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 189, y: -92}
-  m_SizeDelta: {x: 1043.7468, y: 128.2922}
+  m_AnchoredPosition: {x: 185, y: -100}
+  m_SizeDelta: {x: 800, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &463082063784161685
 MonoBehaviour:
@@ -1220,7 +1223,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 1
-  m_Spacing: -300
+  m_Spacing: -30
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 0
@@ -1429,7 +1432,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7313231967045228950}
         m_TargetAssemblyTypeName: DebugBattleDialogMenu, Assembly-CSharp
-        m_MethodName: Draw
+        m_MethodName: ClickToSelectDraw
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

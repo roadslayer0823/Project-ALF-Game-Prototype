@@ -20,6 +20,8 @@ public class BattleAnimationManager : MonoBehaviour
     [SerializeField] private CameraEffects cameraEffect = null;
     [SerializeField] private SpriteRenderer darkLayer = null;
 
+    [SerializeField] private DebugBattleDialogMenu debugBattleDialogMenu = null;
+
     private bool isAnimationEventTriggered = false;
     private Action<bool> onBattleEndedCallback = null;
 
@@ -29,6 +31,9 @@ public class BattleAnimationManager : MonoBehaviour
 
     private List<GameCharacter> gameCharacterList = null;
     private GameCharacter currentCaster = null;
+
+    private bool isDebugMode = false;
+    private DebugBattleDialogMenu.ResultType debugModeResultType = DebugBattleDialogMenu.ResultType.None;
 
     private const string NO_ANIMATION = "-";
     private const string IDLE_ANIMATION_NAME = "Idle";
@@ -72,6 +77,13 @@ public class BattleAnimationManager : MonoBehaviour
         this.targetCameraObject = this.targetCamera.gameObject;
         this.cameraPosition = this.targetCamera.transform.position;
         this.cameraOrthographicSize = this.targetCamera.orthographicSize;
+
+        this.debugBattleDialogMenu.Initialize( OnDebugBattleDialogMenuResult );
+    }
+
+    private void OnDebugBattleDialogMenuResult( DebugBattleDialogMenu.ResultType resultType )
+    {
+        this.debugModeResultType = resultType;
     }
 
     public IEnumerator RunBattleAnimation( BattleGameManager battleGameManager, BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )
@@ -329,9 +341,30 @@ public class BattleAnimationManager : MonoBehaviour
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                     yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
 
-                    BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Repulse,
-                                                                        _attacker, _attackTarget,
-                                                                        out _winner, out _loser );
+                    if (this.isDebugMode)
+                    {
+                        this.debugBattleDialogMenu.Show( true, true, true );
+                        yield return new WaitUntil( () => this.debugModeResultType != DebugBattleDialogMenu.ResultType.None );
+
+                        if (this.debugModeResultType == DebugBattleDialogMenu.ResultType.AttackerWins)
+                        {
+                            _winner = _attacker;
+                            _loser = _attackTarget;
+                        }
+                        else if (this.debugModeResultType == DebugBattleDialogMenu.ResultType.DefenderWins)
+                        {
+                            _winner = _attackTarget;
+                            _loser = _attacker;
+                        }
+
+                        this.debugModeResultType = DebugBattleDialogMenu.ResultType.None;
+                    }
+                    else
+                    {
+                        BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Repulse,
+                                                                            _attacker, _attackTarget,
+                                                                            out _winner, out _loser );
+                    }
 
                     bool _hasAttackDamage = false;
                     bool _hasStressValueDamage = false;
@@ -480,17 +513,38 @@ public class BattleAnimationManager : MonoBehaviour
                     _winner = null;
                     _loser = null;
 
-                    if (_attackTargetSubskillData.IsDefendingSkill)
+                    if (this.isDebugMode)
                     {
-                        BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Defend,
-                                                                            _attacker, _attackTarget,
-                                                                            out _winner, out _loser );
+                        this.debugBattleDialogMenu.Show( true, true, false );
+                        yield return new WaitUntil( () => this.debugModeResultType != DebugBattleDialogMenu.ResultType.None );
+
+                        if (this.debugModeResultType == DebugBattleDialogMenu.ResultType.AttackerWins)
+                        {
+                            _winner = _attacker;
+                            _loser = _attackTarget;
+                        }
+                        else if (this.debugModeResultType == DebugBattleDialogMenu.ResultType.DefenderWins)
+                        {
+                            _winner = _attackTarget;
+                            _loser = _attacker;
+                        }
+
+                        this.debugModeResultType = DebugBattleDialogMenu.ResultType.None;
                     }
-                    else if (_attackTargetSubskillData.IsEvadingSkill)
+                    else
                     {
-                        BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Evade,
-                                                                            _attacker, _attackTarget,
-                                                                            out _winner, out _loser );
+                        if (_attackTargetSubskillData.IsDefendingSkill)
+                        {
+                            BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Defend,
+                                                                                _attacker, _attackTarget,
+                                                                                out _winner, out _loser );
+                        }
+                        else if (_attackTargetSubskillData.IsEvadingSkill)
+                        {
+                            BattleLogicManager.CompareCharacterSkillAttributes( BattleLogicManager.ActionType.Evade,
+                                                                                _attacker, _attackTarget,
+                                                                                out _winner, out _loser );
+                        }
                     }
 
                     BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _winner == _attacker, out _attackDamage, out _stressValueDamage, out _statePointDamage, out _log );
@@ -1024,5 +1078,10 @@ public class BattleAnimationManager : MonoBehaviour
     public GameCharacter GetCurrentCaster()
     {
         return this.currentCaster;
+    }
+
+    public void SetIsDebugMode( bool isDebugMode )
+    {
+        this.isDebugMode = isDebugMode;
     }
 }

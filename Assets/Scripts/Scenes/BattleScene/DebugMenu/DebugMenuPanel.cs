@@ -9,6 +9,7 @@ public class DebugMenuPanel : MonoBehaviour
     [SerializeField] private PlayerCharacter playerCharacter = null;
     [SerializeField] private EnemyCharacter enemyCharacter = null;
     [SerializeField] private BattleGameManager battleGameManager = null;
+    [SerializeField] private GameObject debugModeObjectLabel = null;
 
     [Header("References")]
     [SerializeField] private GameObject container = null;
@@ -19,6 +20,7 @@ public class DebugMenuPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI enemyInputPlaceHolder = null;
     [SerializeField] private TextMeshProUGUI changedSkillInfo = null;
     [SerializeField] private TextMeshProUGUI playerInputPlaceHolder = null;
+    [SerializeField] private TextMeshProUGUI debugModeButtonLabel = null;
 
     //variable name
     private string selectedPlayerStat;
@@ -288,11 +290,23 @@ public class DebugMenuPanel : MonoBehaviour
     //change state
     public void OnPlayerButtonClick()
     {
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
         ChangeStateValue(selectedPlayerStat, newPlayerStatValue, playerCharacter);
     }
 
     public void OnEnemyButtonClick()
     {
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
         ChangeStateValue(selectedEnemyStat, newEnemyStatValue, enemyCharacter);
+    }
+
+    public void ClickToToggleDebugMode()
+    {
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+        this.debugModeObjectLabel.SetActive( !this.debugModeObjectLabel.activeSelf );
+
+        bool _isDebugMode = this.debugModeObjectLabel.activeSelf;
+        this.battleGameManager.GetBattleAnimationManager().SetIsDebugMode( _isDebugMode );
+        this.debugModeButtonLabel.SetText( ( _isDebugMode ) ? "Debug Mode ON" : "Debug Mode OFF" );
     }
 }
