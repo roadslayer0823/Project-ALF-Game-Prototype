@@ -24,6 +24,8 @@ public class SkillInfoBox : MonoBehaviour
     [SerializeField] private TextMeshProUGUI evasionStressValue;
     [SerializeField] private TextMeshProUGUI statePointDamageValue;
     [SerializeField] private TextMeshProUGUI speedValue;
+    [SerializeField] private RectTransform tagListRectTransform;
+    [SerializeField] private TextMeshProUGUI tagRange;
     [SerializeField] private TextMeshProUGUI tagEffectType;
 
     [Header("SkillInfoLabel")]
@@ -190,23 +192,45 @@ public class SkillInfoBox : MonoBehaviour
             this.statePointDamage.gameObject.SetActive(false);
         }
 
-        if (_subskillData.EffectType == Subskill.EffectTypeEnum.wide) // tag effect type
+        if (_subskillData.Range != Subskill.RangeType.none)
         {
-            string effectType = "";
-            Skill _skillData = characterSkill.GetSkillData();
-            this.tagEffectType.gameObject.SetActive(true);
-
-            if (_skillData.skillType == Skill.SkillType.repulse || _skillData.skillType == Skill.SkillType.derived)
+            if (_subskillData.Range == Subskill.RangeType.melee)
             {
-                effectType += "對";
+                this.tagRange.text = "【近戰】";
             }
-            effectType += "廣角";
-            tagEffectType.text ="【" + effectType + "】";
+            else if (_subskillData.Range == Subskill.RangeType.ranged)
+            {
+                this.tagRange.text = "【遠程】";
+            }
+
+            this.tagRange.gameObject.SetActive( true );
         }
         else
         {
-            this.tagEffectType.gameObject.SetActive(false);
+            this.tagRange.gameObject.SetActive( false );
         }
+
+        if (_subskillData.EffectType == Subskill.EffectTypeEnum.wide) // tag effect type
+        {
+            Skill _skillData = characterSkill.GetSkillData();
+
+            string _effectType = "";
+            if (_skillData.skillType == Skill.SkillType.repulse || _skillData.skillType == Skill.SkillType.derived)
+            {
+                _effectType += "對";
+            }
+
+            _effectType += "廣角";
+
+            this.tagEffectType.text = $"【{ _effectType }】";
+            this.tagEffectType.gameObject.SetActive( true );
+        }
+        else
+        {
+            this.tagEffectType.gameObject.SetActive( false );
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate( tagListRectTransform );
 
         if (_subskillData.Description == "-") // Description
         {
