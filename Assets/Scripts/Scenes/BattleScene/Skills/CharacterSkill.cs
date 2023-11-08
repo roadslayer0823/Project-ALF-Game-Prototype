@@ -48,20 +48,13 @@ public class CharacterSkill
 
     public CharacterSubskill GetCharacterSubskillData()
     {
-        int _maxLevel = this.characterSubskillList.Count;
+        for (int i = 0; i < this.characterSubskillList.Count; i++)
+        {
+            CharacterSubskill _characterSubskill = this.characterSubskillList[i];
 
-        if (this.selectedSkillLevel > _maxLevel)
-        {
-            return this.characterSubskillList[_maxLevel - 1];
-        }
-        else
-        {
-            foreach (CharacterSubskill characterSubskill in this.characterSubskillList)
+            if (_characterSubskill.GetSubskillData().Level == this.selectedSkillLevel && _characterSubskill.GetSubskillData().IsAvailable)
             {
-                if (characterSubskill.GetSubskillData().Level == this.selectedSkillLevel)
-                {
-                    return characterSubskill;
-                }
+                return _characterSubskill;
             }
         }
 
