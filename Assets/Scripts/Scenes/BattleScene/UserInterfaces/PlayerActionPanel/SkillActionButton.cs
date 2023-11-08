@@ -85,7 +85,7 @@ public class SkillActionButton : MonoBehaviour
         {
             this.actionType.SetText("迴避");
         }
-        else if (subskillData.IsInterceptable)
+        else if (subskillData.IsObservingSkill)
         {
             this.actionType.SetText("看破");
         }
