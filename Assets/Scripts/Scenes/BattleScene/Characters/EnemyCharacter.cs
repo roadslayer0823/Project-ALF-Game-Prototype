@@ -92,7 +92,7 @@ public class EnemyCharacter : GameCharacter
                         {
                             if (!_hasUsedObservedSkill)
                             {
-                                base.SetCurrentSkill( _selectedBackendSkill );
+                                base.SetCurrentObservingSkill( _selectedBackendSkill );
                                 base.TriggerEvent( AnimationEvent.OnSkillBeingObserved );
                                 _hasUsedObservedSkill = true;
                             }
@@ -119,7 +119,7 @@ public class EnemyCharacter : GameCharacter
             case AnimationEvent.OnDefensePartA:
 
                 CharacterSkill _repulseSkill = null;
-                if (base.IsAbleToRepulse( battleGameManager, out _repulseSkill, out _ ) && Random.value < 0.8f)
+                if (base.IsAbleToRepulse( battleGameManager, out _repulseSkill, out _ ) && Random.value < 0.5f)
                 {
                     base.SetCurrentSkill( _repulseSkill );
                 }

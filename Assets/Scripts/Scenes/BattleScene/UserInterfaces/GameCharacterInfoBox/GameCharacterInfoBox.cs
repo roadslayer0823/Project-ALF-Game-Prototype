@@ -81,16 +81,7 @@ public class GameCharacterInfoBox : MonoBehaviour
 
                         if (_subskillData.EffectType == Subskill.EffectTypeEnum.wide)
                         {
-                            _skillInfoString += "\n";
-
-                            Skill _skillData = _characterSkill.GetSkillData();
-                            if (_skillData.skillType == Skill.SkillType.repulse
-                                || _skillData.skillType == Skill.SkillType.backend)
-                            {
-                                _skillInfoString += "對";
-                            }
-
-                            _skillInfoString += "廣角";
+                            _skillInfoString += $"\n{ TerminologyManager.GetWideEffectTypeText( _characterSkill.GetSkillData() ) }";
                         }
 
                         int _speed = _subskillData.Speed + _skillStatIncrement;
@@ -101,7 +92,7 @@ public class GameCharacterInfoBox : MonoBehaviour
 
                             if (_skillStatIncrement > 0)
                             {
-                                _skillInfoString += "<color=#FFFF00>" + _speedLevelText + "</color>";
+                                _skillInfoString += "<color=#FFFF00>" + _speedLevelText + "</color> （看破）";
                             }
                             else
                             {
@@ -118,7 +109,7 @@ public class GameCharacterInfoBox : MonoBehaviour
                                 _skillInfoString += "\n強度";
                             }
 
-                            _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color>";
+                            _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color> （看破）";
                         }
 
                         _skillInfoString += ( _subskillData.Accuracy > 1 ) ? "\n命中 +" + ( _subskillData.Accuracy - 1 ) : "";
@@ -130,7 +121,7 @@ public class GameCharacterInfoBox : MonoBehaviour
                                 _skillInfoString += "\n命中";
                             }
 
-                            _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color>";
+                            _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color> （看破）";
                         }
 
                         _skillInfoString += ( _subskillData.Evasion > 1 ) ? "\n迴避 +" + ( _subskillData.Evasion - 1 ) : "";
@@ -142,7 +133,7 @@ public class GameCharacterInfoBox : MonoBehaviour
                                 _skillInfoString += "\n迴避";
                             }
 
-                            _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color>";
+                            _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color> （看破）";
                         }
                     }
                 }
