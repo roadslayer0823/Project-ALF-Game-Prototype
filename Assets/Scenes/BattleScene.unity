@@ -2367,6 +2367,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PassiveSkillCategorySelectionPanel
       objectReference: {fileID: 0}
+    - target: {fileID: 7864568228715005285, guid: e8d3fa14d271143709708429fd50eaac, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8094084090006807436, guid: e8d3fa14d271143709708429fd50eaac, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

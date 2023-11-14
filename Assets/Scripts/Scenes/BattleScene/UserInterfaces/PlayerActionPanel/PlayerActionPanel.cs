@@ -81,7 +81,7 @@ public class PlayerActionPanel : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
 
-        DisableQTEAndSkillActionButtons();
+        DisableQTEAndSkillActionButtons( true );
         this.selectedGameCharacter.SetCurrentSkill( this.qteSkill );
     }
 
@@ -225,15 +225,15 @@ public class PlayerActionPanel : MonoBehaviour
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
 
         CharacterSkill _skill = skillActionButton.GetSelectedSkill();
-        this.selectedGameCharacter.SetCurrentSkill( _skill );
-
         Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
         if (_subskillData.IsDefendingSkill || _subskillData.IsEvadingSkill)
         {
+            this.selectedGameCharacter.SetCurrentSkill( _skill );
             DisableQTEAndSkillActionButtons( true );
         }
         else if (_subskillData.IsObservingSkill)
         {
+            this.selectedGameCharacter.SetCurrentObservingSkill( _skill );
             skillActionButton.DisableActionButton();
             this.selectedGameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnSkillBeingObserved );
         }

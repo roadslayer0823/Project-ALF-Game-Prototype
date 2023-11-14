@@ -158,8 +158,9 @@ public class BattleGameManager : MonoBehaviour
 
             case BattleAnimationManager.AnimationEvent.OnSkillBeingObserved:
 
-                CharacterSkill _gameCharacterCurrentSkill = gameCharacter.GetCurrentSkill();
+                CharacterSkill _gameCharacterCurrentSkill = gameCharacter.GetCurrentObservingSkill();
                 Subskill _gameCharacterCurrentSubskillData = _gameCharacterCurrentSkill.GetCharacterSubskillData().GetSubskillData();
+
                 GameCharacter _currentCaster = battleAnimationManager.GetCurrentCaster();
                 CharacterSkill _currentCasterSkill = _currentCaster.GetCurrentSkill();
                 Subskill _currentCasterSubskillData = _currentCasterSkill.GetCharacterSubskillData().GetSubskillData();

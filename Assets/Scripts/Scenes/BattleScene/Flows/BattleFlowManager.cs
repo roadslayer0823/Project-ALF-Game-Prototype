@@ -114,5 +114,6 @@ public class BattleFlowManager : MonoBehaviour
     public void SetIsPlayerFirst(bool isPlayerFirst)
     {
         this.isPlayerFirst = isPlayerFirst;
+        StartNewRound();
     }
 }

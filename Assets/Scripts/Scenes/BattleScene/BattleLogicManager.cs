@@ -54,13 +54,7 @@ public class BattleLogicManager
 
         if (_casterSubskillData.EffectType == Subskill.EffectTypeEnum.wide)
         {
-            if (_casterSkillData.skillType == Skill.SkillType.repulse
-                || _casterSkillData.skillType == Skill.SkillType.backend)
-            {
-                _skillStatLog += "對";
-            }
-
-            _skillStatLog += "廣角，";
+            _skillStatLog += $"{ TerminologyManager.GetWideEffectTypeText( _casterSkillData ) }，";
         }
 
         _skillStatLog += TerminologyManager.GetSpeedLevelText( _casterSubskillData.Speed );

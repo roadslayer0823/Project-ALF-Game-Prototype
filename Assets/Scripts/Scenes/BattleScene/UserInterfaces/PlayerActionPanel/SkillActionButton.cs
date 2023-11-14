@@ -159,7 +159,7 @@ public class SkillActionButton : MonoBehaviour
             }
             else if (_effectType == Subskill.EffectTypeEnum.wide)
             {
-                this.effectTypeValue.SetText("廣角");
+                this.effectTypeValue.SetText("對廣角");
             }
         }
         else

@@ -1,9 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Subskill = DatabaseManager.Subskill;
 using Skill = DatabaseManager.Skill;
-using System.Collections.Generic;
 
 public class SkillInfoBox : MonoBehaviour
 {
@@ -212,17 +212,7 @@ public class SkillInfoBox : MonoBehaviour
 
         if (_subskillData.EffectType == Subskill.EffectTypeEnum.wide) // tag effect type
         {
-            Skill _skillData = characterSkill.GetSkillData();
-
-            string _effectType = "";
-            if (_skillData.skillType == Skill.SkillType.repulse || _skillData.skillType == Skill.SkillType.derived)
-            {
-                _effectType += "對";
-            }
-
-            _effectType += "廣角";
-
-            this.tagEffectType.text = $"【{ _effectType }】";
+            this.tagEffectType.text = $"【{ TerminologyManager.GetWideEffectTypeText( characterSkill.GetSkillData() ) }】";
             this.tagEffectType.gameObject.SetActive( true );
         }
         else

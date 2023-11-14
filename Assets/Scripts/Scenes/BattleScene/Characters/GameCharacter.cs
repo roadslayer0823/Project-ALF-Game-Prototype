@@ -43,6 +43,7 @@ public class GameCharacter : MonoBehaviour
     protected Action onCharacterInfoUpdated = null;
 
     private CharacterSkill currentSkill = null;
+    private CharacterSkill currentObservingSkill = null;
     private int currentSkillStatIncrement = 0;
     private GameCharacter currentAttacker = null;
     private float skillCountdownTime = 0.0f;
@@ -701,6 +702,16 @@ public class GameCharacter : MonoBehaviour
     public CharacterSkill GetCurrentSkill()
     {
         return this.currentSkill;
+    }
+
+    public void SetCurrentObservingSkill( CharacterSkill currentObservingSkill )
+    {
+        this.currentObservingSkill = currentObservingSkill;
+    }
+
+    public CharacterSkill GetCurrentObservingSkill()
+    {
+        return this.currentObservingSkill;
     }
 
     public void SetCurrentSkillStatIncrement( int currentSkillStatIncrement )

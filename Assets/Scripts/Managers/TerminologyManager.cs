@@ -81,4 +81,19 @@ public class TerminologyManager
 
         return _speedLevelText;
     }
+
+    public static string GetWideEffectTypeText( Skill skillData )
+    {
+        string _wideEffectTypeText = "";
+
+        if (skillData.skillType == Skill.SkillType.repulse
+            || skillData.skillType == Skill.SkillType.backend)
+        {
+            _wideEffectTypeText += "對";
+        }
+
+        _wideEffectTypeText += "廣角";
+
+        return _wideEffectTypeText;
+    }
 }
