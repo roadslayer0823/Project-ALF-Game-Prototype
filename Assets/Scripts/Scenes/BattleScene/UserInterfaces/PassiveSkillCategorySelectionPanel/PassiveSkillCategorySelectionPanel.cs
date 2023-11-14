@@ -5,6 +5,7 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
 { 
     [Header("Reference")]
     [SerializeField] private GameObject passiveSkillHolder;
+    [SerializeField] private GameObject passiveSkillInfoBox;
     [SerializeField] private TextMeshProUGUI passiveSkillName;
     [SerializeField] private Image passiveSkillButton;
     [SerializeField] private Image statePointSkillColor;
