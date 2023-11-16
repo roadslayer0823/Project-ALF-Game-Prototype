@@ -314,15 +314,6 @@ public class BattleAnimationManager : MonoBehaviour
 
                 case Skill.SkillType.repulse:
 
-                    BattleFlowATL _attackTargetNextATL = battleFlowRound.GetNextATL( _attackTarget );
-                    battleFlowRound.GoToTargetATL( _attackTargetNextATL, false );
-
-                    CharacterSkill _repulseSkill = _attackTarget.GetCurrentSkill();
-                    BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
-                    currentCaster = _attackTarget;
-
-                    BattleLog.Instance.AddOnScreenBattleLog( _log );
-
                     yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attackTarget.GetCurrentSkill() ) );
 
                     if (_attackerCharacterPartB != NO_ANIMATION)
@@ -337,6 +328,15 @@ public class BattleAnimationManager : MonoBehaviour
 
                     _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                     StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
+
+                    BattleFlowATL _attackTargetNextATL = battleFlowRound.GetNextATL( _attackTarget );
+                    battleFlowRound.GoToTargetATL( _attackTargetNextATL, false );
+
+                    CharacterSkill _repulseSkill = _attackTarget.GetCurrentSkill();
+                    BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
+                    currentCaster = _attackTarget;
+
+                    BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                     yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
@@ -943,7 +943,11 @@ public class BattleAnimationManager : MonoBehaviour
             PlayerCharacter _playerCharacter = _playerCharacterList[ i ];
             if (BattleLogicManager.IsGameCharacterDead( _playerCharacter ))
             {
-                _playerCharacter.gameObject.SetActive( false );
+                if (_playerCharacter.gameObject.activeSelf)
+                {
+                    _playerCharacter.gameObject.SetActive( false );
+                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _playerCharacter.GetCharacterName() }</color>被擊倒了。" );
+                }
             }
             else
             {
@@ -957,7 +961,11 @@ public class BattleAnimationManager : MonoBehaviour
             EnemyCharacter _enemyCharacter = _enemyCharacterList[ i ];
             if (BattleLogicManager.IsGameCharacterDead( _enemyCharacter ))
             {
-                _enemyCharacter.gameObject.SetActive( false );
+                if (_enemyCharacter.gameObject.activeSelf)
+                {
+                    _enemyCharacter.gameObject.SetActive( false );
+                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _enemyCharacter.GetCharacterName() }</color>被擊倒了。" );
+                }
             }
             else
             {

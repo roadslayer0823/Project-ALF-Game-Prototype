@@ -180,6 +180,8 @@ public class BattleGameManager : MonoBehaviour
     {
         this.hasBattleEnded = true;
 
+        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 戰鬥結束 】</color>" );
+
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_LINE_BREAK, () =>
         {
             if (isVictory)

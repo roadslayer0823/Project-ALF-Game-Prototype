@@ -15,6 +15,8 @@ public class BattleLog : Singleton<BattleLog>
     private List<TextMeshProUGUI> battleLogTextList = new List<TextMeshProUGUI>();
     private List<Image> lineBreakList = new List<Image>();
 
+    private const string AUDIO_ID_CLICK = "click";
+
     public const string KEYWORD_COLOR_CODE = "#FFFF00";
     public const string SPECIAL_COLOR_CODE = "#FFAAFF";
 
@@ -56,6 +58,8 @@ public class BattleLog : Singleton<BattleLog>
 
     private void OnClearAllButtonClick()
     {
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+
         if (this.battleLogTextList.Count == 0)
         {
             return;

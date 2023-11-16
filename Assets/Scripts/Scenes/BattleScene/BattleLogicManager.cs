@@ -30,9 +30,9 @@ public class BattleLogicManager
         CharacterSkill _targetSkill = target.GetCurrentSkill();
         if (_targetSkill != null)
         {
-            Subskill _targetSubskillData = _targetSkill.GetCharacterSubskillData().GetSubskillData();
-            if (_targetSubskillData.IsEvadingSkill)
+            if (_casterSubskillData.IsEvadingSkill)
             {
+                Subskill _targetSubskillData = _targetSkill.GetCharacterSubskillData().GetSubskillData();
                 float _evasionStress = _targetSubskillData.EvasionStress * ( ( caster.HasEnergyMarker() ) ? _targetSubskillData.EnergyMarkerEvasionStressRate : 1.0f );
                 _statePointCost += _evasionStress;
                 _evasionStressLog = $"（迴避壓力：{ _evasionStress }）";
@@ -188,11 +188,19 @@ public class BattleLogicManager
                         {
                             if (!_targetSubskillData.IsDefendingSkill)
                             {
-                                target.MinusVirtualHealthPoint( attackDamage );
                                 _isActualDamage = true;
                             }
                         }
                     }
+                }
+                else
+                {
+                    _isActualDamage = true;
+                }
+
+                if (_isActualDamage)
+                {
+                    target.MinusVirtualHealthPoint( attackDamage );
                 }
             }
         }
@@ -304,7 +312,7 @@ public class BattleLogicManager
         if (target.HasEnergyMarker() && _casterSubskillData.WillRemoveEnergyMarker)
         {
             target.RemoveEnergyMarker();
-            log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }的【能量殘響】被消去。</color>";
+            log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>帶有的<color={ BattleLog.KEYWORD_COLOR_CODE }>【能量殘響】</color>被消去了。";
         }
     }
 
