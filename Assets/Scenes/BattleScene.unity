@@ -2287,7 +2287,8 @@ MonoBehaviour:
   playerCharacter: {fileID: 1236949912}
   enemyCharacter: {fileID: 946000569}
   audioDatabase: {fileID: 11400000, guid: a31e68a87cdd5493697f4f13299eb0b3, type: 2}
-  backgroundMusicAudioClip: {fileID: 8300000, guid: 2c3ad9d8017a24a28971c205fc24ad5e, type: 3}
+  backgroundMusicAudioClip: {fileID: 8300000, guid: 1934e6a02886a481c88df24901beb1cb, type: 3}
+  loopingBackgroundMusicAudioClip: {fileID: 8300000, guid: 2c3ad9d8017a24a28971c205fc24ad5e, type: 3}
 --- !u!4 &1979657851
 Transform:
   m_ObjectHideFlags: 0
