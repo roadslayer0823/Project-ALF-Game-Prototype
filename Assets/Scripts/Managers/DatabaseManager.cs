@@ -289,6 +289,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 subskill.IsEvadingSkill = bool.Parse(subskill.IsEvadingSkillString);
                 subskill.IsObservingSkill = bool.Parse(subskill.IsObservingSkillString);
                 subskill.IsInterceptable = bool.Parse(subskill.IsInterceptableString);
+                subskill.WillRemoveEnergyMarker = bool.Parse( subskill.WillRemoveEnergyMarkerString );
                 subskill.RepulseSkillIds = ConvertStringToStringArray(subskill.RepulseSkillIdsString);
                 subskill.DerivedSkillIds = ConvertStringToStringArray(subskill.DerivedSkillIdsString);
                 subskill.CounterSkillIds = ConvertStringToStringArray(subskill.CounterSkillIdsString);

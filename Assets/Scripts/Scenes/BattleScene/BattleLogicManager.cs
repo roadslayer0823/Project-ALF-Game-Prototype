@@ -312,7 +312,7 @@ public class BattleLogicManager
         if (target.HasEnergyMarker() && _casterSubskillData.WillRemoveEnergyMarker)
         {
             target.RemoveEnergyMarker();
-            log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }的【能量殘響】被消去。</color>";
+            log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>帶有的<color={ BattleLog.KEYWORD_COLOR_CODE }>【能量殘響】</color>被消去了。";
         }
     }
 
