@@ -943,7 +943,11 @@ public class BattleAnimationManager : MonoBehaviour
             PlayerCharacter _playerCharacter = _playerCharacterList[ i ];
             if (BattleLogicManager.IsGameCharacterDead( _playerCharacter ))
             {
-                _playerCharacter.gameObject.SetActive( false );
+                if (_playerCharacter.gameObject.activeSelf)
+                {
+                    _playerCharacter.gameObject.SetActive( false );
+                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _playerCharacter.GetCharacterName() }</color>被擊倒了。" );
+                }
             }
             else
             {
@@ -957,7 +961,11 @@ public class BattleAnimationManager : MonoBehaviour
             EnemyCharacter _enemyCharacter = _enemyCharacterList[ i ];
             if (BattleLogicManager.IsGameCharacterDead( _enemyCharacter ))
             {
-                _enemyCharacter.gameObject.SetActive( false );
+                if (_enemyCharacter.gameObject.activeSelf)
+                {
+                    _enemyCharacter.gameObject.SetActive( false );
+                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _enemyCharacter.GetCharacterName() }</color>被擊倒了。" );
+                }
             }
             else
             {
