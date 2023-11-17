@@ -662,6 +662,18 @@ public class BattleLogicManager
     {
     }
 
+    public static void OnCharacterAttackFinished( GameCharacter attacker, GameCharacter defender )
+    {
+        attacker.ResetCurrentSkillStatIncrement();
+        defender.ResetCurrentSkillStatIncrement();
+
+        if (defender.GetCurrentObservingSkill() != null)
+        {
+            defender.TriggerEvent( BattleAnimationManager.AnimationEvent.OnSkillBeingObserved );
+            defender.SetCurrentObservingSkill( null );
+        }
+    }
+
     public static float GetAttackDamage( Subskill subskillData )
     {
         return ( subskillData.AttackDamage * GameConfiguration.Instance.GetBattleConfiguration().GetAttackDamageMultiplier() );

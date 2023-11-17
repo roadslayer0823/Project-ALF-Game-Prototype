@@ -146,7 +146,14 @@ public class BattleGameManager : MonoBehaviour
 
     private void OnCharacterEventTriggered( BattleAnimationManager.AnimationEvent animationEvent, GameCharacter gameCharacter )
     {
+        if (BattleLogicManager.IsGameCharacterDead( gameCharacter ))
+        {
+            return;
+        }
+
         gameCharacter.OnEventTriggered( this, animationEvent );
+
+        CharacterSkill _currentObservingSkill = gameCharacter.GetCurrentObservingSkill();
 
         switch ( animationEvent )
         {
@@ -157,21 +164,28 @@ public class BattleGameManager : MonoBehaviour
 
                 break;
 
+            case BattleAnimationManager.AnimationEvent.OnObservingSkillSelected:
+
+                GameCharacter _currentCaster = battleAnimationManager.GetCurrentCaster();
+                _currentObservingSkill.SetObservedSkill( _currentCaster, _currentCaster.GetCurrentSkill() );
+
+                break;
+
             case BattleAnimationManager.AnimationEvent.OnSkillBeingObserved:
 
                 CharacterSkill _gameCharacterCurrentSkill = gameCharacter.GetCurrentObservingSkill();
                 Subskill _gameCharacterCurrentSubskillData = _gameCharacterCurrentSkill.GetCharacterSubskillData().GetSubskillData();
 
-                GameCharacter _currentCaster = battleAnimationManager.GetCurrentCaster();
-                CharacterSkill _currentCasterSkill = _currentCaster.GetCurrentSkill();
-                Subskill _currentCasterSubskillData = _currentCasterSkill.GetCharacterSubskillData().GetSubskillData();
+                GameCharacter _observedSkillCaster = _currentObservingSkill.GetObservedSkillCaster();
+                CharacterSkill _observedSkill = _currentObservingSkill.GetObservedSkill();
+                Subskill _observedSubskillData = _observedSkill.GetCharacterSubskillData().GetSubskillData();
 
-                float _currentObservedRate = _gameCharacterCurrentSkill.AddObservedSkillData( _currentCasterSubskillData.FeatureId, _currentCasterSubskillData.DisplayName, _currentCasterSkill.GetSkillData().skillType,
+                float _currentObservedRate = _gameCharacterCurrentSkill.AddObservedSkillData( _observedSubskillData.FeatureId, _observedSubskillData.DisplayName, _observedSkill.GetSkillData().skillType,
                                                                                               _gameCharacterCurrentSubskillData.ObservationRate );
 
                 BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + gameCharacter.GetCharacterName() + "</color>使用" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _gameCharacterCurrentSubskillData.DisplayName + "</color>（看破技能）來看破"
-                                                         + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _currentCaster.GetCharacterName() + "</color>使用的" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _currentCasterSubskillData.DisplayName + "</color>和對"
-                                                         + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _currentCasterSubskillData.DisplayName + "</color>的看破值現為" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _currentObservedRate.ConvertToIntegerInPercentage() + "%</color>。" );
+                                                         + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _observedSkillCaster.GetCharacterName() + "</color>使用的" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _observedSubskillData.DisplayName + "</color>和對"
+                                                         + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _observedSubskillData.DisplayName + "</color>的看破值現為" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _currentObservedRate.ConvertToIntegerInPercentage() + "%</color>。" );
 
                 break;
         }

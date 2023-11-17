@@ -696,6 +696,30 @@ public class GameCharacter : MonoBehaviour
     {
         this.currentSkill = currentSkill;
         this.isAbleToUseSkill = true;
+
+        this.currentSkillStatIncrement = 0;
+        if (this.currentAttacker != null)
+        {
+            CharacterSkill _currentAttackerSkill = this.currentAttacker.GetCurrentSkill();
+            if (_currentAttackerSkill != null)
+            {
+                for (int i = 0; i < this.selectedBackendSkillList.Count; i++)
+                {
+                    CharacterSkill _backendSkill = this.selectedBackendSkillList[ i ];
+                    if (_backendSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+                    {
+                        ObservedSkillData _observedSkillData = _backendSkill.GetObservedSkillData( _currentAttackerSkill.GetCharacterSubskillData().GetSubskillData().FeatureId );
+                        if (_observedSkillData != null)
+                        {
+                            this.currentSkillStatIncrement = Mathf.FloorToInt( _observedSkillData.GetCurrentObservedRate() );
+                        }
+
+                        break;
+                    }
+                }
+            }
+        }
+
         this.onCharacterInfoUpdated?.Invoke();
     }
 
@@ -704,9 +728,14 @@ public class GameCharacter : MonoBehaviour
         return this.currentSkill;
     }
 
-    public void SetCurrentObservingSkill( CharacterSkill currentObservingSkill )
+    public void SetCurrentObservingSkill( CharacterSkill observingSkill )
     {
-        this.currentObservingSkill = currentObservingSkill;
+        this.currentObservingSkill = observingSkill;
+
+        if (this.currentObservingSkill != null)
+        {
+            TriggerEvent( AnimationEvent.OnObservingSkillSelected );
+        }
     }
 
     public CharacterSkill GetCurrentObservingSkill()
@@ -719,6 +748,12 @@ public class GameCharacter : MonoBehaviour
         this.currentSkillStatIncrement = currentSkillStatIncrement;
     }
 
+    public void ResetCurrentSkillStatIncrement()
+    {
+        this.currentSkillStatIncrement = 0;
+        this.onCharacterInfoUpdated?.Invoke();
+    }
+
     public int GetCurrentSkillStatIncrement()
     {
         return this.currentSkillStatIncrement;
@@ -727,26 +762,6 @@ public class GameCharacter : MonoBehaviour
     public void SetCurrentAttacker( GameCharacter currentAttacker )
     {
         this.currentAttacker = currentAttacker;
-        this.currentSkillStatIncrement = 0;
-
-        if (this.currentAttacker != null)
-        {
-            CharacterSkill _currentAttackerSkill = this.currentAttacker.GetCurrentSkill();
-            for (int i = 0; i < this.selectedBackendSkillList.Count; i++)
-            {
-                CharacterSkill _backendSkill = this.selectedBackendSkillList[ i ];
-                if (_backendSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
-                {
-                    ObservedSkillData _observedSkillData = _backendSkill.GetObservedSkillData( _currentAttackerSkill.GetCharacterSubskillData().GetSubskillData().FeatureId );
-                    if (_observedSkillData != null)
-                    {
-                        this.currentSkillStatIncrement = Mathf.FloorToInt( _observedSkillData.GetCurrentObservedRate() );
-                    }
-
-                    break;
-                }
-            }
-        }
     }
 
     public GameCharacter GetCurrentAttacker()

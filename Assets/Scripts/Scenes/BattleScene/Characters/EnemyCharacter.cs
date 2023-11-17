@@ -93,7 +93,6 @@ public class EnemyCharacter : GameCharacter
                             if (!_hasUsedObservedSkill)
                             {
                                 base.SetCurrentObservingSkill( _selectedBackendSkill );
-                                base.TriggerEvent( AnimationEvent.OnSkillBeingObserved );
                                 _hasUsedObservedSkill = true;
                             }
                         }

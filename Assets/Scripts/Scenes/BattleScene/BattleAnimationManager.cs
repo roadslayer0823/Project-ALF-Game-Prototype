@@ -65,6 +65,7 @@ public class BattleAnimationManager : MonoBehaviour
         OnDefenseWin,
         OnDefenseWin_Cutoff,
         OnBeingInBreakStatus,
+        OnObservingSkillSelected,
         OnSkillBeingObserved,
         OnActiveSkillStarted,
         OnActiveSkillFinished
@@ -295,6 +296,8 @@ public class BattleAnimationManager : MonoBehaviour
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressValueDamage, _statePointDamage ) );
                     yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
 
+                    BattleLogicManager.OnCharacterAttackFinished( _attacker, _attackTarget );
+
                     if (CheckHasBattleEnded( battleGameManager ))
                     {
                         yield break;
@@ -452,6 +455,7 @@ public class BattleAnimationManager : MonoBehaviour
                     }
 
                     yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+                    BattleLogicManager.OnCharacterAttackFinished( _attacker, _attackTarget );
 
                     if (_hasAttackDamage)
                     {
@@ -566,6 +570,7 @@ public class BattleAnimationManager : MonoBehaviour
                         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                         yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressValueDamage, _statePointDamage ) );
                         yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+                        BattleLogicManager.OnCharacterAttackFinished( _attacker, _attackTarget );
 
                         if (CheckHasBattleEnded( battleGameManager ))
                         {
@@ -612,6 +617,7 @@ public class BattleAnimationManager : MonoBehaviour
                         }
 
                         yield return new WaitForSeconds( 1.0f );
+                        BattleLogicManager.OnCharacterAttackFinished( _attacker, _attackTarget );
 
                         if (_winner.GetCurrentSkill().GetSkillData().skillType == Skill.SkillType.counter
                             && !BattleLogicManager.HasGameCharacterReachedCounterAttackLimit( _winner ))

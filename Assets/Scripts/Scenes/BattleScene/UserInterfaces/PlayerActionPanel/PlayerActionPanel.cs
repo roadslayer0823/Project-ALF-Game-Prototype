@@ -235,7 +235,6 @@ public class PlayerActionPanel : MonoBehaviour
         {
             this.selectedGameCharacter.SetCurrentObservingSkill( _skill );
             skillActionButton.DisableActionButton();
-            this.selectedGameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnSkillBeingObserved );
         }
     }
 

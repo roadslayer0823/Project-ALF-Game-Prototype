@@ -11,6 +11,8 @@ public class CharacterSkill
     private int selectedSkillLevel = 1;
 
     private List<ObservedSkillData> observedSkillDataList = null;
+    private GameCharacter observedSkillCaster = null;
+    private CharacterSkill observedSkill = null;
 
     public CharacterSkill( Skill skillData, GameCharacter owner )
     {
@@ -218,6 +220,22 @@ public class CharacterSkill
     public List<ObservedSkillData> GetObservedSkillDataList()
     {
         return this.observedSkillDataList;
+    }
+
+    public void SetObservedSkill( GameCharacter observedSkillCaster, CharacterSkill observedSkill )
+    {
+        this.observedSkillCaster = observedSkillCaster;
+        this.observedSkill = observedSkill;
+    }
+
+    public GameCharacter GetObservedSkillCaster()
+    {
+        return this.observedSkillCaster;
+    }
+
+    public CharacterSkill GetObservedSkill()
+    {
+        return this.observedSkill;
     }
 
 #endregion
