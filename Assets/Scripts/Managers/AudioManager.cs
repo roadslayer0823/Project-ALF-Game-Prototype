@@ -11,7 +11,7 @@ public class AudioManager : Singleton<AudioManager>
     private float backgroundMusicVolumeRate = 1.0f;
     private float soundEffectVolumeRate = 1.0f;
 
-    public void PlayBackgroundMusic(AudioClip clip, float volumeScale = 1.0f, bool isLoop = true )
+    public void PlayBackgroundMusic( AudioClip clip, float volumeScale = 1.0f, bool isLoop = true, float loopStartTime = 0.0f )
     {
         backgroundMusicAudioSource.clip = clip;
         backgroundMusicAudioSource.volume = volumeScale * backgroundMusicVolumeRate;
@@ -19,7 +19,7 @@ public class AudioManager : Singleton<AudioManager>
 
         if (isLoop)
         {
-            StartCoroutine(PlayLoopingBackgroundMusic(backgroundMusicAudioSource));
+            StartCoroutine( RunPlayingBackgroundMusicInLoop( backgroundMusicAudioSource, loopStartTime ) );
         }
     }
 
@@ -59,12 +59,13 @@ public class AudioManager : Singleton<AudioManager>
         callback?.Invoke();
     }
 
-    private IEnumerator PlayLoopingBackgroundMusic(AudioSource source)
+    private IEnumerator RunPlayingBackgroundMusicInLoop( AudioSource source, float loopStartTime )
     {
-        yield return new WaitUntil(() => !source.isPlaying);
-
-        source.time = 35.142f;
-        source.Play();
-        StartCoroutine(PlayLoopingBackgroundMusic(source));
+        while ( true )
+        {
+            yield return new WaitUntil( () => !source.isPlaying );
+            source.time = loopStartTime;
+            source.Play();
+        }
     }
 }

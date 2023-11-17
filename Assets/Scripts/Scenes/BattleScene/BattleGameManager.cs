@@ -62,7 +62,8 @@ public class BattleGameManager : MonoBehaviour
 
         // -----------------------------------------------------------------------
 
-        AudioManager.Instance.PlayBackgroundMusic( this.backgroundMusicAudioClip );
+        AudioManager.Instance.PlayBackgroundMusic( clip: this.backgroundMusicAudioClip, loopStartTime: 35.142f );
+
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CROSSING_ACTION_MODE, () =>
         {
             this.battleUiManager.SetAllActive( true );
