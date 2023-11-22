@@ -372,6 +372,7 @@ public class BattleAnimationManager : MonoBehaviour
                     bool _hasAttackDamage = false;
                     bool _hasStressValueDamage = false;
                     bool _hasStatePointDamage = false;
+
                     if (_winner != null)
                     {
                         BattleLog.Instance.AddOnScreenBattleLog( $"迎擊結果為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _winner.GetCharacterName() }</color>勝利。" );
@@ -390,7 +391,7 @@ public class BattleAnimationManager : MonoBehaviour
                                 _hasAttackDamage = true;
                                 _hasStressValueDamage = true;
                                 _hasStatePointDamage = true;
-                                OnHitWithNoDamage( _loser, _winner );
+                                OnHitWithNoDamage( _loser, _winner, false );
                             }
                             else if (_attackTargetRangeType == RangeType.ranged)
                             {
@@ -402,7 +403,7 @@ public class BattleAnimationManager : MonoBehaviour
                                 }
                                 else
                                 {
-                                    OnHitWithNoDamage( _loser, _winner );
+                                    OnHitWithNoDamage( _loser, _winner, false );
                                 }
                             }
                         }
@@ -418,7 +419,7 @@ public class BattleAnimationManager : MonoBehaviour
                                 }
                                 else
                                 {
-                                    OnHitWithNoDamage( _loser, _winner );
+                                    OnHitWithNoDamage( _loser, _winner, false );
                                 }
                             }
                             else if (_attackTargetRangeType == RangeType.ranged)
@@ -429,15 +430,15 @@ public class BattleAnimationManager : MonoBehaviour
                             }
                         }
 
-                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _hasAttackDamage, _hasStressValueDamage, _hasStatePointDamage, out _attackDamage, out _stressValueDamage, out _statePointDamage, out _log );
+                        BattleLogicManager.ExecuteCasterSkillOnHit( _winner, _loser, _hasAttackDamage, _hasStressValueDamage, _hasStatePointDamage, true, out _attackDamage, out _stressValueDamage, out _statePointDamage, out _log );
                         BattleLog.Instance.AddOnScreenBattleLog( _log );
                     }
                     else
                     {
                         BattleLog.Instance.AddOnScreenBattleLog( $"迎擊結果為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>和<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>打平。" );
 
-                        OnHitWithNoDamage( _attacker, _attackTarget );
-                        OnHitWithNoDamage( _attackTarget, _attacker );
+                        OnHitWithNoDamage( _attacker, _attackTarget, true );
+                        OnHitWithNoDamage( _attackTarget, _attacker, true );
                     }
 
                     if (_hasAttackDamage)
@@ -589,7 +590,7 @@ public class BattleAnimationManager : MonoBehaviour
                     }
                     else if (_winner == _attackTarget)
                     {
-                        BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget, false, false, false, out _, out _, out _, out _log );
+                        BattleLogicManager.ExecuteCasterSkillOnHit( _attacker, _attackTarget, false, false, false, false, out _, out _, out _, out _log );
                         BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                         _skillCountdownTime = ( GetAttackAnimationLength( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBackendSkillAnimationSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
@@ -790,14 +791,14 @@ public class BattleAnimationManager : MonoBehaviour
         }
     }
 
-    private void OnHitWithNoDamage( GameCharacter caster, GameCharacter target )
+    private void OnHitWithNoDamage( GameCharacter caster, GameCharacter target, bool isBreakStatusAvailable )
     {
         float _damageTaken = 0;
         float _stressValueIncreased = 0;
         float _statePointReduced = 0;
 
         string _log = "";
-        BattleLogicManager.ExecuteCasterSkillOnHit( caster, target, false, out _damageTaken, out _stressValueIncreased, out _statePointReduced, out _log );
+        BattleLogicManager.ExecuteCasterSkillOnHit( caster, target, false, true, true, isBreakStatusAvailable, out _damageTaken, out _stressValueIncreased, out _statePointReduced, out _log );
         BattleLog.Instance.AddOnScreenBattleLog( _log );
 
         StartCoroutine( ShowPopUpDisplayInfo( target, _damageTaken, _stressValueIncreased, _statePointReduced ) );

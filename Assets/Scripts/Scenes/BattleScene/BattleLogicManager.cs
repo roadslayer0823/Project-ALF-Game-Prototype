@@ -40,7 +40,7 @@ public class BattleLogicManager
         }
 
         _statePointCost = AdjustAmount( _statePointCost );
-        caster.MinusCurrentStatePoint( _statePointCost, false );
+        caster.MinusCurrentStatePoint( _statePointCost, false, false );
 
         float _maxStatePointUp = AdjustAmount( GetMaxStatePointUp( _casterSubskillData ) );
         caster.AddMaximumStatePoint( _maxStatePointUp );
@@ -123,7 +123,7 @@ public class BattleLogicManager
         ExecuteCasterSkillOnHit( caster, target, true, out _, out _, out _, out log );
     }
 
-    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage,out string log )
+    public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage, out string log )
     {
         ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, out _, out _, out _, out log );
     }
@@ -131,11 +131,11 @@ public class BattleLogicManager
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target, bool hasAttackDamage,
                                                 out float attackDamage, out float stressValueDamage, out float statePointDamage, out string log )
     {
-        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, true, true, out attackDamage, out stressValueDamage, out statePointDamage, out log );
+        ExecuteCasterSkillOnHit( caster, target, hasAttackDamage, true, true, true, out attackDamage, out stressValueDamage, out statePointDamage, out log );
     }
 
     public static void ExecuteCasterSkillOnHit( GameCharacter caster, GameCharacter target,
-                                                bool hasAttackDamage, bool hasStressValueDamage, bool hasStatePointDamage,
+                                                bool hasAttackDamage, bool hasStressValueDamage, bool hasStatePointDamage, bool isBreakStatusAvailable,
                                                 out float attackDamage, out float stressValueDamage, out float statePointDamage, out string log )
     {
         attackDamage = 0;
@@ -209,13 +209,13 @@ public class BattleLogicManager
         if (!hasAttackDamage && hasStressValueDamage)
         {
             stressValueDamage = AdjustAmount( GetStressValueDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) );
-            target.AddCurrentStressValue( stressValueDamage );
+            target.AddCurrentStressValue( stressValueDamage, isBreakStatusAvailable );
         }
 
         if (hasStatePointDamage)
         {
             statePointDamage = AdjustAmount( GetStatePointDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
-            target.MinusCurrentStatePoint( statePointDamage, true );
+            target.MinusCurrentStatePoint( statePointDamage, true, isBreakStatusAvailable );
         }
 
         string _extraLog = "";

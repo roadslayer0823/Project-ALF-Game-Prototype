@@ -206,22 +206,25 @@ public class GameCharacter : MonoBehaviour
         }
     }
 
-    public void MinusCurrentStatePoint( float amount, bool onHit )
+    public void MinusCurrentStatePoint( float amount, bool onHit, bool isBreakStatusAvailable )
     {
         if (amount > 0)
         {
             SetCurrentStatePoint( this.currentStatePoint - amount );
 
-            if (BattleLogicManager.IsGameCharacterInBreakStatus( this, onHit ))
+            if (isBreakStatusAvailable)
             {
-                this.isBreakStatusCausedByStatePoint = true;
-
-                if (!GetIsInBreakStatus())
+                if (BattleLogicManager.IsGameCharacterInBreakStatus( this, onHit ))
                 {
-                    EnterIntoBreakStatus( 1 );
-                }
+                    this.isBreakStatusCausedByStatePoint = true;
 
-                AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BREAK);
+                    if (!GetIsInBreakStatus())
+                    {
+                        EnterIntoBreakStatus( 1 );
+                    }
+
+                    AudioManager.Instance.PlaySoundEffect( AUDIO_ID_BREAK );
+                }
             }
 
             this.onCharacterInfoUpdated?.Invoke();
@@ -271,7 +274,7 @@ public class GameCharacter : MonoBehaviour
         return 0.0f;
     }
 
-    public void AddCurrentStressValue( float amount )
+    public void AddCurrentStressValue( float amount, bool isBreakStatusAvailable )
     {
         if (amount > 0)
         {
@@ -279,14 +282,24 @@ public class GameCharacter : MonoBehaviour
             {
                 this.currentStressValue += amount;
 
-                if (BattleLogicManager.IsGameCharacterInBreakStatus( this ))
+                if (isBreakStatusAvailable)
                 {
-                    this.currentStressValue = this.maximumStressValue;
-                    this.isBreakStatusCausedByStressValue = true;
-
-                    if (!GetIsInBreakStatus())
+                    if (BattleLogicManager.IsGameCharacterInBreakStatus( this ))
                     {
-                        EnterIntoBreakStatus( 1 );
+                        this.currentStressValue = this.maximumStressValue;
+                        this.isBreakStatusCausedByStressValue = true;
+
+                        if (!GetIsInBreakStatus())
+                        {
+                            EnterIntoBreakStatus( 1 );
+                        }
+                    }
+                }
+                else
+                {
+                    if (this.currentStressValue >= this.maximumStressValue)
+                    {
+                        this.currentStressValue = this.maximumStressValue - 1;
                     }
                 }
             }

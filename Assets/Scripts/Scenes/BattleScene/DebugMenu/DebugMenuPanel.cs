@@ -149,7 +149,7 @@ public class DebugMenuPanel : MonoBehaviour
                 }
                 else if (_difference < 0)
                 {
-                    characterObject.MinusCurrentStatePoint(Mathf.Abs(_difference), false);
+                    characterObject.MinusCurrentStatePoint( Mathf.Abs( _difference ), false, true );
                 }
             }
         }
@@ -159,16 +159,15 @@ public class DebugMenuPanel : MonoBehaviour
             if (float.TryParse(newStatValue, out value))
             {
                 float _difference = value - characterObject.GetCurrentStressValue();
-                if (value > 0)
+                if (_difference > 0)
                 {
-                    characterObject.AddCurrentStressValue(value);
+                    characterObject.AddCurrentStressValue( _difference, true );
                 }
-                if (value < 0)
+                else if (_difference < 0)
                 {
                     characterObject.MinusCurrentStressValue(Mathf.Abs(_difference));
                 }
             }
-
         }
         else if (statNames == "虛傷")//current virtual value
         {
