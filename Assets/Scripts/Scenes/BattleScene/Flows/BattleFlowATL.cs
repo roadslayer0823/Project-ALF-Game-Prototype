@@ -12,6 +12,7 @@ public class BattleFlowATL
     private float animationStartTime = 0.0f;
     private int atlNumber = 0;
     private ATLSlot atlSlot = null;
+    private ATLSlotV2 atlSlotV2 = null;
     private bool isATLSlotExecuted = false;
     private bool isSkillSlotSwipedManually = false;
 
@@ -94,9 +95,19 @@ public class BattleFlowATL
         this.atlSlot = atlSlot;
     }
 
+    public void SetATLSlotV2(ATLSlotV2 atlSlotV2)
+    {
+        this.atlSlotV2 = atlSlotV2;
+    }
+
     public ATLSlot GetATLSlot()
     {
         return this.atlSlot;
+    }
+
+    public ATLSlotV2 GetATLSlotV2()
+    {
+        return this.atlSlotV2;
     }
 
     public bool GetIsATLSlotExecuted()
