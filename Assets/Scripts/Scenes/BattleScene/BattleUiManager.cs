@@ -6,6 +6,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
     [SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
     [SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
+    [SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
     [SerializeField] private PlayerActionPanel playerActionPanel = null;
     [SerializeField] private CharacterInfoPanel characterInfoPanel = null;
     [SerializeField] private BattleResultPanel battleResultPanel = null;
@@ -20,6 +21,8 @@ public class BattleUiManager : MonoBehaviour
         this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
         this.playerActionPanel.Initialize( OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel);
         this.skillSlotListPanel.Initialize(OnSkillSlotSwiped);
+
+        this.atlSlotListPanelV2.Initialize();
     }
 
     public void SetSelectedGameCharacter( GameCharacter gameCharacter )
@@ -43,7 +46,16 @@ public class BattleUiManager : MonoBehaviour
     {
         this.skillSelectionPanel.gameObject.SetActive( value );
         this.skillSlotListPanel.gameObject.SetActive( value );
-        this.atlSlotListPanel.gameObject.SetActive( value );
+
+        if (this.atlSlotListPanelV2 == null)
+        {
+            this.atlSlotListPanel.gameObject.SetActive( value );
+        }
+        else
+        {
+            this.atlSlotListPanelV2.gameObject.SetActive( value );
+        }
+
         this.playerActionPanel.gameObject.SetActive( value );
         this.characterInfoPanel.gameObject.SetActive( value );
         this.battleResultPanel.gameObject.SetActive( value );
@@ -128,7 +140,13 @@ public class BattleUiManager : MonoBehaviour
 
     public void ShowATLSlotListPanel( BattleFlowATL[] flowATLs )
     {
-        this.atlSlotListPanel.Show( flowATLs, OnSkillSlotSwiped, OnATLSlotExecuted);
+        this.atlSlotListPanel.Show( flowATLs, OnSkillSlotSwiped, OnATLSlotExecuted );
+
+        if (this.atlSlotListPanelV2 != null)
+        {
+            this.atlSlotListPanel.gameObject.SetActive( false );
+            this.atlSlotListPanelV2.SetUp( flowATLs );
+        }
     }
 
     public void HideATLSlotListPanel()
@@ -139,6 +157,11 @@ public class BattleUiManager : MonoBehaviour
     public void OnATLSlotExecuted()
     {
         this.skillSlotListPanel.SwipeLeft();
+    }
+
+    public ATLSlotListPanelV2 GetATLSlotListPanelV2()
+    {
+        return this.atlSlotListPanelV2;
     }
 
 #endregion

@@ -20,6 +20,7 @@ public class BattleAnimationManager : MonoBehaviour
     [SerializeField] private CameraEffects cameraEffect = null;
     [SerializeField] private SpriteRenderer darkLayer = null;
 
+    [SerializeField] private SkillPromptPanel skillPromptPanel = null;
     [SerializeField] private DebugBattleDialogMenu debugBattleDialogMenu = null;
 
     private bool isAnimationEventTriggered = false;
@@ -101,6 +102,8 @@ public class BattleAnimationManager : MonoBehaviour
         GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
         _attacker.SetCurrentSkill( battleFlowATL.GetSelectedSkill() );
 
+        ATLSlotListPanelV2 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
+        float _skillAnimationLength = 0.0f;
         float _skillCountdownTime = 0.0f;
         bool _hasCounterAttack = false;
         bool _isAbleToUseSkill = false;
@@ -164,7 +167,8 @@ public class BattleAnimationManager : MonoBehaviour
 
                 yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attacker.GetCurrentSkill() ) );
 
-                _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                _skillAnimationLength = GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f;
+                _skillCountdownTime = _skillAnimationLength * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                 _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
                 _attackTarget.TriggerEvent( AnimationEvent.OnDefensePartA );
                 StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
@@ -173,6 +177,8 @@ public class BattleAnimationManager : MonoBehaviour
                 {
                     _attackTarget.TriggerEvent( AnimationEvent.OnActiveSkillStarted );
                 }
+
+                _atlSlotListPanel.GoToATL( battleFlowATL, _skillAnimationLength, _attacker.GetCurrentSkill() );
             }
             else
             {
@@ -305,7 +311,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (_attacker.GetCurrentSkill().GetSkillData().skillType == Skill.SkillType.derived)
                     {
-                        yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound ) );
+                        yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound, _atlSlotListPanel ) );
                     }
 
                     if (CheckHasBattleEnded( battleGameManager ))
@@ -341,6 +347,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     BattleLog.Instance.AddOnScreenBattleLog( _log );
 
+                    _atlSlotListPanel.GoToATL( _attackTargetNextATL, GetAttackAnimationLength( _attackTarget, REPULSE_ANIMATION_NAME, REPULSE_ANIMATION_NAME ), _repulseSkill );
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                     yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
 
@@ -474,7 +481,7 @@ public class BattleAnimationManager : MonoBehaviour
                         {
                             if (_winner.GetCurrentSkill().GetSkillData().skillType == Skill.SkillType.derived)
                             {
-                                yield return StartCoroutine( RunDerivedSkill( _winner, _loser, battleFlowRound ) );
+                                yield return StartCoroutine( RunDerivedSkill( _winner, _loser, battleFlowRound, _atlSlotListPanel ) );
 
                                 if (CheckHasBattleEnded( battleGameManager ))
                                 {
@@ -580,7 +587,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                         if (_attacker.GetCurrentSkill().GetSkillData().skillType == Skill.SkillType.derived)
                         {
-                            yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound ) );
+                            yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound, _atlSlotListPanel ) );
                         }
 
                         if (CheckHasBattleEnded( battleGameManager ))
@@ -669,7 +676,7 @@ public class BattleAnimationManager : MonoBehaviour
         while ( _hasCounterAttack );
     }
 
-    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound battleFlowRound )
+    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound battleFlowRound, ATLSlotListPanelV2 atlSlotListPanel )
     {
         attackTarget.Reset();
         attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
@@ -677,10 +684,12 @@ public class BattleAnimationManager : MonoBehaviour
         bool _isAbleToUseSkill = BattleLogicManager.IsAbleToUseSkill( attacker );
 
         string _log = "";
+        BattleFlowATL _targetATL = null;
 
         if (_isAbleToUseSkill)
         {
-            battleFlowRound.GoToTargetATL( battleFlowRound.GetNextATL( attacker ), false );
+            _targetATL = battleFlowRound.GetNextATL( attacker );
+            battleFlowRound.GoToTargetATL( _targetATL, false );
             BattleLogicManager.ExecuteCasterSkillOnUse( attacker, attackTarget, out _log );
             currentCaster = attacker;
 
@@ -694,7 +703,8 @@ public class BattleAnimationManager : MonoBehaviour
         float _stressValueDamage = 0;
         float _statePointDamage = 0;
 
-        Subskill _attackerSubskillData = attacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        CharacterSkill _attackerSkill = attacker.GetCurrentSkill();
+        Subskill _attackerSubskillData = _attackerSkill.GetCharacterSubskillData().GetSubskillData();
         RangeType _attackerRangeType = _attackerSubskillData.Range;
 
         if (attacker is EnemyCharacter)
@@ -715,6 +725,8 @@ public class BattleAnimationManager : MonoBehaviour
                     _characterPartB = "Attack_Part_B";
                     _skillEffectPartB = "HittingEffect";
                 }
+
+                atlSlotListPanel.GoToATL( _targetATL, GetAttackAnimationLength( attacker, _characterPartB, _skillEffectPartB ), _attackerSkill );
 
                 yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
 
@@ -744,6 +756,8 @@ public class BattleAnimationManager : MonoBehaviour
 
             if (_isAbleToUseSkill)
             {
+                atlSlotListPanel.GoToATL( _targetATL, 5.0f, _attackerSkill );
+
                 yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
                 yield return StartCoroutine( PlayCharacterAnimation( attacker, "Attack" ) );
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
@@ -1003,6 +1017,7 @@ public class BattleAnimationManager : MonoBehaviour
         if (CheckHasTimeStop( characterSkill ))
         {
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
+            this.skillPromptPanel.Show( characterSkill );
             yield return StartCoroutine( FadeDarkLayer( SKILL_TIME_STOP_DARKNESS, SKILL_TIME_STOP_DURATION ) );
         }
     }

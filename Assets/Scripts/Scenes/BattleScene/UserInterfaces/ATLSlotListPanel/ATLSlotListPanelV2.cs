@@ -18,14 +18,13 @@ public class ATLSlotListPanelV2 : MonoBehaviour
     private float progressBarLastPosition = 0.0f;
     private float progressBarLength = 0.0f;
 
+    private BattleFlowATL lastATL = null;
+
     public void Initialize()
     {
-        this.progressBarStartPointX = progressBarStartPoint.position.x;
-        this.progressBarLastPosition = this.progressBarStartPoint.position.x;
-        this.progressBarLength = this.progressBarEndPoint.position.x - this.progressBarLastPosition;
-        repulseAndDefendProgressBar.fillAmount = 0;
-        activeSkillProgressBar.fillAmount = 0;
-        progressBarFiller.fillAmount = 0;
+        this.progressBarStartPointX = this.progressBarStartPoint.position.x;
+        this.progressBarLength = this.progressBarEndPoint.position.x - progressBarStartPointX;
+        Reset();
     }
 
     public void SetUp(BattleFlowATL[] flowATL)
@@ -38,11 +37,38 @@ public class ATLSlotListPanelV2 : MonoBehaviour
                 theATLSlots[i].DefaultATLSetup(_flowATL);
             }
         }
+
+        Reset();
     }
 
-    public void GoToATL(int atlNumber, float ATLDuration, CharacterSkill skill)
+    private void Reset()
     {
-        int _atlIndex = atlNumber - 1;
+        this.progressBarLastPosition = this.progressBarStartPointX;
+        this.repulseAndDefendProgressBar.fillAmount = 0;
+        this.activeSkillProgressBar.fillAmount = 0;
+        this.progressBarFiller.fillAmount = 0;
+        this.lastATL = null;
+    }
+
+    public void GoToATL(BattleFlowATL targetATL, float animationDuration, CharacterSkill skill)
+    {
+        if (targetATL == null)
+        {
+            return;
+        }
+
+        if (targetATL == lastATL)
+        {
+            return;
+        }
+
+        int _atlNumber = targetATL.GetATLNumber();
+        if (_atlNumber > theATLSlots.Length)
+        {
+            return;
+        }
+
+        int _atlIndex = _atlNumber - 1;
         int _usedAtlIndex = _atlIndex - ((skill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse) ? 1 : 0);
 
         ATLSlotV2 _currentAtlSlot = null;
@@ -70,8 +96,10 @@ public class ATLSlotListPanelV2 : MonoBehaviour
             _atlSlot.Show(_currentStatus);
         }
 
-        PlayProgressBarAnimation(repulseAndDefendPointer, repulseAndDefendProgressBar, _currentAtlSlot, ATLDuration);
-        PlayProgressBarAnimation(activeSkillPointer, activeSkillProgressBar, _currentAtlSlot, ATLDuration);
+        PlayProgressBarAnimation( repulseAndDefendPointer, repulseAndDefendProgressBar, _currentAtlSlot, animationDuration );
+        PlayProgressBarAnimation( activeSkillPointer, activeSkillProgressBar, _currentAtlSlot, animationDuration );
+
+        this.lastATL = targetATL;
     }
 
     public void GoToFinish(float duration)
