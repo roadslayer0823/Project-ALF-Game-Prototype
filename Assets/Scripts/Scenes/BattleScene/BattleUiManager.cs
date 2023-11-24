@@ -121,7 +121,7 @@ public class BattleUiManager : MonoBehaviour
 
     public void UpdateSkillSlotListPanel( GameCharacter gameCharacter )
     {
-        this.skillSlotListPanel.Show( gameCharacter );
+        this.skillSlotListPanel.UpdateSkillSlots( gameCharacter );
     }
 
     public SkillSlotListPanel GetSkillSlotListPanel()
@@ -146,12 +146,18 @@ public class BattleUiManager : MonoBehaviour
         {
             this.atlSlotListPanel.gameObject.SetActive( false );
             this.atlSlotListPanelV2.SetUp( flowATLs );
+            this.atlSlotListPanelV2.gameObject.SetActive( true );
         }
     }
 
     public void HideATLSlotListPanel()
     {
         this.atlSlotListPanel.Hide();
+
+        if (this.atlSlotListPanelV2 != null)
+        {
+            this.atlSlotListPanelV2.gameObject.SetActive( false );
+        }
     }
 
     public void OnATLSlotExecuted()

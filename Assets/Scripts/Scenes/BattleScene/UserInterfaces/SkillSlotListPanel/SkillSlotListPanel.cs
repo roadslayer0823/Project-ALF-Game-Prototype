@@ -25,7 +25,7 @@ public class SkillSlotListPanel : MonoBehaviour
         this.onSkillSlotSwipedCallback = onSkillSlotSwipedCallback;
     }
 
-    private void Update()
+    void Update()
     {
         if (this.isSkillSlotListScrollable)
         {
@@ -33,13 +33,23 @@ public class SkillSlotListPanel : MonoBehaviour
         }
     }
 
-    public void Show( GameCharacter gameCharacter = null )
+    public void Show()
+    {
+        base.gameObject.SetActive( true );
+    }
+
+    public void Hide()
+    {
+        base.gameObject.SetActive( false );
+    }
+
+    public void UpdateSkillSlots( GameCharacter gameCharacter )
     {
         if (gameCharacter != null)
         {
             this.selectedGameCharacter = gameCharacter;
 
-            this.selectedSkills = new List<CharacterSkill>(gameCharacter.GetSelectedActiveSkillList());
+            this.selectedSkills = new List<CharacterSkill>( gameCharacter.GetSelectedActiveSkillList() );
 
             if (this.selectedSkills.Count > skillSlots.Length)
             {
@@ -48,13 +58,6 @@ public class SkillSlotListPanel : MonoBehaviour
 
             InsertIntoSkillSlot( this.selectedSkills );
         }
-
-        base.gameObject.SetActive( true );
-    }
-
-    public void Hide()
-    {
-        base.gameObject.SetActive( false );
     }
 
     private void InsertIntoSkillSlot(List<CharacterSkill> selectedSkills)

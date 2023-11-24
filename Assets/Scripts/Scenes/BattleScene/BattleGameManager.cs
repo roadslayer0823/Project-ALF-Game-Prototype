@@ -89,8 +89,8 @@ public class BattleGameManager : MonoBehaviour
     public void OnPreparationPhaseStarted()
     {
         this.battleUiManager.SetSelectedGameCharacter( this.playerCharacter );
+        this.battleUiManager.HideATLSlotListPanel();
         this.battleUiManager.ShowSkillSelectionPanel();
-        this.battleUiManager.ShowSkillSlotListPanel();
         this.battleUiManager.ShowPreparationSection();
 
         this.battleAnimationManager.ChangeToBackgroundPartB();
@@ -108,6 +108,7 @@ public class BattleGameManager : MonoBehaviour
         this.enemyCharacter.PlayCharacterAnimation( "Idle" );
 
         this.battleUiManager.HideSkillSelectionPanel();
+        this.battleUiManager.ShowSkillSlotListPanel();
         this.battleUiManager.ShowATLSlotListPanel( this.battleFlowManager.GetCurrentRound().GetFlowATLs() );
         this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( true );
         this.battleFlowManager.GetCurrentRound().StartRunningATL();
