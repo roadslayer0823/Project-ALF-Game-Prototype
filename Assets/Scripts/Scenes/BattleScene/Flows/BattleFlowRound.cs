@@ -117,7 +117,7 @@ public class BattleFlowRound
         while ( true );
 
         this.battleFlowManager.GetBattleGameManager().GetBattleUiManager().GetATLSlotListPanelV2().GoToFinish( 0.2f );
-        yield return new WaitForSeconds( 0.2f );
+        yield return new WaitForSeconds( 0.3f );
 
         SetCurrentPhase( PhaseType.ExecutionDone );
     }

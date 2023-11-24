@@ -756,7 +756,7 @@ public class BattleAnimationManager : MonoBehaviour
 
             if (_isAbleToUseSkill)
             {
-                atlSlotListPanel.GoToATL( _targetATL, 5.0f, _attackerSkill );
+                atlSlotListPanel.GoToATL( _targetATL, 4.5f, _attackerSkill );
 
                 yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
                 yield return StartCoroutine( PlayCharacterAnimation( attacker, "Attack" ) );
