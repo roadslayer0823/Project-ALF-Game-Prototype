@@ -1,10 +1,13 @@
 using UnityEngine;
 using TMPro;
-using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
 public class GameCharacterInfoBox : MonoBehaviour
 {
+    [Header( "Settings" )]
+    [SerializeField] private bool isSkillInfoEnabled = false;
+
+    [Header( "References" )]
     [SerializeField] private GameCharacter selectedCharacter = null;
     [SerializeField] private SpriteRenderer healthPointFiller = null;
     [SerializeField] private SpriteRenderer virtualHealthPointFiller = null;
@@ -71,69 +74,72 @@ public class GameCharacterInfoBox : MonoBehaviour
             {
                 if (this.selectedCharacter.GetIsAbleToUseSkill())
                 {
-                    CharacterSubskill _characterSubskillData = _characterSkill.GetCharacterSubskillData();
-                    if (_characterSubskillData != null)
+                    if (isSkillInfoEnabled)
                     {
-                        Subskill _subskillData = _characterSubskillData.GetSubskillData();
-                        int _skillStatIncrement = selectedCharacter.GetCurrentSkillStatIncrement();
-
-                        _skillInfoString = "<size=120%><color=#FFFF00><b>" + _subskillData.DisplayName + "</b></color></size>";
-
-                        if (_subskillData.EffectType == Subskill.EffectTypeEnum.wide)
+                        CharacterSubskill _characterSubskillData = _characterSkill.GetCharacterSubskillData();
+                        if (_characterSubskillData != null)
                         {
-                            _skillInfoString += $"\n{ TerminologyManager.GetWideEffectTypeText( _characterSkill.GetSkillData() ) }";
-                        }
+                            Subskill _subskillData = _characterSubskillData.GetSubskillData();
+                            int _skillStatIncrement = selectedCharacter.GetCurrentSkillStatIncrement();
 
-                        int _speed = _subskillData.Speed + _skillStatIncrement;
-                        string _speedLevelText = TerminologyManager.GetSpeedLevelText( _speed );
-                        if (_speed > 1)
-                        {
-                            _skillInfoString += "\n";
+                            _skillInfoString = "<size=120%><color=#FFFF00><b>" + _subskillData.DisplayName + "</b></color></size>";
 
-                            if (_skillStatIncrement > 0)
+                            if (_subskillData.EffectType == Subskill.EffectTypeEnum.wide)
                             {
-                                _skillInfoString += "<color=#FFFF00>" + _speedLevelText + "</color> （看破）";
-                            }
-                            else
-                            {
-                                _skillInfoString += _speedLevelText;
-                            }
-                        }
-
-                        _skillInfoString += ( _subskillData.Strength > 1 ) ? "\n強度 +" + ( _subskillData.Strength - 1 ) : "";
-
-                        if (_skillStatIncrement > 0 && _subskillData.Strength > 0)
-                        {
-                            if (_subskillData.Strength == 1)
-                            {
-                                _skillInfoString += "\n強度";
+                                _skillInfoString += $"\n{TerminologyManager.GetWideEffectTypeText( _characterSkill.GetSkillData() )}";
                             }
 
-                            _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color> （看破）";
-                        }
-
-                        _skillInfoString += ( _subskillData.Accuracy > 1 ) ? "\n命中 +" + ( _subskillData.Accuracy - 1 ) : "";
-
-                        if (_skillStatIncrement > 0 && _subskillData.Accuracy > 0)
-                        {
-                            if (_subskillData.Accuracy == 1)
+                            int _speed = _subskillData.Speed + _skillStatIncrement;
+                            string _speedLevelText = TerminologyManager.GetSpeedLevelText( _speed );
+                            if (_speed > 1)
                             {
-                                _skillInfoString += "\n命中";
+                                _skillInfoString += "\n";
+
+                                if (_skillStatIncrement > 0)
+                                {
+                                    _skillInfoString += "<color=#FFFF00>" + _speedLevelText + "</color> （看破）";
+                                }
+                                else
+                                {
+                                    _skillInfoString += _speedLevelText;
+                                }
                             }
 
-                            _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color> （看破）";
-                        }
+                            _skillInfoString += ( _subskillData.Strength > 1 ) ? "\n強度 +" + ( _subskillData.Strength - 1 ) : "";
 
-                        _skillInfoString += ( _subskillData.Evasion > 1 ) ? "\n迴避 +" + ( _subskillData.Evasion - 1 ) : "";
-
-                        if (_skillStatIncrement > 0 && _subskillData.Evasion > 0)
-                        {
-                            if (_subskillData.Evasion == 1)
+                            if (_skillStatIncrement > 0 && _subskillData.Strength > 0)
                             {
-                                _skillInfoString += "\n迴避";
+                                if (_subskillData.Strength == 1)
+                                {
+                                    _skillInfoString += "\n強度";
+                                }
+
+                                _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color> （看破）";
                             }
 
-                            _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color> （看破）";
+                            _skillInfoString += ( _subskillData.Accuracy > 1 ) ? "\n命中 +" + ( _subskillData.Accuracy - 1 ) : "";
+
+                            if (_skillStatIncrement > 0 && _subskillData.Accuracy > 0)
+                            {
+                                if (_subskillData.Accuracy == 1)
+                                {
+                                    _skillInfoString += "\n命中";
+                                }
+
+                                _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color> （看破）";
+                            }
+
+                            _skillInfoString += ( _subskillData.Evasion > 1 ) ? "\n迴避 +" + ( _subskillData.Evasion - 1 ) : "";
+
+                            if (_skillStatIncrement > 0 && _subskillData.Evasion > 0)
+                            {
+                                if (_subskillData.Evasion == 1)
+                                {
+                                    _skillInfoString += "\n迴避";
+                                }
+
+                                _skillInfoString += " <color=#00FF00>+" + _skillStatIncrement + "</color> （看破）";
+                            }
                         }
                     }
                 }

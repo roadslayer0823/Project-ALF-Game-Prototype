@@ -10,6 +10,12 @@ using SkillAnimation = DatabaseManager.SkillAnimation;
 
 public class BattleAnimationManager : MonoBehaviour
 {
+    [Header( "Settings" )]
+    [SerializeField] private float backgroundDarknessDuration = 0.6f;
+    [SerializeField] private float skillNormalDarkness = 0.5f;
+    [SerializeField] private float skillTimeStopDarkness = 0.8f;
+
+    [Header( "References" )]
     [SerializeField] private SpriteRenderer background = null;
     [SerializeField] private Sprite backgroundPartA = null;
     [SerializeField] private Sprite backgroundPartB = null;
@@ -36,15 +42,14 @@ public class BattleAnimationManager : MonoBehaviour
     private bool isDebugMode = false;
     private DebugBattleDialogMenu.ResultType debugModeResultType = DebugBattleDialogMenu.ResultType.None;
 
+    // Animations
     private const string NO_ANIMATION = "-";
     private const string IDLE_ANIMATION_NAME = "Idle";
     private const string GETTING_HIT_ANIMATION_NAME = "GettingHit";
     private const string REPULSE_ANIMATION_NAME = "Repulse";
     private const string DERIVE_ANIMATION_NAME = "Derive";
 
-    private const float SKILL_TIME_STOP_DURATION = 1.2f;
-    private const float SKILL_TIME_STOP_DARKNESS = 0.8f;
-
+    // Audios
     private const string AUDIO_ID_ATTACK = "attack";
     private const string AUDIO_ID_COUNTER = "counter";
     private const string AUDIO_ID_DEFEND = "defend";
@@ -165,7 +170,7 @@ public class BattleAnimationManager : MonoBehaviour
                 _attacker.TriggerEvent( AnimationEvent.SetCharacter );
                 _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
 
-                yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attacker.GetCurrentSkill() ) );
+                yield return StartCoroutine( PlayShowingSkillInformation( _attacker ) );
 
                 _skillAnimationLength = GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f;
                 _skillCountdownTime = _skillAnimationLength * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
@@ -323,7 +328,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                 case Skill.SkillType.repulse:
 
-                    yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attackTarget.GetCurrentSkill() ) );
+                    yield return StartCoroutine( PlayShowingSkillInformation( _attackTarget ) );
 
                     if (_attackerCharacterPartB != NO_ANIMATION)
                     {
@@ -495,7 +500,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                 case Skill.SkillType.backend:
 
-                    yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( _attackTarget.GetCurrentSkill() ) );
+                    yield return StartCoroutine( PlayShowingSkillInformation( _attackTarget ) );
 
                     _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                     StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
@@ -728,7 +733,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                 atlSlotListPanel.GoToATL( _targetATL, GetAttackAnimationLength( attacker, _characterPartB, _skillEffectPartB ), _attackerSkill );
 
-                yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
+                yield return StartCoroutine( PlayShowingSkillInformation( attacker ) );
 
                 if (_characterPartB != NO_ANIMATION)
                 {
@@ -758,7 +763,7 @@ public class BattleAnimationManager : MonoBehaviour
             {
                 atlSlotListPanel.GoToATL( _targetATL, 4.5f, _attackerSkill );
 
-                yield return StartCoroutine( PlaySkillTimeStopAnimationIfNeeded( attacker.GetCurrentSkill() ) );
+                yield return StartCoroutine( PlayShowingSkillInformation( attacker ) );
                 yield return StartCoroutine( PlayCharacterAnimation( attacker, "Attack" ) );
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
                 yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_A" ) );
@@ -937,9 +942,9 @@ public class BattleAnimationManager : MonoBehaviour
 
     private IEnumerator FadeDarkLayer( float darkness, float duration )
     {
-        LeanTween.value( 0.0f, darkness, duration * 0.9f ).setEaseOutCirc().setOnUpdate( SetDarkLayerAlphaValue ).setOnComplete( () =>
+        LeanTween.value( 0.0f, darkness, duration * 0.8f ).setEaseOutCirc().setOnUpdate( SetDarkLayerAlphaValue ).setOnComplete( () =>
         {
-            LeanTween.value( darkness, 0.0f, duration * 0.1f ).setEaseOutCirc().setOnUpdate( SetDarkLayerAlphaValue );
+            LeanTween.value( darkness, 0.0f, duration * 0.2f ).setEaseOutCirc().setOnUpdate( SetDarkLayerAlphaValue );
         } );
 
         yield return new WaitForSeconds( duration );
@@ -1012,36 +1017,43 @@ public class BattleAnimationManager : MonoBehaviour
         return false;
     }
 
-    private IEnumerator PlaySkillTimeStopAnimationIfNeeded( CharacterSkill characterSkill )
+    private IEnumerator PlayShowingSkillInformation( GameCharacter caster )
     {
-        if (CheckHasTimeStop( characterSkill ))
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
+        this.skillPromptPanel.Show( caster.GetCurrentSkill() );
+
+        if (CheckHasTimeStop( caster ))
         {
-            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
-            this.skillPromptPanel.Show( characterSkill );
-            yield return StartCoroutine( FadeDarkLayer( SKILL_TIME_STOP_DARKNESS, SKILL_TIME_STOP_DURATION ) );
+            yield return StartCoroutine( FadeDarkLayer( this.skillTimeStopDarkness, this.backgroundDarknessDuration ) );
+        }
+        else
+        {
+            StartCoroutine( FadeDarkLayer( this.skillNormalDarkness, this.backgroundDarknessDuration ) );
         }
     }
 
-    private bool CheckHasTimeStop( CharacterSkill characterSkill )
+    private bool CheckHasTimeStop( GameCharacter caster )
     {
-        Subskill _subskillData = characterSkill.GetCharacterSubskillData().GetSubskillData();
+        CharacterSkill _skill = caster.GetCurrentSkill();
+        Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
+        int _skillStatIncrement = caster.GetCurrentSkillStatIncrement();
 
-        if (_subskillData.Speed > 2)
+        if (_subskillData.Speed + _skillStatIncrement >= CharacterSkill.SPEED_MINIMUM_SPECIAL_VALUE)
         {
             return true;
         }
 
-        if (_subskillData.Strength > 1)
+        if (_subskillData.Strength + _skillStatIncrement >= CharacterSkill.STRENGTH_MINIMUM_SPECIAL_VALUE)
         {
             return true;
         }
 
-        if (_subskillData.Accuracy > 1)
+        if (_subskillData.Accuracy + _skillStatIncrement > 1)
         {
             return true;
         }
 
-        if (_subskillData.Evasion > 1)
+        if (_subskillData.Evasion + _skillStatIncrement > 1)
         {
             return true;
         }

@@ -14,6 +14,9 @@ public class CharacterSkill
     private GameCharacter observedSkillCaster = null;
     private CharacterSkill observedSkill = null;
 
+    public const int SPEED_MINIMUM_SPECIAL_VALUE = 3;
+    public const int STRENGTH_MINIMUM_SPECIAL_VALUE = 2;
+
     public CharacterSkill( Skill skillData, GameCharacter owner )
     {
         this.skillData = skillData;
