@@ -110,7 +110,12 @@ public class BattleGameManager : MonoBehaviour
         this.battleUiManager.HideSkillSelectionPanel();
         this.battleUiManager.ShowSkillSlotListPanel();
         this.battleUiManager.ShowATLSlotListPanel( this.battleFlowManager.GetCurrentRound().GetFlowATLs() );
-        this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( true );
+
+        if (!this.battleUiManager.IsUsingSkillSlotListPanelV2())
+        {
+            this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( true );
+        }
+
         this.battleFlowManager.GetCurrentRound().StartRunningATL();
     }
 
@@ -123,7 +128,16 @@ public class BattleGameManager : MonoBehaviour
         this.battleUiManager.HideSkillSlotListPanel();
         this.battleUiManager.HideATLSlotListPanel();
         this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( false );
-        this.battleUiManager.GetSkillSlotListPanel().ResetLastRoundSelectedActiveSkill();
+
+        if (this.battleUiManager.IsUsingSkillSlotListPanelV2())
+        {
+            this.battleUiManager.GetSkillSlotListPanelV2().ResetLastRoundSelectedActiveSkill();
+        }
+        else
+        {
+            this.battleUiManager.GetSkillSlotListPanel().ResetLastRoundSelectedActiveSkill();
+        }
+
         this.battleUiManager.CheckWhetherToEnableExecuteButton();
         this.battleFlowManager.StartNewRound();
     }

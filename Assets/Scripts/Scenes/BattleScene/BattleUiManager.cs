@@ -4,8 +4,9 @@ using TMPro;
 public class BattleUiManager : MonoBehaviour
 {
     [SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
-    [SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
-    [SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
+    [System.Obsolete][SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
+    [SerializeField] private SkillSlotListPanelV2 skillSlotListPanelV2 = null;
+    [System.Obsolete][SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
     [SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
     [SerializeField] private PlayerActionPanel playerActionPanel = null;
     [SerializeField] private CharacterInfoPanel characterInfoPanel = null;
@@ -20,7 +21,15 @@ public class BattleUiManager : MonoBehaviour
         this.battleGameManager = battleGameManager;
         this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
         this.playerActionPanel.Initialize( OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel);
-        this.skillSlotListPanel.Initialize(OnSkillSlotSwiped);
+
+        if (this.skillSlotListPanelV2 == null)
+        {
+            this.skillSlotListPanel.Initialize( OnSkillSlotSwiped );
+        }
+        else
+        {
+            this.skillSlotListPanel.SetIsSkillSlotListScrollable( false );
+        }
 
         this.atlSlotListPanelV2.Initialize();
     }
@@ -45,7 +54,15 @@ public class BattleUiManager : MonoBehaviour
     public void SetAllActive( bool value )
     {
         this.skillSelectionPanel.gameObject.SetActive( value );
-        this.skillSlotListPanel.gameObject.SetActive( value );
+
+        if (this.skillSlotListPanelV2 == null)
+        {
+            this.skillSlotListPanel.gameObject.SetActive( value );
+        }
+        else
+        {
+            this.skillSlotListPanelV2.gameObject.SetActive( value );
+        }
 
         if (this.atlSlotListPanelV2 == null)
         {
@@ -111,17 +128,38 @@ public class BattleUiManager : MonoBehaviour
 
     public void ShowSkillSlotListPanel()
     {
-        this.skillSlotListPanel.Show();
+        if (this.skillSlotListPanelV2 == null)
+        {
+            this.skillSlotListPanel.Show();
+        }
+        else
+        {
+            this.skillSlotListPanelV2.Show();
+        }
     }
 
     public void HideSkillSlotListPanel()
     {
-        this.skillSlotListPanel.Hide();
+        if (this.skillSlotListPanelV2 == null)
+        {
+            this.skillSlotListPanel.Hide();
+        }
+        else
+        {
+            this.skillSlotListPanelV2.Hide();
+        }
     }
 
     public void UpdateSkillSlotListPanel( GameCharacter gameCharacter )
     {
-        this.skillSlotListPanel.UpdateSkillSlots( gameCharacter );
+        if (this.skillSlotListPanelV2 == null)
+        {
+            this.skillSlotListPanel.UpdateSkillSlots( gameCharacter );
+        }
+        else
+        {
+            this.skillSlotListPanelV2.UpdateSkillSlots( gameCharacter );
+        }
     }
 
     public SkillSlotListPanel GetSkillSlotListPanel()
@@ -129,9 +167,19 @@ public class BattleUiManager : MonoBehaviour
         return this.skillSlotListPanel;
     }
 
+    public SkillSlotListPanelV2 GetSkillSlotListPanelV2()
+    {
+        return this.skillSlotListPanelV2;
+    }
+
     public void OnSkillSlotSwiped()
     {
         this.atlSlotListPanel.OnSkillSlotUpdated();
+    }
+
+    public bool IsUsingSkillSlotListPanelV2()
+    {
+        return ( this.skillSlotListPanelV2 != null );
     }
 
 #endregion
@@ -162,7 +210,14 @@ public class BattleUiManager : MonoBehaviour
 
     public void OnATLSlotExecuted()
     {
-        this.skillSlotListPanel.SwipeLeft();
+        if (this.skillSlotListPanelV2 == null)
+        {
+            this.skillSlotListPanel.SwipeLeft();
+        }
+        else
+        {
+            this.skillSlotListPanelV2.ClickBottom();
+        }
     }
 
     public ATLSlotListPanelV2 GetATLSlotListPanelV2()
