@@ -151,7 +151,7 @@ public class SkillSlotListPanel : MonoBehaviour
         InsertIntoSkillSlot(skillList);
     }
 
-    private void SwipeRight()
+    public void SwipeRight()
     {
         CharacterSkill tempSlot;
 
