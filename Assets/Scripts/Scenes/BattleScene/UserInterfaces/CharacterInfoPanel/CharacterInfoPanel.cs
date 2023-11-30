@@ -48,13 +48,19 @@ public class CharacterInfoPanel : MonoBehaviour
 
         this.statePointValueText.SetText(_currentStatePoint + " / " + _maximumStatePoint);
         this.statePointBar.fillAmount = _currentStatePoint / _maximumStatePoint;
+        this.breakRepresentationText.gameObject.SetActive(this.selectedCharacter.GetIsBreakStatusCausedByStatePoint());
 
         // Stress Value
         float _currentStressValue = this.selectedCharacter.GetCurrentStressValue();
-
-        this.stressPercentageText.SetText(_currentStressValue + "%");
-        this.stressPercentageBar.fillAmount = 0.214f+(_currentStressValue*0.00737f);
-        this.breakRepresentationText.gameObject.SetActive( this.selectedCharacter.GetIsInBreakStatus() );
+        if (this.selectedCharacter.GetIsBreakStatusCausedByStressValue())
+        {
+            this.stressPercentageText.SetText("BREAK");
+        }
+        else
+        {
+            this.stressPercentageText.SetText(_currentStressValue + "%");
+            this.stressPercentageBar.fillAmount = 0.214f + (_currentStressValue * 0.00737f);
+        }
     }
 
     public void ShowRoundInfoText( bool isPlayerFirst )
