@@ -26,7 +26,7 @@ public class BattleAnimationManager : MonoBehaviour
     [SerializeField] private CameraEffects cameraEffect = null;
     [SerializeField] private SpriteRenderer darkLayer = null;
 
-    [SerializeField] private SkillPromptPanel skillPromptPanel = null;
+    [SerializeField] private SkillPromptPanelV2 skillPromptPanel = null;
     [SerializeField] private DebugBattleDialogMenu debugBattleDialogMenu = null;
 
     private bool isAnimationEventTriggered = false;
@@ -1020,7 +1020,7 @@ public class BattleAnimationManager : MonoBehaviour
     private IEnumerator PlayShowingSkillInformation( GameCharacter caster )
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
-        this.skillPromptPanel.Show( caster.GetCurrentSkill() );
+        this.skillPromptPanel.Show( caster, 3.0f );
 
         if (CheckHasTimeStop( caster ))
         {
