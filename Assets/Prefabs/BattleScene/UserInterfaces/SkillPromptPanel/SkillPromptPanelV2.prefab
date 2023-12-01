@@ -158,6 +158,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af6c66a600275498b8f7e98b988294f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillNameShowingDuration: 1
   speedEffectAnimator: {fileID: 924451551512430708}
   strengthEffectAnimator: {fileID: 2047246005996423186}
   skillNameGO: {fileID: 924451550840975135}
@@ -171,7 +172,6 @@ MonoBehaviour:
   skillNameBackgroundImage: {fileID: 924451551161095367}
   activeSkillBackgroundImage: {fileID: 21300000, guid: 873cbb529f6f9403cba1b45a3b3242a9, type: 3}
   backendSkillBackgroundImage: {fileID: 21300000, guid: 5176ce7c0871c4907bb33a57f3bf2305, type: 3}
-  preferredPercentage: 0.8
 --- !u!1 &924451550840975135
 GameObject:
   m_ObjectHideFlags: 0

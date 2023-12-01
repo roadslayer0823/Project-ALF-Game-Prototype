@@ -4,6 +4,9 @@ using TMPro;
 
 public class SkillPromptPanelV2 : MonoBehaviour
 {
+    [Header( "Settings" )]
+    [SerializeField] private float skillNameShowingDuration = 1.0f;
+
     [SerializeField] private Animator speedEffectAnimator = null;
     [SerializeField] private Animator strengthEffectAnimator = null;
 
@@ -21,10 +24,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [SerializeField] private Sprite activeSkillBackgroundImage = null;
     [SerializeField] private Sprite backendSkillBackgroundImage = null;
 
-    [Header("Setting"), Range(0.0f, 1.0f)]
-    [SerializeField] private float preferredPercentage = 0.8f;
-
-    public void Show(GameCharacter caster, float duration = 1.0f)
+    public void Show(GameCharacter caster)
     {
         CharacterSkill _characterSkill = caster.GetCurrentSkill();
         int _skillStatIncrement = caster.GetCurrentSkillStatIncrement();
@@ -70,7 +70,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
 
         this.skillNameGO.SetActive(true);
-        LeanTween.delayedCall(duration * preferredPercentage, Hide);
+        LeanTween.delayedCall( skillNameShowingDuration, Hide );
     }
 
     private void Hide()

@@ -1020,7 +1020,7 @@ public class BattleAnimationManager : MonoBehaviour
     private IEnumerator PlayShowingSkillInformation( GameCharacter caster )
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
-        this.skillPromptPanel.Show( caster, 1.0f );
+        this.skillPromptPanel.Show( caster );
 
         if (CheckHasTimeStop( caster ))
         {
