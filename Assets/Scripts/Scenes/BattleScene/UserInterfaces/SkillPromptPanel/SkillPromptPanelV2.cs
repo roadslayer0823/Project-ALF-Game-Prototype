@@ -21,10 +21,10 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [SerializeField] private Sprite activeSkillBackgroundImage = null;
     [SerializeField] private Sprite backendSkillBackgroundImage = null;
 
-    [Header("Setting")]
+    [Header("Setting"), Range(0.0f, 1.0f)]
     [SerializeField] private float preferredPercentage = 0.8f;
 
-    public void Show(GameCharacter caster, float partADuration)
+    public void Show(GameCharacter caster, float duration = 1.0f)
     {
         CharacterSkill _characterSkill = caster.GetCurrentSkill();
         int _skillStatIncrement = caster.GetCurrentSkillStatIncrement();
@@ -70,7 +70,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
 
         this.skillNameGO.SetActive(true);
-        LeanTween.delayedCall(partADuration * preferredPercentage, Hide);
+        LeanTween.delayedCall(duration * preferredPercentage, Hide);
     }
 
     private void Hide()
@@ -78,7 +78,5 @@ public class SkillPromptPanelV2 : MonoBehaviour
         this.skillNameGO.SetActive(false);
         this.enemyPassiveSkillName.SetActive(false);
         this.playerPassiveSkillName.SetActive(false);
-        this.speedEffectGO.gameObject.SetActive(false);
-        this.strengthEffectGO.gameObject.SetActive(false);
     }
 }
