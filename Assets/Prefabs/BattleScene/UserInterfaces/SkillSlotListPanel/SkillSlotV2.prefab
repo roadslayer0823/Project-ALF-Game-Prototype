@@ -185,6 +185,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillSlotText: {fileID: 2969956611958473087}
+  getCurrentPosition: {fileID: 0}
 --- !u!1 &9175043795554590779
 GameObject:
   m_ObjectHideFlags: 0
