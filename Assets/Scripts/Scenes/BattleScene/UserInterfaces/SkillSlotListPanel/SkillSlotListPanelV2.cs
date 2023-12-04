@@ -46,22 +46,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         base.gameObject.SetActive(false);
     }
 
-    public void OnButtonDisable()
-    {
-        for(int i=0; i<skillSlotsButton.Length; i++)
-        {
-            skillSlotsButton[i].interactable = false;
-        }
-    }
-
-    public void OnButtonEnable()
-    {
-        for (int i = 0; i < skillSlotsButton.Length; i++)
-        {
-            skillSlotsButton[i].interactable = true;
-        }
-    }
-
     public void EnableInteraction()
     {
         clickAreaTop.SetActive(true);
@@ -154,11 +138,13 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             {
                 LeanTween.scale(slotToMove, initialScale[i] * 1f, 0.3f)
                 .setEase(LeanTweenType.easeInOutQuad);
+                skillSlotsButton[i].interactable = true;
             }
             else
             {
                 LeanTween.scale(slotToMove, initialScale[i] * 0.7f, 0.3f)
                 .setEase(LeanTweenType.easeInOutQuad);
+                skillSlotsButton[i].interactable = false;
             }
         }
 
