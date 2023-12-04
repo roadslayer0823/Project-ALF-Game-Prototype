@@ -5,6 +5,8 @@ using UnityEngine;
 public class SkillSlotListPanelV2 : MonoBehaviour
 {
     [SerializeField] private SkillSlotV2[] skillSlots = new SkillSlotV2[0];
+    [SerializeField] private GameObject clickAreaTop;
+    [SerializeField] private GameObject clickAreaBottom;
     [SerializeField] private Button[] skillSlotsButton = null;
     [SerializeField] private List<GameObject> skillSlotList;
     [SerializeField] private List<Transform> fixedSlotPosition;
@@ -14,11 +16,11 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     private List<CharacterSkill> selectedSkills = null;
     private const string AUDIO_ID_WHEEL = "wheel";
 
-
     public void Start()
     {
         InitializeScale();
     }
+
     public void InitializeScale()
     {
         MoveSlot(1);
@@ -44,7 +46,7 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         base.gameObject.SetActive(false);
     }
 
-    public void OnDisable()
+    public void OnButtonDisable()
     {
         for(int i=0; i<skillSlotsButton.Length; i++)
         {
@@ -52,12 +54,24 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         }
     }
 
-    public void OnEnable()
+    public void OnButtonEnable()
     {
         for (int i = 0; i < skillSlotsButton.Length; i++)
         {
             skillSlotsButton[i].interactable = true;
         }
+    }
+
+    public void EnableInteraction()
+    {
+        clickAreaTop.SetActive(true);
+        clickAreaBottom.SetActive(true);
+    }
+
+    public void DisableInteraction()
+    {
+        clickAreaTop.SetActive(false);
+        clickAreaBottom.SetActive(false);
     }
 
     public void UpdateSkillSlots(GameCharacter gameCharacter)
