@@ -16,11 +16,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     private List<CharacterSkill> selectedSkills = null;
     private const string AUDIO_ID_WHEEL = "wheel";
 
-    public void Start()
-    {
-        InitializeScale();
-    }
-
     public void InitializeScale()
     {
         MoveSlot(1);
@@ -147,7 +142,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
                 skillSlotsButton[i].interactable = false;
             }
         }
-
         arrangeSkillSlot(direction);
     }
 
@@ -159,6 +153,11 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             skillSlotList[0] = skillSlotList[2];
             skillSlotList[2] = skillSlotList[1];
             skillSlotList[1] = temp;
+
+            Button tempButton = skillSlotsButton[0];
+            skillSlotsButton[0] = skillSlotsButton[2];
+            skillSlotsButton[2] = skillSlotsButton[1];
+            skillSlotsButton[1] = tempButton;
         }
         else if (direction == -1)
         {
@@ -166,6 +165,11 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             skillSlotList[0] = skillSlotList[1];
             skillSlotList[1] = skillSlotList[2];
             skillSlotList[2] = temp;
+
+            Button tempButton = skillSlotsButton[0];
+            skillSlotsButton[0] = skillSlotsButton[1];
+            skillSlotsButton[1] = skillSlotsButton[2];
+            skillSlotsButton[2] = tempButton;
         }
     }
 }

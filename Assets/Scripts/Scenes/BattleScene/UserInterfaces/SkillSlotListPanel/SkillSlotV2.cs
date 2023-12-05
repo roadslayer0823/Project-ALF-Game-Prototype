@@ -4,7 +4,7 @@ using TMPro;
 public class SkillSlotV2 : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI skillSlotText;
-    [SerializeField] private RectTransform getCurrentPosition;
+    [SerializeField] private RectTransform getCurrentScale;
 
     private CharacterSkill selectedSkill = null;
 
@@ -31,8 +31,8 @@ public class SkillSlotV2 : MonoBehaviour
         this.skillSlotText.SetText("NODATA");
     }
 
-    public float GetSkillSlotPosition()
+    public float GetSkillSlotScale()
     {
-        return getCurrentPosition.position.x;
+        return this.getCurrentScale.transform.localScale.x;
     }
 }
