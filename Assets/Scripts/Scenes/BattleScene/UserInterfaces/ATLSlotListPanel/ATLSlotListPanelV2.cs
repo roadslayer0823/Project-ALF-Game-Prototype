@@ -18,7 +18,7 @@ public class ATLSlotListPanelV2 : MonoBehaviour
     private float progressBarLastPosition = 0.0f;
     private float progressBarLength = 0.0f;
 
-    private BattleFlowATL lastATL = null;
+    private int lastAtlNumber = 0;
 
     public void Initialize()
     {
@@ -40,28 +40,21 @@ public class ATLSlotListPanelV2 : MonoBehaviour
         Reset();
     }
 
-    public void GoToATL(BattleFlowATL targetATL, float animationDuration, CharacterSkill skill)
+    public void GoToATL(int atlNumber, float animationDuration, CharacterSkill skill)
     {
-        if (targetATL == null)
+        if (atlNumber == lastAtlNumber)
         {
             MarkPreviousATLSlotsAsUsed();
             return;
         }
 
-        if (targetATL == lastATL)
+        if (atlNumber > this.theATLSlots.Length)
         {
             MarkPreviousATLSlotsAsUsed();
             return;
         }
 
-        int _atlNumber = targetATL.GetATLNumber();
-        if (_atlNumber > this.theATLSlots.Length)
-        {
-            MarkPreviousATLSlotsAsUsed();
-            return;
-        }
-
-        int _atlIndex = _atlNumber - 1;
+        int _atlIndex = atlNumber - 1;
         int _usedAtlIndex = _atlIndex - ((skill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse) ? 1 : 0);
 
         ATLSlotV2 _currentAtlSlot = null;
@@ -92,7 +85,7 @@ public class ATLSlotListPanelV2 : MonoBehaviour
         PlayProgressBarAnimation( this.repulseAndDefendPointer, this.repulseAndDefendProgressBar, _currentAtlSlot, animationDuration );
         PlayProgressBarAnimation( this.activeSkillPointer, this.activeSkillProgressBar, _currentAtlSlot, animationDuration );
 
-        this.lastATL = targetATL;
+        this.lastAtlNumber = atlNumber;
     }
 
     public void GoToFinish(float duration)
@@ -153,7 +146,7 @@ public class ATLSlotListPanelV2 : MonoBehaviour
 
     private void MarkPreviousATLSlotsAsUsed()
     {
-        int _atlIndex = this.lastATL.GetATLNumber() - 1;
+        int _atlIndex = this.lastAtlNumber - 1;
         for (int i = 0; i < this.theATLSlots.Length; i++)
         {
             if (i < _atlIndex)
@@ -169,6 +162,6 @@ public class ATLSlotListPanelV2 : MonoBehaviour
         this.repulseAndDefendProgressBar.fillAmount = 0;
         this.activeSkillProgressBar.fillAmount = 0;
         this.progressBarFiller.fillAmount = 0;
-        this.lastATL = null;
+        this.lastAtlNumber = 0;
     }
 }

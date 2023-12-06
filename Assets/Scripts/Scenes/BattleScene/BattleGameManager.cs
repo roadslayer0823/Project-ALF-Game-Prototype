@@ -142,14 +142,18 @@ public class BattleGameManager : MonoBehaviour
         this.battleFlowManager.StartNewRound();
     }
 
-    public void OnNewRoundStarted( bool isPlayerFirst )
+    public void OnNewRoundStarted()
     {
-        this.battleUiManager.GetCharacterInfoPanel().ShowRoundInfoText( isPlayerFirst );
-
         if (battleFlowManager.GetCurrentRound().GetRoundNumber() > 1)
         {
             BattleLogicManager.OnNewRoundStarted( GetCharacterList() );
         }
+    }
+
+    public void OnNewRoundStarted( bool isPlayerFirst )
+    {
+        this.battleUiManager.GetCharacterInfoPanel().ShowRoundInfoText( isPlayerFirst );
+        OnNewRoundStarted();
     }
 
     public void OnNewATLStarted()
@@ -244,6 +248,16 @@ public class BattleGameManager : MonoBehaviour
         _characters.AddRange( this.enemyCharacterList );
 
         return _characters;
+    }
+
+    public PlayerCharacter GetPlayerCharacter()
+    {
+        return this.playerCharacter;
+    }
+
+    public EnemyCharacter GetEnemyCharacter()
+    {
+        return this.enemyCharacter;
     }
 
     public BattleUiManager GetBattleUiManager()

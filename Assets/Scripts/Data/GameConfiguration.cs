@@ -42,6 +42,7 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private int stressValueDecreaseOnRoundStart = 0;
         private float healthPointRegenerationRateOnRoundStart = 0.0f;
         private int maximumStatePointIncreaseOnRoundStart = 0;
+        private float attackOpportunityDurationInSeconds = 0.0f;
 
         private const string NUMBER_OF_ATL_SLOTS = "number_of_atl_slots";
         private const string MAXIMUM_SELECTED_ACTIVE_SKILLS = "maximum_selected_active_skills";
@@ -63,6 +64,7 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private const string STRESS_VALUE_DECREASE_ON_ROUND_START = "stress_value_decrease_on_round_start";
         private const string HEALTH_POINT_REGENERATION_RATE_ON_ROUND_START = "health_point_regeneration_rate_on_round_start";
         private const string MAXIMUM_STATE_POINT_INCREASE_ON_ROUND_START = "maximum_state_point_increase_on_round_start";
+        private const string ATTACK_OPPORTUNITY_DURATION_IN_SECONDS = "attack_opportunity_duration_in_seconds";
 
         public Battle( List<Configuration> battleConfigurationList )
         {
@@ -151,6 +153,10 @@ public class GameConfiguration : Singleton<GameConfiguration>
 
                     case MAXIMUM_STATE_POINT_INCREASE_ON_ROUND_START:
                         maximumStatePointIncreaseOnRoundStart = ( int )_configurationValue;
+                        break;
+
+                    case ATTACK_OPPORTUNITY_DURATION_IN_SECONDS:
+                        attackOpportunityDurationInSeconds = ( float )_configurationValue;
                         break;
 
                     default:
@@ -257,6 +263,11 @@ public class GameConfiguration : Singleton<GameConfiguration>
         public int GetMaximumStatePointIncreaseOnRoundStart()
         {
             return this.maximumStatePointIncreaseOnRoundStart;
+        }
+
+        public float GetAttackOpportunityDurationInSeconds()
+        {
+            return this.attackOpportunityDurationInSeconds;
         }
     }
 
