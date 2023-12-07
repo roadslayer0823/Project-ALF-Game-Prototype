@@ -18,6 +18,53 @@ public class BattleLogicManager
         return ( caster.GetCurrentStatePoint() > GameConfiguration.Instance.GetBattleConfiguration().GetMinimumCurrentStatePoint() );
     }
 
+    public static ( GameCharacter attacker, GameCharacter attackTarget ) GetAttackerAndAttackTargetByComparingGameCharacters( GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
+    {
+        CharacterSkill _gameCharacterOneCurrentSkill = gameCharacterOne.GetCurrentSkill();
+        CharacterSkill _gameCharacterTwoCurrentSkill = gameCharacterTwo.GetCurrentSkill();
+
+        if (_gameCharacterOneCurrentSkill != null && _gameCharacterTwoCurrentSkill == null)
+        {
+            return ( attacker: gameCharacterOne, attackTarget: gameCharacterTwo );
+        }
+
+        if (_gameCharacterOneCurrentSkill == null && _gameCharacterTwoCurrentSkill != null)
+        {
+            return ( attacker: gameCharacterTwo, attackTarget: gameCharacterOne );
+        }
+
+        int _gameCharacterOneCurrentSkillSpeed = _gameCharacterOneCurrentSkill.GetCharacterSubskillData().GetSubskillData().Speed + gameCharacterOne.GetCurrentSkillStatIncrement();
+        int _gameCharacterTwoCurrentSkillSpeed = _gameCharacterTwoCurrentSkill.GetCharacterSubskillData().GetSubskillData().Speed + gameCharacterTwo.GetCurrentSkillStatIncrement();
+
+        if (_gameCharacterOneCurrentSkillSpeed > _gameCharacterTwoCurrentSkillSpeed)
+        {
+            return ( attacker: gameCharacterOne, attackTarget: gameCharacterTwo );
+        }
+        else if (_gameCharacterOneCurrentSkillSpeed < _gameCharacterTwoCurrentSkillSpeed)
+        {
+            return (attacker: gameCharacterTwo, attackTarget: gameCharacterOne);
+        }
+
+        float _gameCharacterOneCurrentStatePoint = gameCharacterOne.GetCurrentStatePoint();
+        float _gameCharacterTwoCurrentStatePoint = gameCharacterTwo.GetCurrentStatePoint();
+
+        if (_gameCharacterOneCurrentStatePoint > _gameCharacterTwoCurrentStatePoint)
+        {
+            return ( attacker: gameCharacterOne, attackTarget: gameCharacterTwo );
+        }
+        else if (_gameCharacterOneCurrentStatePoint < _gameCharacterTwoCurrentStatePoint)
+        {
+            return ( attacker: gameCharacterTwo, attackTarget: gameCharacterOne );
+        }
+
+        if (Random.value < 0.5f)
+        {
+            return ( attacker: gameCharacterOne, attackTarget: gameCharacterTwo );
+        }
+
+        return ( attacker: gameCharacterTwo, attackTarget: gameCharacterOne );
+    }
+
     public static void ExecuteCasterSkillOnUse( GameCharacter caster, GameCharacter target, out string log )
     {
         CharacterSkill _casterSkill = caster.GetCurrentSkill();
