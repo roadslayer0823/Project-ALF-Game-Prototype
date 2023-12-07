@@ -93,7 +93,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         return this.skillSlots;
     }
 
-    // To reset back the selected skill sequence based on last round selection. 
     public void ResetLastRoundSelectedActiveSkill()
     {
         this.selectedGameCharacter.SetSelectedActiveSkillList(this.selectedSkills);
@@ -171,5 +170,10 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             skillSlotsButton[1] = skillSlotsButton[2];
             skillSlotsButton[2] = tempButton;
         }
+    }
+
+    public GameCharacter GetSelectedGameCharacter()
+    {
+        return this.selectedGameCharacter;
     }
 }

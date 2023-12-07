@@ -4,9 +4,14 @@ using TMPro;
 public class SkillSlotV2 : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI skillSlotText;
-    [SerializeField] private RectTransform getCurrentScale;
 
     private CharacterSkill selectedSkill = null;
+    private SkillSlotListPanelV2 skillSlotListPanelV2 = null;
+
+    public void Initialize(SkillSlotListPanelV2 skillSlotListPanelV2)
+    {
+        this.skillSlotListPanelV2 = skillSlotListPanelV2;
+    }
 
     public void SetSelectedSkill(CharacterSkill selectedSkill)
     {
@@ -20,6 +25,11 @@ public class SkillSlotV2 : MonoBehaviour
         return this.selectedSkill;
     }
 
+    public void ClickToSelectSkill()
+    {
+        this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill(this.selectedSkill);
+    }
+
     public void SetSkillSlotText(string slotText)
     {
         this.skillSlotText.SetText(slotText);
@@ -29,10 +39,5 @@ public class SkillSlotV2 : MonoBehaviour
     {
         this.selectedSkill = null;
         this.skillSlotText.SetText("NODATA");
-    }
-
-    public float GetSkillSlotScale()
-    {
-        return this.getCurrentScale.transform.localScale.x;
     }
 }
