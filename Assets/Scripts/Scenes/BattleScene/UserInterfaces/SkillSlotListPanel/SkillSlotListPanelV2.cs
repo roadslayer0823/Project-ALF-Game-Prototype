@@ -5,6 +5,8 @@ using UnityEngine;
 public class SkillSlotListPanelV2 : MonoBehaviour
 {
     [SerializeField] private SkillSlotV2[] skillSlots = new SkillSlotV2[0];
+    [SerializeField] private GameObject clickAreaTop;
+    [SerializeField] private GameObject clickAreaBottom;
     [SerializeField] private Button[] skillSlotsButton = null;
     [SerializeField] private List<GameObject> skillSlotList;
     [SerializeField] private List<Transform> fixedSlotPosition;
@@ -14,11 +16,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     private List<CharacterSkill> selectedSkills = null;
     private const string AUDIO_ID_WHEEL = "wheel";
 
-
-    public void Start()
-    {
-        InitializeScale();
-    }
     public void InitializeScale()
     {
         MoveSlot(1);
@@ -44,20 +41,16 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         base.gameObject.SetActive(false);
     }
 
-    public void OnDisable()
+    public void EnableInteraction()
     {
-        for(int i=0; i<skillSlotsButton.Length; i++)
-        {
-            skillSlotsButton[i].interactable = false;
-        }
+        clickAreaTop.SetActive(true);
+        clickAreaBottom.SetActive(true);
     }
 
-    public void OnEnable()
+    public void DisableInteraction()
     {
-        for (int i = 0; i < skillSlotsButton.Length; i++)
-        {
-            skillSlotsButton[i].interactable = true;
-        }
+        clickAreaTop.SetActive(false);
+        clickAreaBottom.SetActive(false);
     }
 
     public void UpdateSkillSlots(GameCharacter gameCharacter)
@@ -100,7 +93,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         return this.skillSlots;
     }
 
-    // To reset back the selected skill sequence based on last round selection. 
     public void ResetLastRoundSelectedActiveSkill()
     {
         this.selectedGameCharacter.SetSelectedActiveSkillList(this.selectedSkills);
@@ -140,14 +132,15 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             {
                 LeanTween.scale(slotToMove, initialScale[i] * 1f, 0.3f)
                 .setEase(LeanTweenType.easeInOutQuad);
+                skillSlotsButton[i].interactable = true;
             }
             else
             {
                 LeanTween.scale(slotToMove, initialScale[i] * 0.7f, 0.3f)
                 .setEase(LeanTweenType.easeInOutQuad);
+                skillSlotsButton[i].interactable = false;
             }
         }
-
         arrangeSkillSlot(direction);
     }
 
@@ -159,6 +152,11 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             skillSlotList[0] = skillSlotList[2];
             skillSlotList[2] = skillSlotList[1];
             skillSlotList[1] = temp;
+
+            Button tempButton = skillSlotsButton[0];
+            skillSlotsButton[0] = skillSlotsButton[2];
+            skillSlotsButton[2] = skillSlotsButton[1];
+            skillSlotsButton[1] = tempButton;
         }
         else if (direction == -1)
         {
@@ -166,6 +164,16 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             skillSlotList[0] = skillSlotList[1];
             skillSlotList[1] = skillSlotList[2];
             skillSlotList[2] = temp;
+
+            Button tempButton = skillSlotsButton[0];
+            skillSlotsButton[0] = skillSlotsButton[1];
+            skillSlotsButton[1] = skillSlotsButton[2];
+            skillSlotsButton[2] = tempButton;
         }
+    }
+
+    public GameCharacter GetSelectedGameCharacter()
+    {
+        return this.selectedGameCharacter;
     }
 }
