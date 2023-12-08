@@ -7,7 +7,7 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     [SerializeField] private SkillSlotV2[] skillSlots = new SkillSlotV2[0];
     [SerializeField] private GameObject clickAreaTop;
     [SerializeField] private GameObject clickAreaBottom;
-    [SerializeField] private Button[] skillSlotsButton = null;
+    [SerializeField] private List<Button> skillSlotsButton = null;
     [SerializeField] private List<GameObject> skillSlotList;
     [SerializeField] private List<Transform> fixedSlotPosition;
 
@@ -148,32 +148,53 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     {
         if(direction == 1)
         {
-            GameObject temp = skillSlotList[0];
-            skillSlotList[0] = skillSlotList[2];
-            skillSlotList[2] = skillSlotList[1];
-            skillSlotList[1] = temp;
-
-            Button tempButton = skillSlotsButton[0];
-            skillSlotsButton[0] = skillSlotsButton[2];
-            skillSlotsButton[2] = skillSlotsButton[1];
-            skillSlotsButton[1] = tempButton;
+            SlotMovingDirection("down");
         }
         else if (direction == -1)
         {
-            GameObject temp = skillSlotList[0];
-            skillSlotList[0] = skillSlotList[1];
-            skillSlotList[1] = skillSlotList[2];
-            skillSlotList[2] = temp;
-
-            Button tempButton = skillSlotsButton[0];
-            skillSlotsButton[0] = skillSlotsButton[1];
-            skillSlotsButton[1] = skillSlotsButton[2];
-            skillSlotsButton[2] = tempButton;
+            SlotMovingDirection("up");
         }
     }
 
     public GameCharacter GetSelectedGameCharacter()
     {
         return this.selectedGameCharacter;
+    }
+
+    private void SlotMovingDirection(string direction)
+    {
+        if (direction == "up")
+        {
+            int i = 0;
+            GameObject tempSlot = skillSlotList[i];
+            Button tempButton = skillSlotsButton[i];
+
+            while(i< skillSlotList.Count - 1)
+            {
+                skillSlotList[i] = skillSlotList[i + 1];
+                skillSlotsButton[i] = skillSlotsButton[i + 1];
+                i++;
+            }
+
+            skillSlotList[skillSlotList.Count - 1] = tempSlot;
+            skillSlotsButton[skillSlotsButton.Count - 1] = tempButton;
+        }
+
+        else if (direction == "down")
+        {
+            int i = skillSlotList.Count - 1;
+            GameObject tempSlot = skillSlotList[i];
+            Button tempButton = skillSlotsButton[i];
+
+            while (i > 0)
+            {
+                skillSlotList[i] = skillSlotList[i - 1];
+                skillSlotsButton[i] = skillSlotsButton[i - 1];
+                i--;
+            }
+
+            skillSlotList[i] = tempSlot;
+            skillSlotsButton[i] = tempButton;
+        }
     }
 }
