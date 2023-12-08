@@ -144,43 +144,10 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         arrangeSkillSlot(direction);
     }
 
+    //1 = moving slot to down direction, -1 = moving slot to up direction
     private void arrangeSkillSlot(int direction)
     {
         if(direction == 1)
-        {
-            SlotMovingDirection("down");
-        }
-        else if (direction == -1)
-        {
-            SlotMovingDirection("up");
-        }
-    }
-
-    public GameCharacter GetSelectedGameCharacter()
-    {
-        return this.selectedGameCharacter;
-    }
-
-    private void SlotMovingDirection(string direction)
-    {
-        if (direction == "up")
-        {
-            int i = 0;
-            GameObject tempSlot = skillSlotList[i];
-            Button tempButton = skillSlotsButton[i];
-
-            while(i< skillSlotList.Count - 1)
-            {
-                skillSlotList[i] = skillSlotList[i + 1];
-                skillSlotsButton[i] = skillSlotsButton[i + 1];
-                i++;
-            }
-
-            skillSlotList[skillSlotList.Count - 1] = tempSlot;
-            skillSlotsButton[skillSlotsButton.Count - 1] = tempButton;
-        }
-
-        else if (direction == "down")
         {
             int i = skillSlotList.Count - 1;
             GameObject tempSlot = skillSlotList[i];
@@ -196,5 +163,26 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             skillSlotList[i] = tempSlot;
             skillSlotsButton[i] = tempButton;
         }
+        else if (direction == -1)
+        {
+            int i = 0;
+            GameObject tempSlot = skillSlotList[i];
+            Button tempButton = skillSlotsButton[i];
+
+            while (i < skillSlotList.Count - 1)
+            {
+                skillSlotList[i] = skillSlotList[i + 1];
+                skillSlotsButton[i] = skillSlotsButton[i + 1];
+                i++;
+            }
+
+            skillSlotList[skillSlotList.Count - 1] = tempSlot;
+            skillSlotsButton[skillSlotsButton.Count - 1] = tempButton;
+        }
+    }
+
+    public GameCharacter GetSelectedGameCharacter()
+    {
+        return this.selectedGameCharacter;
     }
 }
