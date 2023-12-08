@@ -141,18 +141,18 @@ public class SkillSlotListPanelV2 : MonoBehaviour
                 skillSlotsButton[i].interactable = false;
             }
         }
-        arrangeSkillSlot(direction);
+        ArrangeSkillSlot(direction);
     }
 
     //1 = moving slot to down direction, -1 = moving slot to up direction
-    private void arrangeSkillSlot(int direction)
+    private void ArrangeSkillSlot(int direction)
     {
-        if(direction == 1)
-        {
-            int i = skillSlotList.Count - 1;
-            GameObject tempSlot = skillSlotList[i];
-            Button tempButton = skillSlotsButton[i];
+        int i = 0;
+        GameObject tempSlot = skillSlotList[i];
+        Button tempButton = skillSlotsButton[i];
 
+        if (direction == 1)
+        {
             while (i > 0)
             {
                 skillSlotList[i] = skillSlotList[i - 1];
@@ -165,10 +165,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         }
         else if (direction == -1)
         {
-            int i = 0;
-            GameObject tempSlot = skillSlotList[i];
-            Button tempButton = skillSlotsButton[i];
-
             while (i < skillSlotList.Count - 1)
             {
                 skillSlotList[i] = skillSlotList[i + 1];
