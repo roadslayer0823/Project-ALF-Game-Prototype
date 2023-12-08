@@ -167,7 +167,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
             LeanTween.moveLocalX(this.playerSkillInfoGO, 600.0f, this.skillInfoPopSpeed).setDelay(this.skillInfoShowingDuration).setOnComplete(HideSkillInfo);
         }
 
-        // Enemy character
+        // Enemy character skill
         if (enemyCharacterSkill != null)
         {
             CharacterSubskill _enemyCharacterSubskill = enemyCharacterSkill.GetCharacterSubskillData();
