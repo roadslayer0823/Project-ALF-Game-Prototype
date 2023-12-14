@@ -1625,8 +1625,6 @@ public class BattleAnimationManager : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
         this.skillPromptPanel.Show( caster );
-        this.skillPromptPanel.ShowSkillInfo( caster, "XX" );
-        this.skillPromptPanel.SetSkillInfoProgressBar(0.4f);
 
         if (CheckHasTimeStop( caster ))
         {

@@ -198,8 +198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skillNameShowingDuration: 1
-  skillInfoPopSpeed: 0.5
-  skillInfoShowingDuration: 3
+  skillInfoPopSpeed: 0.25
   speedEffectAnimator: {fileID: 924451551512430708}
   strengthEffectAnimator: {fileID: 2047246005996423186}
   skillNameGO: {fileID: 924451550840975135}
