@@ -7,7 +7,6 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float skillNameShowingDuration = 1.0f;
     [SerializeField] private float skillInfoPopSpeed = 0.5f;
-    [SerializeField] private float skillInfoShowingDuration = 3.0f;
 
     [Header("")]
     [SerializeField] private Animator speedEffectAnimator = null;
@@ -64,11 +63,14 @@ public class SkillPromptPanelV2 : MonoBehaviour
         this.speedEffectGO.gameObject.SetActive(true);
         this.strengthEffectGO.gameObject.SetActive(true);
 
-        if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+        if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active
+            || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse
+            || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.derived)
         {
             this.skillNameBackgroundImage.sprite = this.activeSkillBackgroundImage;
         }
-        else if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend)
+        else if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend
+            || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.counter)
         {
             this.skillNameBackgroundImage.sprite = this.backendSkillBackgroundImage;
         }
@@ -107,26 +109,23 @@ public class SkillPromptPanelV2 : MonoBehaviour
         this.playerPassiveSkillName.SetActive(false);
     }
 
-    public void ShowSkillInfo(CharacterSkill playerCharacterSkill, CharacterSkill enemyCharacterSkill)
+    public void ShowSkillInfo(GameCharacter caster, string skillTypeText)
     {
-        if (LeanTween.isTweening(this.enemySkillInfoGO) || LeanTween.isTweening(this.playerSkillInfoGO))
-        {
-            return;
-        }
+        CharacterSkill _characterSkill = caster.GetCurrentSkill();
 
         // Player character skill
-        if (playerCharacterSkill != null)
+        if (caster is PlayerCharacter && _characterSkill != null && !LeanTween.isTweening(this.playerSkillInfoGO))
         {
-            CharacterSubskill _playerCharacterSubskill = playerCharacterSkill.GetCharacterSubskillData();
+            CharacterSubskill _playerCharacterSubskill = _characterSkill.GetCharacterSubskillData();
 
             this.playerSkillInfoGO.SetActive(true);
 
             if (_playerCharacterSubskill != null)
             {
-                if (playerCharacterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+                if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active
+                    || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse
+                    || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.derived)
                 {
-                    this.playerSkillTypeText.SetText("攻擊");
-
                     this.playerAttackSkillEffect.gameObject.SetActive(true);
                     this.playerRepulseSkillEffect.gameObject.SetActive(false);
                     this.playerAttackSkillIcon.gameObject.SetActive(true);
@@ -135,17 +134,16 @@ public class SkillPromptPanelV2 : MonoBehaviour
                     if (_playerCharacterSubskill.GetSubskillData().EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide)
                     {
                         this.playerSkillTagGO.SetActive(true);
-                        this.playerSkillTagText.SetText("广角");
+                        this.playerSkillTagText.SetText("廣角");
                     }
                     else
                     {
                         this.playerSkillTagGO.SetActive(false);
                     }
                 }
-                else if (playerCharacterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend)
+                else if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend
+                    || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.counter)
                 {
-                    this.playerSkillTypeText.SetText("迎擊");
-
                     this.playerAttackSkillEffect.gameObject.SetActive(false);
                     this.playerRepulseSkillEffect.gameObject.SetActive(true);
                     this.playerAttackSkillIcon.gameObject.SetActive(false);
@@ -154,32 +152,34 @@ public class SkillPromptPanelV2 : MonoBehaviour
                     if (_playerCharacterSubskill.GetSubskillData().EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide)
                     {
                         this.playerSkillTagGO.SetActive(true);
-                        this.playerSkillTagText.SetText("对广角");
+                        this.playerSkillTagText.SetText("对廣角");
                     }
                     else
                     {
                         this.playerSkillTagGO.SetActive(false);
                     }
                 }
+
+                this.playerSkillTypeText.SetText(skillTypeText);
             }
 
             LeanTween.moveLocalX(this.playerSkillInfoGO, 0.0f, this.skillInfoPopSpeed);
-            LeanTween.moveLocalX(this.playerSkillInfoGO, 600.0f, this.skillInfoPopSpeed).setDelay(this.skillInfoShowingDuration).setOnComplete(HideSkillInfo);
+            LeanTween.moveLocalX(this.playerSkillInfoGO, 600.0f, this.skillInfoPopSpeed).setDelay(this.skillNameShowingDuration).setOnComplete(HideSkillInfo);
         }
 
         // Enemy character skill
-        if (enemyCharacterSkill != null)
+        if (caster is EnemyCharacter && _characterSkill != null && !LeanTween.isTweening(this.enemySkillInfoGO))
         {
-            CharacterSubskill _enemyCharacterSubskill = enemyCharacterSkill.GetCharacterSubskillData();
+            CharacterSubskill _enemyCharacterSubskill = _characterSkill.GetCharacterSubskillData();
 
             this.enemySkillInfoGO.SetActive(true);
 
             if (_enemyCharacterSubskill != null)
             {
-                if (enemyCharacterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+                if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active
+                    || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse
+                    || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.derived)
                 {
-                    this.enemySkillTypeText.SetText("攻擊");
-
                     this.enemyAttackSkillEffect.gameObject.SetActive(true);
                     this.enemyRepulseSkillEffect.gameObject.SetActive(false);
                     this.enemyAttackSkillIcon.gameObject.SetActive(true);
@@ -188,17 +188,16 @@ public class SkillPromptPanelV2 : MonoBehaviour
                     if (_enemyCharacterSubskill.GetSubskillData().EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide)
                     {
                         this.enemySkillTagGO.SetActive(true);
-                        this.enemySkillTagText.SetText("广角");
+                        this.enemySkillTagText.SetText("廣角");
                     }
                     else
                     {
                         this.enemySkillTagGO.SetActive(false);
                     }
                 }
-                else if (enemyCharacterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend)
+                else if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend
+                    || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.counter)
                 {
-                    this.enemySkillTypeText.SetText("迎擊");
-
                     this.enemyAttackSkillEffect.gameObject.SetActive(false);
                     this.enemyRepulseSkillEffect.gameObject.SetActive(true);
                     this.enemyAttackSkillIcon.gameObject.SetActive(false);
@@ -207,17 +206,19 @@ public class SkillPromptPanelV2 : MonoBehaviour
                     if (_enemyCharacterSubskill.GetSubskillData().EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide)
                     {
                         this.enemySkillTagGO.SetActive(true);
-                        this.enemySkillTagText.SetText("对广角");
+                        this.enemySkillTagText.SetText("对廣角");
                     }
                     else
                     {
                         this.enemySkillTagGO.SetActive(false);
                     }
                 }
+
+                this.enemySkillTypeText.SetText(skillTypeText);
             }
 
             LeanTween.moveLocalX(this.enemySkillInfoGO, 0.0f, this.skillInfoPopSpeed);
-            LeanTween.moveLocalX(this.enemySkillInfoGO, -600.0f, this.skillInfoPopSpeed).setDelay(this.skillInfoShowingDuration).setOnComplete(HideSkillInfo);
+            LeanTween.moveLocalX(this.enemySkillInfoGO, -600.0f, this.skillInfoPopSpeed).setDelay(this.skillNameShowingDuration).setOnComplete(HideSkillInfo);
         }
     }
 
@@ -225,5 +226,14 @@ public class SkillPromptPanelV2 : MonoBehaviour
     {
         this.playerSkillInfoGO.SetActive(false);
         this.enemySkillInfoGO.SetActive(false);
+    }
+
+    public void SetSkillInfoProgressBar(float fillAmount)
+    {
+        this.enemyAttackSkillEffect.fillAmount = fillAmount;
+        this.enemyRepulseSkillEffect.fillAmount = fillAmount;
+
+        this.playerAttackSkillEffect.fillAmount = fillAmount;
+        this.playerRepulseSkillEffect.fillAmount = fillAmount;
     }
 }
