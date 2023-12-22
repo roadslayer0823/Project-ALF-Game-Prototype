@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2214a86184e844892adde7361a6e68ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillPromptPanelV2: {fileID: 0}
   activeSkillSelectionPanelTab: {fileID: 5459260374220162652}
   backendSkillSelectionPanelTab: {fileID: 612517740939008948}
   attackSkillSelectionTabButton: {fileID: 8015979577208796029}
@@ -200,6 +201,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5459260374809095460}
     m_Modifications:
+    - target: {fileID: 197557341265804006, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+      propertyPath: m_text
+      value: "\u8FCE\u64CA"
+      objectReference: {fileID: 0}
     - target: {fileID: 1146840364720694907, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
       propertyPath: m_Name
       value: SkillTabGroup
@@ -211,6 +216,30 @@ PrefabInstance:
     - target: {fileID: 1830727023960445395, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
       propertyPath: m_text
       value: "\u6D3E\u751F"
+      objectReference: {fileID: 0}
+    - target: {fileID: 2029818295142774046, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2029818295142774046, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2029818295142774046, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 91.770004
+      objectReference: {fileID: 0}
+    - target: {fileID: 2029818295142774046, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 72.79999
+      objectReference: {fileID: 0}
+    - target: {fileID: 2029818295142774046, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 321.195
+      objectReference: {fileID: 0}
+    - target: {fileID: 2029818295142774046, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -36.399994
       objectReference: {fileID: 0}
     - target: {fileID: 2535898304563635208, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
       propertyPath: m_Name
@@ -352,6 +381,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6356636709756759427, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+      propertyPath: m_text
+      value: "\u53CD\u64CA"
+      objectReference: {fileID: 0}
     - target: {fileID: 6734041513116715342, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -375,6 +408,14 @@ PrefabInstance:
     - target: {fileID: 6734041513116715342, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7092626244476033112, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7940667695960270580, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
+      propertyPath: m_text
+      value: "\u653B\u64CA"
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 148c976bd44a84212a484495b7ccdb86, type: 3}
@@ -700,7 +741,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5395172928961972319, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_fontSize
-      value: 40.95
+      value: 30.3
       objectReference: {fileID: 0}
     - target: {fileID: 5443936741501078790, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_AnchorMax.y
@@ -880,7 +921,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8872307289537047387, guid: be42383b28f1248dca855ac668a32226, type: 3}
       propertyPath: m_fontSize
-      value: 49.75
+      value: 36.8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be42383b28f1248dca855ac668a32226, type: 3}
