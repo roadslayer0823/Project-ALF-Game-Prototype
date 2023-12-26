@@ -3797,19 +3797,7 @@ PrefabInstance:
     m_TransformParent: {fileID: 2121017327}
     m_Modifications:
     - target: {fileID: 1875197410857838040, guid: 74b85664a04194945ad7408f4aca1de2, type: 3}
-      propertyPath: m_Pivot.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1875197410857838040, guid: 74b85664a04194945ad7408f4aca1de2, type: 3}
       propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1875197410857838040, guid: 74b85664a04194945ad7408f4aca1de2, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1875197410857838040, guid: 74b85664a04194945ad7408f4aca1de2, type: 3}
-      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1875197410857838040, guid: 74b85664a04194945ad7408f4aca1de2, type: 3}
@@ -3835,10 +3823,6 @@ PrefabInstance:
     - target: {fileID: 1875197410857838041, guid: 74b85664a04194945ad7408f4aca1de2, type: 3}
       propertyPath: m_Name
       value: UiDecoration
-      objectReference: {fileID: 0}
-    - target: {fileID: 1875197410857838041, guid: 74b85664a04194945ad7408f4aca1de2, type: 3}
-      propertyPath: m_Layer
-      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 74b85664a04194945ad7408f4aca1de2, type: 3}
