@@ -190,8 +190,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Clear All
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
-  m_sharedMaterial: {fileID: -8331989788932644591, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: df7e081f61c614475ace2b0e11d0822d, type: 2}
+  m_sharedMaterial: {fileID: 5069138407310593800, guid: df7e081f61c614475ace2b0e11d0822d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -498,8 +498,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Battle Log
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
-  m_sharedMaterial: {fileID: -8331989788932644591, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d820d13fe549d431296db73193852419, type: 2}
+  m_sharedMaterial: {fileID: 5552093590376774946, guid: d820d13fe549d431296db73193852419, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
