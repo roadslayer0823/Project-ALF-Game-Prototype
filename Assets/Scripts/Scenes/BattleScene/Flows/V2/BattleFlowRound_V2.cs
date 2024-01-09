@@ -82,6 +82,24 @@ public class BattleFlowRound_V2
         SetCurrentPhase( PhaseType.ExecutionDone );
     }
 
+    public BattleFlowATL_V2 GoToNextATL()
+    {
+        this.flowATLIndex++;
+
+        BattleFlowATL_V2 _currentATL = GetCurrentATL();
+        if (_currentATL != null)
+        {
+            _currentATL.SetIsATLSlotExecuted( true );
+            this.battleFlowManager.OnNewATLStarted();
+        }
+        else
+        {
+            SetCurrentPhase( PhaseType.ExecutionDone );
+        }
+
+        return _currentATL;
+    }
+
     private void OnAttackOpportunityEnded()
     {
     }
@@ -89,6 +107,11 @@ public class BattleFlowRound_V2
     public int GetRoundNumber()
     {
         return this.roundNumber;
+    }
+
+    public BattleFlowATL_V2[] GetFlowATLs()
+    {
+        return this.flowATLs;
     }
 
     public void SetCurrentPhase( PhaseType currentPhase )

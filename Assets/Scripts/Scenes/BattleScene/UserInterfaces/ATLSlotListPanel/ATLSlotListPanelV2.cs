@@ -27,13 +27,26 @@ public class ATLSlotListPanelV2 : MonoBehaviour
         Reset();
     }
 
-    public void SetUp( BattleFlowATL[] flowATL )
+    public void SetUp( BattleFlowATL[] flowATLs )
     {
         for (int i = 0; i < this.theATLSlots.Length; i++)
         {
-            if (i < flowATL.Length)
+            if (i < flowATLs.Length)
             {
-                this.theATLSlots[ i ].DefaultATLSetup( flowATL[ i ] );
+                this.theATLSlots[ i ].DefaultATLSetup( flowATLs[ i ] );
+            }
+        }
+
+        Reset();
+    }
+
+    public void SetUp( BattleFlowATL_V2[] flowATLs )
+    {
+        for (int i = 0; i < this.theATLSlots.Length; i++)
+        {
+            if (i < flowATLs.Length)
+            {
+                this.theATLSlots[ i ].DefaultATLSetup( flowATLs[ i ] );
             }
         }
 

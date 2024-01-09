@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
+using Subskill = DatabaseManager.Subskill;
+using Random = UnityEngine.Random;
 
 public class PlayerCharacter : GameCharacter
 {
@@ -6,6 +9,9 @@ public class PlayerCharacter : GameCharacter
     {
         BattleUiManager _battleUiManager = battleGameManager.GetBattleUiManager();
         PlayerActionPanel _playerActionPanel = _battleUiManager.GetPlayerActionPanel();
+
+        PlayerCharacter _playerCharacter = battleGameManager.GetPlayerCharacter();
+        List<CharacterSkill> _skillList = null;
 
         switch ( animationEvent )
         {
@@ -82,6 +88,52 @@ public class PlayerCharacter : GameCharacter
                 _playerActionPanel.HideQTEActionButton();
                 _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Defense, false );
                 _playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Evasion, false );
+
+                break;
+
+            case AnimationEvent.OnCombatCommandTimeStarted:
+
+                if (Random.value < 0.5f)
+                {
+                    _skillList = _playerCharacter.GetSelectedActiveSkillList();
+                    _playerCharacter.SetCurrentSkill( _skillList[ new System.Random().Next( _skillList.Count ) ] );
+                }
+
+                break;
+
+            case AnimationEvent.OnPartA:
+
+                if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
+                {
+                    _skillList = new List<CharacterSkill>();
+
+                    if (Random.value < 0.5f)
+                    {
+                        List<CharacterSkill> _activeSkillList = _playerCharacter.GetSelectedActiveSkillList();
+                        for (int i = 0; i < _activeSkillList.Count; i++)
+                        {
+                            _skillList.Add( _activeSkillList[ i ].GetCharacterSubskillData().GetSelectedRepulseSkill() );
+                        }
+                    }
+                    else
+                    {
+                        List<CharacterSkill> _backendSkillList = _playerCharacter.GetSelectedBackendSkillList();
+                        for (int i = 0; i < _backendSkillList.Count; i++)
+                        {
+                            CharacterSkill _backendSkill = _backendSkillList[ i ];
+                            Subskill _subskillData = _backendSkill.GetCharacterSubskillData().GetSubskillData();
+                            if (_subskillData.IsDefendingSkill || _subskillData.IsEvadingSkill)
+                            {
+                                _skillList.Add( _backendSkill );
+                            }
+                        }
+                    }
+
+                    if (_skillList.Count > 0)
+                    {
+                        _playerCharacter.SetCurrentSkill( _skillList[ new System.Random().Next( _skillList.Count ) ] );
+                    }
+                }
 
                 break;
         }

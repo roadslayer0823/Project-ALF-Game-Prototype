@@ -74,7 +74,9 @@ public class BattleAnimationManager : MonoBehaviour
         OnObservingSkillSelected,
         OnSkillBeingObserved,
         OnActiveSkillStarted,
-        OnActiveSkillFinished
+        OnActiveSkillFinished,
+        OnCombatCommandTimeStarted,
+        OnPartA
     }
 
     public void Initialize( Action<bool> onBattleEndedCallback )
@@ -163,6 +165,7 @@ public class BattleAnimationManager : MonoBehaviour
             {
                 _attackTarget.SetCurrentAttacker( _attacker );
                 BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget, out _log );
+                ShowSkillInfo( _attacker, _attackTarget );
                 this.currentCaster = _attacker;
 
                 BattleLog.Instance.AddOnScreenBattleLog( _log );
@@ -348,6 +351,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     CharacterSkill _repulseSkill = _attackTarget.GetCurrentSkill();
                     BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
+                    ShowSkillInfo( _attacker, _attackTarget );
                     this.currentCaster = _attackTarget;
 
                     BattleLog.Instance.AddOnScreenBattleLog( _log );
@@ -519,6 +523,7 @@ public class BattleAnimationManager : MonoBehaviour
                     }
 
                     BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
+                    ShowSkillInfo( _attacker, _attackTarget );
                     this.currentCaster = _attackTarget;
 
                     BattleLog.Instance.AddOnScreenBattleLog( _log );
@@ -689,10 +694,36 @@ public class BattleAnimationManager : MonoBehaviour
         EnemyCharacter _enemyCharacter = battleGameManager.GetEnemyCharacter();
         _enemyCharacter.Reset();
 
-        battleFlowATL.StartAttackOpportunityCountdownTimer();
-        yield return new WaitWhile( () => battleFlowATL.GetIsDuringAttackOpportunityPeriod() );
+        float _attackOpportunityDuration = battleFlowATL.GetAttackOpportunityDuration();
+        this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true, _attackOpportunityDuration );
+        this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, false, _attackOpportunityDuration );
+        BattleLog.Instance.AddOnScreenBattleLog( $"雙方進入【 { TerminologyManager.COMBAT_COMMAND_TIME } 】。" );
 
-        ( GameCharacter _attacker, GameCharacter _attackTarget ) = BattleLogicManager.GetAttackerAndAttackTargetByComparingGameCharacters( _playerCharacter, _enemyCharacter );
+        _playerCharacter.TriggerEvent( AnimationEvent.SetCharacter );
+        _playerCharacter.TriggerEvent( AnimationEvent.OnCombatCommandTimeStarted );
+        _enemyCharacter.TriggerEvent( AnimationEvent.SetCharacter );
+        _enemyCharacter.TriggerEvent( AnimationEvent.OnCombatCommandTimeStarted );
+
+        battleFlowATL.StartAttackOpportunityCountdownTimer();
+        yield return new WaitUntil( () => ( !battleFlowATL.GetIsDuringAttackOpportunityPeriod() || ( _playerCharacter.GetCurrentSkill() != null && _enemyCharacter.GetCurrentSkill() != null ) ) );
+
+        BattleLog.Instance.AddOnScreenBattleLog( "判定先後手方" );
+
+        var (_attacker, _attackTarget) = BattleLogicManager.DetermineLeadAndImproviser( _playerCharacter, _enemyCharacter );
+
+        if (_attacker == null || _attackTarget == null)
+        {
+            BattleLog.Instance.AddOnScreenBattleLog( "沒有先後手方。當前 ATL 結束。" );
+            yield break;
+        }
+
+        // 有“先手方”和“後手方”。
+
+        BattleLog.Instance.AddOnScreenBattleLog( $"判定結果為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>成为“先手方”，"
+                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>成为“后手方”。" );
+
+        _attacker.PlayCharacterAnimation( "Idle" );
+        _attackTarget.PlayCharacterAnimation( "Idle" );
 
         ATLSlotListPanelV2 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
         float _skillAnimationLength = 0.0f;
@@ -746,12 +777,13 @@ public class BattleAnimationManager : MonoBehaviour
         {
             _attackTarget.SetCurrentAttacker( _attacker );
             BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget, out _log );
+            ShowSkillInfo( _attacker, _attackTarget );
             this.currentCaster = _attacker;
 
             BattleLog.Instance.AddOnScreenBattleLog( _log );
 
-            _attacker.TriggerEvent( AnimationEvent.SetCharacter );
-            _attackTarget.TriggerEvent( AnimationEvent.SetCharacter );
+            _attacker.TriggerEvent( AnimationEvent.OnPartA );
+            _attackTarget.TriggerEvent( AnimationEvent.OnPartA );
 
             yield return StartCoroutine( PlayShowingSkillInformation( _attacker ) );
 
@@ -760,6 +792,9 @@ public class BattleAnimationManager : MonoBehaviour
             _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
             _attackTarget.TriggerEvent( AnimationEvent.OnDefensePartA );
             StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
+
+            this.skillPromptPanel.ShowCommandPhase( TerminologyManager.REPULSE_COMMAND_TIME, _attackTarget is PlayerCharacter, _skillCountdownTime );
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入【 { TerminologyManager.REPULSE_COMMAND_TIME } 】。" );
 
             if (_attacker.GetCurrentSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
             {
@@ -862,7 +897,7 @@ public class BattleAnimationManager : MonoBehaviour
             }
         }
 
-        switch (_attackTargetSkillType)
+        switch ( _attackTargetSkillType )
         {
             case Skill.SkillType.none:
 
@@ -928,6 +963,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                 CharacterSkill _repulseSkill = _attackTarget.GetCurrentSkill();
                 BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
+                ShowSkillInfo( _attacker, _attackTarget );
                 this.currentCaster = _attackTarget;
 
                 BattleLog.Instance.AddOnScreenBattleLog( _log );
@@ -1098,6 +1134,7 @@ public class BattleAnimationManager : MonoBehaviour
                 }
 
                 BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
+                ShowSkillInfo( _attacker, _attackTarget );
                 this.currentCaster = _attackTarget;
 
                 BattleLog.Instance.AddOnScreenBattleLog( _log );
@@ -1273,12 +1310,13 @@ public class BattleAnimationManager : MonoBehaviour
             _targetATL = battleFlowRound.GetNextATL( attacker );
             battleFlowRound.GoToTargetATL( _targetATL, false );
             BattleLogicManager.ExecuteCasterSkillOnUse( attacker, attackTarget, out _log );
+            ShowSkillInfo( attacker, attackTarget );
             this.currentCaster = attacker;
 
             BattleLog.Instance.AddOnScreenBattleLog( _log );
-        }
 
-        yield return StartCoroutine( RunDerivedSkill( attacker, attackTarget, atlSlotListPanel, _targetATL.GetATLNumber(), _isAbleToUseSkill ) );
+            yield return StartCoroutine( RunDerivedSkill( attacker, attackTarget, atlSlotListPanel, _targetATL.GetATLNumber(), _isAbleToUseSkill ) );
+        }
     }
 
     private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound_V2 battleFlowRound, ATLSlotListPanelV2 atlSlotListPanel )
@@ -1289,17 +1327,19 @@ public class BattleAnimationManager : MonoBehaviour
         bool _isAbleToUseSkill = BattleLogicManager.IsAbleToUseSkill( attacker );
 
         string _log = "";
-        BattleFlowATL _targetATL = null;
+        BattleFlowATL_V2 _targetATL = null;
 
         if (_isAbleToUseSkill)
         {
+            _targetATL = battleFlowRound.GoToNextATL();
             BattleLogicManager.ExecuteCasterSkillOnUse( attacker, attackTarget, out _log );
+            ShowSkillInfo( attacker, attackTarget );
             this.currentCaster = attacker;
 
             BattleLog.Instance.AddOnScreenBattleLog( _log );
         }
 
-        yield return StartCoroutine( RunDerivedSkill( attacker, attackTarget, atlSlotListPanel, _targetATL.GetATLNumber(), _isAbleToUseSkill ) );
+        yield return StartCoroutine( RunDerivedSkill( attacker, attackTarget, atlSlotListPanel, ( _targetATL != null ) ? _targetATL.GetATLNumber() : 6, _isAbleToUseSkill ) );
     }
 
     private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber, bool isAbleToUseSkill )
@@ -1729,5 +1769,10 @@ public class BattleAnimationManager : MonoBehaviour
     public void SetIsDebugMode( bool isDebugMode )
     {
         this.isDebugMode = isDebugMode;
+    }
+
+    private void ShowSkillInfo( GameCharacter attacker, GameCharacter attackTarget )
+    {
+        this.skillPromptPanel.ShowCasterCurrentSkillInfo( attacker );
     }
 }

@@ -48,6 +48,7 @@ public class BattleFlowATL_V2
 
     public void StartAttackOpportunityCountdownTimer()
     {
+        this.isDuringAttackOpportunityPeriod = true;
         this.battleFlowManager.StartCoroutine( RunAttackOpportunityCountdownTimer() );
     }
 
@@ -61,7 +62,13 @@ public class BattleFlowATL_V2
         }
         while (Time.realtimeSinceStartup - _attackOpportunityStartTime < this.attackOpportunityDuration);
 
+        this.isDuringAttackOpportunityPeriod = false;
         this.onAttackOpportunityEndedCallback?.Invoke();
+    }
+
+    public float GetAttackOpportunityDuration()
+    {
+        return this.attackOpportunityDuration;
     }
 
     public bool GetIsDuringAttackOpportunityPeriod()
