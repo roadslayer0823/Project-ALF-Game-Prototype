@@ -6,7 +6,9 @@ public class SkillPromptPanelV2 : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private float skillNameShowingDuration = 1.0f;
-    [SerializeField] private float skillInfoPopSpeed = 0.25f;
+    [SerializeField] private float skillInfoPopSpeed = 0.1f;
+    [SerializeField] private float passiveSkillSlotFadeSpeed = 0.5f;
+    [SerializeField] private float passiveSkillSlotShowingDuration = 1.5f;
 
     [Header("")]
     [SerializeField] private Animator speedEffectAnimator = null;
@@ -26,29 +28,51 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [SerializeField] private Sprite activeSkillBackgroundImage = null;
     [SerializeField] private Sprite backendSkillBackgroundImage = null;
 
-    [Header("SkillBattleInfo || Enemy")]
+    [Header("SkillInfo || Enemy")]
     [SerializeField] private GameObject enemySkillInfoGO = null;
     [SerializeField] private GameObject enemySkillTagGO = null;
-    [SerializeField] private GameObject enemyPassiveSkillGO = null;
+    [SerializeField] private GameObject enemyCommandPhaseGO = null;
+    [SerializeField] private GameObject enemyPassiveSkillSlot1 = null;
+    [SerializeField] private GameObject enemyPassiveSkillSlot2 = null;
+    [SerializeField] private GameObject enemyPassiveSkillSlot3 = null;
+    [SerializeField] private GameObject enemyPassiveSkillSlot4 = null;
     [SerializeField] private TextMeshProUGUI enemySkillTagText = null;
     [SerializeField] private Image enemyAttackSkillEffect = null;
     [SerializeField] private Image enemyRepulseSkillEffect = null;
     [SerializeField] private Image enemyAttackSkillIcon = null;
     [SerializeField] private Image enemyRepulseSkillIcon = null;
-    [SerializeField] private TextMeshProUGUI enemySkillTypeText = null;
-    [SerializeField] private TextMeshProUGUI enemyPassiveSkillText= null;
+    [SerializeField] private Image enemyPassiveSkillBackgroundSlot1 = null;
+    [SerializeField] private Image enemyPassiveSkillBackgroundSlot2 = null;
+    [SerializeField] private Image enemyPassiveSkillBackgroundSlot3 = null;
+    [SerializeField] private Image enemyPassiveSkillBackgroundSlot4 = null;
+    [SerializeField] private TextMeshProUGUI enemyCommandPhaseText = null;
+    [SerializeField] private TextMeshProUGUI enemyPassiveSkillTextSlot1 = null;
+    [SerializeField] private TextMeshProUGUI enemyPassiveSkillTextSlot2 = null;
+    [SerializeField] private TextMeshProUGUI enemyPassiveSkillTextSlot3 = null;
+    [SerializeField] private TextMeshProUGUI enemyPassiveSkillTextSlot4 = null;
 
-    [Header("SkillBattleInfo || Player")]
+    [Header("SkillInfo || Player")]
     [SerializeField] private GameObject playerSkillInfoGO = null;
     [SerializeField] private GameObject playerSkillTagGO = null;
-    [SerializeField] private GameObject playerPassiveSkillGO = null;
+    [SerializeField] private GameObject playerCommandPhaseGO = null;
+    [SerializeField] private GameObject playerPassiveSkillSlot1 = null;
+    [SerializeField] private GameObject playerPassiveSkillSlot2 = null;
+    [SerializeField] private GameObject playerPassiveSkillSlot3 = null;
+    [SerializeField] private GameObject playerPassiveSkillSlot4 = null;
     [SerializeField] private TextMeshProUGUI playerSkillTagText = null;
     [SerializeField] private Image playerAttackSkillEffect = null;
     [SerializeField] private Image playerRepulseSkillEffect = null;
     [SerializeField] private Image playerAttackSkillIcon = null;
     [SerializeField] private Image playerRepulseSkillIcon = null;
-    [SerializeField] private TextMeshProUGUI playerSkillTypeText = null;
-    [SerializeField] private TextMeshProUGUI playerPassiveSkillText = null;
+    [SerializeField] private Image playerPassiveSkillBackgroundSlot1 = null;
+    [SerializeField] private Image playerPassiveSkillBackgroundSlot2 = null;
+    [SerializeField] private Image playerPassiveSkillBackgroundSlot3 = null;
+    [SerializeField] private Image playerPassiveSkillBackgroundSlot4 = null;
+    [SerializeField] private TextMeshProUGUI playerCommandPhaseText = null;
+    [SerializeField] private TextMeshProUGUI playerPassiveSkillTextSlot1 = null;
+    [SerializeField] private TextMeshProUGUI playerPassiveSkillTextSlot2 = null;
+    [SerializeField] private TextMeshProUGUI playerPassiveSkillTextSlot3 = null;
+    [SerializeField] private TextMeshProUGUI playerPassiveSkillTextSlot4 = null;
 
     public void Show(GameCharacter caster)
     {
@@ -109,9 +133,104 @@ public class SkillPromptPanelV2 : MonoBehaviour
         this.playerPassiveSkillName.SetActive(false);
     }
 
-    public void ShowPlayerSkillInfo(CharacterSkill characterSkill, string skillTypeText)
+    public void SetPlayerCommandPhaseProgressBar(float fillAmount)
     {
-        if (characterSkill != null && !LeanTween.isTweening(this.playerSkillInfoGO))
+        this.playerAttackSkillEffect.fillAmount = fillAmount;
+        this.playerRepulseSkillEffect.fillAmount = fillAmount;
+    }
+
+    public void SetEnemyCommandPhaseProgressBar(float fillAmount)
+    {
+        this.enemyAttackSkillEffect.fillAmount = fillAmount;
+        this.enemyRepulseSkillEffect.fillAmount = fillAmount;
+    }
+
+    public void ShowCasterCurrentSkillInfo(GameCharacter caster)
+    {
+        CharacterSkill _characterSkill = caster.GetCurrentSkill();
+        int _skillStatIncrement = caster.GetCurrentSkillStatIncrement();
+
+        if (_characterSkill == null || this.skillNameGO.activeInHierarchy)
+        {
+            return;
+        }
+
+        this.speedEffectGO.gameObject.SetActive(true);
+        this.strengthEffectGO.gameObject.SetActive(true);
+
+        if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active
+            || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse
+            || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.derived)
+        {
+            this.skillNameBackgroundImage.sprite = this.activeSkillBackgroundImage;
+        }
+        else if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend
+            || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.counter)
+        {
+            this.skillNameBackgroundImage.sprite = this.backendSkillBackgroundImage;
+        }
+
+        this.skillNameText.SetText(_characterSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
+
+        int _speed = _characterSkill.GetCharacterSubskillData().GetSubskillData().Speed;
+        int _strength = _characterSkill.GetCharacterSubskillData().GetSubskillData().Strength;
+
+        if (_speed + _skillStatIncrement == 3)
+        {
+            this.speedEffectAnimator.Play("SpeedV2");
+        }
+        else if (_speed + _skillStatIncrement >= 4)
+        {
+            this.speedEffectAnimator.Play("GodSpeedV2");
+        }
+
+        if (_strength + _skillStatIncrement == 2)
+        {
+            this.strengthEffectAnimator.Play("Strength_1_V2");
+        }
+        else if (_strength + _skillStatIncrement >= 3)
+        {
+            this.strengthEffectAnimator.Play("Strength_2_V2");
+        }
+
+        this.skillNameGO.SetActive(true);
+        LeanTween.delayedCall(skillNameShowingDuration, Hide);
+
+        if (true)//caster is PlayerCharacter
+        {
+            ShowSkillTag(_characterSkill, true);
+        }
+        else
+        {
+            ShowSkillTag(_characterSkill, false);
+        }
+    }
+
+    public void ShowCommandPhase(string phaseName, bool isPlayer, float duration)
+    {
+        if (isPlayer && !LeanTween.isTweening(this.playerCommandPhaseGO))
+        {
+            this.playerCommandPhaseGO.SetActive(true);
+
+            this.playerCommandPhaseText.SetText(phaseName);
+
+            LeanTween.moveLocalX(this.playerCommandPhaseGO, 0.0f, this.skillInfoPopSpeed);
+            LeanTween.moveLocalX(this.playerCommandPhaseGO, 600.0f, this.skillInfoPopSpeed).setDelay(duration).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.playerCommandPhaseGO);
+        }
+        else if (!isPlayer && !LeanTween.isTweening(this.enemyCommandPhaseGO))
+        {
+            this.enemyCommandPhaseGO.SetActive(true);
+
+            this.enemyCommandPhaseText.SetText(phaseName);
+
+            LeanTween.moveLocalX(this.enemyCommandPhaseGO, 0.0f, this.skillInfoPopSpeed);
+            LeanTween.moveLocalX(this.enemyCommandPhaseGO, -600.0f, this.skillInfoPopSpeed).setDelay(duration).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.enemyCommandPhaseGO);
+        }
+    }
+
+    private void ShowSkillTag(CharacterSkill characterSkill, bool isPlayer)
+    {
+        if (isPlayer && characterSkill != null && !LeanTween.isTweening(this.playerSkillInfoGO))
         {
             CharacterSubskill _playerCharacterSubskill = characterSkill.GetCharacterSubskillData();
 
@@ -156,17 +275,12 @@ public class SkillPromptPanelV2 : MonoBehaviour
                         this.playerSkillTagGO.SetActive(false);
                     }
                 }
-
-                this.playerSkillTypeText.SetText(skillTypeText);
             }
 
-            LeanTween.moveLocalX(this.playerSkillInfoGO, 0.0f, this.skillInfoPopSpeed);
+            LeanTween.moveLocalX(this.playerSkillTagGO, 0.0f, this.skillInfoPopSpeed);
+            LeanTween.moveLocalX(this.playerSkillTagGO, 600.0f, this.skillInfoPopSpeed).setDelay(this.skillNameShowingDuration).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.playerSkillTagGO);
         }
-    }
-
-    public void ShowEnemySkillInfo(CharacterSkill characterSkill, string skillTypeText)
-    {
-        if (characterSkill != null && !LeanTween.isTweening(this.enemySkillInfoGO))
+        else if (!isPlayer && characterSkill != null && !LeanTween.isTweening(this.enemySkillInfoGO))
         {
             CharacterSubskill _enemyCharacterSubskill = characterSkill.GetCharacterSubskillData();
 
@@ -211,43 +325,166 @@ public class SkillPromptPanelV2 : MonoBehaviour
                         this.enemySkillTagGO.SetActive(false);
                     }
                 }
-
-                this.enemySkillTypeText.SetText(skillTypeText);
             }
 
-            LeanTween.moveLocalX(this.enemySkillInfoGO, 0.0f, this.skillInfoPopSpeed);
+            LeanTween.moveLocalX(this.enemySkillTagGO, 0.0f, this.skillInfoPopSpeed);
+            LeanTween.moveLocalX(this.enemySkillTagGO, -600.0f, this.skillInfoPopSpeed).setDelay(this.skillNameShowingDuration).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.enemySkillTagGO);
         }
     }
 
-    public void HidePlayerSkillInfo()
+    private void OnCompleteTweenGameObject(object gameObject)
     {
-        LeanTween.moveLocalX(this.playerSkillInfoGO, 600.0f, this.skillInfoPopSpeed).setOnComplete(HidePlayerSkillInfoGameObject);
+        GameObject _gameObject = (GameObject)gameObject;
+        _gameObject.SetActive(false);
     }
 
-    public void HideEnemySkillInfo()
+    public void ShowPassiveSkillEffectTag(string tagName, bool isPlayer)
     {
-        LeanTween.moveLocalX(this.enemySkillInfoGO, -600.0f, this.skillInfoPopSpeed).setOnComplete(HideEnemySkillInfoGameObject);
+        HideNotTweeningPassiveSkillSlot();
+
+        if (isPlayer)
+        {
+            if (!this.playerPassiveSkillSlot1.activeInHierarchy) // slot 1
+            {
+                PopPassiveSkillSlot(this.playerPassiveSkillSlot1, this.playerPassiveSkillBackgroundSlot1, this.playerPassiveSkillTextSlot1, tagName, isPlayer);
+
+                if (this.playerPassiveSkillSlot3.activeInHierarchy)
+                {
+                    PushFurtherPassiveSkillSlot(this.playerPassiveSkillSlot3, this.playerPassiveSkillBackgroundSlot3, this.playerPassiveSkillTextSlot3, isPlayer);
+                }
+            }
+            else if (this.playerPassiveSkillSlot1.activeInHierarchy && !this.playerPassiveSkillSlot2.activeInHierarchy) //slot 2
+            {
+                PopPassiveSkillSlot(this.playerPassiveSkillSlot2, this.playerPassiveSkillBackgroundSlot2, this.playerPassiveSkillTextSlot2, tagName, isPlayer);
+
+                if (this.playerPassiveSkillSlot4.activeInHierarchy)
+                {
+                    PushFurtherPassiveSkillSlot(this.playerPassiveSkillSlot4, this.playerPassiveSkillBackgroundSlot4, this.playerPassiveSkillTextSlot4, isPlayer);
+                }
+            }
+            else if (this.playerPassiveSkillSlot1.activeInHierarchy && this.playerPassiveSkillSlot2.activeInHierarchy && !this.playerPassiveSkillSlot3.activeInHierarchy) //slot 3
+            {
+                PopPassiveSkillSlot(this.playerPassiveSkillSlot3, this.playerPassiveSkillBackgroundSlot3, this.playerPassiveSkillTextSlot3, tagName, isPlayer);
+
+                PushFurtherPassiveSkillSlot(this.playerPassiveSkillSlot1, this.playerPassiveSkillBackgroundSlot1, this.playerPassiveSkillTextSlot1, isPlayer);
+            }
+            else if (this.playerPassiveSkillSlot1.activeInHierarchy && this.playerPassiveSkillSlot2.activeInHierarchy && this.playerPassiveSkillSlot3.activeInHierarchy && !this.playerPassiveSkillSlot4.activeInHierarchy) //slot 4
+            {
+                PopPassiveSkillSlot(this.playerPassiveSkillSlot4, this.playerPassiveSkillBackgroundSlot4, this.playerPassiveSkillTextSlot4, tagName, isPlayer);
+
+                PushFurtherPassiveSkillSlot(this.playerPassiveSkillSlot2, this.playerPassiveSkillBackgroundSlot2, this.playerPassiveSkillTextSlot2, isPlayer);
+            }
+        }
+        else
+        {
+            if (!this.enemyPassiveSkillSlot1.activeInHierarchy) // slot 1
+            {
+                PopPassiveSkillSlot(this.enemyPassiveSkillSlot1, this.enemyPassiveSkillBackgroundSlot1, this.enemyPassiveSkillTextSlot1, tagName, isPlayer);
+
+                if (this.enemyPassiveSkillSlot3.activeInHierarchy)
+                {
+                    PushFurtherPassiveSkillSlot(this.enemyPassiveSkillSlot3, this.enemyPassiveSkillBackgroundSlot3, this.enemyPassiveSkillTextSlot3, isPlayer);
+                }
+            }
+            else if (this.enemyPassiveSkillSlot1.activeInHierarchy && !this.enemyPassiveSkillSlot2.activeInHierarchy) //slot 2
+            {
+                PopPassiveSkillSlot(this.enemyPassiveSkillSlot2, this.enemyPassiveSkillBackgroundSlot2, this.enemyPassiveSkillTextSlot2, tagName, isPlayer);
+
+                if (this.enemyPassiveSkillSlot4.activeInHierarchy)
+                {
+                    PushFurtherPassiveSkillSlot(this.enemyPassiveSkillSlot4, this.enemyPassiveSkillBackgroundSlot4, this.enemyPassiveSkillTextSlot4, isPlayer);
+                }
+            }
+            else if (this.enemyPassiveSkillSlot1.activeInHierarchy && this.enemyPassiveSkillSlot2.activeInHierarchy && !this.enemyPassiveSkillSlot3.activeInHierarchy) //slot 3
+            {
+                PopPassiveSkillSlot(this.enemyPassiveSkillSlot3, this.enemyPassiveSkillBackgroundSlot3, this.enemyPassiveSkillTextSlot3, tagName, isPlayer);
+
+                PushFurtherPassiveSkillSlot(this.enemyPassiveSkillSlot1, this.enemyPassiveSkillBackgroundSlot1, this.enemyPassiveSkillTextSlot1, isPlayer);
+            }
+            else if (this.enemyPassiveSkillSlot1.activeInHierarchy && this.enemyPassiveSkillSlot2.activeInHierarchy && this.enemyPassiveSkillSlot3.activeInHierarchy && !this.enemyPassiveSkillSlot4.activeInHierarchy) //slot 4
+            {
+                PopPassiveSkillSlot(this.enemyPassiveSkillSlot4, this.enemyPassiveSkillBackgroundSlot4, this.enemyPassiveSkillTextSlot4, tagName, isPlayer);
+
+                PushFurtherPassiveSkillSlot(this.enemyPassiveSkillSlot2, this.enemyPassiveSkillBackgroundSlot2, this.enemyPassiveSkillTextSlot2, isPlayer);
+            }
+        }
     }
 
-    private void HidePlayerSkillInfoGameObject()
+    private void HideNotTweeningPassiveSkillSlot()
     {
-        this.playerSkillInfoGO.SetActive(false);
+        if (!LeanTween.isTweening(this.playerPassiveSkillSlot1))
+        {
+            this.playerPassiveSkillSlot1.SetActive(false);
+        }
+
+        if (!LeanTween.isTweening(this.playerPassiveSkillSlot2))
+        {
+            this.playerPassiveSkillSlot2.SetActive(false);
+        }
+
+        if (!LeanTween.isTweening(this.playerPassiveSkillSlot3))
+        {
+            this.playerPassiveSkillSlot3.SetActive(false);
+        }
+
+        if (!LeanTween.isTweening(this.playerPassiveSkillSlot4))
+        {
+            this.playerPassiveSkillSlot4.SetActive(false);
+        }
+
+        if (!LeanTween.isTweening(this.enemyPassiveSkillSlot1))
+        {
+            this.enemyPassiveSkillSlot1.SetActive(false);
+        }
+
+        if (!LeanTween.isTweening(this.enemyPassiveSkillSlot2))
+        {
+            this.enemyPassiveSkillSlot2.SetActive(false);
+        }
+
+        if (!LeanTween.isTweening(this.enemyPassiveSkillSlot3))
+        {
+            this.enemyPassiveSkillSlot3.SetActive(false);
+        }
+
+        if (!LeanTween.isTweening(this.enemyPassiveSkillSlot4))
+        {
+            this.enemyPassiveSkillSlot4.SetActive(false);
+        }
     }
 
-    private void HideEnemySkillInfoGameObject()
+    private void SetAlphaToMax(Image backgroundImage, TextMeshProUGUI text)
     {
-        this.enemySkillInfoGO.SetActive(false);
+        text.alpha = 1.0f;
+
+        Color _backgroundImageColor = backgroundImage.color;
+        _backgroundImageColor.a = 1.0f;
+        backgroundImage.color = _backgroundImageColor;
     }
 
-    public void SetPlayerSkillInfoProgressBar(float fillAmount)
+    private void PopPassiveSkillSlot(GameObject slotToPop, Image slotBackground, TextMeshProUGUI slotText, string tagName, bool isPlayer)
     {
-        this.playerAttackSkillEffect.fillAmount = fillAmount;
-        this.playerRepulseSkillEffect.fillAmount = fillAmount;
+        slotToPop.SetActive(true);
+        slotText.SetText(tagName);
+        SetAlphaToMax(slotBackground, slotText);
+
+        LeanTween.moveLocalX(slotToPop, 0.0f, this.skillInfoPopSpeed);
+        LeanTween.moveLocalX(slotToPop, isPlayer? 600.0f : -600f, this.skillInfoPopSpeed).setDelay(this.passiveSkillSlotShowingDuration)
+            .setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(slotToPop);
     }
 
-    public void SetEnemySkillInfoProgressBar(float fillAmount)
+    private void PushFurtherPassiveSkillSlot(GameObject slotToPush, Image slotBackground, TextMeshProUGUI slotText, bool isPlayer)
     {
-        this.enemyAttackSkillEffect.fillAmount = fillAmount;
-        this.enemyRepulseSkillEffect.fillAmount = fillAmount;
+        LeanTween.cancel(slotToPush);
+        LeanTween.moveLocalX(slotToPush, isPlayer? -250.0f : 250.0f, this.skillInfoPopSpeed);
+
+        LeanTween.value(slotText.gameObject, 1f, 0f, this.passiveSkillSlotFadeSpeed).setOnUpdate((float value) =>
+        {
+            slotText.alpha = value;
+        });
+
+        LeanTween.alpha(slotBackground.rectTransform, 0f, this.passiveSkillSlotFadeSpeed);
+        LeanTween.moveLocalX(slotToPush, isPlayer ? 600.0f : -600f, this.skillInfoPopSpeed).setDelay(this.passiveSkillSlotFadeSpeed)
+            .setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(slotToPush);
     }
 }
