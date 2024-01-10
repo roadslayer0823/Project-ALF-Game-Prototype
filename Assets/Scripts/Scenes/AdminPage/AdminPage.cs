@@ -21,7 +21,7 @@ public class AdminPage : MonoBehaviour
 
     void Awake()
     {
-        this.titleLabel.SetText( $"Project ALF Game Prototype (version {Application.version})" );
+        this.titleLabel.SetText( $"Project ALF Game Prototype (version { Application.version })" );
 
         DatabaseManager.Instance.onAllVersionsLoadedCallback = GenerateTable;
 
@@ -66,7 +66,15 @@ public class AdminPage : MonoBehaviour
     private void OnStartGameButtonClicked()
     {
         AudioManager.Instance.PlaySoundEffect( this.buttonClickingAudioClip );
-        SceneManager.LoadScene( "BattleScene" );
+
+        if (SceneUtility.GetBuildIndexByScenePath( "BattleSceneV2" ) != -1)
+        {
+            SceneManager.LoadScene( "BattleSceneV2" );
+        }
+        else
+        {
+            SceneManager.LoadScene( "BattleScene" );
+        }
     }
 
     private void OnUpdateButtonClicked()
