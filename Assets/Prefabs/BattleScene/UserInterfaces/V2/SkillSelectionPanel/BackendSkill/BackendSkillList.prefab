@@ -86,7 +86,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7417680535992647030}
   m_Layer: 5
-  m_Name: PassiveSkillList
+  m_Name: BackendSkillList
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -128,7 +128,7 @@ GameObject:
   - component: {fileID: 1873684595972750450}
   - component: {fileID: 9043862478499013336}
   m_Layer: 5
-  m_Name: PassiveSkillListBox
+  m_Name: BackendSkillListBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

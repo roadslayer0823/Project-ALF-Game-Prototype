@@ -31,7 +31,7 @@ RectTransform:
   m_Children:
   - {fileID: 1012267114182258824}
   - {fileID: 7882923261070061789}
-  - {fileID: 4463265039994338562}
+  - {fileID: 377780452721206961}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -399,21 +399,13 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 929896807347168621, guid: 64fdb1b56593445a69eed289cc35997e, type: 3}
   m_PrefabInstance: {fileID: 210512133615916517}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &5978219323731048957
+--- !u!1001 &7653991214338662990
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 4076745988354898789}
     m_Modifications:
-    - target: {fileID: 3092723709310946167, guid: 52c8909fa7961401a91717341276e706, type: 3}
-      propertyPath: m_SortingLayer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5395259131819851899, guid: 52c8909fa7961401a91717341276e706, type: 3}
-      propertyPath: m_SortingLayer
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8000175405524141311, guid: 52c8909fa7961401a91717341276e706, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -444,11 +436,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8000175405524141311, guid: 52c8909fa7961401a91717341276e706, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 778
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8000175405524141311, guid: 52c8909fa7961401a91717341276e706, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 706
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8000175405524141311, guid: 52c8909fa7961401a91717341276e706, type: 3}
       propertyPath: m_LocalPosition.x
@@ -480,11 +472,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8000175405524141311, guid: 52c8909fa7961401a91717341276e706, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -115
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8000175405524141311, guid: 52c8909fa7961401a91717341276e706, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -166
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8000175405524141311, guid: 52c8909fa7961401a91717341276e706, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -500,20 +492,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8192461518330842886, guid: 52c8909fa7961401a91717341276e706, type: 3}
       propertyPath: m_Name
-      value: PassiveSkillSelectionTabV2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8192461518330842886, guid: 52c8909fa7961401a91717341276e706, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8804551897501876799, guid: 52c8909fa7961401a91717341276e706, type: 3}
-      propertyPath: m_SortingLayer
-      value: 0
+      value: BackendSkillSelectionTabV2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 52c8909fa7961401a91717341276e706, type: 3}
---- !u!224 &4463265039994338562 stripped
+--- !u!224 &377780452721206961 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8000175405524141311, guid: 52c8909fa7961401a91717341276e706, type: 3}
-  m_PrefabInstance: {fileID: 5978219323731048957}
+  m_PrefabInstance: {fileID: 7653991214338662990}
   m_PrefabAsset: {fileID: 0}
