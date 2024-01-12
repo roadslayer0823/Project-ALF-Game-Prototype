@@ -16,6 +16,14 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     private List<CharacterSkill> selectedSkills = null;
     private const string AUDIO_ID_WHEEL = "wheel";
 
+    public void Initialize()
+    {
+        for (int i = 0; i < this.skillSlots.Length; i++)
+        {
+            this.skillSlots[ i ].Initialize( this );
+        }
+    }
+
     public void InitializeScale()
     {
         MoveSlot(1);

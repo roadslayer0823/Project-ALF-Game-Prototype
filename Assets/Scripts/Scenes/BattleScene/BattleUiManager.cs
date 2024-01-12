@@ -29,6 +29,7 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             this.skillSlotListPanel.SetIsSkillSlotListScrollable( false );
+            this.skillSlotListPanelV2.Initialize();
         }
 
         this.atlSlotListPanelV2.Initialize();
@@ -196,6 +197,12 @@ public class BattleUiManager : MonoBehaviour
             this.atlSlotListPanelV2.SetUp( flowATLs );
             this.atlSlotListPanelV2.gameObject.SetActive( true );
         }
+    }
+
+    public void ShowATLSlotListPanel( BattleFlowATL_V2[] flowATLs )
+    {
+        this.atlSlotListPanelV2.SetUp( flowATLs );
+        this.atlSlotListPanelV2.gameObject.SetActive( true );
     }
 
     public void HideATLSlotListPanel()

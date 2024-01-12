@@ -6,7 +6,8 @@ public class BattleGameManager : MonoBehaviour
 {
     [Header( "Managers" )]
     [SerializeField] private BattleUiManager battleUiManager = null;
-    [SerializeField] private BattleFlowManager battleFlowManager = null;
+    [System.Obsolete][SerializeField] private BattleFlowManager battleFlowManager = null;
+    [SerializeField] private BattleFlowManager_V2 battleFlowManager_V2 = null;
     [SerializeField] private BattleAnimationManager battleAnimationManager = null;
 
     [Header( "References" )]
@@ -43,7 +44,16 @@ public class BattleGameManager : MonoBehaviour
     void Start()
     {
         this.battleUiManager.Initialize( this );
-        this.battleFlowManager.Initialize( this );
+
+        if (this.battleFlowManager_V2 == null)
+        {
+            this.battleFlowManager.Initialize( this );
+        }
+        else
+        {
+            this.battleFlowManager_V2.Initialize( this );
+        }
+
         this.battleAnimationManager.Initialize( OnBattleEnded );
 
         // -------------------- Set up the player's characters --------------------
@@ -72,7 +82,15 @@ public class BattleGameManager : MonoBehaviour
             this.battleUiManager.HideATLSlotListPanel();
 
             this.battleUiManager.GetCharacterInfoPanel().SetSelectedCharacter( this.playerCharacter );
-            this.battleFlowManager.StartGame();
+
+            if (this.battleFlowManager_V2 == null)
+            {
+                this.battleFlowManager.StartGame();
+            }
+            else
+            {
+                this.battleFlowManager_V2.StartGame();
+            }
 
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COMMAND_PHASE );
         } );
@@ -82,7 +100,15 @@ public class BattleGameManager : MonoBehaviour
 
     public void StartExecution()
     {
-        this.battleFlowManager.GetCurrentRound().SetCurrentPhase( BattleFlowRound.PhaseType.Execution );
+        if (this.battleFlowManager_V2 == null)
+        {
+            this.battleFlowManager.GetCurrentRound().SetCurrentPhase( BattleFlowRound.PhaseType.Execution );
+        }
+        else
+        {
+            this.battleFlowManager_V2.GetCurrentRound().SetCurrentPhase( BattleFlowRound_V2.PhaseType.Execution );
+        }
+
         this.battleUiManager.GetCharacterInfoPanel().HideRoundInfoText();
     }
 
@@ -104,24 +130,48 @@ public class BattleGameManager : MonoBehaviour
     public void OnExecutionPhaseStarted()
     {
         this.battleUiManager.ShowBattleSection( this.playerCharacter );
-        this.playerCharacter.PlayCharacterAnimation( "Idle" );
-        this.enemyCharacter.PlayCharacterAnimation( "Idle" );
-
         this.battleUiManager.HideSkillSelectionPanel();
         this.battleUiManager.ShowSkillSlotListPanel();
-        this.battleUiManager.ShowATLSlotListPanel( this.battleFlowManager.GetCurrentRound().GetFlowATLs() );
+
+        if (this.battleFlowManager_V2 == null)
+        {
+            this.playerCharacter.PlayCharacterAnimation( "Idle" );
+            this.enemyCharacter.PlayCharacterAnimation( "Idle" );
+            this.battleUiManager.ShowATLSlotListPanel( this.battleFlowManager.GetCurrentRound().GetFlowATLs() );
+        }
+        else
+        {
+            this.battleUiManager.ShowATLSlotListPanel( this.battleFlowManager_V2.GetCurrentRound().GetFlowATLs() );
+        }
 
         if (!this.battleUiManager.IsUsingSkillSlotListPanelV2())
         {
             this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( true );
         }
 
-        this.battleFlowManager.GetCurrentRound().StartRunningATL();
+        if (this.battleFlowManager_V2 == null)
+        {
+            this.battleFlowManager.GetCurrentRound().StartRunningATL();
+        }
+        else
+        {
+            this.battleFlowManager_V2.GetCurrentRound().StartRunningATL();
+        }
     }
 
     public void OnExecutionPhaseFinished()
     {
-        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { this.battleFlowManager.GetCurrentRound().GetRoundNumber() } 回合結束 】</color>" );
+        int _roundNumber = 0;
+        if (this.battleFlowManager_V2 == null)
+        {
+            _roundNumber = this.battleFlowManager.GetCurrentRound().GetRoundNumber();
+        }
+        else
+        {
+            _roundNumber = this.battleFlowManager_V2.GetCurrentRound().GetRoundNumber();
+        }
+
+        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { _roundNumber } 回合結束 】</color>" );
 
         BattleLogicManager.OnExecutionPhaseFinished( GetCharacterList() );
 
@@ -139,12 +189,30 @@ public class BattleGameManager : MonoBehaviour
         }
 
         this.battleUiManager.CheckWhetherToEnableExecuteButton();
-        this.battleFlowManager.StartNewRound();
+
+        if (this.battleFlowManager_V2 == null)
+        {
+            this.battleFlowManager.StartNewRound();
+        }
+        else
+        {
+            this.battleFlowManager_V2.StartNewRound();
+        }
     }
 
     public void OnNewRoundStarted()
     {
-        if (battleFlowManager.GetCurrentRound().GetRoundNumber() > 1)
+        int _roundNumber = 0;
+        if (this.battleFlowManager_V2 == null)
+        {
+            _roundNumber = this.battleFlowManager.GetCurrentRound().GetRoundNumber();
+        }
+        else
+        {
+            _roundNumber = this.battleFlowManager_V2.GetCurrentRound().GetRoundNumber();
+        }
+
+        if (_roundNumber > 1)
         {
             BattleLogicManager.OnNewRoundStarted( GetCharacterList() );
         }
@@ -179,7 +247,11 @@ public class BattleGameManager : MonoBehaviour
             case BattleAnimationManager.AnimationEvent.OnBeingInBreakStatus:
 
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_BREAK );
-                this.battleFlowManager.GetCurrentRound().UpdateATLSlotStatuses( gameCharacter, false );
+
+                if (this.battleFlowManager_V2 == null)
+                {
+                    this.battleFlowManager.GetCurrentRound().UpdateATLSlotStatuses( gameCharacter, false );
+                }
 
                 break;
 
@@ -268,6 +340,11 @@ public class BattleGameManager : MonoBehaviour
     public BattleFlowManager GetBattleFlowManager()
     {
         return this.battleFlowManager;
+    }
+
+    public BattleFlowManager_V2 GetBattleFlowManager_V2()
+    {
+        return this.battleFlowManager_V2;
     }
 
     public BattleAnimationManager GetBattleAnimationManager()

@@ -23,6 +23,7 @@ public class ATLSlotV2 : MonoBehaviour
 
     [Header("")]
     private BattleFlowATL battleFlowATL = null;
+    private BattleFlowATL_V2 battleFlowATL_V2 = null;
 
     public Action onSkillSlotSwipedCallback = null;
     public Action onATLSlotExecutedCallback = null;
@@ -50,41 +51,72 @@ public class ATLSlotV2 : MonoBehaviour
         this.atlSlot.SetNativeSize();
     }
 
+    public void DefaultATLSetup( BattleFlowATL_V2 flowATL )
+    {
+        this.battleFlowATL_V2 = flowATL;
+        Show( ATLCurrentStatus.Unused );
+        this.atlSlot.SetNativeSize();
+    }
+
     public void Show(ATLCurrentStatus aTLCurrentStatus)
     {
-        if (this.battleFlowATL.CheckIsPlayer())
+        if (this.battleFlowATL != null)
         {
+            if (this.battleFlowATL.CheckIsPlayer())
+            {
+                if (aTLCurrentStatus == ATLCurrentStatus.Unused)
+                {
+                    this.atlSlot.sprite = this.playerUnuseAtlSlot;
+                }
+                else if (aTLCurrentStatus == ATLCurrentStatus.Using)
+                {
+                    this.atlSlot.sprite = this.playerUsingAtlSlot;
+                }
+                else if (aTLCurrentStatus == ATLCurrentStatus.Used)
+                {
+                    this.atlSlot.sprite = this.playerUsedAtlSlot;
+                }
+
+                this.startingPointX = this.PlayerStartPoint.position.x;
+            }
+            else
+            {
+                if (aTLCurrentStatus == ATLCurrentStatus.Unused)
+                {
+                    this.atlSlot.sprite = this.enemyUnuseAtlSlot;
+                }
+                else if (aTLCurrentStatus == ATLCurrentStatus.Using)
+                {
+                    this.atlSlot.sprite = this.enemyUsingAtlSlot;
+                }
+                else if (aTLCurrentStatus == ATLCurrentStatus.Used)
+                {
+                    this.atlSlot.sprite = this.enemyUsedAtlSlot;
+                }
+
+                this.startingPointX = this.EnemyStartPoint.position.x;
+            }
+        }
+
+        if (this.battleFlowATL_V2 != null)
+        {
+            int _atlNumber = this.battleFlowATL_V2.GetATLNumber();
+            bool _isPlayer = ( _atlNumber % 2 == 1 );
+
             if (aTLCurrentStatus == ATLCurrentStatus.Unused)
             {
-                this.atlSlot.sprite = this.playerUnuseAtlSlot;
+                this.atlSlot.sprite = ( _isPlayer ) ? this.playerUnuseAtlSlot : this.enemyUnuseAtlSlot;
             }
             else if (aTLCurrentStatus == ATLCurrentStatus.Using)
             {
-                this.atlSlot.sprite = this.playerUsingAtlSlot;
+                this.atlSlot.sprite = ( _isPlayer ) ? this.playerUsingAtlSlot : this.enemyUsingAtlSlot;
             }
             else if (aTLCurrentStatus == ATLCurrentStatus.Used)
             {
-                this.atlSlot.sprite = this.playerUsedAtlSlot;
+                this.atlSlot.sprite = ( _isPlayer ) ? this.playerUsedAtlSlot : this.enemyUsedAtlSlot;
             }
 
             this.startingPointX = this.PlayerStartPoint.position.x;
-        }
-        else
-        {
-            if (aTLCurrentStatus == ATLCurrentStatus.Unused)
-            {
-                this.atlSlot.sprite = this.enemyUnuseAtlSlot;
-            }
-            else if (aTLCurrentStatus == ATLCurrentStatus.Using)
-            {
-                this.atlSlot.sprite = this.enemyUsingAtlSlot;
-            }
-            else if (aTLCurrentStatus == ATLCurrentStatus.Used)
-            {
-                this.atlSlot.sprite = this.enemyUsedAtlSlot;
-            }
-
-            this.startingPointX = this.EnemyStartPoint.position.x;
         }
 
         base.gameObject.SetActive(true);

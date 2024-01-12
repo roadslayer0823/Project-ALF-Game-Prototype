@@ -75,6 +75,11 @@ public class BattleFlowManager_V2 : MonoBehaviour
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { this.currentRound.GetRoundNumber() } 回合的 ATL { this.currentRound.GetCurrentATL().GetATLNumber() } 】</color>" );
     }
 
+    public BattleFlowRound_V2 GetCurrentRound()
+    {
+        return this.currentRound;
+    }
+
     public BattleGameManager GetBattleGameManager()
     {
         return this.battleGameManager;

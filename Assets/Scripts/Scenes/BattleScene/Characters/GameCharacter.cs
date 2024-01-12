@@ -42,6 +42,7 @@ public class GameCharacter : MonoBehaviour
     protected Action<string> onSkillEffectAnimationTriggeredCallback = null;
     protected Action onCharacterInfoUpdated = null;
 
+    private CharacterIdentityType currentCharacterIdentityType = CharacterIdentityType.None;
     private CharacterSkill currentSkill = null;
     private CharacterSkill currentObservingSkill = null;
     private int currentSkillStatIncrement = 0;
@@ -50,6 +51,9 @@ public class GameCharacter : MonoBehaviour
     private int counterAttacks = 0;
     private bool isAbleToUseSkill = false;
     private List<PopUpDisplayInfo> popUpDisplayInfoList = new List<PopUpDisplayInfo>();
+
+    // Version 2
+    private bool isCounterAttacking = false;
 
     // Break Status
     private int breakStatusRemainingATLs = 0;
@@ -60,7 +64,25 @@ public class GameCharacter : MonoBehaviour
     private int energyMarkerRemainingATLs = 0;
     private bool hasJustAddedEnergyMarker = false;
 
+    // Audios
     private const string AUDIO_ID_BREAK = "break";
+
+    public enum CharacterIdentityType
+    {
+        None,
+        Lead,
+        Improviser,
+        Assaulter,
+        LightAssaulter,
+        HeavyAssaulter,
+        Recipient,
+        LightRecipient,
+        HeavyRecipient,
+        SuccessfulResister,
+        SuccessfulDefender,
+        SuccessfulEvader,
+        Deuce
+    }
 
     public enum CharacterActionType
     {
@@ -116,6 +138,26 @@ public class GameCharacter : MonoBehaviour
 
     public virtual void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
     {
+    }
+
+    public void SetCurrentCharacterIdentityType( CharacterIdentityType currentCharacterIdentityType )
+    {
+        this.currentCharacterIdentityType = currentCharacterIdentityType;
+    }
+
+    public CharacterIdentityType GetCurrentCharacterIdentityType()
+    {
+        return this.currentCharacterIdentityType;
+    }
+
+    public void SetIsCounterAttacking( bool isCounterAttacking )
+    {
+        this.isCounterAttacking = isCounterAttacking;
+    }
+
+    public bool GetIsCounterAttacking()
+    {
+        return this.isCounterAttacking;
     }
 
     public float AddCurrentHealthPoint( float amount )
@@ -461,14 +503,17 @@ public class GameCharacter : MonoBehaviour
             return false;
         }
 
-        BattleFlowATL _nextATL = battleGameManager.GetBattleFlowManager().GetCurrentRound().GetNextATL( this );
-        if (_nextATL != null)
+        if (battleGameManager.GetBattleFlowManager_V2() == null)
         {
-            repulseSkill = _nextATL.GetSelectedSkill().GetCharacterSubskillData().GetSelectedRepulseSkill();
-        }
-        else
-        {
-            return false;
+            BattleFlowATL _nextATL = battleGameManager.GetBattleFlowManager().GetCurrentRound().GetNextATL( this );
+            if (_nextATL != null)
+            {
+                repulseSkill = _nextATL.GetSelectedSkill().GetCharacterSubskillData().GetSelectedRepulseSkill();
+            }
+            else
+            {
+                return false;
+            }
         }
 
         if (repulseSkill != null

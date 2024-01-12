@@ -53,7 +53,7 @@ public class PlayerActionPanel : MonoBehaviour
         this.onActiveSkillButtonClickedCallback = onShowActiveSkillSelectionPanelCallback;
         this.onBackendSkillButtonClickedCallback = onShowBackendSkillSelectionPanelCallback;
 
-        this.skillSelectionPanelButtonText.SetText("Backend Skill \n後台技能");
+        this.skillSelectionPanelButtonText?.SetText("Backend Skill \n後台技能");
     }
 
     public void SetSelectedGameCharacter( GameCharacter selectedGameCharacter )
@@ -290,7 +290,7 @@ public class PlayerActionPanel : MonoBehaviour
         }
 
         this.isShowingActiveSkillSelectionPanelNext = false;
-        this.skillSelectionPanelButtonText.SetText("Backend Skill \n後台技能");
+        this.skillSelectionPanelButtonText?.SetText("Backend Skill \n後台技能");
     }
 
     // Show backend skill selection panel
@@ -306,6 +306,6 @@ public class PlayerActionPanel : MonoBehaviour
         }
 
         this.isShowingActiveSkillSelectionPanelNext = true;
-        this.skillSelectionPanelButtonText.SetText("Active Skill \n主動技能");
+        this.skillSelectionPanelButtonText?.SetText("Active Skill \n主動技能");
     }
 }
