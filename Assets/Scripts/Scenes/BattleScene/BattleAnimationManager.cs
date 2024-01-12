@@ -704,8 +704,10 @@ public class BattleAnimationManager : MonoBehaviour
         _enemyCharacter.TriggerEvent( AnimationEvent.SetCharacter );
         _enemyCharacter.TriggerEvent( AnimationEvent.OnCombatCommandTimeStarted );
 
-        battleFlowATL.StartAttackOpportunityCountdownTimer();
+        battleFlowATL.StartAttackOpportunityCountdownTimer( this.skillPromptPanel );
         yield return new WaitUntil( () => ( !battleFlowATL.GetIsDuringAttackOpportunityPeriod() || ( _playerCharacter.GetCurrentSkill() != null && _enemyCharacter.GetCurrentSkill() != null ) ) );
+        this.skillPromptPanel.HideCommandPhase( true );
+        this.skillPromptPanel.HideCommandPhase( false );
 
         BattleLog.Instance.AddOnScreenBattleLog( "判定先後手方" );
 
@@ -1664,7 +1666,7 @@ public class BattleAnimationManager : MonoBehaviour
     private IEnumerator PlayShowingSkillInformation( GameCharacter caster )
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
-        this.skillPromptPanel.Show( caster );
+        this.skillPromptPanel.ShowCasterCurrentSkillInfo( caster );
 
         if (CheckHasTimeStop( caster ))
         {

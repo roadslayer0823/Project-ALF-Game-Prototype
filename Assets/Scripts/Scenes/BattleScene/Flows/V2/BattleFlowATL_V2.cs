@@ -46,21 +46,31 @@ public class BattleFlowATL_V2
         this.isATLSlotExecuted = isATLSlotExecuted;
     }
 
-    public void StartAttackOpportunityCountdownTimer()
+    public void StartAttackOpportunityCountdownTimer( SkillPromptPanelV2 skillPromptPanel )
     {
         this.isDuringAttackOpportunityPeriod = true;
-        this.battleFlowManager.StartCoroutine( RunAttackOpportunityCountdownTimer() );
+        this.battleFlowManager.StartCoroutine( RunAttackOpportunityCountdownTimer( skillPromptPanel ) );
     }
 
-    private IEnumerator RunAttackOpportunityCountdownTimer()
+    private IEnumerator RunAttackOpportunityCountdownTimer( SkillPromptPanelV2 skillPromptPanel )
     {
+        skillPromptPanel.SetCommandPhaseProgressBar( 1.0f, true, true );
+        skillPromptPanel.SetCommandPhaseProgressBar( 1.0f, true, false );
+
         float _attackOpportunityStartTime = Time.realtimeSinceStartup;
+        float _remainingTime = 0.0f;
 
         do
         {
             yield return null;
+
+            _remainingTime = this.attackOpportunityDuration - ( Time.realtimeSinceStartup - _attackOpportunityStartTime );
+
+            float _remainingTimePercentage = _remainingTime / this.attackOpportunityDuration;
+            skillPromptPanel.SetCommandPhaseProgressBar( _remainingTimePercentage, true, true );
+            skillPromptPanel.SetCommandPhaseProgressBar( _remainingTimePercentage, true, false );
         }
-        while (Time.realtimeSinceStartup - _attackOpportunityStartTime < this.attackOpportunityDuration);
+        while (_remainingTime > 0);
 
         this.isDuringAttackOpportunityPeriod = false;
         this.onAttackOpportunityEndedCallback?.Invoke();
