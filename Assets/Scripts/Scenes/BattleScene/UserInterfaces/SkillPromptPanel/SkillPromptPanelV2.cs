@@ -55,6 +55,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [SerializeField] private GameObject playerSkillInfoGO = null;
     [SerializeField] private GameObject playerSkillTagGO = null;
     [SerializeField] private GameObject playerCommandPhaseGO = null;
+    [SerializeField] private GameObject[] playerPassiveSkillSlots;
     [SerializeField] private GameObject playerPassiveSkillSlot1 = null;
     [SerializeField] private GameObject playerPassiveSkillSlot2 = null;
     [SerializeField] private GameObject playerPassiveSkillSlot3 = null;
@@ -74,58 +75,6 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerPassiveSkillTextSlot3 = null;
     [SerializeField] private TextMeshProUGUI playerPassiveSkillTextSlot4 = null;
 
-    public void Show(GameCharacter caster)
-    {
-        CharacterSkill _characterSkill = caster.GetCurrentSkill();
-        int _skillStatIncrement = caster.GetCurrentSkillStatIncrement();
-
-        if (_characterSkill == null || this.skillNameGO.activeInHierarchy)
-        {
-            return;
-        }
-
-        this.speedEffectGO.gameObject.SetActive(true);
-        this.strengthEffectGO.gameObject.SetActive(true);
-
-        if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active
-            || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse
-            || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.derived)
-        {
-            this.skillNameBackgroundImage.sprite = this.activeSkillBackgroundImage;
-        }
-        else if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend
-            || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.counter)
-        {
-            this.skillNameBackgroundImage.sprite = this.backendSkillBackgroundImage;
-        }
-
-        this.skillNameText.SetText(_characterSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
-
-        int _speed = _characterSkill.GetCharacterSubskillData().GetSubskillData().Speed;
-        int _strength = _characterSkill.GetCharacterSubskillData().GetSubskillData().Strength;
-
-        if (_speed + _skillStatIncrement == 3)
-        {
-            this.speedEffectAnimator.Play("SpeedV2");
-        }
-        else if (_speed + _skillStatIncrement >= 4)
-        {
-            this.speedEffectAnimator.Play("GodSpeedV2");
-        }
-
-        if (_strength + _skillStatIncrement == 2)
-        {
-            this.strengthEffectAnimator.Play("Strength_1_V2");
-        }
-        else if (_strength + _skillStatIncrement >= 3)
-        {
-            this.strengthEffectAnimator.Play("Strength_2_V2");
-        }
-
-        this.skillNameGO.SetActive(true);
-        LeanTween.delayedCall( skillNameShowingDuration, Hide );
-    }
-
     private void Hide()
     {
         this.skillNameGO.SetActive(false);
@@ -133,16 +82,50 @@ public class SkillPromptPanelV2 : MonoBehaviour
         this.playerPassiveSkillName.SetActive(false);
     }
 
-    public void SetPlayerCommandPhaseProgressBar(float fillAmount)
+    public void SetCommandPhaseProgressBar(float fillAmount, bool isActiveSkill, bool isPlayer)
     {
-        this.playerAttackSkillEffect.fillAmount = fillAmount;
-        this.playerRepulseSkillEffect.fillAmount = fillAmount;
-    }
+        if (isPlayer)
+        {
+            if (isActiveSkill)
+            {
+                this.playerAttackSkillEffect.gameObject.SetActive(true);
+                this.playerRepulseSkillEffect.gameObject.SetActive(false);
+                this.playerAttackSkillIcon.gameObject.SetActive(true);
+                this.playerRepulseSkillIcon.gameObject.SetActive(false);
 
-    public void SetEnemyCommandPhaseProgressBar(float fillAmount)
-    {
-        this.enemyAttackSkillEffect.fillAmount = fillAmount;
-        this.enemyRepulseSkillEffect.fillAmount = fillAmount;
+                this.playerAttackSkillEffect.fillAmount = fillAmount;
+            }
+            else
+            {
+                this.playerAttackSkillEffect.gameObject.SetActive(false);
+                this.playerRepulseSkillEffect.gameObject.SetActive(true);
+                this.playerAttackSkillIcon.gameObject.SetActive(false);
+                this.playerRepulseSkillIcon.gameObject.SetActive(true);
+
+                this.playerRepulseSkillEffect.fillAmount = fillAmount;
+            }
+        }
+        else
+        {
+            if (isActiveSkill)
+            {
+                this.enemyAttackSkillEffect.gameObject.SetActive(true);
+                this.enemyRepulseSkillEffect.gameObject.SetActive(false);
+                this.enemyAttackSkillIcon.gameObject.SetActive(true);
+                this.enemyRepulseSkillIcon.gameObject.SetActive(false);
+
+                this.enemyAttackSkillEffect.fillAmount = fillAmount;
+            }
+            else
+            {
+                this.enemyAttackSkillEffect.gameObject.SetActive(false);
+                this.enemyRepulseSkillEffect.gameObject.SetActive(true);
+                this.enemyAttackSkillIcon.gameObject.SetActive(false);
+                this.enemyRepulseSkillIcon.gameObject.SetActive(true);
+
+                this.enemyRepulseSkillEffect.fillAmount = fillAmount;
+            }
+        }
     }
 
     public void ShowCasterCurrentSkillInfo(GameCharacter caster)
@@ -196,7 +179,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         this.skillNameGO.SetActive(true);
         LeanTween.delayedCall(skillNameShowingDuration, Hide);
 
-        if (true)//caster is PlayerCharacter
+        if (caster is PlayerCharacter)
         {
             ShowSkillTag(_characterSkill, true);
         }
@@ -206,7 +189,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
     }
 
-    public void ShowCommandPhase(string phaseName, bool isPlayer, float duration)
+    public void ShowCommandPhase(string phaseName, bool isPlayer, float duration = 0)
     {
         if (isPlayer && !LeanTween.isTweening(this.playerCommandPhaseGO))
         {
@@ -215,7 +198,11 @@ public class SkillPromptPanelV2 : MonoBehaviour
             this.playerCommandPhaseText.SetText(phaseName);
 
             LeanTween.moveLocalX(this.playerCommandPhaseGO, 0.0f, this.skillInfoPopSpeed);
-            LeanTween.moveLocalX(this.playerCommandPhaseGO, 600.0f, this.skillInfoPopSpeed).setDelay(duration).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.playerCommandPhaseGO);
+
+            if (duration > 0)
+            {
+                LeanTween.moveLocalX(this.playerCommandPhaseGO, 600.0f, this.skillInfoPopSpeed).setDelay(duration).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.playerCommandPhaseGO);
+            }
         }
         else if (!isPlayer && !LeanTween.isTweening(this.enemyCommandPhaseGO))
         {
@@ -224,7 +211,31 @@ public class SkillPromptPanelV2 : MonoBehaviour
             this.enemyCommandPhaseText.SetText(phaseName);
 
             LeanTween.moveLocalX(this.enemyCommandPhaseGO, 0.0f, this.skillInfoPopSpeed);
-            LeanTween.moveLocalX(this.enemyCommandPhaseGO, -600.0f, this.skillInfoPopSpeed).setDelay(duration).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.enemyCommandPhaseGO);
+
+            if (duration > 0)
+            {
+                LeanTween.moveLocalX(this.enemyCommandPhaseGO, -600.0f, this.skillInfoPopSpeed).setDelay(duration).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.enemyCommandPhaseGO);
+            }
+        }
+    }
+
+    public void HideCommandPhase(bool isPlayer)
+    {
+        if (isPlayer)
+        {
+            LeanTween.cancel(this.playerCommandPhaseGO);
+            LeanTween.moveLocalX(this.playerCommandPhaseGO, 600.0f, this.skillInfoPopSpeed).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.playerCommandPhaseGO);
+
+            this.playerAttackSkillEffect.fillAmount = 0;
+            this.playerRepulseSkillEffect.fillAmount = 0;
+        }
+        else
+        {
+            LeanTween.cancel(this.enemyCommandPhaseGO);
+            LeanTween.moveLocalX(this.enemyCommandPhaseGO, -600.0f, this.skillInfoPopSpeed).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.enemyCommandPhaseGO);
+
+            this.enemyAttackSkillEffect.fillAmount = 0;
+            this.enemyRepulseSkillEffect.fillAmount = 0;
         }
     }
 
@@ -412,24 +423,14 @@ public class SkillPromptPanelV2 : MonoBehaviour
 
     private void HideNotTweeningPassiveSkillSlot()
     {
-        if (!LeanTween.isTweening(this.playerPassiveSkillSlot1))
+        for (int i = 0; i < this.playerPassiveSkillSlots.Length; i++)
         {
-            this.playerPassiveSkillSlot1.SetActive(false);
-        }
+            GameObject _playerPassiveSkillSlot = this.playerPassiveSkillSlots[i];
 
-        if (!LeanTween.isTweening(this.playerPassiveSkillSlot2))
-        {
-            this.playerPassiveSkillSlot2.SetActive(false);
-        }
-
-        if (!LeanTween.isTweening(this.playerPassiveSkillSlot3))
-        {
-            this.playerPassiveSkillSlot3.SetActive(false);
-        }
-
-        if (!LeanTween.isTweening(this.playerPassiveSkillSlot4))
-        {
-            this.playerPassiveSkillSlot4.SetActive(false);
+            if (!LeanTween.isTweening(_playerPassiveSkillSlot))
+            {
+                _playerPassiveSkillSlot.SetActive(false);
+            }
         }
 
         if (!LeanTween.isTweening(this.enemyPassiveSkillSlot1))
