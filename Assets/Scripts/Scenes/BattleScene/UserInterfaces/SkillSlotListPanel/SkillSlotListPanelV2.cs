@@ -18,14 +18,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
 
     public void Initialize()
     {
-        for (int i = 0; i < this.skillSlots.Length; i++)
-        {
-            this.skillSlots[ i ].Initialize( this );
-        }
-    }
-
-    public void InitializeScale()
-    {
         MoveSlot(1);
         MoveSlot(-1);
     }
