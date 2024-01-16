@@ -13,7 +13,7 @@ public class SkillSlotListPanelV2 : MonoBehaviour
 
     private List<Vector3> initialScale = new List<Vector3>();
     private GameCharacter selectedGameCharacter = null;
-    private List<CharacterSkill> selectedSkills = null;
+    private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
     private const string AUDIO_ID_WHEEL = "wheel";
 
     public void Initialize()
@@ -78,12 +78,47 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         }
     }
 
+    public void ChangeToRepulseMode(GameCharacter gameCharacter)
+    {
+        this.selectedSkills.Clear();
+        for (int i = 0; i < gameCharacter.GetSelectedActiveSkillList().Count; i++)
+        {
+            CharacterSkill skillList = gameCharacter.GetSelectedActiveSkillList()[i];
+
+            for (int j = 0; j < skillList.GetCharacterSubskillData().GetRepulseSkillList().Count; j++)
+            {
+                this.selectedSkills.Add(skillList.GetCharacterSubskillData().GetRepulseSkillList()[j]);
+            }
+        }
+        InsertIntoSkillSlot(this.selectedSkills);
+    }
+
+    public void ChangeToDefaultMode(GameCharacter gameCharacter)
+    {
+        this.selectedSkills.Clear();
+        this.selectedSkills = new List<CharacterSkill>(gameCharacter.GetSelectedActiveSkillList());
+        if (this.selectedSkills.Count > skillSlots.Length)
+        {
+            return;
+        }
+        InsertIntoSkillSlot(this.selectedSkills);
+    }
+
+    public void ChangeToDerivedMode(GameCharacter gameCharacter)
+    {
+        CharacterSkill skillList = gameCharacter.GetCurrentSkill();
+        this.selectedSkills = skillList.GetCharacterSubskillData().GetDerivedSkillList();
+        InsertIntoSkillSlot(this.selectedSkills);
+    }
+
     private void InsertIntoSkillSlot(List<CharacterSkill> selectedSkills)
     {
-        ClearSkillSlots();
-
         for (int i = 0; i < selectedSkills.Count; i++)
         {
+            if (i >= skillSlots.Length)
+            {
+                return;
+            }
             skillSlots[i].SetSelectedSkill(selectedSkills[i]);
         }
     }
