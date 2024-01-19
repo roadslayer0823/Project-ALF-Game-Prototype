@@ -208,9 +208,9 @@ MonoBehaviour:
   clickAreaTop: {fileID: 765068702941962762}
   clickAreaBottom: {fileID: 3635446616168202603}
   skillSlotsButton:
-  - {fileID: 8820070156013026822}
-  - {fileID: 8409751035091504854}
-  - {fileID: 6409299515205057294}
+  - {fileID: 1594526952229624635}
+  - {fileID: 1797704541972114411}
+  - {fileID: 3798132285071531571}
   skillSlotList:
   - {fileID: 537605264448927885}
   - {fileID: 695711802531498077}
@@ -219,6 +219,10 @@ MonoBehaviour:
   - {fileID: 7018266427279031189}
   - {fileID: 6432789008675605419}
   - {fileID: 4480656929766228225}
+  skillInformation:
+  - {fileID: 1938573160723595033}
+  - {fileID: 1456189994962866121}
+  - {fileID: 4067448536525339153}
 --- !u!1 &2697270279507287778
 GameObject:
   m_ObjectHideFlags: 0
@@ -612,6 +616,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4392931398787021443, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: SkillDetail3
+      objectReference: {fileID: 0}
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Name
       value: SkillSlotV2_3
@@ -619,6 +627,22 @@ PrefabInstance:
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7980321567308348249, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: CurrentLevel3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8472440693387731997, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: SkillDetail3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9175043795554590779, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: SkillName3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9190163930391078265, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: ModifySkillLevelArea3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
@@ -638,22 +662,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c125c4d537d7478c917bc8135eccbcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &5196659220595742299 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 430202650733627479, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
-  m_PrefabInstance: {fileID: 5613276305580023308}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6409299515205057294 stripped
+--- !u!114 &3798132285071531571 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1518903829458298114, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8742595457740914751, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
   m_PrefabInstance: {fileID: 5613276305580023308}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 2729390022642171269}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &4067448536525339153 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8472440693387731997, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+  m_PrefabInstance: {fileID: 5613276305580023308}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &5196659220595742299 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 430202650733627479, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+  m_PrefabInstance: {fileID: 5613276305580023308}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7034986548698147796
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -757,6 +786,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 890518996710745396, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: SkillLevelAnimation
+      objectReference: {fileID: 0}
+    - target: {fileID: 4392931398787021443, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: SkillDetail2
+      objectReference: {fileID: 0}
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Name
       value: SkillSlotV2_2
@@ -764,6 +801,22 @@ PrefabInstance:
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7980321567308348249, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: CurrentLevel2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8472440693387731997, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: SkillDetail2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9175043795554590779, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: SkillName2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9190163930391078265, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: ModifySkillLevelArea2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
@@ -783,22 +836,27 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
   m_PrefabInstance: {fileID: 7034986548698147796}
   m_PrefabAsset: {fileID: 0}
---- !u!224 &7230856813940646787 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 430202650733627479, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+--- !u!1 &1456189994962866121 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8472440693387731997, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
   m_PrefabInstance: {fileID: 7034986548698147796}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8409751035091504854 stripped
+--- !u!114 &1797704541972114411 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1518903829458298114, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8742595457740914751, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
   m_PrefabInstance: {fileID: 7034986548698147796}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 695711802531498077}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &7230856813940646787 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 430202650733627479, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+  m_PrefabInstance: {fileID: 7034986548698147796}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8030786677812861700
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -890,6 +948,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4392931398787021443, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: SkillDetail1
+      objectReference: {fileID: 0}
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Name
       value: SkillSlotV2_1
@@ -897,6 +959,22 @@ PrefabInstance:
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7980321567308348249, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: CurrentLevel1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8472440693387731997, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: SkillDetail1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9175043795554590779, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: SkillName1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9190163930391078265, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Name
+      value: ModifySkillLevelArea1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
@@ -916,19 +994,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c125c4d537d7478c917bc8135eccbcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &7677360725090718547 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 430202650733627479, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
-  m_PrefabInstance: {fileID: 8030786677812861700}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8820070156013026822 stripped
+--- !u!114 &1594526952229624635 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1518903829458298114, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+  m_CorrespondingSourceObject: {fileID: 8742595457740914751, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
   m_PrefabInstance: {fileID: 8030786677812861700}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 537605264448927885}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1938573160723595033 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8472440693387731997, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+  m_PrefabInstance: {fileID: 8030786677812861700}
+  m_PrefabAsset: {fileID: 0}
+--- !u!224 &7677360725090718547 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 430202650733627479, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+  m_PrefabInstance: {fileID: 8030786677812861700}
+  m_PrefabAsset: {fileID: 0}
