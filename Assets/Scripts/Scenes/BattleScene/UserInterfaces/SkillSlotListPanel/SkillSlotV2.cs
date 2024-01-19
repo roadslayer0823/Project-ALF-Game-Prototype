@@ -108,7 +108,7 @@ public class SkillSlotV2 : MonoBehaviour
             this.skillLevel = Math.Clamp(this.skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
         }
         UpdateCharacterSkillLevel(this.skillLevel);
-        UpdatePlusSkillLevelUI();
+        ModifySkillLevelAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
     }
 
     public void minusSkillLevel()
@@ -125,6 +125,7 @@ public class SkillSlotV2 : MonoBehaviour
             this.skillLevel = Math.Clamp(this.skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
         }
         UpdateCharacterSkillLevel(this.skillLevel);
+        ModifySkillLevelAnimation(minusLevelImage, minusLevelBackground, minusLevelOriginalPosition, minusLevelTargetPosition);
     }
 
     private void UpdateCharacterSkillLevel(int skillLevel)
@@ -141,34 +142,39 @@ public class SkillSlotV2 : MonoBehaviour
         this.skillSlotText.SetText(_subskillData.DisplayName.ToString());
     }
 
-    private void UpdatePlusSkillLevelUI()
+    //modify animation
+    private void ModifySkillLevelAnimation(Image levelModifierImage, Image background, Transform originalPosition, Transform targetPosition)
     {
-        float duration = 1f;
-        plusLevelImage.color = new Color(plusLevelImage.color.r, plusLevelImage.color.g, plusLevelImage.color.b, 0f);
-        plusLevelBackground.color = new Color(plusLevelBackground.color.r, plusLevelBackground.color.g, plusLevelBackground.color.b, 0f);
-
-        plusLevelImage.gameObject.SetActive(true);
-        plusLevelBackground.gameObject.SetActive(true);
-
-        if(this.skillLevel > 1)
+        if (this.skillLevel > 1)
         {
             currentSkillLevel.SetActive(true);
         }
+        else
+        {
+            currentSkillLevel.SetActive(false);
+        }
+
+        float duration = 1f;
+        levelModifierImage.color = new Color(levelModifierImage.color.r, levelModifierImage.color.g, levelModifierImage.color.b, 0f);
+        background.color = new Color(background.color.r, background.color.g, background.color.b, 0f);
+
+        levelModifierImage.gameObject.SetActive(true);
+        background.gameObject.SetActive(true);
 
         //animation
-        LeanTween.move(plusLevelImage.gameObject, plusLevelTargetPosition, duration);
-        LeanTween.alpha(plusLevelImage.rectTransform, 1f, duration);
-        LeanTween.alpha(plusLevelBackground.rectTransform, 1f, duration)
-            .setOnComplete(() =>{
-                LeanTween.alpha(plusLevelBackground.rectTransform, 0f, 0.5f);
-                LeanTween.alpha(plusLevelImage.rectTransform, 0f, 0.5f)
+        LeanTween.move(levelModifierImage.gameObject, targetPosition, duration);
+        LeanTween.alpha(levelModifierImage.rectTransform, 1f, duration);
+        LeanTween.alpha(background.rectTransform, 1f, duration)
+            .setOnComplete(() => {
+                LeanTween.alpha(background.rectTransform, 0f, 0.5f)
             .setOnComplete(() =>
             {
-                plusLevelImage.gameObject.SetActive(false);
-                plusLevelBackground.gameObject.SetActive(false);
-                plusLevelImage.transform.position = plusLevelOriginalPosition.transform.position;
+                LeanTween.alpha(levelModifierImage.rectTransform, 0f, 2f);
+                levelModifierImage.gameObject.SetActive(false);
+                background.gameObject.SetActive(false);
+                levelModifierImage.transform.position = originalPosition.transform.position;
             });
-        });
+            });
     }
 
     public bool CheckIsSkillLevelChanged()
