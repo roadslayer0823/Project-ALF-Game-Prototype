@@ -6,6 +6,7 @@ using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 using Character = DatabaseManager.Character;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
+using BattleResultData_GameCharacter = BattleResultData.BattleResultData_GameCharacter;
 
 public class GameCharacter : MonoBehaviour
 {
@@ -682,9 +683,19 @@ public class GameCharacter : MonoBehaviour
         return this.virtualHealthPoint;
     }
 
+    public float GetOriginalStatePoint()
+    {
+        return this.originalStatePoint;
+    }
+
     public float GetMaximumStatePoint()
     {
         return this.maximumStatePoint;
+    }
+
+    public float GetMinimumStatePoint()
+    {
+        return this.minimumStatePoint;
     }
 
     public float GetCurrentStatePoint()
@@ -933,7 +944,26 @@ public class GameCharacter : MonoBehaviour
 
     public void Reset()
     {
+        this.currentCharacterIdentityType = CharacterIdentityType.None;
         SetCurrentSkill( null );
         SetCurrentAttacker( null );
+    }
+
+    public void ApplyBattleResultData( BattleResultData_GameCharacter battleResultData )
+    {
+        if (battleResultData != null)
+        {
+            this.maximumHealthPoint = battleResultData.maximumHealthPoint;
+            this.currentHealthPoint = battleResultData.currentHealthPoint;
+            this.virtualHealthPoint = battleResultData.virtualHealthPoint;
+            this.originalStatePoint = battleResultData.originalStatePoint;
+            this.maximumStatePoint = battleResultData.maximumStatePoint;
+            this.minimumStatePoint = battleResultData.minimumStatePoint;
+            this.currentStatePoint = battleResultData.currentStatePoint;
+            this.maximumStressValue = battleResultData.maximumStressValue;
+            this.currentStressValue = battleResultData.currentStressValue;
+
+            this.onCharacterInfoUpdated?.Invoke();
+        }
     }
 }
