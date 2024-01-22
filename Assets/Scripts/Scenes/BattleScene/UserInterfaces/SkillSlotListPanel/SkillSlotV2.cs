@@ -34,11 +34,11 @@ public class SkillSlotV2 : MonoBehaviour
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
 
-    private LTDescr skillLevelAnimation;
-    private LTDescr skillLevelFadeIn;
-    private LTDescr skillLevelBackgroundFadeIn;
-    private LTDescr skillLevelTextScale;
-    private LTDescr skillLevelTextAnimation;
+    private LTDescr skillLevelAnimation = null;
+    private LTDescr skillLevelFadeIn = null;
+    private LTDescr skillLevelBackgroundFadeIn = null;
+    private LTDescr skillLevelTextScale = null;
+    private LTDescr skillLevelTextAnimation = null;
 
     public void Initialize(SkillSlotListPanelV2 skillSlotListPanelV2)
     {
@@ -74,7 +74,7 @@ public class SkillSlotV2 : MonoBehaviour
                 //save ended touch 2D point
                 this.mouseReleasePosition = Input.mousePosition;
 
-                if (!this.swipeableArea.gameObject.activeInHierarchy || !RectTransformUtility.RectangleContainsScreenPoint(this.swipeableArea, this.mouseReleasePosition))
+                if (!this.swipeableArea.gameObject.activeInHierarchy)
                 {
                     return;
                 }
@@ -195,13 +195,36 @@ public class SkillSlotV2 : MonoBehaviour
        });
     }
 
-    public void CancelSkillLevelAnimation()
+    private void ResetAnimation(Image levelModifierImage, Image background, Transform originalPosition, Transform targetPosition)
     {
-        skillLevelAnimation?.cancel();
-        skillLevelFadeIn?.cancel();
-        skillLevelBackgroundFadeIn?.cancel();
-        skillLevelTextScale?.cancel();
-        skillLevelTextAnimation?.cancel();
+        Vector3 skillTextScale = skillLevelGameObject.transform.localScale;
+        LeanTween.alpha(levelModifierImage.rectTransform, 0f, 2f);
+        levelModifierImage.gameObject.SetActive(false);
+        background.gameObject.SetActive(false);
+        skillTextAnimation.gameObject.SetActive(false);
+        levelModifierImage.transform.position = originalPosition.transform.position;
+        skillTextAnimation.transform.localScale = skillTextScale;
+    }
+
+    public void StopAnimation()
+    {
+        if(skillLevelAnimation != null)
+            LeanTween.cancel(skillLevelAnimation.id);
+
+        if (skillLevelFadeIn != null)
+            LeanTween.cancel(skillLevelFadeIn.id);
+
+        if (skillLevelBackgroundFadeIn != null)
+            LeanTween.cancel(skillLevelBackgroundFadeIn.id);
+
+        if (skillLevelTextScale != null)
+            LeanTween.cancel(skillLevelTextScale.id);
+
+        if (skillLevelTextAnimation != null)
+            LeanTween.cancel(skillLevelTextAnimation.id);
+
+        ResetAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
+        ResetAnimation(minusLevelImage, minusLevelBackground, minusLevelOriginalPosition, minusLevelTargetPosition);
     }
 
     public bool CheckIsSkillLevelChanged()
