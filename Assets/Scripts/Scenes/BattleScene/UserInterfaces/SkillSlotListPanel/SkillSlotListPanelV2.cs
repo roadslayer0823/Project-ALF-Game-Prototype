@@ -10,6 +10,7 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     [SerializeField] private List<Button> skillSlotsButton = null;
     [SerializeField] private List<GameObject> skillSlotList;
     [SerializeField] private List<Transform> fixedSlotPosition;
+    [SerializeField] private List<GameObject> skillInformation;
 
     private List<Vector3> initialScale = new List<Vector3>();
     private GameCharacter selectedGameCharacter = null;
@@ -55,6 +56,15 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     {
         clickAreaTop.SetActive(false);
         clickAreaBottom.SetActive(false);
+    }
+
+    private void SetActiveRecursively(Transform parentTransform, bool active)
+    {
+        parentTransform.gameObject.SetActive(active);
+        foreach (Transform child in parentTransform)
+        {
+            SetActiveRecursively(child, active);
+        }
     }
 
     public void UpdateSkillSlots(GameCharacter gameCharacter)
@@ -172,12 +182,14 @@ public class SkillSlotListPanelV2 : MonoBehaviour
                 LeanTween.scale(slotToMove, initialScale[i] * 1f, 0.3f)
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = true;
+                SetActiveRecursively(skillInformation[i].transform, true);
             }
             else
             {
-                LeanTween.scale(slotToMove, initialScale[i] * 0.7f, 0.3f)
+                LeanTween.scale(slotToMove, initialScale[i] * 0.5f, 0.3f)
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = false;
+                SetActiveRecursively(skillInformation[i].transform, false);
             }
         }
         ArrangeSkillSlot(direction);
@@ -186,33 +198,41 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     //1 = moving slot to down direction, -1 = moving slot to up direction
     private void ArrangeSkillSlot(int direction)
     {
-        int i = 0;
-        GameObject tempSlot = skillSlotList[i];
-        Button tempButton = skillSlotsButton[i];
-
         if (direction == 1)
         {
+            int i = skillSlotList.Count - 1;
+            GameObject tempSlot = skillSlotList[i];
+            GameObject tempSkillInformation = skillInformation[i];
+            Button tempButton = skillSlotsButton[i];
             while (i > 0)
             {
                 skillSlotList[i] = skillSlotList[i - 1];
                 skillSlotsButton[i] = skillSlotsButton[i - 1];
+                skillInformation[i] = skillInformation[i - 1];
                 i--;
             }
 
             skillSlotList[i] = tempSlot;
             skillSlotsButton[i] = tempButton;
+            skillInformation[i] = tempSkillInformation;
         }
         else if (direction == -1)
         {
+            int i = 0;
+            GameObject tempSlot = skillSlotList[i];
+            GameObject tempSkillInformation = skillInformation[i];
+            Button tempButton = skillSlotsButton[i];
             while (i < skillSlotList.Count - 1)
             {
                 skillSlotList[i] = skillSlotList[i + 1];
                 skillSlotsButton[i] = skillSlotsButton[i + 1];
+                skillInformation[i] = skillInformation[i + 1];
                 i++;
             }
 
             skillSlotList[skillSlotList.Count - 1] = tempSlot;
             skillSlotsButton[skillSlotsButton.Count - 1] = tempButton;
+            skillInformation[skillInformation.Count - 1] = tempSkillInformation;
         }
     }
 
