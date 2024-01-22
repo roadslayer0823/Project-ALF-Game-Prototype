@@ -177,8 +177,10 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             LeanTween.move(slotToMove, targetPosition, 0.5f)
                 .setEase(LeanTweenType.easeInOutQuad);
 
+            Debug.Log("newIndex = " + newIndex);
             if (newIndex == 1)
             {
+                Debug.Log("Inside");
                 LeanTween.scale(slotToMove, initialScale[i] * 1f, 0.3f)
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = true;

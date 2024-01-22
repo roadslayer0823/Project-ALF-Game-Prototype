@@ -8,8 +8,10 @@ public class SkillSlotV2 : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI skillSlotText;
     [SerializeField] private TextMeshProUGUI skillLevelText;
+    [SerializeField] private TextMeshProUGUI skillLevelAnimationText;
     [SerializeField] private RectTransform swipeableArea = null;
-    [SerializeField] private GameObject currentSkillLevel;
+    [SerializeField] private GameObject skillLevelGameObject;
+    [SerializeField] private GameObject skillTextAnimation;
     [SerializeField] private Image plusLevelImage;
     [SerializeField] private Image plusLevelBackground;
     [SerializeField] private Image minusLevelImage;
@@ -32,14 +34,19 @@ public class SkillSlotV2 : MonoBehaviour
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
 
+    private LTDescr skillLevelAnimation;
+    private LTDescr skillLevelFadeIn;
+    private LTDescr skillLevelBackgroundFadeIn;
+    private LTDescr skillLevelTextScale;
+    private LTDescr skillLevelTextAnimation;
+
     public void Initialize(SkillSlotListPanelV2 skillSlotListPanelV2)
     {
         this.skillSlotListPanelV2 = skillSlotListPanelV2;
     }
-
-    private void Update()
+    public void Update()
     {
-        Swipe();
+         Swipe();
     }
 
     public void Clear()
@@ -56,42 +63,42 @@ public class SkillSlotV2 : MonoBehaviour
     //changing skill level mechanics
     public void Swipe()
     {
-        if(Input.GetMouseButtonDown(0))
-        {
-            //save starting touch 2D point 
-            this.mousePressPosition = Input.mousePosition;
-        }
-
-        if(Input.GetMouseButtonUp(0))
-        {
-            //save ended touch 2D point
-            this.mouseReleasePosition = Input.mousePosition;
-
-            if(!RectTransformUtility.RectangleContainsScreenPoint(this.swipeableArea, this.mouseReleasePosition))
+            if (Input.GetMouseButtonDown(0))
             {
-                return;
+                //save starting touch 2D point 
+                this.mousePressPosition = Input.mousePosition;
             }
 
-            //create vector from the two point
-            this.currentSwipe = new Vector2(this.mouseReleasePosition.x - this.mousePressPosition.x, this.mouseReleasePosition.y - this.mousePressPosition.y);
-
-            //normalize the 2D vector
-            this.currentSwipe.Normalize();
-
-            //swipe up
-            if(this.currentSwipe.y > 0)
+            if (Input.GetMouseButtonUp(0))
             {
-                Debug.Log("Upp");
-                plusSkillLevel();
-            }
+                //save ended touch 2D point
+                this.mouseReleasePosition = Input.mousePosition;
 
-            //swipe down
-            if(this.currentSwipe.y < 0)
-            {
-                Debug.Log("Down");
-                minusSkillLevel();
+                if (!this.swipeableArea.gameObject.activeInHierarchy || !RectTransformUtility.RectangleContainsScreenPoint(this.swipeableArea, this.mouseReleasePosition))
+                {
+                    return;
+                }
+
+                //create vector from the two point
+                this.currentSwipe = new Vector2(this.mouseReleasePosition.x - this.mousePressPosition.x, this.mouseReleasePosition.y - this.mousePressPosition.y);
+
+                //normalize the 2D vector
+                this.currentSwipe.Normalize();
+
+                //swipe up
+                if (this.currentSwipe.y > 0)
+                {
+                    Debug.Log("Up");
+                    plusSkillLevel();
+                }
+
+                //swipe down
+                if (this.currentSwipe.y < 0)
+                {
+                    Debug.Log("Down");
+                    minusSkillLevel();
+                }
             }
-        }
     }
 
     public void plusSkillLevel()
@@ -132,6 +139,7 @@ public class SkillSlotV2 : MonoBehaviour
     {
         this.selectedSkill.SetSelectedSkillLevel(this.skillLevel);
         this.skillLevelText.SetText($"<size=30>LV.</size> {skillLevel}");
+        this.skillLevelAnimationText.SetText($"<size=30>LV.</size> {skillLevel}");
         UpdateSkillSelectionBoxData();
     }
 
@@ -142,39 +150,58 @@ public class SkillSlotV2 : MonoBehaviour
         this.skillSlotText.SetText(_subskillData.DisplayName.ToString());
     }
 
-    //modify animation
+    //modify current skill level animation
     private void ModifySkillLevelAnimation(Image levelModifierImage, Image background, Transform originalPosition, Transform targetPosition)
     {
         if (this.skillLevel > 1)
         {
-            currentSkillLevel.SetActive(true);
+            skillLevelGameObject.SetActive(true);
+            skillTextAnimation.gameObject.SetActive(true);
+            levelModifierImage.gameObject.SetActive(true);
+            background.gameObject.SetActive(true);
         }
         else
         {
-            currentSkillLevel.SetActive(false);
+            skillLevelGameObject.SetActive(false);
         }
 
         float duration = 1f;
+        float targetScale = 3f;
+        Vector3 skillTextScale = skillLevelGameObject.transform.localScale;
         levelModifierImage.color = new Color(levelModifierImage.color.r, levelModifierImage.color.g, levelModifierImage.color.b, 0f);
         background.color = new Color(background.color.r, background.color.g, background.color.b, 0f);
 
-        levelModifierImage.gameObject.SetActive(true);
-        background.gameObject.SetActive(true);
-
         //animation
-        LeanTween.move(levelModifierImage.gameObject, targetPosition, duration);
-        LeanTween.alpha(levelModifierImage.rectTransform, 1f, duration);
-        LeanTween.alpha(background.rectTransform, 1f, duration)
+        skillLevelAnimation = LeanTween.move(levelModifierImage.gameObject, targetPosition, duration);
+        skillLevelFadeIn = LeanTween.alpha(levelModifierImage.rectTransform, 1f, duration);
+        skillLevelBackgroundFadeIn = LeanTween.alpha(background.rectTransform, 1f, duration);
+        skillLevelTextScale = LeanTween.scale(skillTextAnimation, skillTextScale * targetScale, duration);
+        skillLevelTextAnimation = LeanTween.value(skillLevelAnimationText.gameObject, 1f, 0f, duration).setOnUpdate((float value) =>
+        {
+            skillLevelAnimationText.alpha = value;
+        })
             .setOnComplete(() => {
                 LeanTween.alpha(background.rectTransform, 0f, 0.5f)
             .setOnComplete(() =>
             {
+                //reset all related game object to regular position/opacity
                 LeanTween.alpha(levelModifierImage.rectTransform, 0f, 2f);
                 levelModifierImage.gameObject.SetActive(false);
                 background.gameObject.SetActive(false);
+                skillTextAnimation.gameObject.SetActive(false);
                 levelModifierImage.transform.position = originalPosition.transform.position;
+                skillTextAnimation.transform.localScale = skillTextScale;
             });
-            });
+       });
+    }
+
+    public void CancelSkillLevelAnimation()
+    {
+        skillLevelAnimation?.cancel();
+        skillLevelFadeIn?.cancel();
+        skillLevelBackgroundFadeIn?.cancel();
+        skillLevelTextScale?.cancel();
+        skillLevelTextAnimation?.cancel();
     }
 
     public bool CheckIsSkillLevelChanged()
