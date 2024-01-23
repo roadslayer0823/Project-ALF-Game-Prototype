@@ -29,7 +29,9 @@ public class SkillSlotV2 : MonoBehaviour
     private Vector2 mouseReleasePosition = new Vector2();
     private Vector2 currentSwipe = new Vector2();
 
+    private bool isSkillLevelChanged = false;
     private int skillLevel = 1;
+
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
 
@@ -37,7 +39,6 @@ public class SkillSlotV2 : MonoBehaviour
     {
         this.skillSlotListPanelV2 = skillSlotListPanelV2;
     }
-
     public void Update()
     {
          Swipe();
