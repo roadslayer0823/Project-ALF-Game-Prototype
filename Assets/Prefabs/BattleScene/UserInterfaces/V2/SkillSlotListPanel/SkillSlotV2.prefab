@@ -607,7 +607,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 0.0292809, g: 0.036160916, b: 0.8867924, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -725,6 +725,7 @@ MonoBehaviour:
   swipeableArea: {fileID: 5342739904523183233}
   skillLevelGameObject: {fileID: 7980321567308348249}
   skillTextAnimation: {fileID: 6930886755125883153}
+  skillSelectionButton: {fileID: 8742595457740914751}
   plusLevelImage: {fileID: 1954762244259134680}
   plusLevelBackground: {fileID: 4652293392182937840}
   minusLevelImage: {fileID: 2771280233484179831}
@@ -901,7 +902,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 0.4421471, g: 0.8584906, b: 0.06074225, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

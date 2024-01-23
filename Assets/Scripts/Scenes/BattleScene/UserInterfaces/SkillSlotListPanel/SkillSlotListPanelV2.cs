@@ -79,7 +79,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             {
                 return;
             }
-
             InsertIntoSkillSlot(this.selectedSkills);
         }
     }
@@ -153,14 +152,12 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_WHEEL);
         MoveSlot(-1);
-        Debug.Log("go down");
     }
 
     public void ClickTop()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_WHEEL);
         MoveSlot(1);
-        Debug.Log("go up");
     }
 
     private void MoveSlot(int direction)
@@ -177,7 +174,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             LeanTween.move(slotToMove, targetPosition, 0.5f)
                 .setEase(LeanTweenType.easeInOutQuad);
 
-            Debug.Log("newIndex = " + newIndex);
             if (newIndex == 1)
             {
                 Debug.Log("Inside");

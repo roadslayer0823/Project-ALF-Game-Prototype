@@ -12,6 +12,7 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private RectTransform swipeableArea = null;
     [SerializeField] private GameObject skillLevelGameObject;
     [SerializeField] private GameObject skillTextAnimation;
+    [SerializeField] private Button skillSelectionButton;
     [SerializeField] private Image plusLevelImage;
     [SerializeField] private Image plusLevelBackground;
     [SerializeField] private Image minusLevelImage;
@@ -28,22 +29,15 @@ public class SkillSlotV2 : MonoBehaviour
     private Vector2 mouseReleasePosition = new Vector2();
     private Vector2 currentSwipe = new Vector2();
 
-    private bool isSkillLevelChanged = false;
     private int skillLevel = 1;
-
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
-
-    private LTDescr skillLevelAnimation = null;
-    private LTDescr skillLevelFadeIn = null;
-    private LTDescr skillLevelBackgroundFadeIn = null;
-    private LTDescr skillLevelTextScale = null;
-    private LTDescr skillLevelTextAnimation = null;
 
     public void Initialize(SkillSlotListPanelV2 skillSlotListPanelV2)
     {
         this.skillSlotListPanelV2 = skillSlotListPanelV2;
     }
+
     public void Update()
     {
          Swipe();
@@ -60,45 +54,58 @@ public class SkillSlotV2 : MonoBehaviour
         this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill(this.selectedSkill);
     }
 
+    public void ButtonOnDisable()
+    {
+        this.skillSelectionButton.interactable = false;
+    }
+
+    public void ButtonOnEnable()
+    {
+        this.skillSelectionButton.interactable = true;
+    }
+
     //changing skill level mechanics
     public void Swipe()
     {
-            if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
+        {
+            //save starting touch 2D point 
+            this.mousePressPosition = Input.mousePosition;
+        }
+
+        if (!RectTransformUtility.RectangleContainsScreenPoint(this.swipeableArea, this.mousePressPosition))
+        {
+            return;
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            //save ended touch 2D point
+            this.mouseReleasePosition = Input.mousePosition;
+
+            if (!this.swipeableArea.gameObject.activeInHierarchy)
             {
-                //save starting touch 2D point 
-                this.mousePressPosition = Input.mousePosition;
+                return;
             }
 
-            if (Input.GetMouseButtonUp(0))
+            //create vector from the two point
+            this.currentSwipe = new Vector2(this.mouseReleasePosition.x - this.mousePressPosition.x, this.mouseReleasePosition.y - this.mousePressPosition.y);
+
+            //normalize the 2D vector
+            this.currentSwipe.Normalize();
+
+            //swipe up
+            if (this.currentSwipe.y > 0)
             {
-                //save ended touch 2D point
-                this.mouseReleasePosition = Input.mousePosition;
-
-                if (!this.swipeableArea.gameObject.activeInHierarchy)
-                {
-                    return;
-                }
-
-                //create vector from the two point
-                this.currentSwipe = new Vector2(this.mouseReleasePosition.x - this.mousePressPosition.x, this.mouseReleasePosition.y - this.mousePressPosition.y);
-
-                //normalize the 2D vector
-                this.currentSwipe.Normalize();
-
-                //swipe up
-                if (this.currentSwipe.y > 0)
-                {
-                    Debug.Log("Up");
-                    plusSkillLevel();
-                }
-
-                //swipe down
-                if (this.currentSwipe.y < 0)
-                {
-                    Debug.Log("Down");
-                    minusSkillLevel();
-                }
+                plusSkillLevel();
             }
+
+            //swipe down
+            if (this.currentSwipe.y < 0)
+            {
+                minusSkillLevel();
+            }
+        }
     }
 
     public void plusSkillLevel()
@@ -116,6 +123,8 @@ public class SkillSlotV2 : MonoBehaviour
         }
         UpdateCharacterSkillLevel(this.skillLevel);
         ModifySkillLevelAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_UP);
+
     }
 
     public void minusSkillLevel()
@@ -133,6 +142,7 @@ public class SkillSlotV2 : MonoBehaviour
         }
         UpdateCharacterSkillLevel(this.skillLevel);
         ModifySkillLevelAnimation(minusLevelImage, minusLevelBackground, minusLevelOriginalPosition, minusLevelTargetPosition);
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_DOWN);
     }
 
     private void UpdateCharacterSkillLevel(int skillLevel)
@@ -153,6 +163,12 @@ public class SkillSlotV2 : MonoBehaviour
     //modify current skill level animation
     private void ModifySkillLevelAnimation(Image levelModifierImage, Image background, Transform originalPosition, Transform targetPosition)
     {
+        float duration = 0.1f;
+        float targetScale = 3f;
+        Vector3 skillTextScale = skillLevelGameObject.transform.localScale;
+        levelModifierImage.color = new Color(levelModifierImage.color.r, levelModifierImage.color.g, levelModifierImage.color.b, 0f);
+        background.color = new Color(background.color.r, background.color.g, background.color.b, 0f);
+
         if (this.skillLevel > 1)
         {
             skillLevelGameObject.SetActive(true);
@@ -165,27 +181,21 @@ public class SkillSlotV2 : MonoBehaviour
             skillLevelGameObject.SetActive(false);
         }
 
-        float duration = 1f;
-        float targetScale = 3f;
-        Vector3 skillTextScale = skillLevelGameObject.transform.localScale;
-        levelModifierImage.color = new Color(levelModifierImage.color.r, levelModifierImage.color.g, levelModifierImage.color.b, 0f);
-        background.color = new Color(background.color.r, background.color.g, background.color.b, 0f);
-
         //animation
-        skillLevelAnimation = LeanTween.move(levelModifierImage.gameObject, targetPosition, duration);
-        skillLevelFadeIn = LeanTween.alpha(levelModifierImage.rectTransform, 1f, duration);
-        skillLevelBackgroundFadeIn = LeanTween.alpha(background.rectTransform, 1f, duration);
-        skillLevelTextScale = LeanTween.scale(skillTextAnimation, skillTextScale * targetScale, duration);
-        skillLevelTextAnimation = LeanTween.value(skillLevelAnimationText.gameObject, 1f, 0f, duration).setOnUpdate((float value) =>
+        LeanTween.move(levelModifierImage.gameObject, targetPosition, duration);
+        LeanTween.alpha(levelModifierImage.rectTransform, 1f, duration);
+        LeanTween.alpha(background.rectTransform, 1f, duration);
+        LeanTween.scale(skillTextAnimation, skillTextScale * targetScale, duration);
+        LeanTween.value(skillLevelAnimationText.gameObject, 1f, 0f, duration).setOnUpdate((float value) =>
         {
             skillLevelAnimationText.alpha = value;
         })
             .setOnComplete(() => {
-                LeanTween.alpha(background.rectTransform, 0f, 0.5f)
+                LeanTween.alpha(background.rectTransform, 0f, 0.3f)
             .setOnComplete(() =>
             {
                 //reset all related game object to regular position/opacity
-                LeanTween.alpha(levelModifierImage.rectTransform, 0f, 2f);
+                LeanTween.alpha(levelModifierImage.rectTransform, 0f, duration);
                 levelModifierImage.gameObject.SetActive(false);
                 background.gameObject.SetActive(false);
                 skillTextAnimation.gameObject.SetActive(false);
@@ -193,38 +203,6 @@ public class SkillSlotV2 : MonoBehaviour
                 skillTextAnimation.transform.localScale = skillTextScale;
             });
        });
-    }
-
-    private void ResetAnimation(Image levelModifierImage, Image background, Transform originalPosition, Transform targetPosition)
-    {
-        Vector3 skillTextScale = skillLevelGameObject.transform.localScale;
-        LeanTween.alpha(levelModifierImage.rectTransform, 0f, 2f);
-        levelModifierImage.gameObject.SetActive(false);
-        background.gameObject.SetActive(false);
-        skillTextAnimation.gameObject.SetActive(false);
-        levelModifierImage.transform.position = originalPosition.transform.position;
-        skillTextAnimation.transform.localScale = skillTextScale;
-    }
-
-    public void StopAnimation()
-    {
-        if(skillLevelAnimation != null)
-            LeanTween.cancel(skillLevelAnimation.id);
-
-        if (skillLevelFadeIn != null)
-            LeanTween.cancel(skillLevelFadeIn.id);
-
-        if (skillLevelBackgroundFadeIn != null)
-            LeanTween.cancel(skillLevelBackgroundFadeIn.id);
-
-        if (skillLevelTextScale != null)
-            LeanTween.cancel(skillLevelTextScale.id);
-
-        if (skillLevelTextAnimation != null)
-            LeanTween.cancel(skillLevelTextAnimation.id);
-
-        ResetAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
-        ResetAnimation(minusLevelImage, minusLevelBackground, minusLevelOriginalPosition, minusLevelTargetPosition);
     }
 
     public bool CheckIsSkillLevelChanged()
