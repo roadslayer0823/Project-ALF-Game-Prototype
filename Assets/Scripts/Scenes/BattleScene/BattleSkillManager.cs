@@ -25,10 +25,11 @@ public class BattleSkillManager : MonoBehaviour
         Observe
     }
 
-    public void UpdateSkillAvailability( GameCharacter gameCharacter, BattlePhaseType battlePhaseType, int atlNumber, GameCharacter attacker = null )
+    public static List<SkillType> GetSkillTypeList( GameCharacter gameCharacter, BattlePhaseType battlePhaseType, int atlNumber, GameCharacter attacker = null )
     {
         GameCharacter.CharacterIdentityType _characterIdentityType = gameCharacter.GetCurrentCharacterIdentityType();
-        List<SkillType> _skillTypeList = null;
+        CharacterSkill _currentSkill = gameCharacter.GetCurrentSkill();
+        List<SkillType> _skillTypeList = new List<SkillType>();
 
         switch ( battlePhaseType )
         {
@@ -52,7 +53,7 @@ public class BattleSkillManager : MonoBehaviour
 
             case BattlePhaseType.RepulseCommandTime:
 
-                if (_characterIdentityType == GameCharacter.CharacterIdentityType.Lead)
+                if (_characterIdentityType == GameCharacter.CharacterIdentityType.Improviser)
                 {
                     _skillTypeList = new List<SkillType> { SkillType.Repulse, SkillType.Defend, SkillType.Evade };
                 }
@@ -90,9 +91,12 @@ public class BattleSkillManager : MonoBehaviour
                     }
                 }
 
-                if (gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSelectedDerivedSkill() != null)
+                if (_characterIdentityType == GameCharacter.CharacterIdentityType.HeavyAssaulter)
                 {
-                    _skillTypeList.Add( SkillType.Derive );
+                    if (_currentSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() != null)
+                    {
+                        _skillTypeList.Add( SkillType.Derive );
+                    }
                 }
 
                 break;
@@ -106,9 +110,12 @@ public class BattleSkillManager : MonoBehaviour
                     {
                         _skillTypeList = new List<SkillType> { SkillType.Active, SkillType.Defend, SkillType.Evade };
 
-                        if (gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSelectedCounterSkill() != null)
+                        if (_currentSkill != null)
                         {
-                            _skillTypeList.Add( SkillType.Counter );
+                            if (_currentSkill.GetCharacterSubskillData().GetSelectedCounterSkill() != null)
+                            {
+                                _skillTypeList.Add( SkillType.Counter );
+                            }
                         }
                     }
                     else
@@ -130,5 +137,7 @@ public class BattleSkillManager : MonoBehaviour
                 _skillTypeList.Add( SkillType.Observe );
             }
         }
+
+        return _skillTypeList;
     }
 }

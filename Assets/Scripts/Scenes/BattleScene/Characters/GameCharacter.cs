@@ -620,10 +620,13 @@ public class GameCharacter : MonoBehaviour
                 return false;
             }
 
-            Subskill _attackerSubskillData = this.currentAttacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
-            if (( int )_attackerSubskillData.EffectType > ( int )_backendSubskillData.EffectType)
+            if (this.currentAttacker != null)
             {
-                return false;
+                Subskill _attackerSubskillData = this.currentAttacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+                if (( int )_attackerSubskillData.EffectType > ( int )_backendSubskillData.EffectType)
+                {
+                    return false;
+                }
             }
         }
 

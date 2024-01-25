@@ -83,37 +83,38 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         }
     }
 
-    public void ChangeToRepulseMode(GameCharacter gameCharacter)
+    public void ChangeToRepulseMode( GameCharacter gameCharacter )
     {
         this.selectedSkills.Clear();
-        for (int i = 0; i < gameCharacter.GetSelectedActiveSkillList().Count; i++)
-        {
-            CharacterSkill skillList = gameCharacter.GetSelectedActiveSkillList()[i];
 
-            for (int j = 0; j < skillList.GetCharacterSubskillData().GetRepulseSkillList().Count; j++)
+        List<CharacterSkill> _activeSkillList = gameCharacter.GetSelectedActiveSkillList();
+        for (int i = 0; i < _activeSkillList.Count; i++)
+        {
+            this.selectedSkills.Add( _activeSkillList[ i ].GetCharacterSubskillData().GetSelectedRepulseSkill() );
+        }
+
+        InsertIntoSkillSlot( this.selectedSkills );
+    }
+
+    public void ChangeToDefaultMode( GameCharacter gameCharacter )
+    {
+        this.selectedSkills = new List<CharacterSkill>( gameCharacter.GetSelectedActiveSkillList() );
+        InsertIntoSkillSlot( this.selectedSkills );
+    }
+
+    public void ChangeToDerivedMode( GameCharacter gameCharacter )
+    {
+        CharacterSkill _currentSkill = gameCharacter.GetCurrentSkill();
+        for (int i = 0; i < this.selectedSkills.Count; i++)
+        {
+            CharacterSkill _selectedSkill = this.selectedSkills[ i ];
+            if (_selectedSkill == _currentSkill)
             {
-                this.selectedSkills.Add(skillList.GetCharacterSubskillData().GetRepulseSkillList()[j]);
+                this.selectedSkills[ i ] = _currentSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
             }
         }
-        InsertIntoSkillSlot(this.selectedSkills);
-    }
 
-    public void ChangeToDefaultMode(GameCharacter gameCharacter)
-    {
-        this.selectedSkills.Clear();
-        this.selectedSkills = new List<CharacterSkill>(gameCharacter.GetSelectedActiveSkillList());
-        if (this.selectedSkills.Count > skillSlots.Length)
-        {
-            return;
-        }
-        InsertIntoSkillSlot(this.selectedSkills);
-    }
-
-    public void ChangeToDerivedMode(GameCharacter gameCharacter)
-    {
-        CharacterSkill skillList = gameCharacter.GetCurrentSkill();
-        this.selectedSkills = skillList.GetCharacterSubskillData().GetDerivedSkillList();
-        InsertIntoSkillSlot(this.selectedSkills);
+        InsertIntoSkillSlot( this.selectedSkills );
     }
 
     private void InsertIntoSkillSlot(List<CharacterSkill> selectedSkills)

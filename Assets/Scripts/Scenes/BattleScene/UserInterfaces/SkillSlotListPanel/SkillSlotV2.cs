@@ -219,6 +219,8 @@ public class SkillSlotV2 : MonoBehaviour
     public void SetSelectedSkill(CharacterSkill selectedSkill)
     {
         this.selectedSkill = selectedSkill;
+        this.skillLevel = this.selectedSkill.GetCharacterSubskillData().GetSubskillData().Level;
+        UpdateCharacterSkillLevel( this.skillLevel );
 
         SetSkillSlotText(selectedSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
     }
