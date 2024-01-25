@@ -129,7 +129,7 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         }
     }
 
-    private void ClearSkillSlots()
+    public void ClearSkillSlots()
     {
         foreach (SkillSlotV2 slot in skillSlots)
         {
@@ -145,7 +145,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     public void ResetLastRoundSelectedActiveSkill()
     {
         this.selectedGameCharacter.SetSelectedActiveSkillList(this.selectedSkills);
-
         InsertIntoSkillSlot(this.selectedSkills);
     }
 
@@ -177,7 +176,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
 
             if (newIndex == 1)
             {
-                Debug.Log("Inside");
                 LeanTween.scale(slotToMove, initialScale[i] * 1f, 0.3f)
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = true;

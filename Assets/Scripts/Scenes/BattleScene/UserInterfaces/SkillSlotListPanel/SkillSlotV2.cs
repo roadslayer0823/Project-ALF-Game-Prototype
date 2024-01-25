@@ -35,13 +35,14 @@ public class SkillSlotV2 : MonoBehaviour
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
 
+    private void Update()
+    {
+        Swipe();
+    }
+
     public void Initialize(SkillSlotListPanelV2 skillSlotListPanelV2)
     {
         this.skillSlotListPanelV2 = skillSlotListPanelV2;
-    }
-    public void Update()
-    {
-         Swipe();
     }
 
     public void Clear()
@@ -98,52 +99,49 @@ public class SkillSlotV2 : MonoBehaviour
             //swipe up
             if (this.currentSwipe.y > 0)
             {
-                plusSkillLevel();
+                IncreaseSkillLevel();
             }
 
             //swipe down
             if (this.currentSwipe.y < 0)
             {
-                minusSkillLevel();
+                DecreaseSkillLevel();
             }
         }
     }
 
-    public void plusSkillLevel()
+    public void IncreaseSkillLevel()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_UP);
 
         int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
 
-        this.skillLevel = Math.Clamp(this.skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
+        this.skillLevel = Math.Clamp( skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
 
         while (!this.selectedSkill.IsSkillLevelAvailable(this.skillLevel))
         {
-            this.skillLevel = Math.Clamp(this.skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
+            this.skillLevel = Math.Clamp(skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
         }
         UpdateCharacterSkillLevel(this.skillLevel);
         ModifySkillLevelAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_UP);
-
     }
 
-    public void minusSkillLevel()
+    public void DecreaseSkillLevel()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_DOWN);
 
         int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
 
-        this.skillLevel = Math.Clamp(this.skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
+        this.skillLevel = Math.Clamp(skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
 
         while (!this.selectedSkill.IsSkillLevelAvailable(this.skillLevel))
         {
-            this.skillLevel = Math.Clamp(this.skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
+            this.skillLevel = Math.Clamp(skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
         }
         UpdateCharacterSkillLevel(this.skillLevel);
         ModifySkillLevelAnimation(minusLevelImage, minusLevelBackground, minusLevelOriginalPosition, minusLevelTargetPosition);
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_DOWN);
     }
 
     private void UpdateCharacterSkillLevel(int skillLevel)
@@ -164,12 +162,6 @@ public class SkillSlotV2 : MonoBehaviour
     //modify current skill level animation
     private void ModifySkillLevelAnimation(Image levelModifierImage, Image background, Transform originalPosition, Transform targetPosition)
     {
-        float duration = 0.1f;
-        float targetScale = 3f;
-        Vector3 skillTextScale = skillLevelGameObject.transform.localScale;
-        levelModifierImage.color = new Color(levelModifierImage.color.r, levelModifierImage.color.g, levelModifierImage.color.b, 0f);
-        background.color = new Color(background.color.r, background.color.g, background.color.b, 0f);
-
         if (this.skillLevel > 1)
         {
             skillLevelGameObject.SetActive(true);
@@ -181,6 +173,12 @@ public class SkillSlotV2 : MonoBehaviour
         {
             skillLevelGameObject.SetActive(false);
         }
+
+        float duration = 0.1f;
+        float targetScale = 3f;
+        Vector3 skillTextScale = skillLevelGameObject.transform.localScale;
+        levelModifierImage.color = new Color(levelModifierImage.color.r, levelModifierImage.color.g, levelModifierImage.color.b, 0f);
+        background.color = new Color(background.color.r, background.color.g, background.color.b, 0f);
 
         //animation
         LeanTween.move(levelModifierImage.gameObject, targetPosition, duration);
