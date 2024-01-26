@@ -6,8 +6,21 @@ using Subskill = DatabaseManager.Subskill;
 
 public class SkillSlotV2 : MonoBehaviour
 {
+    //skill UI
+    [SerializeField] private Image skillFrame;
+    [SerializeField] private Image skillIcon;
+    [SerializeField] private Sprite DefaultSkillFrame;
+    [SerializeField] private Sprite ActiveSkillFrame;
+    [SerializeField] private Sprite BackendSkillFrame;
+    [SerializeField] private Sprite RepulseSkillFrame;
+    [SerializeField] private Sprite DerivedSkillFrame;
+    [SerializeField] private Sprite CounterSkillFrame;
+    [SerializeField] private Sprite SampleSkillIcon;
+
+    //modify skil level UI
     [SerializeField] private TextMeshProUGUI skillSlotText;
     [SerializeField] private TextMeshProUGUI skillLevelText;
+    [SerializeField] private TextMeshProUGUI skillPrefixText;
     [SerializeField] private TextMeshProUGUI skillLevelAnimationText;
     [SerializeField] private RectTransform swipeableArea = null;
     [SerializeField] private GameObject skillLevelGameObject;
@@ -43,12 +56,14 @@ public class SkillSlotV2 : MonoBehaviour
     public void Initialize(SkillSlotListPanelV2 skillSlotListPanelV2)
     {
         this.skillSlotListPanelV2 = skillSlotListPanelV2;
+        this.skillFrame.sprite = this.DefaultSkillFrame;
+        this.skillIcon.gameObject.SetActive(false);
     }
 
     public void Clear()
     {
         this.selectedSkill = null;
-        this.skillSlotText.SetText("NODATA");
+        this.skillSlotText.SetText("");
     }
 
     public void ClickToSelectSkill()
@@ -217,10 +232,45 @@ public class SkillSlotV2 : MonoBehaviour
     public void SetSelectedSkill(CharacterSkill selectedSkill)
     {
         this.selectedSkill = selectedSkill;
-        this.skillLevel = this.selectedSkill.GetCharacterSubskillData().GetSubskillData().Level;
-        UpdateCharacterSkillLevel( this.skillLevel );
+        Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
+        SetSkillSlotText(_subskillData.DisplayName);
 
-        SetSkillSlotText(selectedSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
+        if (_subskillData.Prefix.ToString() == "-")
+        {
+            this.skillPrefixText.SetText("");
+        }
+        else
+        {
+            this.skillPrefixText.SetText("[" + _subskillData.Prefix.ToString() + "]");
+        }
+        ShowSkillFrame(this.selectedSkill);
+        this.skillIcon.sprite = this.SampleSkillIcon;
+        this.skillIcon.gameObject.SetActive(true);
+    }
+
+    public void ShowSkillFrame(CharacterSkill selectedSkill)
+    {
+        this.selectedSkill = selectedSkill;
+        if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+        {
+            this.skillFrame.sprite = this.ActiveSkillFrame;
+        }
+        else if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend)
+        {
+            this.skillFrame.sprite = this.BackendSkillFrame;
+        }
+        else if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse)
+        {
+            this.skillFrame.sprite = this.RepulseSkillFrame;
+        }
+        else if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.derived)
+        {
+            this.skillFrame.sprite = this.DerivedSkillFrame;
+        }
+        else if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.counter)
+        {
+            this.skillFrame.sprite = this.CounterSkillFrame;
+        }
     }
 
     public CharacterSkill GetSelectedSkill()
