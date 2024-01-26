@@ -520,62 +520,159 @@ public class SkillSelectionPanel : MonoBehaviour
             CharacterSkill _selectedRepulseSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
             CharacterSkill _selectedDerivedSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
 
-            List<CharacterSkill> _repulseSkillList = _characterActiveSkill.GetCharacterSubskillData().GetRepulseSkillList();
-            List<CharacterSkill> _derivedSkillList = _characterActiveSkill.GetCharacterSubskillData().GetDerivedSkillList();
-
-            if (_selectedRepulseSkill == null && _repulseSkillList.Count > 0)
+            for (int j = 0; j < _characterActiveSkill.GetCharacterSubskillList().Count; j++)
             {
-                CharacterSkill _repulseSkill = _repulseSkillList[0];
+                CharacterSubskill _currentLevelActiveSkill = _characterActiveSkill.GetCharacterSubskillList()[j];
 
-                if (_selectedDerivedSkill != null)
+                if (!_currentLevelActiveSkill.GetSubskillData().IsAvailable)
                 {
-                    _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_selectedDerivedSkill);
+                    continue;
                 }
-                else
+
+                CharacterSkill _currentLevelRepulseSkill = _currentLevelActiveSkill.GetSelectedRepulseSkill();
+                CharacterSkill _currentLevelDerivedSkill = _currentLevelActiveSkill.GetSelectedDerivedSkill();
+
+                List<CharacterSkill> _currentLevelRepulseSkillList = _currentLevelActiveSkill.GetRepulseSkillList();
+                List<CharacterSkill> _currentLevelDerivedSkillList = _currentLevelActiveSkill.GetDerivedSkillList();
+
+                if (_currentLevelActiveSkill.GetSubskillData().Level == _activeSkillSelectionBox.GetCurrentSkillLevel())
                 {
-                    if (_derivedSkillList.Count == 0)
+                    if (_selectedRepulseSkill != null)
                     {
-                        _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(null);
+                        _currentLevelActiveSkill.SetSelectedRepulseSkill(_selectedRepulseSkill);
+                        _characterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_selectedRepulseSkill);
+                    }
+                    else if (_selectedRepulseSkill == null && _currentLevelRepulseSkillList.Count > 0)
+                    {
+                        CharacterSkill _repulseSkill = _currentLevelRepulseSkillList[0];
+
+                        if (_selectedDerivedSkill != null)
+                        {
+                            _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_selectedDerivedSkill);
+                        }
+                        else
+                        {
+                            if (_currentLevelDerivedSkillList.Count == 0)
+                            {
+                                _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(null);
+                            }
+                            else
+                            {
+                                _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_currentLevelDerivedSkillList[0]);
+                            }
+
+                        }
+
+                        _characterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_repulseSkill);
+                        _currentLevelActiveSkill.SetSelectedRepulseSkill(_repulseSkill);
+                        _selectedRepulseSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
                     }
                     else
                     {
-                        _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_derivedSkillList[0]);
+                        _currentLevelActiveSkill.SetSelectedRepulseSkill(null);
                     }
-                    
+
+                    if (_selectedDerivedSkill == null && _currentLevelDerivedSkillList.Count > 0)
+                    {
+                        CharacterSkill _derivedSkill = _currentLevelDerivedSkillList[0];
+
+                        _characterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_derivedSkill);
+                        _currentLevelActiveSkill.SetSelectedDerivedSkill(_derivedSkill);
+
+                        _selectedDerivedSkill = _derivedSkill;
+                    }
+
+                    if (_selectedRepulseSkill != null && _selectedRepulseSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
+                    {
+                        _selectedRepulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_selectedDerivedSkill);
+                    }
                 }
+                else
+                {
+                    if (_currentLevelRepulseSkill == null && _currentLevelRepulseSkillList.Count > 0)
+                    {
+                        CharacterSkill _repulseSkill = _currentLevelRepulseSkillList[0];
 
-                _characterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_repulseSkill);
-                _selectedRepulseSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
-            }
+                        if (_currentLevelDerivedSkill != null)
+                        {
+                            _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_currentLevelDerivedSkill);
+                        }
+                        else
+                        {
+                            if (_currentLevelDerivedSkillList.Count == 0)
+                            {
+                                _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(null);
+                            }
+                            else
+                            {
+                                _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_currentLevelDerivedSkillList[0]);
+                            }
 
-            if (_selectedDerivedSkill == null && _derivedSkillList.Count > 0)
-            {
-                CharacterSkill _derivedSkill = _derivedSkillList[0];
+                        }
+                        _currentLevelActiveSkill.SetSelectedRepulseSkill(_repulseSkill);
+                        _currentLevelRepulseSkill = _currentLevelActiveSkill.GetSelectedRepulseSkill();
+                    }
 
-                _characterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_derivedSkill);
+                    if (_currentLevelDerivedSkill == null && _currentLevelDerivedSkillList.Count > 0)
+                    {
+                        CharacterSkill _derivedSkill = _currentLevelDerivedSkillList[0];
 
-                _selectedDerivedSkill = _derivedSkill;
-            }
+                        _currentLevelActiveSkill.SetSelectedDerivedSkill(_derivedSkill);
+                        _currentLevelDerivedSkill = _derivedSkill;
+                    }
 
-            if (_selectedRepulseSkill != null && _selectedRepulseSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
-            {
-                _selectedRepulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_selectedDerivedSkill);
+                    if (_currentLevelRepulseSkill != null && _currentLevelRepulseSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
+                    {
+                        _currentLevelRepulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_currentLevelDerivedSkill);
+                    }
+                }
             }
         }
 
         for (int i = 0; i < this.selectedBackendSkillList.Count; i++)
         {
             SkillSelectionBox _backendSkillSelectionBox = this.selectedBackendSkillList[i];
-            CharacterSkill _characterActiveSkill = _backendSkillSelectionBox.GetCharacterSkill();
+            CharacterSkill _characterBackendSkill = _backendSkillSelectionBox.GetCharacterSkill();
 
-            CharacterSkill _selectedCounterSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedCounterSkill();
-            List<CharacterSkill> _counterSkillList = _characterActiveSkill.GetCharacterSubskillData().GetCounterSkillList();
+            CharacterSkill _selectedCounterSkill = _characterBackendSkill.GetCharacterSubskillData().GetSelectedCounterSkill();
 
-            if (_selectedCounterSkill == null && _counterSkillList.Count > 0)
+            for (int j = 0; j < _characterBackendSkill.GetCharacterSubskillList().Count; j++)
             {
-                CharacterSkill _counterSkill = _counterSkillList[0];
+                CharacterSubskill _currentLevelBackendSkill = _characterBackendSkill.GetCharacterSubskillList()[j];
 
-                _characterActiveSkill.GetCharacterSubskillData().SetSelectedCounterSkill(_counterSkill);
+                if (!_currentLevelBackendSkill.GetSubskillData().IsAvailable)
+                {
+                    continue;
+                }
+
+                CharacterSkill _currentLevelCounterSkill = _currentLevelBackendSkill.GetSelectedCounterSkill();
+                List<CharacterSkill> _currentLevelCounterSkillList = _characterBackendSkill.GetCharacterSubskillData().GetCounterSkillList();
+
+                if (_currentLevelBackendSkill.GetSubskillData().Level == _backendSkillSelectionBox.GetCurrentSkillLevel())
+                {
+                    if (_selectedCounterSkill != null)
+                    {
+                        _currentLevelBackendSkill.SetSelectedRepulseSkill(_selectedCounterSkill);
+                        _characterBackendSkill.GetCharacterSubskillData().SetSelectedCounterSkill(_selectedCounterSkill);
+                    }
+                    else if (_selectedCounterSkill == null && _currentLevelCounterSkillList.Count > 0)
+                    {
+                        CharacterSkill _counterSkill = _currentLevelCounterSkillList[0];
+
+                        _characterBackendSkill.GetCharacterSubskillData().SetSelectedCounterSkill(_counterSkill);
+                        _currentLevelBackendSkill.SetSelectedCounterSkill(_counterSkill);
+                        _selectedCounterSkill = _counterSkill;
+                    }
+                    else
+                    {
+                        _currentLevelBackendSkill.SetSelectedRepulseSkill(null);
+                    }
+                }
+                else
+                {
+                    CharacterSkill _counterSkill = _currentLevelCounterSkillList[0];
+                    _currentLevelBackendSkill.SetSelectedCounterSkill(_counterSkill);
+                }
             }
         }
     }
