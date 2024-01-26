@@ -37,10 +37,10 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [SerializeField] private GameObject enemyPassiveSkillSlot3 = null;
     [SerializeField] private GameObject enemyPassiveSkillSlot4 = null;
     [SerializeField] private TextMeshProUGUI enemySkillTagText = null;
-    [SerializeField] private Image enemyAttackSkillEffect = null;
-    [SerializeField] private Image enemyRepulseSkillEffect = null;
-    [SerializeField] private Image enemyAttackSkillIcon = null;
-    [SerializeField] private Image enemyRepulseSkillIcon = null;
+    [SerializeField] private Image enemyActiveSkillProgressBar = null;
+    [SerializeField] private Image enemyBackendSkillProgressBar = null;
+    [SerializeField] private Image enemyActiveSkillIcon = null;
+    [SerializeField] private Image enemyBackendSkillIcon = null;
     [SerializeField] private Image enemyPassiveSkillBackgroundSlot1 = null;
     [SerializeField] private Image enemyPassiveSkillBackgroundSlot2 = null;
     [SerializeField] private Image enemyPassiveSkillBackgroundSlot3 = null;
@@ -55,16 +55,15 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [SerializeField] private GameObject playerSkillInfoGO = null;
     [SerializeField] private GameObject playerSkillTagGO = null;
     [SerializeField] private GameObject playerCommandPhaseGO = null;
-    [SerializeField] private GameObject[] playerPassiveSkillSlots;
     [SerializeField] private GameObject playerPassiveSkillSlot1 = null;
     [SerializeField] private GameObject playerPassiveSkillSlot2 = null;
     [SerializeField] private GameObject playerPassiveSkillSlot3 = null;
     [SerializeField] private GameObject playerPassiveSkillSlot4 = null;
     [SerializeField] private TextMeshProUGUI playerSkillTagText = null;
-    [SerializeField] private Image playerAttackSkillEffect = null;
-    [SerializeField] private Image playerRepulseSkillEffect = null;
-    [SerializeField] private Image playerAttackSkillIcon = null;
-    [SerializeField] private Image playerRepulseSkillIcon = null;
+    [SerializeField] private Image playerActiveSkillProgressBar = null;
+    [SerializeField] private Image playerBackendSkillProgressBar = null;
+    [SerializeField] private Image playerActiveSkillIcon = null;
+    [SerializeField] private Image playerBackendSkillIcon = null;
     [SerializeField] private Image playerPassiveSkillBackgroundSlot1 = null;
     [SerializeField] private Image playerPassiveSkillBackgroundSlot2 = null;
     [SerializeField] private Image playerPassiveSkillBackgroundSlot3 = null;
@@ -88,42 +87,42 @@ public class SkillPromptPanelV2 : MonoBehaviour
         {
             if (isActiveSkill)
             {
-                this.playerAttackSkillEffect.gameObject.SetActive(true);
-                this.playerRepulseSkillEffect.gameObject.SetActive(false);
-                this.playerAttackSkillIcon.gameObject.SetActive(true);
-                this.playerRepulseSkillIcon.gameObject.SetActive(false);
+                this.playerActiveSkillProgressBar.gameObject.SetActive(true);
+                this.playerBackendSkillProgressBar.gameObject.SetActive(false);
+                this.playerActiveSkillIcon.gameObject.SetActive(true);
+                this.playerBackendSkillIcon.gameObject.SetActive(false);
 
-                this.playerAttackSkillEffect.fillAmount = fillAmount;
+                this.playerActiveSkillProgressBar.fillAmount = fillAmount;
             }
             else
             {
-                this.playerAttackSkillEffect.gameObject.SetActive(false);
-                this.playerRepulseSkillEffect.gameObject.SetActive(true);
-                this.playerAttackSkillIcon.gameObject.SetActive(false);
-                this.playerRepulseSkillIcon.gameObject.SetActive(true);
+                this.playerActiveSkillProgressBar.gameObject.SetActive(false);
+                this.playerBackendSkillProgressBar.gameObject.SetActive(true);
+                this.playerActiveSkillIcon.gameObject.SetActive(false);
+                this.playerBackendSkillIcon.gameObject.SetActive(true);
 
-                this.playerRepulseSkillEffect.fillAmount = fillAmount;
+                this.playerBackendSkillProgressBar.fillAmount = fillAmount;
             }
         }
         else
         {
             if (isActiveSkill)
             {
-                this.enemyAttackSkillEffect.gameObject.SetActive(true);
-                this.enemyRepulseSkillEffect.gameObject.SetActive(false);
-                this.enemyAttackSkillIcon.gameObject.SetActive(true);
-                this.enemyRepulseSkillIcon.gameObject.SetActive(false);
+                this.enemyActiveSkillProgressBar.gameObject.SetActive(true);
+                this.enemyBackendSkillProgressBar.gameObject.SetActive(false);
+                this.enemyActiveSkillIcon.gameObject.SetActive(true);
+                this.enemyBackendSkillIcon.gameObject.SetActive(false);
 
-                this.enemyAttackSkillEffect.fillAmount = fillAmount;
+                this.enemyActiveSkillProgressBar.fillAmount = fillAmount;
             }
             else
             {
-                this.enemyAttackSkillEffect.gameObject.SetActive(false);
-                this.enemyRepulseSkillEffect.gameObject.SetActive(true);
-                this.enemyAttackSkillIcon.gameObject.SetActive(false);
-                this.enemyRepulseSkillIcon.gameObject.SetActive(true);
+                this.enemyActiveSkillProgressBar.gameObject.SetActive(false);
+                this.enemyBackendSkillProgressBar.gameObject.SetActive(true);
+                this.enemyActiveSkillIcon.gameObject.SetActive(false);
+                this.enemyBackendSkillIcon.gameObject.SetActive(true);
 
-                this.enemyRepulseSkillEffect.fillAmount = fillAmount;
+                this.enemyBackendSkillProgressBar.fillAmount = fillAmount;
             }
         }
     }
@@ -226,16 +225,16 @@ public class SkillPromptPanelV2 : MonoBehaviour
             LeanTween.cancel(this.playerCommandPhaseGO);
             LeanTween.moveLocalX(this.playerCommandPhaseGO, 600.0f, this.skillInfoPopSpeed).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.playerCommandPhaseGO);
 
-            this.playerAttackSkillEffect.fillAmount = 0;
-            this.playerRepulseSkillEffect.fillAmount = 0;
+            this.playerActiveSkillProgressBar.fillAmount = 0;
+            this.playerBackendSkillProgressBar.fillAmount = 0;
         }
         else
         {
             LeanTween.cancel(this.enemyCommandPhaseGO);
             LeanTween.moveLocalX(this.enemyCommandPhaseGO, -600.0f, this.skillInfoPopSpeed).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.enemyCommandPhaseGO);
 
-            this.enemyAttackSkillEffect.fillAmount = 0;
-            this.enemyRepulseSkillEffect.fillAmount = 0;
+            this.enemyActiveSkillProgressBar.fillAmount = 0;
+            this.enemyBackendSkillProgressBar.fillAmount = 0;
         }
     }
 
@@ -253,10 +252,10 @@ public class SkillPromptPanelV2 : MonoBehaviour
                     || characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse
                     || characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.derived)
                 {
-                    this.playerAttackSkillEffect.gameObject.SetActive(true);
-                    this.playerRepulseSkillEffect.gameObject.SetActive(false);
-                    this.playerAttackSkillIcon.gameObject.SetActive(true);
-                    this.playerRepulseSkillIcon.gameObject.SetActive(false);
+                    this.playerActiveSkillProgressBar.gameObject.SetActive(true);
+                    this.playerBackendSkillProgressBar.gameObject.SetActive(false);
+                    this.playerActiveSkillIcon.gameObject.SetActive(true);
+                    this.playerBackendSkillIcon.gameObject.SetActive(false);
 
                     if (_playerCharacterSubskill.GetSubskillData().EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide)
                     {
@@ -271,10 +270,10 @@ public class SkillPromptPanelV2 : MonoBehaviour
                 else if (characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend
                     || characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.counter)
                 {
-                    this.playerAttackSkillEffect.gameObject.SetActive(false);
-                    this.playerRepulseSkillEffect.gameObject.SetActive(true);
-                    this.playerAttackSkillIcon.gameObject.SetActive(false);
-                    this.playerRepulseSkillIcon.gameObject.SetActive(true);
+                    this.playerActiveSkillProgressBar.gameObject.SetActive(false);
+                    this.playerBackendSkillProgressBar.gameObject.SetActive(true);
+                    this.playerActiveSkillIcon.gameObject.SetActive(false);
+                    this.playerBackendSkillIcon.gameObject.SetActive(true);
 
                     if (_playerCharacterSubskill.GetSubskillData().EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide)
                     {
@@ -303,10 +302,10 @@ public class SkillPromptPanelV2 : MonoBehaviour
                     || characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse
                     || characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.derived)
                 {
-                    this.enemyAttackSkillEffect.gameObject.SetActive(true);
-                    this.enemyRepulseSkillEffect.gameObject.SetActive(false);
-                    this.enemyAttackSkillIcon.gameObject.SetActive(true);
-                    this.enemyRepulseSkillIcon.gameObject.SetActive(false);
+                    this.enemyActiveSkillProgressBar.gameObject.SetActive(true);
+                    this.enemyBackendSkillProgressBar.gameObject.SetActive(false);
+                    this.enemyActiveSkillIcon.gameObject.SetActive(true);
+                    this.enemyBackendSkillIcon.gameObject.SetActive(false);
 
                     if (_enemyCharacterSubskill.GetSubskillData().EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide)
                     {
@@ -321,10 +320,10 @@ public class SkillPromptPanelV2 : MonoBehaviour
                 else if (characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend
                     || characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.counter)
                 {
-                    this.enemyAttackSkillEffect.gameObject.SetActive(false);
-                    this.enemyRepulseSkillEffect.gameObject.SetActive(true);
-                    this.enemyAttackSkillIcon.gameObject.SetActive(false);
-                    this.enemyRepulseSkillIcon.gameObject.SetActive(true);
+                    this.enemyActiveSkillProgressBar.gameObject.SetActive(false);
+                    this.enemyBackendSkillProgressBar.gameObject.SetActive(true);
+                    this.enemyActiveSkillIcon.gameObject.SetActive(false);
+                    this.enemyBackendSkillIcon.gameObject.SetActive(true);
 
                     if (_enemyCharacterSubskill.GetSubskillData().EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide)
                     {
@@ -423,14 +422,24 @@ public class SkillPromptPanelV2 : MonoBehaviour
 
     private void HideNotTweeningPassiveSkillSlot()
     {
-        for (int i = 0; i < this.playerPassiveSkillSlots.Length; i++)
+        if (!LeanTween.isTweening(this.playerPassiveSkillSlot1))
         {
-            GameObject _playerPassiveSkillSlot = this.playerPassiveSkillSlots[i];
+            this.playerPassiveSkillSlot1.SetActive(false);
+        }
 
-            if (!LeanTween.isTweening(_playerPassiveSkillSlot))
-            {
-                _playerPassiveSkillSlot.SetActive(false);
-            }
+        if (!LeanTween.isTweening(this.playerPassiveSkillSlot2))
+        {
+            this.playerPassiveSkillSlot2.SetActive(false);
+        }
+
+        if (!LeanTween.isTweening(this.playerPassiveSkillSlot3))
+        {
+            this.playerPassiveSkillSlot3.SetActive(false);
+        }
+
+        if (!LeanTween.isTweening(this.playerPassiveSkillSlot4))
+        {
+            this.playerPassiveSkillSlot4.SetActive(false);
         }
 
         if (!LeanTween.isTweening(this.enemyPassiveSkillSlot1))
