@@ -16,6 +16,7 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     private GameCharacter selectedGameCharacter = null;
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
     private const string AUDIO_ID_WHEEL = "wheel";
+    private SkillSlotV2 middleSkillSlot = null;
 
     public void Initialize()
     {
@@ -83,17 +84,20 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         }
     }
 
-    public void ChangeToRepulseMode( GameCharacter gameCharacter )
+    public void ChangeToRepulseMode(GameCharacter gameCharacter)
     {
         this.selectedSkills.Clear();
-
-        List<CharacterSkill> _activeSkillList = gameCharacter.GetSelectedActiveSkillList();
-        for (int i = 0; i < _activeSkillList.Count; i++)
+        for (int i = 0; i < gameCharacter.GetSelectedActiveSkillList().Count; i++)
         {
-            this.selectedSkills.Add( _activeSkillList[ i ].GetCharacterSubskillData().GetSelectedRepulseSkill() );
-        }
+            CharacterSkill skillList = gameCharacter.GetSelectedActiveSkillList()[i];
 
-        InsertIntoSkillSlot( this.selectedSkills );
+            for (int j = 0; j < skillList.GetCharacterSubskillData().GetRepulseSkillList().Count; j++)
+            {
+                this.selectedSkills.Add(skillList.GetCharacterSubskillData().GetRepulseSkillList()[j]);
+                skillSlots[i].ShowSkillFrame(this.selectedSkills[i]);
+            }
+        }
+        InsertIntoSkillSlot(this.selectedSkills);
     }
 
     public void ChangeToDefaultMode( GameCharacter gameCharacter )
@@ -111,9 +115,9 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             if (_selectedSkill == _currentSkill)
             {
                 this.selectedSkills[ i ] = _currentSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
+                skillSlots[i].ShowSkillFrame(this.selectedSkills[i]);
             }
         }
-
         InsertIntoSkillSlot( this.selectedSkills );
     }
 
@@ -126,6 +130,22 @@ public class SkillSlotListPanelV2 : MonoBehaviour
                 return;
             }
             skillSlots[i].SetSelectedSkill(selectedSkills[i]);
+        }
+
+        if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
+        {
+            this.skillSlots[2].SetSelectedSkill(this.selectedSkills[1]);
+        }
+
+        if (this.selectedSkills.Count == 1 && this.skillSlots.Length > 2)
+        {
+            clickAreaTop.SetActive(false);
+            clickAreaBottom.SetActive(false);
+        }
+        else
+        {
+            clickAreaBottom.SetActive(true);
+            clickAreaTop.SetActive(true);
         }
     }
 
@@ -162,6 +182,29 @@ public class SkillSlotListPanelV2 : MonoBehaviour
 
     private void MoveSlot(int direction)
     {
+        if (this.selectedSkills.Count == 2)
+        {
+            for (int i = 0; i < this.skillSlots.Length; i++)
+            {
+                if (this.skillSlots[i] == middleSkillSlot)
+                {
+                    int _index = i + direction;
+                    if (_index >= this.skillSlots.Length)
+                    {
+                        _index = 0;
+                    }
+                    else if (_index < 0)
+                    {
+                        _index = this.skillSlots.Length - 1;
+                    }
+
+                    SkillSlotV2 _slot = this.skillSlots[_index];
+                    _slot.SetSelectedSkill(middleSkillSlot.GetSelectedSkill());
+                    break;
+                }
+            }
+        }
+
         GetLocalScale();
         for (int i = 0; i < skillSlotList.Count; i++)
         {
@@ -180,13 +223,14 @@ public class SkillSlotListPanelV2 : MonoBehaviour
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = true;
                 SetActiveRecursively(skillInformation[i].transform, true);
+                middleSkillSlot = skillSlotList[i].GetComponent<SkillSlotV2>();
             }
             else
             {
                 LeanTween.scale(slotToMove, initialScale[i] * 0.5f, 0.3f)
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = false;
-                SetActiveRecursively(skillInformation[i].transform, false);
+                //SetActiveRecursively(skillInformation[i].transform, false);
             }
         }
         ArrangeSkillSlot(direction);

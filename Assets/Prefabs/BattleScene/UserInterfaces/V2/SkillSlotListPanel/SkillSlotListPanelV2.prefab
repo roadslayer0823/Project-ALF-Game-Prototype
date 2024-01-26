@@ -619,7 +619,11 @@ PrefabInstance:
     - target: {fileID: 1078840878763072139, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 505c52cbb79b74beebb19089ccad6dd6, type: 3}
+      objectReference: {fileID: 0}
+    - target: {fileID: 2635130088466552121, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4392931398787021443, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Name
       value: SkillDetail3
@@ -797,7 +801,11 @@ PrefabInstance:
     - target: {fileID: 1078840878763072139, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 505c52cbb79b74beebb19089ccad6dd6, type: 3}
+      objectReference: {fileID: 0}
+    - target: {fileID: 2635130088466552121, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4392931398787021443, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Name
       value: SkillDetail2
@@ -959,7 +967,11 @@ PrefabInstance:
     - target: {fileID: 1078840878763072139, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 505c52cbb79b74beebb19089ccad6dd6, type: 3}
+      objectReference: {fileID: 0}
+    - target: {fileID: 2635130088466552121, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 4392931398787021443, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Name
       value: SkillDetail1

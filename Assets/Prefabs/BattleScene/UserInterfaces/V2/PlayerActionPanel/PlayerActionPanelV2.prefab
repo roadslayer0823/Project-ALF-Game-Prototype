@@ -275,19 +275,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3726374389548932156}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1228455882665615720}
-        m_TargetAssemblyTypeName: PlayerActionPanel, Assembly-CSharp
-        m_MethodName: ShowBackendSkillSelectionPanel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &1309129220191442651
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,6 +375,8 @@ MonoBehaviour:
   - {fileID: 8469797845082950011}
   - {fileID: 1910813343015824761}
   qteButton: {fileID: 9192956486030231006}
+  showSkillSelectionPanelButton: {fileID: 6137260234107387323}
+  skillSelectionPanelButtonText: {fileID: 0}
 --- !u!1 &4875519949427999621
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,19 +534,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8910616259974627866}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1228455882665615720}
-        m_TargetAssemblyTypeName: PlayerActionPanel, Assembly-CSharp
-        m_MethodName: ShowActiveSkillSelectionPanel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &6565467340364145383
 GameObject:
   m_ObjectHideFlags: 0
