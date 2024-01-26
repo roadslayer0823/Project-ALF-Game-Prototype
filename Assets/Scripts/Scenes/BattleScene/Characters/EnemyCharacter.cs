@@ -77,7 +77,7 @@ public class EnemyCharacter : GameCharacter
     public override void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
     {
         EnemyCharacter _enemyCharacter = battleGameManager.GetEnemyCharacter();
-        List<CharacterSkill> _skillList = null;
+        int _currentATLNumber = battleGameManager.GetBattleFlowManager_V2().GetCurrentRound().GetCurrentATL().GetATLNumber();
 
         switch ( animationEvent )
         {
@@ -168,10 +168,9 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnCombatCommandTimeStarted:
 
-                if (Random.value < 0.5f)
+                if (Random.value < 0.8f)
                 {
-                    _skillList = _enemyCharacter.GetSelectedActiveSkillList();
-                    _enemyCharacter.SetCurrentSkill( _skillList[ new System.Random().Next( _skillList.Count ) ] );
+                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_Before, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
 
                 break;
@@ -180,37 +179,92 @@ public class EnemyCharacter : GameCharacter
 
                 if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
                 {
-                    _skillList = new List<CharacterSkill>();
-
-                    if (Random.value < 0.5f)
-                    {
-                        List<CharacterSkill> _activeSkillList = _enemyCharacter.GetSelectedActiveSkillList();
-                        for (int i = 0; i < _activeSkillList.Count; i++)
-                        {
-                            _skillList.Add( _activeSkillList[ i ].GetCharacterSubskillData().GetSelectedRepulseSkill() );
-                        }
-                    }
-                    else
-                    {
-                        List<CharacterSkill> _backendSkillList = _enemyCharacter.GetSelectedBackendSkillList();
-                        for (int i = 0; i < _backendSkillList.Count; i++)
-                        {
-                            CharacterSkill _backendSkill = _backendSkillList[ i ];
-                            Subskill _subskillData = _backendSkill.GetCharacterSubskillData().GetSubskillData();
-                            if (_subskillData.IsDefendingSkill || _subskillData.IsEvadingSkill)
-                            {
-                                _skillList.Add( _backendSkill );
-                            }
-                        }
-                    }
-
-                    if (_skillList.Count > 0)
-                    {
-                        _enemyCharacter.SetCurrentSkill( _skillList[ new System.Random().Next( _skillList.Count ) ] );
-                    }
+                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
 
                 break;
+
+            case AnimationEvent.OnPartB:
+
+                if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulDefender
+                    || _enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulEvader)
+                {
+                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CounterAttackCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
+                }
+                else
+                {
+                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_After, _currentATLNumber, base.GetCurrentAttacker() ) );
+                }
+
+                break;
+        }
+    }
+
+    public void SetRandomAvailableSkillAsCurrentSkill( List<BattleSkillManager.SkillType> skillTypeList )
+    {
+        List<CharacterSkill> _availableSkillList = new List<CharacterSkill>();
+        List<CharacterSkill> _availableObservingSkillList = new List<CharacterSkill>();
+
+        List<CharacterSkill> _activeSkillList = base.GetSelectedActiveSkillList();
+        if (skillTypeList.Contains( BattleSkillManager.SkillType.Repulse ))
+        {
+            for (int i = 0; i < _activeSkillList.Count; i++)
+            {
+                _availableSkillList.Add( _activeSkillList[ i ].GetCharacterSubskillData().GetSelectedRepulseSkill() );
+            }
+        }
+        else if (skillTypeList.Contains( BattleSkillManager.SkillType.Derive ))
+        {
+            for (int i = 0; i < _activeSkillList.Count; i++)
+            {
+                CharacterSkill _activeSkill = _activeSkillList[ i ];
+                if (_activeSkill == base.GetCurrentSkill())
+                {
+                    _availableSkillList.Add( _activeSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() );
+                }
+                else
+                {
+                    _availableSkillList.Add( _activeSkill );
+                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < _activeSkillList.Count; i++)
+            {
+                _availableSkillList.Add( _activeSkillList[ i ] );
+            }
+        }
+
+        List<CharacterSkill> _backendSkillList = base.GetSelectedBackendSkillList();
+        bool _isAbleToDefend = skillTypeList.Contains( BattleSkillManager.SkillType.Defend );
+        bool _isAbleToEvade = skillTypeList.Contains( BattleSkillManager.SkillType.Evade );
+        bool _isAbleToObserve = skillTypeList.Contains( BattleSkillManager.SkillType.Observe );
+
+        for (int i = 0; i < _backendSkillList.Count; i++)
+        {
+            CharacterSkill _backendSkill = _backendSkillList[ i ];
+            Subskill _backendSubskillData = _backendSkill.GetCharacterSubskillData().GetSubskillData();
+
+            if (( _isAbleToDefend && _backendSubskillData.IsDefendingSkill )
+                || ( _isAbleToEvade && _backendSubskillData.IsEvadingSkill ))
+            {
+                _availableSkillList.Add( _backendSkill );
+            }
+            else if (_isAbleToObserve && _backendSubskillData.IsObservingSkill)
+            {
+                _availableObservingSkillList.Add( _backendSkill );
+            }
+        }
+
+        if (_availableSkillList.Count > 0)
+        {
+            base.SetCurrentSkill( _availableSkillList[ new System.Random().Next( _availableSkillList.Count ) ] );
+        }
+
+        if (_availableObservingSkillList.Count > 0)
+        {
+            base.SetCurrentObservingSkill( _availableObservingSkillList[ new System.Random().Next( _availableObservingSkillList.Count ) ] );
         }
     }
 }

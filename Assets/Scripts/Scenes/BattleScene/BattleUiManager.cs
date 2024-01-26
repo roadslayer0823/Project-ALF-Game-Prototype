@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using SkillType = BattleSkillManager.SkillType;
 
 public class BattleUiManager : MonoBehaviour
 {
@@ -309,6 +311,50 @@ public class BattleUiManager : MonoBehaviour
     public void ShowDefeatResult()
     {
         this.battleResultPanel.ShowDefeat();
+    }
+
+#endregion
+
+#region Battle Skill Manager
+
+    public void UpdateSkillButtons( List<SkillType> skillTypeList )
+    {
+        Debug.Log( "UpdateSkillButtons" );
+        if (skillTypeList.Contains( SkillType.Repulse ))
+        {
+            Debug.Log( "SkillType.Repulse" );
+            this.skillSlotListPanelV2.ChangeToRepulseMode( this.selectedGameCharacter );
+
+            CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
+            if (_currentSkill != null)
+            {
+                this.selectedGameCharacter.SetCurrentSkill( _currentSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() );
+            }
+        }
+        else if (skillTypeList.Contains( SkillType.Derive ))
+        {
+            Debug.Log( "SkillType.Derive" );
+            this.skillSlotListPanelV2.ChangeToDerivedMode( this.selectedGameCharacter );
+
+            if (skillTypeList.Contains( SkillType.Active ))
+            {
+                this.skillSlotListPanelV2.EnableInteraction();
+            }
+            else
+            {
+                this.skillSlotListPanelV2.DisableInteraction();
+            }
+        }
+        else
+        {
+            Debug.Log( "Default" );
+            this.skillSlotListPanelV2.ChangeToDefaultMode( this.selectedGameCharacter );
+        }
+
+        this.playerActionPanel.ShowSkillActionButtons( this.selectedGameCharacter.GetSelectedBackendSkillList().ToArray() );
+        this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Defense, skillTypeList.Contains( SkillType.Defend ) );
+        this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Evasion, skillTypeList.Contains( SkillType.Evade ) );
+        this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Observation, skillTypeList.Contains( SkillType.Observe ) );
     }
 
 #endregion

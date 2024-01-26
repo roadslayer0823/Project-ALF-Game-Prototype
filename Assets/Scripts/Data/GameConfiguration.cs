@@ -43,6 +43,7 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private float healthPointRegenerationRateOnRoundStart = 0.0f;
         private int maximumStatePointIncreaseOnRoundStart = 0;
         private float attackOpportunityDurationInSeconds = 0.0f;
+        private float stressValueDamageMultiplierOnRepulseForLoser = 0.0f;
 
         private const string NUMBER_OF_ATL_SLOTS = "number_of_atl_slots";
         private const string MAXIMUM_SELECTED_ACTIVE_SKILLS = "maximum_selected_active_skills";
@@ -65,6 +66,7 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private const string HEALTH_POINT_REGENERATION_RATE_ON_ROUND_START = "health_point_regeneration_rate_on_round_start";
         private const string MAXIMUM_STATE_POINT_INCREASE_ON_ROUND_START = "maximum_state_point_increase_on_round_start";
         private const string ATTACK_OPPORTUNITY_DURATION_IN_SECONDS = "attack_opportunity_duration_in_seconds";
+        private const string STRESS_VALUE_DAMAGE_MULTIPLIER_ON_REPULSE_FOR_LOSER = "stress_value_damage_multiplier_on_repulse_for_loser";
 
         public Battle( List<Configuration> battleConfigurationList )
         {
@@ -157,6 +159,10 @@ public class GameConfiguration : Singleton<GameConfiguration>
 
                     case ATTACK_OPPORTUNITY_DURATION_IN_SECONDS:
                         attackOpportunityDurationInSeconds = ( float )_configurationValue;
+                        break;
+
+                    case STRESS_VALUE_DAMAGE_MULTIPLIER_ON_REPULSE_FOR_LOSER:
+                        stressValueDamageMultiplierOnRepulseForLoser = ( float )_configurationValue;
                         break;
 
                     default:
@@ -268,6 +274,11 @@ public class GameConfiguration : Singleton<GameConfiguration>
         public float GetAttackOpportunityDurationInSeconds()
         {
             return this.attackOpportunityDurationInSeconds;
+        }
+
+        public float GetStressValueDamageMultiplierOnRepulseForLoser()
+        {
+            return this.stressValueDamageMultiplierOnRepulseForLoser;
         }
     }
 

@@ -10,11 +10,13 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     [SerializeField] private List<Button> skillSlotsButton = null;
     [SerializeField] private List<GameObject> skillSlotList;
     [SerializeField] private List<Transform> fixedSlotPosition;
+    [SerializeField] private List<GameObject> skillInformation;
 
     private List<Vector3> initialScale = new List<Vector3>();
     private GameCharacter selectedGameCharacter = null;
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
     private const string AUDIO_ID_WHEEL = "wheel";
+    private SkillSlotV2 middleSkillSlot = null;
 
     public void Initialize()
     {
@@ -57,6 +59,15 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         clickAreaBottom.SetActive(false);
     }
 
+    private void SetActiveRecursively(Transform parentTransform, bool active)
+    {
+        parentTransform.gameObject.SetActive(active);
+        foreach (Transform child in parentTransform)
+        {
+            SetActiveRecursively(child, active);
+        }
+    }
+
     public void UpdateSkillSlots(GameCharacter gameCharacter)
     {
         if (gameCharacter != null)
@@ -69,7 +80,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             {
                 return;
             }
-
             InsertIntoSkillSlot(this.selectedSkills);
         }
     }
@@ -84,27 +94,31 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             for (int j = 0; j < skillList.GetCharacterSubskillData().GetRepulseSkillList().Count; j++)
             {
                 this.selectedSkills.Add(skillList.GetCharacterSubskillData().GetRepulseSkillList()[j]);
+                skillSlots[i].ShowSkillFrame(this.selectedSkills[i]);
             }
         }
         InsertIntoSkillSlot(this.selectedSkills);
     }
 
-    public void ChangeToDefaultMode(GameCharacter gameCharacter)
+    public void ChangeToDefaultMode( GameCharacter gameCharacter )
     {
-        this.selectedSkills.Clear();
-        this.selectedSkills = new List<CharacterSkill>(gameCharacter.GetSelectedActiveSkillList());
-        if (this.selectedSkills.Count > skillSlots.Length)
-        {
-            return;
-        }
-        InsertIntoSkillSlot(this.selectedSkills);
+        this.selectedSkills = new List<CharacterSkill>( gameCharacter.GetSelectedActiveSkillList() );
+        InsertIntoSkillSlot( this.selectedSkills );
     }
 
-    public void ChangeToDerivedMode(GameCharacter gameCharacter)
+    public void ChangeToDerivedMode( GameCharacter gameCharacter )
     {
-        CharacterSkill skillList = gameCharacter.GetCurrentSkill();
-        this.selectedSkills = skillList.GetCharacterSubskillData().GetDerivedSkillList();
-        InsertIntoSkillSlot(this.selectedSkills);
+        CharacterSkill _currentSkill = gameCharacter.GetCurrentSkill();
+        for (int i = 0; i < this.selectedSkills.Count; i++)
+        {
+            CharacterSkill _selectedSkill = this.selectedSkills[ i ];
+            if (_selectedSkill == _currentSkill)
+            {
+                this.selectedSkills[ i ] = _currentSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
+                skillSlots[i].ShowSkillFrame(this.selectedSkills[i]);
+            }
+        }
+        InsertIntoSkillSlot( this.selectedSkills );
     }
 
     private void InsertIntoSkillSlot(List<CharacterSkill> selectedSkills)
@@ -117,9 +131,25 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             }
             skillSlots[i].SetSelectedSkill(selectedSkills[i]);
         }
+
+        if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
+        {
+            this.skillSlots[2].SetSelectedSkill(this.selectedSkills[1]);
+        }
+
+        if (this.selectedSkills.Count == 1 && this.skillSlots.Length > 2)
+        {
+            clickAreaTop.SetActive(false);
+            clickAreaBottom.SetActive(false);
+        }
+        else
+        {
+            clickAreaBottom.SetActive(true);
+            clickAreaTop.SetActive(true);
+        }
     }
 
-    private void ClearSkillSlots()
+    public void ClearSkillSlots()
     {
         foreach (SkillSlotV2 slot in skillSlots)
         {
@@ -135,7 +165,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     public void ResetLastRoundSelectedActiveSkill()
     {
         this.selectedGameCharacter.SetSelectedActiveSkillList(this.selectedSkills);
-
         InsertIntoSkillSlot(this.selectedSkills);
     }
 
@@ -143,18 +172,39 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_WHEEL);
         MoveSlot(-1);
-        Debug.Log("go down");
     }
 
     public void ClickTop()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_WHEEL);
         MoveSlot(1);
-        Debug.Log("go up");
     }
 
     private void MoveSlot(int direction)
     {
+        if (this.selectedSkills.Count == 2)
+        {
+            for (int i = 0; i < this.skillSlots.Length; i++)
+            {
+                if (this.skillSlots[i] == middleSkillSlot)
+                {
+                    int _index = i + direction;
+                    if (_index >= this.skillSlots.Length)
+                    {
+                        _index = 0;
+                    }
+                    else if (_index < 0)
+                    {
+                        _index = this.skillSlots.Length - 1;
+                    }
+
+                    SkillSlotV2 _slot = this.skillSlots[_index];
+                    _slot.SetSelectedSkill(middleSkillSlot.GetSelectedSkill());
+                    break;
+                }
+            }
+        }
+
         GetLocalScale();
         for (int i = 0; i < skillSlotList.Count; i++)
         {
@@ -172,12 +222,15 @@ public class SkillSlotListPanelV2 : MonoBehaviour
                 LeanTween.scale(slotToMove, initialScale[i] * 1f, 0.3f)
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = true;
+                SetActiveRecursively(skillInformation[i].transform, true);
+                middleSkillSlot = skillSlotList[i].GetComponent<SkillSlotV2>();
             }
             else
             {
-                LeanTween.scale(slotToMove, initialScale[i] * 0.7f, 0.3f)
+                LeanTween.scale(slotToMove, initialScale[i] * 0.5f, 0.3f)
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = false;
+                //SetActiveRecursively(skillInformation[i].transform, false);
             }
         }
         ArrangeSkillSlot(direction);
@@ -186,33 +239,41 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     //1 = moving slot to down direction, -1 = moving slot to up direction
     private void ArrangeSkillSlot(int direction)
     {
-        int i = 0;
-        GameObject tempSlot = skillSlotList[i];
-        Button tempButton = skillSlotsButton[i];
-
         if (direction == 1)
         {
+            int i = skillSlotList.Count - 1;
+            GameObject tempSlot = skillSlotList[i];
+            GameObject tempSkillInformation = skillInformation[i];
+            Button tempButton = skillSlotsButton[i];
             while (i > 0)
             {
                 skillSlotList[i] = skillSlotList[i - 1];
                 skillSlotsButton[i] = skillSlotsButton[i - 1];
+                skillInformation[i] = skillInformation[i - 1];
                 i--;
             }
 
             skillSlotList[i] = tempSlot;
             skillSlotsButton[i] = tempButton;
+            skillInformation[i] = tempSkillInformation;
         }
         else if (direction == -1)
         {
+            int i = 0;
+            GameObject tempSlot = skillSlotList[i];
+            GameObject tempSkillInformation = skillInformation[i];
+            Button tempButton = skillSlotsButton[i];
             while (i < skillSlotList.Count - 1)
             {
                 skillSlotList[i] = skillSlotList[i + 1];
                 skillSlotsButton[i] = skillSlotsButton[i + 1];
+                skillInformation[i] = skillInformation[i + 1];
                 i++;
             }
 
             skillSlotList[skillSlotList.Count - 1] = tempSlot;
             skillSlotsButton[skillSlotsButton.Count - 1] = tempButton;
+            skillInformation[skillInformation.Count - 1] = tempSkillInformation;
         }
     }
 
