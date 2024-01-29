@@ -12,7 +12,7 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     [SerializeField] private List<Transform> fixedSlotPosition;
     [SerializeField] private List<GameObject> skillInformation;
 
-    private List<Vector3> initialScale = new List<Vector3>();
+    private Vector3 initialScale = new Vector3(1f, 1f, 1f);
     private GameCharacter selectedGameCharacter = null;
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
     private const string AUDIO_ID_WHEEL = "wheel";
@@ -22,19 +22,9 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     {
         for (int i = 0; i < this.skillSlots.Length; i++)
         {
-            this.skillSlots[ i ].Initialize( this );
+            this.skillSlots[i].Initialize(this);
         }
-        MoveSlot(-1);
-        MoveSlot(1);
-    }
-
-    private void GetLocalScale()
-    {
-        foreach (GameObject slot in skillSlotList)
-        {
-            Vector3 scale = slot.transform.localScale;
-            initialScale.Add(scale);
-        }
+        ArrangeSkillSlot(1);
     }
 
     public void Show()
@@ -87,15 +77,10 @@ public class SkillSlotListPanelV2 : MonoBehaviour
     public void ChangeToRepulseMode(GameCharacter gameCharacter)
     {
         this.selectedSkills.Clear();
-        for (int i = 0; i < gameCharacter.GetSelectedActiveSkillList().Count; i++)
+        List<CharacterSkill> _activeSkillList = gameCharacter.GetSelectedActiveSkillList();
+        for (int i = 0; i < _activeSkillList.Count; i++)
         {
-            CharacterSkill skillList = gameCharacter.GetSelectedActiveSkillList()[i];
-
-            for (int j = 0; j < skillList.GetCharacterSubskillData().GetRepulseSkillList().Count; j++)
-            {
-                this.selectedSkills.Add(skillList.GetCharacterSubskillData().GetRepulseSkillList()[j]);
-                skillSlots[i].ShowSkillFrame(this.selectedSkills[i]);
-            }
+            this.selectedSkills.Add(_activeSkillList[i].GetCharacterSubskillData().GetSelectedRepulseSkill());
         }
         InsertIntoSkillSlot(this.selectedSkills);
     }
@@ -205,7 +190,6 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             }
         }
 
-        GetLocalScale();
         for (int i = 0; i < skillSlotList.Count; i++)
         {
             int newIndex = (i + direction + skillSlotList.Count) % skillSlotList.Count; // Calculate the new index
@@ -219,7 +203,7 @@ public class SkillSlotListPanelV2 : MonoBehaviour
 
             if (newIndex == 1)
             {
-                LeanTween.scale(slotToMove, initialScale[i] * 1f, 0.3f)
+                LeanTween.scale(slotToMove, initialScale * 1f, 0.1f)
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = true;
                 SetActiveRecursively(skillInformation[i].transform, true);
@@ -227,7 +211,7 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             }
             else
             {
-                LeanTween.scale(slotToMove, initialScale[i] * 0.5f, 0.3f)
+                LeanTween.scale(slotToMove, initialScale * 0.5f, 0.1f)
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = false;
                 //SetActiveRecursively(skillInformation[i].transform, false);
