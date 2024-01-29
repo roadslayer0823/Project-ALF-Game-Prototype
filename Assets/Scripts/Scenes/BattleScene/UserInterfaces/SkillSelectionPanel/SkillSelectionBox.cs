@@ -282,4 +282,9 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     {
         return this.isSelected;
     }
+
+    public int GetCurrentSkillLevel()
+    {
+        return this.skillLevel;
+    }
 }
