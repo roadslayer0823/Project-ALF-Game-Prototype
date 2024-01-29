@@ -1,12 +1,13 @@
 using System;
 using UnityEngine;
+using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 using Subskill = DatabaseManager.Subskill;
 
 public class SkillSlotV2 : MonoBehaviour
 {
-    //skill UI
+    [Header("Skill UI")]
     [SerializeField] private Image skillFrame;
     [SerializeField] private Image skillIcon;
     [SerializeField] private Sprite DefaultSkillFrame;
@@ -17,7 +18,7 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private Sprite CounterSkillFrame;
     [SerializeField] private Sprite SampleSkillIcon;
 
-    //modify skil level UI
+    [Header("Modify Skill Level UI")]
     [SerializeField] private TextMeshProUGUI skillSlotText;
     [SerializeField] private TextMeshProUGUI skillLevelText;
     [SerializeField] private TextMeshProUGUI skillPrefixText;
@@ -30,11 +31,13 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private Image plusLevelBackground;
     [SerializeField] private Image minusLevelImage;
     [SerializeField] private Image minusLevelBackground;
-
     [SerializeField] private Transform plusLevelTargetPosition;
     [SerializeField] private Transform plusLevelOriginalPosition;
     [SerializeField] private Transform minusLevelTargetPosition;
     [SerializeField] private Transform minusLevelOriginalPosition;
+
+    //animation reference
+    [SerializeField] private Animator skillBoxAnimation = null;
 
     private CharacterSkill selectedSkill = null;
     private SkillSlotListPanelV2 skillSlotListPanelV2 = null;
@@ -45,8 +48,11 @@ public class SkillSlotV2 : MonoBehaviour
     private bool isSkillLevelChanged = false;
     private int skillLevel = 1;
 
+    //audio and animation clip id
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
+    private const string ANIMATION_ID_OUTLINE_RESIZE = "OutlineResize";
+    private const string ANIMATION_ID_OUTLINE_EXPAND = "OutlineExpand";
 
     private void Update()
     {
@@ -69,6 +75,7 @@ public class SkillSlotV2 : MonoBehaviour
     public void ClickToSelectSkill()
     {
         this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill(this.selectedSkill);
+        SkillBoxAnimation();
     }
 
     public void ButtonOnDisable()
@@ -232,8 +239,8 @@ public class SkillSlotV2 : MonoBehaviour
     public void SetSelectedSkill(CharacterSkill selectedSkill)
     {
         this.selectedSkill = selectedSkill;
+        this.skillLevel = this.selectedSkill.GetCharacterSubskillData().GetSubskillData().Level;
         Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
-        SetSkillSlotText(_subskillData.DisplayName);
 
         if (_subskillData.Prefix.ToString() == "-")
         {
@@ -243,7 +250,10 @@ public class SkillSlotV2 : MonoBehaviour
         {
             this.skillPrefixText.SetText("[" + _subskillData.Prefix.ToString() + "]");
         }
+
         ShowSkillFrame(this.selectedSkill);
+        UpdateCharacterSkillLevel(this.skillLevel);
+        SetSkillSlotText(_subskillData.DisplayName);
         this.skillIcon.sprite = this.SampleSkillIcon;
         this.skillIcon.gameObject.SetActive(true);
     }
@@ -271,6 +281,12 @@ public class SkillSlotV2 : MonoBehaviour
         {
             this.skillFrame.sprite = this.CounterSkillFrame;
         }
+    }
+
+    public void SkillBoxAnimation()
+    {
+        this.skillBoxAnimation.Play(ANIMATION_ID_OUTLINE_RESIZE, 1, 0f);
+        this.skillBoxAnimation.Play(ANIMATION_ID_OUTLINE_EXPAND, 0, 0f);
     }
 
     public CharacterSkill GetSelectedSkill()
