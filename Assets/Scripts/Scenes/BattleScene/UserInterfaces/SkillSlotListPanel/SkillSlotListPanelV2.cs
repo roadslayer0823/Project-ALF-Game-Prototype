@@ -24,6 +24,8 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         {
             this.skillSlots[i].Initialize(this);
         }
+
+        this.middleSkillSlot = this.skillSlots[ 0 ];
         ArrangeSkillSlot(1);
     }
 
@@ -58,85 +60,116 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         }
     }
 
-    public void UpdateSkillSlots(GameCharacter gameCharacter)
-    {
-        if (gameCharacter != null)
-        {
-            this.selectedGameCharacter = gameCharacter;
-
-            this.selectedSkills = new List<CharacterSkill>(gameCharacter.GetSelectedActiveSkillList());
-
-            if (this.selectedSkills.Count > skillSlots.Length)
-            {
-                return;
-            }
-            InsertIntoSkillSlot(this.selectedSkills);
-        }
-    }
-
-    public void ChangeToRepulseMode(GameCharacter gameCharacter)
-    {
-        this.selectedSkills.Clear();
-        List<CharacterSkill> _activeSkillList = gameCharacter.GetSelectedActiveSkillList();
-        for (int i = 0; i < _activeSkillList.Count; i++)
-        {
-            this.selectedSkills.Add(_activeSkillList[i].GetCharacterSubskillData().GetSelectedRepulseSkill());
-        }
-        InsertIntoSkillSlot(this.selectedSkills);
-    }
-
     public void ChangeToDefaultMode( GameCharacter gameCharacter )
     {
-        this.selectedSkills = new List<CharacterSkill>( gameCharacter.GetSelectedActiveSkillList() );
-        InsertIntoSkillSlot( this.selectedSkills );
+        this.selectedGameCharacter = gameCharacter;
+
+        int _middleSkillSlotSkillIndex = ( this.selectedSkills.Count == 2 ) ? GetMiddleSkillSlotSkillIndex() : 0;
+        this.selectedSkills = new List<CharacterSkill>( this.selectedGameCharacter.GetSelectedActiveSkillList() );
+        UpdateSkillSlotsWithSelectedSkills( _middleSkillSlotSkillIndex );
+    }
+
+    public void ChangeToRepulseMode( GameCharacter gameCharacter )
+    {
+        this.selectedGameCharacter = gameCharacter;
+
+        int _middleSkillSlotSkillIndex = ( this.selectedSkills.Count == 2 ) ? GetMiddleSkillSlotSkillIndex() : 0;
+        this.selectedSkills.Clear();
+
+        List<CharacterSkill> _activeSkillList = this.selectedGameCharacter.GetSelectedActiveSkillList();
+        for (int i = 0; i < _activeSkillList.Count; i++)
+        {
+            this.selectedSkills.Add( _activeSkillList[ i ].GetCharacterSubskillData().GetSelectedRepulseSkill() );
+        }
+
+        UpdateSkillSlotsWithSelectedSkills( _middleSkillSlotSkillIndex );
     }
 
     public void ChangeToDerivedMode( GameCharacter gameCharacter )
     {
-        CharacterSkill _currentSkill = gameCharacter.GetCurrentSkill();
+        this.selectedGameCharacter = gameCharacter;
+
+        CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
         for (int i = 0; i < this.selectedSkills.Count; i++)
         {
             CharacterSkill _selectedSkill = this.selectedSkills[ i ];
             if (_selectedSkill == _currentSkill)
             {
                 this.selectedSkills[ i ] = _currentSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
-                skillSlots[i].ShowSkillFrame(this.selectedSkills[i]);
             }
         }
-        InsertIntoSkillSlot( this.selectedSkills );
+
+        UpdateSkillSlotsWithSelectedSkills();
     }
 
-    private void InsertIntoSkillSlot(List<CharacterSkill> selectedSkills)
+    private int GetMiddleSkillSlotSkillIndex()
     {
-        for (int i = 0; i < selectedSkills.Count; i++)
+        CharacterSkill _middleSkillSlotSelectedSkill = this.middleSkillSlot.GetSelectedSkill();
+        for (int i = 0; i < this.selectedSkills.Count; i++)
         {
-            if (i >= skillSlots.Length)
+            if (_middleSkillSlotSelectedSkill == this.selectedSkills[ i ])
             {
-                return;
+                return i;
             }
-            skillSlots[i].SetSelectedSkill(selectedSkills[i]);
         }
+
+        return -1;
+    }
+
+    private void UpdateSkillSlotsWithSelectedSkills( int middleSkillSlotSkillIndex = 0 )
+    {
+        ClearSkillSlots();
 
         if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
         {
-            this.skillSlots[2].SetSelectedSkill(this.selectedSkills[1]);
-        }
+            int _middleSkillIndex = ( middleSkillSlotSkillIndex < 0 ) ? 0 : middleSkillSlotSkillIndex;
+            int _otherSkillIndex = -1;
 
-        if (this.selectedSkills.Count == 1 && this.skillSlots.Length > 2)
-        {
-            clickAreaTop.SetActive(false);
-            clickAreaBottom.SetActive(false);
+            for (int i = 0; i < this.selectedSkills.Count; i++)
+            {
+                if (i != _middleSkillIndex)
+                {
+                    _otherSkillIndex = i;
+                    break;
+                }
+            }
+
+            for (int i = 0; i < this.skillSlots.Length; i++)
+            {
+                SkillSlotV2 _skillSlot = this.skillSlots[ i ];
+                if (_skillSlot == this.middleSkillSlot)
+                {
+                    _skillSlot.SetSelectedSkill( this.selectedSkills[ _middleSkillIndex ] );
+                }
+                else
+                {
+                    _skillSlot.SetSelectedSkill( this.selectedSkills[ _otherSkillIndex ] );
+                }
+            }
         }
         else
         {
-            clickAreaBottom.SetActive(true);
-            clickAreaTop.SetActive(true);
+            for (int i = 0; i < this.selectedSkills.Count; i++)
+            {
+                this.skillSlots[ i ].SetSelectedSkill( this.selectedSkills[ i ] );
+            }
+        }
+
+        if (this.selectedSkills.Count == 1)
+        {
+            this.clickAreaTop.SetActive( false );
+            this.clickAreaBottom.SetActive( false );
+        }
+        else
+        {
+            this.clickAreaBottom.SetActive( true );
+            this.clickAreaTop.SetActive( true );
         }
     }
 
     public void ClearSkillSlots()
     {
-        foreach (SkillSlotV2 slot in skillSlots)
+        foreach (SkillSlotV2 slot in this.skillSlots)
         {
             slot.Clear();
         }
@@ -149,8 +182,8 @@ public class SkillSlotListPanelV2 : MonoBehaviour
 
     public void ResetLastRoundSelectedActiveSkill()
     {
-        this.selectedGameCharacter.SetSelectedActiveSkillList(this.selectedSkills);
-        InsertIntoSkillSlot(this.selectedSkills);
+        this.selectedGameCharacter.SetSelectedActiveSkillList( this.selectedSkills );
+        UpdateSkillSlotsWithSelectedSkills();
     }
 
     public void ClickBottom()

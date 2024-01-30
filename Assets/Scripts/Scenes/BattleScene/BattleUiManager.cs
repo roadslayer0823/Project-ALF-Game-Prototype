@@ -161,7 +161,7 @@ public class BattleUiManager : MonoBehaviour
         }
         else
         {
-            this.skillSlotListPanelV2.UpdateSkillSlots( gameCharacter );
+            //this.skillSlotListPanelV2.UpdateSkillSlots( gameCharacter );
         }
     }
 
