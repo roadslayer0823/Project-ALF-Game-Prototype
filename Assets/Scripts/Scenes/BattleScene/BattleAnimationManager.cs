@@ -698,7 +698,7 @@ public class BattleAnimationManager : MonoBehaviour
         float _attackOpportunityDuration = battleFlowATL.GetAttackOpportunityDuration();
         this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true, _attackOpportunityDuration );
         this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, false, _attackOpportunityDuration );
-        BattleLog.Instance.AddOnScreenBattleLog( $"雙方進入【 { TerminologyManager.COMBAT_COMMAND_TIME } 】。" );
+        BattleLog.Instance.AddOnScreenBattleLog( $"雙方進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
 
         _playerCharacter.TriggerEvent( AnimationEvent.SetCharacter );
         _playerCharacter.TriggerEvent( AnimationEvent.OnCombatCommandTimeStarted );
@@ -710,7 +710,7 @@ public class BattleAnimationManager : MonoBehaviour
         this.skillPromptPanel.HideCommandPhase( true );
         this.skillPromptPanel.HideCommandPhase( false );
 
-        BattleLog.Instance.AddOnScreenBattleLog( "判定先後手方" );
+        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定先後手方</color>" );
 
         var ( _attacker, _attackTarget ) = BattleLogicManagerV2.DetermineLeadAndImproviser( _playerCharacter, _enemyCharacter );
 
@@ -722,8 +722,9 @@ public class BattleAnimationManager : MonoBehaviour
 
         // 有“先手方”和“後手方”。
 
-        BattleLog.Instance.AddOnScreenBattleLog( $"判定結果為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>成为“先手方”，"
-                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>成为“后手方”。" );
+        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定結果</color>為"
+                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“先手方”</color>，"
+                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“后手方”</color>。" );
 
         _attacker.PlayCharacterAnimation( "Idle" );
         _attackTarget.PlayCharacterAnimation( "Idle" );
@@ -796,7 +797,7 @@ public class BattleAnimationManager : MonoBehaviour
             StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
 
             this.skillPromptPanel.ShowCommandPhase( TerminologyManager.REPULSE_COMMAND_TIME, _attackTarget is PlayerCharacter, _skillCountdownTime );
-            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入【 { TerminologyManager.REPULSE_COMMAND_TIME } 】。" );
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.REPULSE_COMMAND_TIME } 】</color>。" );
 
             _atlSlotListPanel.GoToATL( battleFlowATL.GetATLNumber(), _skillAnimationLength, _attacker.GetCurrentSkill() );
         }
