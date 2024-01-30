@@ -200,11 +200,6 @@ MonoBehaviour:
   playerSkillInfoGO: {fileID: 7811636314566762319}
   playerSkillTagGO: {fileID: 7705188847897030240}
   playerCommandPhaseGO: {fileID: 1449635496638936758}
-  playerPassiveSkillSlots:
-  - {fileID: 8518971584253832817}
-  - {fileID: 5310186208950778802}
-  - {fileID: 5375551799013447070}
-  - {fileID: 5608710506630221232}
   playerPassiveSkillSlot1: {fileID: 8518971584253832817}
   playerPassiveSkillSlot2: {fileID: 5310186208950778802}
   playerPassiveSkillSlot3: {fileID: 5375551799013447070}
@@ -214,21 +209,11 @@ MonoBehaviour:
   playerBackendSkillProgressBar: {fileID: 7364771708649943667}
   playerActiveSkillIcon: {fileID: 5061808981105095814}
   playerBackendSkillIcon: {fileID: 5120389682784780456}
-  playerPassiveSkillBackgroundSlots:
-  - {fileID: 7192440373424871391}
-  - {fileID: 6654151824930636316}
-  - {fileID: 6877016482180164656}
-  - {fileID: 6359080002352346142}
   playerPassiveSkillBackgroundSlot1: {fileID: 7192440373424871391}
   playerPassiveSkillBackgroundSlot2: {fileID: 6654151824930636316}
   playerPassiveSkillBackgroundSlot3: {fileID: 6877016482180164656}
   playerPassiveSkillBackgroundSlot4: {fileID: 6359080002352346142}
   playerCommandPhaseText: {fileID: 8240252621624978432}
-  playerPassiveSkillTextSlots:
-  - {fileID: 8039626204944101741}
-  - {fileID: 5772093881889170606}
-  - {fileID: 5995066347379051138}
-  - {fileID: 6088073434539479724}
   playerPassiveSkillTextSlot1: {fileID: 8039626204944101741}
   playerPassiveSkillTextSlot2: {fileID: 5772093881889170606}
   playerPassiveSkillTextSlot3: {fileID: 5995066347379051138}
@@ -3244,6 +3229,22 @@ PrefabInstance:
       propertyPath: m_LocalScale.x
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 3504080992455292981, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3504080992455292981, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3504080992455292981, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3504080992455292981, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3606003964005030250, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
       propertyPath: m_Name
       value: CommandPhase
@@ -3259,6 +3260,14 @@ PrefabInstance:
     - target: {fileID: 4495530691765851508, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
       propertyPath: m_AnchorMin.x
       value: 0.18
+      objectReference: {fileID: 0}
+    - target: {fileID: 4621210447745605039, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+      propertyPath: m_FillAmount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545461507087525848, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+      propertyPath: m_FillAmount
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5775318097511168237, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
       propertyPath: m_Pivot.x
@@ -3360,6 +3369,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 138
       objectReference: {fileID: 0}
+    - target: {fileID: 8072965758630103956, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8072965758630103956, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8072965758630103956, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8072965758630103956, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
 --- !u!1 &1639040187490324452 stripped
@@ -3437,6 +3462,10 @@ PrefabInstance:
     - target: {fileID: 3606003964005030250, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
       propertyPath: m_Name
       value: CommandPhase
+      objectReference: {fileID: 0}
+    - target: {fileID: 3606003964005030250, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5775318097511168237, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
       propertyPath: m_Pivot.x
