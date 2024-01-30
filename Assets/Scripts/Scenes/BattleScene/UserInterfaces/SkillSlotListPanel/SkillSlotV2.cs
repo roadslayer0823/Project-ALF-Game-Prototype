@@ -1,22 +1,23 @@
 using System;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 using Subskill = DatabaseManager.Subskill;
+using Skill = DatabaseManager.Skill;
 
 public class SkillSlotV2 : MonoBehaviour
 {
     [Header("Skill UI")]
     [SerializeField] private Image skillFrame;
     [SerializeField] private Image skillIcon;
-    [SerializeField] private Sprite DefaultSkillFrame;
+    [SerializeField] private Sprite SampleSkillIcon;
+    [SerializeField] private Sprite BlankActiveSkillFrame;
+    [SerializeField] private Sprite BlankBackendSkillFrame;
     [SerializeField] private Sprite ActiveSkillFrame;
     [SerializeField] private Sprite BackendSkillFrame;
     [SerializeField] private Sprite RepulseSkillFrame;
     [SerializeField] private Sprite DerivedSkillFrame;
     [SerializeField] private Sprite CounterSkillFrame;
-    [SerializeField] private Sprite SampleSkillIcon;
 
     [Header("Modify Skill Level UI")]
     [SerializeField] private TextMeshProUGUI skillSlotText;
@@ -40,6 +41,7 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private Animator skillBoxAnimation = null;
 
     private CharacterSkill selectedSkill = null;
+    private SkillInfoPanel skillPanelUI = null;
     private SkillSlotListPanelV2 skillSlotListPanelV2 = null;
     private Vector2 mousePressPosition = new Vector2();
     private Vector2 mouseReleasePosition = new Vector2();
@@ -62,14 +64,17 @@ public class SkillSlotV2 : MonoBehaviour
     public void Initialize(SkillSlotListPanelV2 skillSlotListPanelV2)
     {
         this.skillSlotListPanelV2 = skillSlotListPanelV2;
-        this.skillFrame.sprite = this.DefaultSkillFrame;
-        this.skillIcon.gameObject.SetActive(false);
+        this.SetBlankFrame("Active");
     }
 
     public void Clear()
     {
         this.selectedSkill = null;
+        this.skillIcon.sprite = null;
+        this.SetBlankFrame("Active");
         this.skillSlotText.SetText("");
+        this.skillPrefixText.SetText("");
+        this.skillIcon.gameObject.SetActive(false);
     }
 
     public void ClickToSelectSkill()
@@ -170,7 +175,9 @@ public class SkillSlotV2 : MonoBehaviour
     {
         this.selectedSkill.SetSelectedSkillLevel(this.skillLevel);
         this.skillLevelText.SetText($"<size=30>LV.</size> {skillLevel}");
+        //this.skillPanelUI.currentPanelLevelText.SetText(skillLevel.ToString());
         this.skillLevelAnimationText.SetText($"<size=30>LV.</size> {skillLevel}");
+
         UpdateSkillSelectionBoxData();
     }
 
@@ -261,25 +268,39 @@ public class SkillSlotV2 : MonoBehaviour
     public void ShowSkillFrame(CharacterSkill selectedSkill)
     {
         this.selectedSkill = selectedSkill;
-        if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+        switch (this.selectedSkill.GetSkillData().skillType)
         {
-            this.skillFrame.sprite = this.ActiveSkillFrame;
+            case Skill.SkillType.active:
+                this.skillFrame.sprite = this.ActiveSkillFrame;
+                break;
+
+            case Skill.SkillType.backend:
+                this.skillFrame.sprite = this.BackendSkillFrame;
+                break;
+
+            case Skill.SkillType.repulse:
+                this.skillFrame.sprite = this.RepulseSkillFrame;
+                break;
+
+            case Skill.SkillType.derived:
+                this.skillFrame.sprite = this.DerivedSkillFrame;
+                break;
+
+            case Skill.SkillType.counter:
+                this.skillFrame.sprite = this.CounterSkillFrame;
+                break;
         }
-        else if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.backend)
+    }
+
+    public void SetBlankFrame(string skilltype)
+    {
+        if (skilltype == "Active")
         {
-            this.skillFrame.sprite = this.BackendSkillFrame;
+            this.skillFrame.sprite = this.BlankActiveSkillFrame;
         }
-        else if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse)
+        else if (skilltype == "Backend")
         {
-            this.skillFrame.sprite = this.RepulseSkillFrame;
-        }
-        else if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.derived)
-        {
-            this.skillFrame.sprite = this.DerivedSkillFrame;
-        }
-        else if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.counter)
-        {
-            this.skillFrame.sprite = this.CounterSkillFrame;
+            this.skillFrame.sprite = this.BlankBackendSkillFrame;
         }
     }
 
