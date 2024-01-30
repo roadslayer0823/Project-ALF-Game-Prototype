@@ -1163,13 +1163,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillFrame: {fileID: 1078840878763072139}
   skillIcon: {fileID: 2635130088466552121}
-  DefaultSkillFrame: {fileID: 21300000, guid: b454ba89091474789a6f304afa20a108, type: 3}
+  SampleSkillIcon: {fileID: 21300000, guid: 65d90929bdc654d87a48d290fb93ccb0, type: 3}
+  BlankActiveSkillFrame: {fileID: 21300000, guid: 2311f73e6bd474ce79367cffdbd5c5f6, type: 3}
+  BlankBackendSkillFrame: {fileID: 21300000, guid: cfd1bf8f8b50a4e23a2b78181427f644, type: 3}
   ActiveSkillFrame: {fileID: 21300000, guid: 505c52cbb79b74beebb19089ccad6dd6, type: 3}
   BackendSkillFrame: {fileID: 21300000, guid: b8daf13fff6f14cfb8ff9331ffaae024, type: 3}
   RepulseSkillFrame: {fileID: 21300000, guid: f547947f633fd49959011296e616d71f, type: 3}
   DerivedSkillFrame: {fileID: 21300000, guid: c7c04b4c451f64661838dfc40bfecc8b, type: 3}
   CounterSkillFrame: {fileID: 21300000, guid: 8952c816e58ec4f9790bd31429d3dbd1, type: 3}
-  SampleSkillIcon: {fileID: 21300000, guid: 65d90929bdc654d87a48d290fb93ccb0, type: 3}
   skillSlotText: {fileID: 2969956611958473087}
   skillLevelText: {fileID: 1912908661862330579}
   skillPrefixText: {fileID: 8500368689490315917}
@@ -1187,8 +1188,6 @@ MonoBehaviour:
   minusLevelTargetPosition: {fileID: 5572100157551461013}
   minusLevelOriginalPosition: {fileID: 7506797972966221331}
   skillBoxAnimation: {fileID: 3903610091004816897}
-  outlineExpand: {fileID: 7400000, guid: 423103f491ec4480483f306f939a92ad, type: 2}
-  outlineResize: {fileID: 7400000, guid: d2269c427820f46fd8d7ddc974d87cd7, type: 2}
 --- !u!114 &8742595457740914751
 MonoBehaviour:
   m_ObjectHideFlags: 0
