@@ -54,8 +54,8 @@ public class SkillSlotV2 : MonoBehaviour
     //audio and animation clip id
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
-    private const string ANIMATION_ID_OUTLINE_RESIZE = "OutlineResize";
-    private const string ANIMATION_ID_OUTLINE_EXPAND = "OutlineExpand";
+    private const string ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE = "ActiveSkillOutlineResize";
+    private const string ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND = "ActiveSkillOutlineExpand";
 
     public enum StateType
     {
@@ -75,6 +75,7 @@ public class SkillSlotV2 : MonoBehaviour
     {
         this.skillSlotListPanelV2 = skillSlotListPanelV2;
         this.SetBlankFrame("Active");
+        this.skillFrame.SetNativeSize();
     }
 
     public void Clear()
@@ -328,8 +329,8 @@ public class SkillSlotV2 : MonoBehaviour
 
     public void SelectActiveSkillAnimation()
     {
-        this.skillBoxAnimation.Play(ANIMATION_ID_OUTLINE_RESIZE, 1, 0f);
-        this.skillBoxAnimation.Play(ANIMATION_ID_OUTLINE_EXPAND, 0, 0f);
+        this.skillBoxAnimation.Play(ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE, 1, 0f);
+        this.skillBoxAnimation.Play(ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND, 0, 0f);
     }
 
     public CharacterSkill GetSelectedSkill()
