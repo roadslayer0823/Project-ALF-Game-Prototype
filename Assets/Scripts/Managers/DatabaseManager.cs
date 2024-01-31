@@ -622,6 +622,12 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("display_name")]
         public string DisplayName { get; private set; }
 
+        [JsonProperty( "icon_file_path_on" )]
+        public string IconFilePathOn { get; private set; }
+
+        [JsonProperty( "icon_file_path_off" )]
+        public string IconFilePathOff { get; private set; }
+
         [JsonProperty("description")]
         public string Description { get; private set; }
 
