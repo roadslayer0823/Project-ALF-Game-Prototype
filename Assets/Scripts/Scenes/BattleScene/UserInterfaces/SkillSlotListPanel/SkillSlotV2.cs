@@ -18,6 +18,7 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private Sprite RepulseSkillFrame;
     [SerializeField] private Sprite DerivedSkillFrame;
     [SerializeField] private Sprite CounterSkillFrame;
+    [SerializeField] private GameObject SelectedSkillEffect;
 
     [Header("Modify Skill Level UI")]
     [SerializeField] private TextMeshProUGUI skillSlotText;
@@ -40,8 +41,8 @@ public class SkillSlotV2 : MonoBehaviour
     //animation reference
     [SerializeField] private Animator skillBoxAnimation = null;
 
+    private StateType currentStateType = StateType.None;
     private CharacterSkill selectedSkill = null;
-    private SkillInfoPanel skillPanelUI = null;
     private SkillSlotListPanelV2 skillSlotListPanelV2 = null;
     private Vector2 mousePressPosition = new Vector2();
     private Vector2 mouseReleasePosition = new Vector2();
@@ -53,8 +54,17 @@ public class SkillSlotV2 : MonoBehaviour
     //audio and animation clip id
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
-    private const string ANIMATION_ID_OUTLINE_RESIZE = "OutlineResize";
-    private const string ANIMATION_ID_OUTLINE_EXPAND = "OutlineExpand";
+    private const string ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE = "ActiveSkillOutlineResize";
+    private const string ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND = "ActiveSkillOutlineExpand";
+
+    public enum StateType
+    {
+        None,
+        Selected,
+        Activate,
+        Disable,
+        Enable
+    }
 
     private void Update()
     {
@@ -65,22 +75,22 @@ public class SkillSlotV2 : MonoBehaviour
     {
         this.skillSlotListPanelV2 = skillSlotListPanelV2;
         this.SetBlankFrame("Active");
+        this.skillFrame.SetNativeSize();
     }
 
     public void Clear()
     {
         this.selectedSkill = null;
-        this.skillIcon.sprite = null;
         this.SetBlankFrame("Active");
         this.skillSlotText.SetText("");
         this.skillPrefixText.SetText("");
-        this.skillIcon.gameObject.SetActive(false);
     }
 
     public void ClickToSelectSkill()
     {
         this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill(this.selectedSkill);
-        SkillBoxAnimation();
+        SelectActiveSkillAnimation();
+        SetButtonStateType(StateType.Selected);
     }
 
     public void ButtonOnDisable()
@@ -233,16 +243,6 @@ public class SkillSlotV2 : MonoBehaviour
        });
     }
 
-    public bool CheckIsSkillLevelChanged()
-    {
-        return this.isSkillLevelChanged;
-    }
-
-    public void SetSkillSlotText(string slotText)
-    {
-        this.skillSlotText.SetText(slotText);
-    }
-
     public void SetSelectedSkill(CharacterSkill selectedSkill)
     {
         this.selectedSkill = selectedSkill;
@@ -304,14 +304,48 @@ public class SkillSlotV2 : MonoBehaviour
         }
     }
 
-    public void SkillBoxAnimation()
+    public void SetButtonStateType(StateType buttonStateType)
     {
-        this.skillBoxAnimation.Play(ANIMATION_ID_OUTLINE_RESIZE, 1, 0f);
-        this.skillBoxAnimation.Play(ANIMATION_ID_OUTLINE_EXPAND, 0, 0f);
+        if (buttonStateType == StateType.Selected)
+        {
+            this.SelectedSkillEffect.SetActive(true);
+            ButtonOnDisable();
+        }
+        else if (currentStateType == StateType.Activate)
+        {
+            this.SelectedSkillEffect.SetActive(false);
+            SetBlankFrame("Active");
+        }
+        else if (currentStateType == StateType.Disable)
+        {
+            SetBlankFrame("Active");
+        }
+        else if(currentStateType == StateType.Enable)
+        {
+            ButtonOnEnable();
+            ShowSkillFrame(this.selectedSkill);
+        }
+    }
+
+    public void SelectActiveSkillAnimation()
+    {
+        this.skillBoxAnimation.Play(ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE, 1, 0f);
+        this.skillBoxAnimation.Play(ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND, 0, 0f);
     }
 
     public CharacterSkill GetSelectedSkill()
     {
         return this.selectedSkill;
     }
+
+    public bool CheckIsSkillLevelChanged()
+    {
+        return this.isSkillLevelChanged;
+    }
+
+    public void SetSkillSlotText(string slotText)
+    {
+        this.skillSlotText.SetText(slotText);
+    }
+
 }
