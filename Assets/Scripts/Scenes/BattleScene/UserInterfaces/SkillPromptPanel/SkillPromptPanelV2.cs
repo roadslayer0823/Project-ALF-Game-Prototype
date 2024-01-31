@@ -190,12 +190,12 @@ public class SkillPromptPanelV2 : MonoBehaviour
 
     public void ShowCommandPhase(string phaseName, bool isPlayer, float duration = 0)
     {
-        if (isPlayer && !LeanTween.isTweening(this.playerCommandPhaseGO))
+        if (isPlayer)
         {
             this.playerCommandPhaseGO.SetActive(true);
-
             this.playerCommandPhaseText.SetText(phaseName);
 
+            LeanTween.cancel( this.playerCommandPhaseGO );
             LeanTween.moveLocalX(this.playerCommandPhaseGO, 0.0f, this.skillInfoPopSpeed);
 
             if (duration > 0)
@@ -203,12 +203,12 @@ public class SkillPromptPanelV2 : MonoBehaviour
                 LeanTween.moveLocalX(this.playerCommandPhaseGO, 600.0f, this.skillInfoPopSpeed).setDelay(duration).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.playerCommandPhaseGO);
             }
         }
-        else if (!isPlayer && !LeanTween.isTweening(this.enemyCommandPhaseGO))
+        else
         {
             this.enemyCommandPhaseGO.SetActive(true);
-
             this.enemyCommandPhaseText.SetText(phaseName);
 
+            LeanTween.cancel( this.enemyCommandPhaseGO );
             LeanTween.moveLocalX(this.enemyCommandPhaseGO, 0.0f, this.skillInfoPopSpeed);
 
             if (duration > 0)

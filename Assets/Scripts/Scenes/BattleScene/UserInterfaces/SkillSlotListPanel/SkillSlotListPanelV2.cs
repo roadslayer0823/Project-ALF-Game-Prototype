@@ -155,6 +155,11 @@ public class SkillSlotListPanelV2 : MonoBehaviour
             }
         }
 
+        for (int i = 0; i < this.skillSlots.Length; i++)
+        {
+            this.skillSlots[ i ].SetCurrentStateType( SkillSlotV2.StateType.Enabled );
+        }
+
         if (this.selectedSkills.Count == 1)
         {
             this.clickAreaTop.SetActive( false );

@@ -2,15 +2,18 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Subskill = DatabaseManager.Subskill;
 using Skill = DatabaseManager.Skill;
+using Subskill = DatabaseManager.Subskill;
 
 public class SkillSlotV2 : MonoBehaviour
 {
+    [Header( "Settings" )]
+    [SerializeField] private SkillType skillType = SkillType.None;
+    [SerializeField] private float skillIconScale = 1.0f;
+
     [Header("Skill UI")]
     [SerializeField] private Image skillFrame;
     [SerializeField] private Image skillIcon;
-    [SerializeField] private Sprite SampleSkillIcon;
     [SerializeField] private Sprite BlankActiveSkillFrame;
     [SerializeField] private Sprite BlankBackendSkillFrame;
     [SerializeField] private Sprite ActiveSkillFrame;
@@ -49,6 +52,7 @@ public class SkillSlotV2 : MonoBehaviour
 
     private bool isSkillLevelChanged = false;
     private int skillLevel = 1;
+    private StateType currentStateType = StateType.None;
 
     //audio and animation clip id
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
@@ -58,15 +62,6 @@ public class SkillSlotV2 : MonoBehaviour
     private const string ANIMATION_ID_BACKEND_SKILL_OUTLINE_RESIZE = "BackendSkillOutlineResize";
     private const string ANIMATION_ID_BACKEND_SKILL_OUTLINE_EXPAND = "BackendSkillOutlineExpand";
 
-    public enum StateType
-    {
-        None,
-        Selected,
-        Activate,
-        Disable,
-        Enable
-    }
-
     public enum SkillType
     {
         None,
@@ -74,7 +69,16 @@ public class SkillSlotV2 : MonoBehaviour
         BackendSkill
     }
 
-    private void Update()
+    public enum StateType
+    {
+        None,
+        Enabled,
+        Disabled,
+        Selected,
+        Activated
+    }
+
+    void Update()
     {
         Swipe();
     }
@@ -82,38 +86,35 @@ public class SkillSlotV2 : MonoBehaviour
     public void Initialize(SkillSlotListPanelV2 skillSlotListPanelV2)
     {
         this.skillSlotListPanelV2 = skillSlotListPanelV2;
-        this.SetBlankFrame(SkillType.ActiveSkill);
+        this.SetBlankFrame( this.skillType );
+        this.skillIcon.transform.localScale = new Vector3( this.skillIconScale, this.skillIconScale, 1.0f );
     }
 
     public void Clear()
     {
         this.selectedSkill = null;
-        this.SetBlankFrame(SkillType.ActiveSkill);
+        this.SetBlankFrame( this.skillType );
         this.skillSlotText.SetText("");
         this.skillPrefixText.SetText("");
     }
 
-    public void ClickToSelectActiveSkill()
+    public void ClickToSelectSkill()
     {
-        this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill(this.selectedSkill);
-        SetButtonStateType(StateType.Selected, SkillType.ActiveSkill);
-       
+        if (this.currentStateType == StateType.Enabled)
+        {
+            this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill( this.selectedSkill );
+            SetCurrentStateType( StateType.Selected );
+        }
     }
 
-    public void ClickToSelectBackendSkill()
-    {
-        this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill(this.selectedSkill);
-        SetButtonStateType(StateType.Selected, SkillType.BackendSkill);
-    }
-
-    public void ButtonOnDisable()
-    {
-        this.skillSelectionButton.interactable = false;
-    }
-
-    public void ButtonOnEnable()
+    public void EnableButton()
     {
         this.skillSelectionButton.interactable = true;
+    }
+
+    public void DisableButton()
+    {
+        this.skillSelectionButton.interactable = false;
     }
 
     //changing skill level mechanics
@@ -259,8 +260,9 @@ public class SkillSlotV2 : MonoBehaviour
     public void SetSelectedSkill(CharacterSkill selectedSkill)
     {
         this.selectedSkill = selectedSkill;
-        this.skillLevel = this.selectedSkill.GetCharacterSubskillData().GetSubskillData().Level;
+
         Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
+        this.skillLevel = _subskillData.Level;
 
         if (_subskillData.Prefix.ToString() == "-")
         {
@@ -274,7 +276,8 @@ public class SkillSlotV2 : MonoBehaviour
         ShowSkillFrame(this.selectedSkill);
         UpdateCharacterSkillLevel(this.skillLevel);
         SetSkillSlotText(_subskillData.DisplayName);
-        this.skillIcon.sprite = this.SampleSkillIcon;
+
+        UpdateSkillIcon( false );
         this.skillIcon.gameObject.SetActive(true);
     }
 
@@ -319,60 +322,56 @@ public class SkillSlotV2 : MonoBehaviour
         }
     }
 
-    public void SetButtonStateType(StateType buttonStateType, SkillType currentSkillType)
+    public void SetCurrentStateType( StateType currentStateType )
     {
-        if (buttonStateType == StateType.Selected)
-        {
-            this.SelectedSkillEffect.SetActive(true);
-            ButtonOnDisable();
-        }
+        this.currentStateType = currentStateType;
 
-        else if (buttonStateType == StateType.Enable)
+        switch ( this.currentStateType )
         {
-            ButtonOnEnable();
-            ShowSkillFrame(this.selectedSkill);
-        }
-        else
-        {
-            if (currentSkillType == SkillType.ActiveSkill)
-            {
-                if (buttonStateType == StateType.Activate)
-                {
-                    this.SelectedSkillEffect.SetActive(false);
-                    SetBlankFrame(SkillType.ActiveSkill);
-                }
-                else if (buttonStateType == StateType.Disable)
-                {
-                    SetBlankFrame(SkillType.ActiveSkill);
-                }
-            }
+            case StateType.Enabled:
 
-            if (currentSkillType == SkillType.BackendSkill)
-            {
-                if (buttonStateType == StateType.Activate)
-                {
-                    this.SelectedSkillEffect.SetActive(false);
-                    SetBlankFrame(SkillType.BackendSkill);
-                }
-                else if (buttonStateType == StateType.Disable)
-                {
-                    SetBlankFrame(SkillType.BackendSkill);
-                }
-            }
+                EnableButton();
+                ShowSkillFrame( this.selectedSkill );
+                UpdateSkillIcon( false );
+
+                break;
+
+            case StateType.Disabled:
+
+                SetBlankFrame( this.skillType );
+                UpdateSkillIcon( false );
+
+                break;
+
+            case StateType.Selected:
+
+                this.SelectedSkillEffect.SetActive( true );
+                DisableButton();
+                UpdateSkillIcon( true );
+
+                break;
+
+            case StateType.Activated:
+
+                this.SelectedSkillEffect.SetActive( false );
+                SetBlankFrame( this.skillType );
+                UpdateSkillIcon( false );
+
+                break;
         }
     }
 
-    public void SetSelectSkillAnimation(SkillType currentSkillType)
+    public void SetSelectSkillAnimation()
     {
-        if(currentSkillType == SkillType.ActiveSkill)
+        if (this.skillType == SkillType.ActiveSkill)
         {
-            this.skillBoxAnimation.Play(ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE, 1, 0f);
-            this.skillBoxAnimation.Play(ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND, 0, 0f);
+            this.skillBoxAnimation.Play( ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE, 1, 0f );
+            this.skillBoxAnimation.Play( ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND, 0, 0f );
         }
-        else if(currentSkillType == SkillType.BackendSkill)
+        else if (this.skillType == SkillType.BackendSkill)
         {
-            this.skillBoxAnimation.Play(ANIMATION_ID_BACKEND_SKILL_OUTLINE_RESIZE, 1, 0f);
-            this.skillBoxAnimation.Play(ANIMATION_ID_BACKEND_SKILL_OUTLINE_EXPAND, 0, 0f);
+            this.skillBoxAnimation.Play( ANIMATION_ID_BACKEND_SKILL_OUTLINE_RESIZE, 1, 0f );
+            this.skillBoxAnimation.Play( ANIMATION_ID_BACKEND_SKILL_OUTLINE_EXPAND, 0, 0f );
         }
     }
 
@@ -391,4 +390,10 @@ public class SkillSlotV2 : MonoBehaviour
         this.skillSlotText.SetText(slotText);
     }
 
+    private void UpdateSkillIcon( bool isOn )
+    {
+        Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
+        this.skillIcon.sprite = Resources.Load<Sprite>( ( isOn ) ? _subskillData.IconFilePathOn : _subskillData.IconFilePathOff );
+        this.skillIcon.SetNativeSize();
+    }
 }

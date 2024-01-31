@@ -20,12 +20,15 @@ public class BattleResultData
         public float maximumStressValue = 0.0f;
         public float currentStressValue = 0.0f;
 
-        // 改變參數
+        // 改變參數（技能發動時）
+        public float statePointCost = 0.0f;
+        public float maximumStatePointIncrease = 0.0f;
+
+        // 改變參數（命中目標時）
         public float actualHealthPointDamage = 0.0f;
         public float virtualHealthPointDamage = 0.0f;
         public float statePointDamage = 0.0f;
         public float stressValueDamage = 0.0f;
-        public float maximumStatePointIncrease = 0.0f;
 
         // 崩潰狀態
         public bool isEnteringIntoBreakStatus = false;
@@ -40,12 +43,26 @@ public class BattleResultData
     }
 
     public void AddGameCharacterResultData( GameCharacter gameCharacter,
+                                            float statePointCost = 0.0f, float maximumStatePointIncrease = 0.0f,
                                             float actualHealthPointDamage = 0.0f, float virtualHealthPointDamage = 0.0f, float statePointDamage = 0.0f, float stressValueDamage = 0.0f,
-                                            float maximumStatePointIncrease = 0.0f,
                                             bool isBreakStatusAvailable = false, bool hasEnergyMarker = false, int energyMarkerRemainingATLs = 0 )
     {
         bool _isNewElement = false;
         BattleResultData_GameCharacter _gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out _isNewElement );
+
+        if (statePointCost > 0)
+        {
+            // 以太值消耗
+            _gameCharacterResultData.statePointCost += statePointCost;
+            _gameCharacterResultData.currentStatePoint -= statePointCost;
+        }
+
+        if (maximumStatePointIncrease > 0)
+        {
+            // 最大以太值提升
+            _gameCharacterResultData.maximumStatePointIncrease += maximumStatePointIncrease;
+            _gameCharacterResultData.maximumStatePoint += maximumStatePointIncrease;
+        }
 
         if (actualHealthPointDamage > 0)
         {
@@ -74,13 +91,6 @@ public class BattleResultData
             // 負荷值傷害
             _gameCharacterResultData.stressValueDamage += stressValueDamage;
             _gameCharacterResultData.currentStressValue += stressValueDamage;
-        }
-
-        if (maximumStatePointIncrease > 0)
-        {
-            // 最大以太值提升
-            _gameCharacterResultData.maximumStatePointIncrease += maximumStatePointIncrease;
-            _gameCharacterResultData.maximumStatePoint += maximumStatePointIncrease;
         }
 
         if (_gameCharacterResultData.currentHealthPoint <= 0)

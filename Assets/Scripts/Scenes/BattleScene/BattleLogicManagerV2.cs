@@ -182,6 +182,8 @@ public class BattleLogicManagerV2
 
         if (_improviserCurrentSkill != null)
         {
+            ExecuteCasterSkillOnUse( ref _battleResultData, improviser, lead );
+
             Skill _skillData = _improviserCurrentSkill.GetSkillData();
             Subskill _subskillData = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData();
 
@@ -337,6 +339,31 @@ public class BattleLogicManagerV2
         }
 
         return _battleResultData;
+    }
+
+    public static void ExecuteCasterSkillOnUse( ref BattleResultData battleResultData, GameCharacter caster, GameCharacter target )
+    {
+        CharacterSkill _casterSkill = caster.GetCurrentSkill();
+        Subskill _casterSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
+
+        float _statePointCost = GetStatePointCost( _casterSubskillData );
+
+        CharacterSkill _targetSkill = target.GetCurrentSkill();
+        if (_targetSkill != null)
+        {
+            if (_casterSubskillData.IsEvadingSkill)
+            {
+                Subskill _targetSubskillData = _targetSkill.GetCharacterSubskillData().GetSubskillData();
+                float _evasionStress = _targetSubskillData.EvasionStress * ( ( caster.HasEnergyMarker() ) ? _targetSubskillData.EnergyMarkerEvasionStressRate : 1.0f );
+                _statePointCost += _evasionStress;
+            }
+        }
+
+        _statePointCost = AdjustAmount( _statePointCost );
+        battleResultData.AddGameCharacterResultData( gameCharacter: caster, statePointCost: _statePointCost );
+
+        float _maxStatePointUp = AdjustAmount( GetMaxStatePointUp( _casterSubskillData ) );
+        battleResultData.AddGameCharacterResultData( gameCharacter: caster, maximumStatePointIncrease: _maxStatePointUp );
     }
 
     public static void ExecuteCasterSkillOnHit( ref BattleResultData battleResultData, GameCharacter caster, GameCharacter target,

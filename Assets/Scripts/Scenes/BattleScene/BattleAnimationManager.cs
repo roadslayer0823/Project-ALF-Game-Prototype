@@ -689,15 +689,16 @@ public class BattleAnimationManager : MonoBehaviour
 
     public IEnumerator RunBattleAnimationV2( BattleGameManager battleGameManager, BattleFlowRound_V2 battleFlowRound, BattleFlowATL_V2 battleFlowATL )
     {
+        BattleResultData _battleResultData = null;
+
         PlayerCharacter _playerCharacter = battleGameManager.GetPlayerCharacter();
         _playerCharacter.Reset();
 
         EnemyCharacter _enemyCharacter = battleGameManager.GetEnemyCharacter();
         _enemyCharacter.Reset();
 
-        float _attackOpportunityDuration = battleFlowATL.GetAttackOpportunityDuration();
-        this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true, _attackOpportunityDuration );
-        this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, false, _attackOpportunityDuration );
+        this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true );
+        this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, false );
         BattleLog.Instance.AddOnScreenBattleLog( $"雙方進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
 
         _playerCharacter.TriggerEvent( AnimationEvent.SetCharacter );
@@ -779,8 +780,11 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (_isAbleToUseSkill)
         {
+            _battleResultData = new BattleResultData();
+            BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, _attacker, _attackTarget );
+            _attacker.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _attacker ) );
+
             _attackTarget.SetCurrentAttacker( _attacker );
-            BattleLogicManager.ExecuteCasterSkillOnUse( _attacker, _attackTarget, out _log );
             ShowSkillInfo( _attacker, _attackTarget );
             this.currentCaster = _attacker;
 
@@ -797,6 +801,7 @@ public class BattleAnimationManager : MonoBehaviour
             StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
 
             this.skillPromptPanel.ShowCommandPhase( TerminologyManager.REPULSE_COMMAND_TIME, _attackTarget is PlayerCharacter, _skillCountdownTime );
+            ShowCommandPhaseCountdownTimer( true, _attackTarget is PlayerCharacter, _skillCountdownTime );
             BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.REPULSE_COMMAND_TIME } 】</color>。" );
 
             _atlSlotListPanel.GoToATL( battleFlowATL.GetATLNumber(), _skillAnimationLength, _attacker.GetCurrentSkill() );
@@ -895,7 +900,7 @@ public class BattleAnimationManager : MonoBehaviour
             }
         }
 
-        BattleResultData _battleResultData = BattleLogicManagerV2.DetermineResultForPartB( _attacker, _attackTarget, out _winner, out _loser );
+        _battleResultData = BattleLogicManagerV2.DetermineResultForPartB( _attacker, _attackTarget, out _winner, out _loser );
         BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
         BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _attackTarget );
 
@@ -1177,6 +1182,32 @@ public class BattleAnimationManager : MonoBehaviour
             _attacker.Reset();
             _attackTarget.Reset();
         }
+    }
+
+    private void ShowCommandPhaseCountdownTimer( bool isActiveSkill, bool isPlayer, float countdownTime )
+    {
+        StartCoroutine( RunCommandPhaseCountdownTimer( isActiveSkill, isPlayer, countdownTime ) );
+    }
+
+    private IEnumerator RunCommandPhaseCountdownTimer( bool isActiveSkill, bool isPlayer, float countdownTime )
+    {
+        this.skillPromptPanel.SetCommandPhaseProgressBar( 1.0f, isActiveSkill, isPlayer );
+
+        float _startTime = Time.realtimeSinceStartup;
+        float _remainingTime = 0.0f;
+
+        do
+        {
+            yield return null;
+
+            _remainingTime = countdownTime - ( Time.realtimeSinceStartup - _startTime );
+
+            float _remainingTimePercentage = _remainingTime / countdownTime;
+            skillPromptPanel.SetCommandPhaseProgressBar( _remainingTimePercentage, isActiveSkill, isPlayer );
+        }
+        while (_remainingTime > 0);
+
+        this.skillPromptPanel.HideCommandPhase( isPlayer );
     }
 
     private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound battleFlowRound, ATLSlotListPanelV2 atlSlotListPanel )

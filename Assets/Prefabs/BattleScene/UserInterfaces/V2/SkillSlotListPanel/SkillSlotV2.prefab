@@ -1464,6 +1464,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c125c4d537d7478c917bc8135eccbcf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skillType: 0
+  skillIconScale: 1
   skillFrame: {fileID: 1078840878763072139}
   skillIcon: {fileID: 2635130088466552121}
   SampleSkillIcon: {fileID: 21300000, guid: 65d90929bdc654d87a48d290fb93ccb0, type: 3}
@@ -1538,7 +1540,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 7490135158555407957}
         m_TargetAssemblyTypeName: SkillSlotV2, Assembly-CSharp
-        m_MethodName: 
+        m_MethodName: ClickToSelectSkill
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
