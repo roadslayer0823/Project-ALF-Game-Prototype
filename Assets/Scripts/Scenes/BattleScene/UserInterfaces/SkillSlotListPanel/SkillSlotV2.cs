@@ -327,36 +327,38 @@ public class SkillSlotV2 : MonoBehaviour
             ButtonOnDisable();
         }
 
-        if(currentSkillType == SkillType.ActiveSkill)
-        {
-            if (buttonStateType == StateType.Activate)
-            {
-                this.SelectedSkillEffect.SetActive(false);
-                SetBlankFrame(SkillType.ActiveSkill);
-            }
-            else if (buttonStateType == StateType.Disable)
-            {
-                SetBlankFrame(SkillType.ActiveSkill);
-            }
-        }
-
-        if (currentSkillType == SkillType.BackendSkill)
-        {
-            if (buttonStateType == StateType.Activate)
-            {
-                this.SelectedSkillEffect.SetActive(false);
-                SetBlankFrame(SkillType.BackendSkill);
-            }
-            else if (buttonStateType == StateType.Disable)
-            {
-                SetBlankFrame(SkillType.BackendSkill);
-            }
-        }
-
-        else if(buttonStateType == StateType.Enable)
+        else if (buttonStateType == StateType.Enable)
         {
             ButtonOnEnable();
             ShowSkillFrame(this.selectedSkill);
+        }
+        else
+        {
+            if (currentSkillType == SkillType.ActiveSkill)
+            {
+                if (buttonStateType == StateType.Activate)
+                {
+                    this.SelectedSkillEffect.SetActive(false);
+                    SetBlankFrame(SkillType.ActiveSkill);
+                }
+                else if (buttonStateType == StateType.Disable)
+                {
+                    SetBlankFrame(SkillType.ActiveSkill);
+                }
+            }
+
+            if (currentSkillType == SkillType.BackendSkill)
+            {
+                if (buttonStateType == StateType.Activate)
+                {
+                    this.SelectedSkillEffect.SetActive(false);
+                    SetBlankFrame(SkillType.BackendSkill);
+                }
+                else if (buttonStateType == StateType.Disable)
+                {
+                    SetBlankFrame(SkillType.BackendSkill);
+                }
+            }
         }
     }
 
