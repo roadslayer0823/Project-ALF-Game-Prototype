@@ -42,6 +42,7 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private Animator skillBoxAnimation = null;
 
     private StateType currentStateType = StateType.None;
+    private SkillType currentSkillType = SkillType.None;
     private CharacterSkill selectedSkill = null;
     private SkillSlotListPanelV2 skillSlotListPanelV2 = null;
     private Vector2 mousePressPosition = new Vector2();
@@ -56,6 +57,8 @@ public class SkillSlotV2 : MonoBehaviour
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
     private const string ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE = "ActiveSkillOutlineResize";
     private const string ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND = "ActiveSkillOutlineExpand";
+    private const string ANIMATION_ID_BACKEND_SKILL_OUTLINE_RESIZE = "BackendSkillOutlineResize";
+    private const string ANIMATION_ID_BACKEND_SKILL_OUTLINE_EXPAND = "BackendSkillOutlineExpand";
 
     public enum StateType
     {
@@ -66,6 +69,13 @@ public class SkillSlotV2 : MonoBehaviour
         Enable
     }
 
+    public enum SkillType
+    {
+        None,
+        ActiveSkill,
+        BackendSkill
+    }
+
     private void Update()
     {
         Swipe();
@@ -74,23 +84,27 @@ public class SkillSlotV2 : MonoBehaviour
     public void Initialize(SkillSlotListPanelV2 skillSlotListPanelV2)
     {
         this.skillSlotListPanelV2 = skillSlotListPanelV2;
-        this.SetBlankFrame("Active");
-        this.skillFrame.SetNativeSize();
+        this.SetBlankFrame(SkillType.ActiveSkill);
     }
 
     public void Clear()
     {
         this.selectedSkill = null;
-        this.SetBlankFrame("Active");
+        this.SetBlankFrame(SkillType.ActiveSkill);
         this.skillSlotText.SetText("");
         this.skillPrefixText.SetText("");
     }
 
-    public void ClickToSelectSkill()
+    public void ClickToSelectActiveSkill()
     {
         this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill(this.selectedSkill);
-        SelectActiveSkillAnimation();
-        SetButtonStateType(StateType.Selected);
+        SetButtonStateType(StateType.Selected, SkillType.ActiveSkill);
+    }
+
+    public void ClickToSelectBackendSkill()
+    {
+        this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill(this.selectedSkill);
+        SetButtonStateType(StateType.Selected, SkillType.BackendSkill);
     }
 
     public void ButtonOnDisable()
@@ -292,34 +306,54 @@ public class SkillSlotV2 : MonoBehaviour
         }
     }
 
-    public void SetBlankFrame(string skilltype)
+    public void SetBlankFrame(SkillType frameType)
     {
-        if (skilltype == "Active")
+        if (frameType == SkillType.ActiveSkill)
         {
             this.skillFrame.sprite = this.BlankActiveSkillFrame;
+            this.skillFrame.SetNativeSize();
         }
-        else if (skilltype == "Backend")
+        else if (frameType == SkillType.BackendSkill)
         {
             this.skillFrame.sprite = this.BlankBackendSkillFrame;
+            this.skillFrame.SetNativeSize();
         }
     }
 
-    public void SetButtonStateType(StateType buttonStateType)
+    public void SetButtonStateType(StateType buttonStateType, SkillType currentSkillType)
     {
         if (buttonStateType == StateType.Selected)
         {
             this.SelectedSkillEffect.SetActive(true);
             ButtonOnDisable();
         }
-        else if (currentStateType == StateType.Activate)
+
+        if(currentSkillType == SkillType.ActiveSkill)
         {
-            this.SelectedSkillEffect.SetActive(false);
-            SetBlankFrame("Active");
+            if (currentStateType == StateType.Activate)
+            {
+                this.SelectedSkillEffect.SetActive(false);
+                SetBlankFrame(SkillType.ActiveSkill);
+            }
+            else if (currentStateType == StateType.Disable)
+            {
+                SetBlankFrame(SkillType.ActiveSkill);
+            }
         }
-        else if (currentStateType == StateType.Disable)
+
+        if (currentSkillType == SkillType.BackendSkill)
         {
-            SetBlankFrame("Active");
+            if (currentStateType == StateType.Activate)
+            {
+                this.SelectedSkillEffect.SetActive(false);
+                SetBlankFrame(SkillType.BackendSkill);
+            }
+            else if (currentStateType == StateType.Disable)
+            {
+                SetBlankFrame(SkillType.BackendSkill);
+            }
         }
+
         else if(currentStateType == StateType.Enable)
         {
             ButtonOnEnable();
@@ -327,10 +361,18 @@ public class SkillSlotV2 : MonoBehaviour
         }
     }
 
-    public void SelectActiveSkillAnimation()
+    public void SetSelectSkillAnimation(SkillType currentSkillType)
     {
-        this.skillBoxAnimation.Play(ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE, 1, 0f);
-        this.skillBoxAnimation.Play(ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND, 0, 0f);
+        if(currentSkillType == SkillType.ActiveSkill)
+        {
+            this.skillBoxAnimation.Play(ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE, 1, 0f);
+            this.skillBoxAnimation.Play(ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND, 0, 0f);
+        }
+        else if(currentSkillType == SkillType.BackendSkill)
+        {
+            this.skillBoxAnimation.Play(ANIMATION_ID_BACKEND_SKILL_OUTLINE_RESIZE, 1, 0f);
+            this.skillBoxAnimation.Play(ANIMATION_ID_BACKEND_SKILL_OUTLINE_EXPAND, 0, 0f);
+        }
     }
 
     public CharacterSkill GetSelectedSkill()
