@@ -41,8 +41,6 @@ public class SkillSlotV2 : MonoBehaviour
     //animation reference
     [SerializeField] private Animator skillBoxAnimation = null;
 
-    private StateType currentStateType = StateType.None;
-    private SkillType currentSkillType = SkillType.None;
     private CharacterSkill selectedSkill = null;
     private SkillSlotListPanelV2 skillSlotListPanelV2 = null;
     private Vector2 mousePressPosition = new Vector2();
@@ -99,6 +97,7 @@ public class SkillSlotV2 : MonoBehaviour
     {
         this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill(this.selectedSkill);
         SetButtonStateType(StateType.Selected, SkillType.ActiveSkill);
+       
     }
 
     public void ClickToSelectBackendSkill()
@@ -330,12 +329,12 @@ public class SkillSlotV2 : MonoBehaviour
 
         if(currentSkillType == SkillType.ActiveSkill)
         {
-            if (currentStateType == StateType.Activate)
+            if (buttonStateType == StateType.Activate)
             {
                 this.SelectedSkillEffect.SetActive(false);
                 SetBlankFrame(SkillType.ActiveSkill);
             }
-            else if (currentStateType == StateType.Disable)
+            else if (buttonStateType == StateType.Disable)
             {
                 SetBlankFrame(SkillType.ActiveSkill);
             }
@@ -343,18 +342,18 @@ public class SkillSlotV2 : MonoBehaviour
 
         if (currentSkillType == SkillType.BackendSkill)
         {
-            if (currentStateType == StateType.Activate)
+            if (buttonStateType == StateType.Activate)
             {
                 this.SelectedSkillEffect.SetActive(false);
                 SetBlankFrame(SkillType.BackendSkill);
             }
-            else if (currentStateType == StateType.Disable)
+            else if (buttonStateType == StateType.Disable)
             {
                 SetBlankFrame(SkillType.BackendSkill);
             }
         }
 
-        else if(currentStateType == StateType.Enable)
+        else if(buttonStateType == StateType.Enable)
         {
             ButtonOnEnable();
             ShowSkillFrame(this.selectedSkill);
