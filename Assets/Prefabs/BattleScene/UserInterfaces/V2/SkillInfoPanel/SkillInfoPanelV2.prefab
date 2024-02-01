@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 5753209214357837237}
   - component: {fileID: 6123898524623218494}
   m_Layer: 5
-  m_Name: Background
+  m_Name: StrengthBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 7153903913943874685}
   - component: {fileID: 4164774965154522406}
   m_Layer: 5
-  m_Name: Background
+  m_Name: LevelBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -299,7 +299,7 @@ GameObject:
   - component: {fileID: 4880166688191531727}
   - component: {fileID: 6019695908993933955}
   m_Layer: 5
-  m_Name: Name
+  m_Name: SpeedText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -690,7 +690,7 @@ GameObject:
   - component: {fileID: 3924798022065400541}
   - component: {fileID: 8744174342749202602}
   m_Layer: 5
-  m_Name: EvasionResistanceValue
+  m_Name: StressResistanceValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1320,7 +1320,7 @@ GameObject:
   - component: {fileID: 5134956954231106883}
   - component: {fileID: 4352843121601890584}
   m_Layer: 5
-  m_Name: SpeedValue
+  m_Name: SpeedIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1494,14 +1494,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1940652891041512559}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: 0.008916893, w: 0.9999603}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5775509969880184957}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 1.022}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -2416,7 +2416,7 @@ GameObject:
   - component: {fileID: 3030281628302275600}
   - component: {fileID: 1887347628605492694}
   m_Layer: 5
-  m_Name: Background
+  m_Name: SkillNameBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2624,6 +2624,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2410091350577756149}
+  - component: {fileID: 5487131496355016715}
   m_Layer: 5
   m_Name: SkillInfoPanelV2
   m_TagString: Untagged
@@ -2655,6 +2656,77 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5487131496355016715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3797862464039079987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9346936c5124b495090f65832140516d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillInfoPanel: {fileID: 2410091350577756149}
+  skillInfoPanelBackground: {fileID: 8122613888787736414}
+  activeSkillInfoBackground: {fileID: 21300000, guid: e5a645873c126433d9f4833d96f30e6c, type: 3}
+  repulseSkillInfoBackground: {fileID: 21300000, guid: eb310405b37dd4c1497735885c792828, type: 3}
+  derivedSkillInfoBackground: {fileID: 21300000, guid: 061458b1d60744725be5ba0d4b7c6f05, type: 3}
+  counterSkillInfoBackground: {fileID: 21300000, guid: 4fd98f0db84664424a3bc1271eec98eb, type: 3}
+  backendSkillInfoBackground: {fileID: 21300000, guid: 3bd0b8b61a3fb48d0818509fbc44f7eb, type: 3}
+  evasionSkillInfoBackground: {fileID: 21300000, guid: ec24f6b87890f4409932d5d91e054c56, type: 3}
+  attackSkillSelectionTabButton: {fileID: 858705281062906621}
+  repulseSkillSelectionTabButton: {fileID: 7406797080813379456}
+  derivedSkillSelectionTabButton: {fileID: 1665021727406195545}
+  counterSkillSelectionTabButton: {fileID: 4231108762266223017}
+  skillLevelBackground: {fileID: 4164774965154522406}
+  yellowLevelBackground: {fileID: 21300000, guid: 485f3a6020e354b19a68c89feb38c93a, type: 3}
+  blueLevelBackground: {fileID: 21300000, guid: 414a4a797341c48a19155be7d6d5f7e5, type: 3}
+  derivedSkillLevelBackground: {fileID: 21300000, guid: a23feec27b24640038d5094aba9bf194, type: 3}
+  skillNameBackground: {fileID: 1887347628605492694}
+  yellowSkillNameBackground: {fileID: 21300000, guid: 19e323d32027b47b3be9bed79bdb29fd, type: 3}
+  blueSkillNameBackground: {fileID: 21300000, guid: 5af2122d0ce974de19de55f53f62bff2, type: 3}
+  derivedSkillNameBackground: {fileID: 21300000, guid: 6de3cc8333758409d98aba4ce03dfb4c, type: 3}
+  skillPortrait: {fileID: 0}
+  speedIcon: {fileID: 5134956954231106883}
+  strengthState: {fileID: 6123898524623218494}
+  strengthOn: {fileID: 21300000, guid: a3fa01dbd0b95438daf47a286fffeeef, type: 3}
+  strengthOff: {fileID: 21300000, guid: b6aeb9980747145239167df388e5bee2, type: 3}
+  speedIconLevelTwo: {fileID: 21300000, guid: 4b92b5809a6fa469390d55367869f606, type: 3}
+  speedIconLevelThree: {fileID: 21300000, guid: 4dc7f1e816d2b45108b8007aef717ae9, type: 3}
+  speedIconLevelFour: {fileID: 21300000, guid: b8c7469bcda804b93a16455077b95d74, type: 3}
+  skillType: {fileID: 3463562954817480929}
+  displayName: {fileID: 2340678541912844770}
+  skillPanelLevelText: {fileID: 2464666500926274432}
+  attackDamageValue: {fileID: 272702936548887233}
+  statePointCostValue: {fileID: 4061918537752941848}
+  maxStatePointUpValue: {fileID: 2349676765872028955}
+  strengthValue: {fileID: 1203261276177351221}
+  stressDamageValue: {fileID: 3382867104596093708}
+  stressResistanceValue: {fileID: 8744174342749202602}
+  skillDescription: {fileID: 0}
+  evasionStressValue: {fileID: 5254090820550278036}
+  statePointDamageValue: {fileID: 1608467659931163089}
+  speedValue: {fileID: 6019695908993933955}
+  tagListRectTransform: {fileID: 837631151620853174}
+  tagRange: {fileID: 8533802665495705438}
+  tagEffectType: {fileID: 0}
+  attackDamage: {fileID: 4561148038622597349}
+  statePointCost: {fileID: 1254167523350908380}
+  strength: {fileID: 8913701027121487949}
+  maxStatePointUp: {fileID: 2778514344404129625}
+  stressResistance: {fileID: 7748773698323252503}
+  stressDamage: {fileID: 5684831900534514345}
+  evasionStress: {fileID: 2348346023383370980}
+  statePointDamage: {fileID: 9014660314498642899}
+  speed: {fileID: 7561532137615053362}
+  skillDataBox: {fileID: 0}
+  observedSkillListBox: {fileID: 0}
+  observedSkillInfo: {fileID: 0}
+  observedSkillBoxPrefab: {fileID: 0}
+  observedSkillListContent: {fileID: 0}
+  noRecordFoundText: {fileID: 0}
 --- !u!1 &4231108762266223017
 GameObject:
   m_ObjectHideFlags: 0
@@ -3232,7 +3304,7 @@ GameObject:
   - component: {fileID: 4157071761223391787}
   - component: {fileID: 8122613888787736414}
   m_Layer: 5
-  m_Name: SkillPanel
+  m_Name: SkillPanelBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4681,7 +4753,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4692108700782665090}
   m_Layer: 5
-  m_Name: EvasionResistance
+  m_Name: StressResistance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
