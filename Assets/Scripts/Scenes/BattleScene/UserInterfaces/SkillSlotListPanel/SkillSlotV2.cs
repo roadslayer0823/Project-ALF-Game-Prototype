@@ -32,14 +32,14 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private GameObject skillLevelGameObject;
     [SerializeField] private GameObject skillTextAnimation;
     [SerializeField] private Button skillSelectionButton;
-    [SerializeField] private Image plusLevelImage;
-    [SerializeField] private Image plusLevelBackground;
-    [SerializeField] private Image minusLevelImage;
-    [SerializeField] private Image minusLevelBackground;
     [SerializeField] private Transform plusLevelTargetPosition;
     [SerializeField] private Transform plusLevelOriginalPosition;
     [SerializeField] private Transform minusLevelTargetPosition;
     [SerializeField] private Transform minusLevelOriginalPosition;
+    [SerializeField] private Image plusLevelImage;
+    [SerializeField] private Image plusLevelBackground;
+    [SerializeField] private Image minusLevelImage;
+    [SerializeField] private Image minusLevelBackground;
 
     //animation reference
     [SerializeField] private Animator skillBoxAnimation = null;
@@ -104,6 +104,7 @@ public class SkillSlotV2 : MonoBehaviour
         {
             this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill( this.selectedSkill );
             SetCurrentStateType( StateType.Selected );
+            SetSelectSkillAnimation();
         }
     }
 
@@ -340,7 +341,6 @@ public class SkillSlotV2 : MonoBehaviour
 
                 SetBlankFrame( this.skillType );
                 UpdateSkillIcon( false );
-
                 break;
 
             case StateType.Selected:
@@ -354,8 +354,9 @@ public class SkillSlotV2 : MonoBehaviour
             case StateType.Activated:
 
                 this.SelectedSkillEffect.SetActive( false );
-                SetBlankFrame( this.skillType );
+                SetBlankFrame(this.skillType);
                 UpdateSkillIcon( false );
+                SetSelectSkillAnimation();
 
                 break;
         }
