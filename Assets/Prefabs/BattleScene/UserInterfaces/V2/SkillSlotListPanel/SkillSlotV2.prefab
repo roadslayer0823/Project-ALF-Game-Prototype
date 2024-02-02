@@ -1468,7 +1468,6 @@ MonoBehaviour:
   skillIconScale: 1
   skillFrame: {fileID: 1078840878763072139}
   skillIcon: {fileID: 2635130088466552121}
-  SampleSkillIcon: {fileID: 21300000, guid: 65d90929bdc654d87a48d290fb93ccb0, type: 3}
   BlankActiveSkillFrame: {fileID: 21300000, guid: 2311f73e6bd474ce79367cffdbd5c5f6, type: 3}
   BlankBackendSkillFrame: {fileID: 21300000, guid: cfd1bf8f8b50a4e23a2b78181427f644, type: 3}
   ActiveSkillFrame: {fileID: 21300000, guid: 505c52cbb79b74beebb19089ccad6dd6, type: 3}
@@ -1485,14 +1484,14 @@ MonoBehaviour:
   skillLevelGameObject: {fileID: 7980321567308348249}
   skillTextAnimation: {fileID: 6930886755125883153}
   skillSelectionButton: {fileID: 8742595457740914751}
-  plusLevelImage: {fileID: 1954762244259134680}
-  plusLevelBackground: {fileID: 4652293392182937840}
-  minusLevelImage: {fileID: 2771280233484179831}
-  minusLevelBackground: {fileID: 1455066168055056994}
   plusLevelTargetPosition: {fileID: 6690880679251522056}
   plusLevelOriginalPosition: {fileID: 8268756713850986043}
   minusLevelTargetPosition: {fileID: 5572100157551461013}
   minusLevelOriginalPosition: {fileID: 7506797972966221331}
+  plusLevelImage: {fileID: 1954762244259134680}
+  plusLevelBackground: {fileID: 4652293392182937840}
+  minusLevelImage: {fileID: 2771280233484179831}
+  minusLevelBackground: {fileID: 1455066168055056994}
   skillBoxAnimation: {fileID: 3903610091004816897}
 --- !u!114 &8742595457740914751
 MonoBehaviour:
@@ -1519,7 +1518,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 1}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
