@@ -325,6 +325,11 @@ public class SkillSlotV2 : MonoBehaviour
 
     public void SetCurrentStateType( StateType currentStateType )
     {
+        if (this.selectedSkill == null)
+        {
+            return;
+        }
+
         this.currentStateType = currentStateType;
 
         switch ( this.currentStateType )

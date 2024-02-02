@@ -77,7 +77,8 @@ public class BattleAnimationManager : MonoBehaviour
         OnActiveSkillFinished,
         OnCombatCommandTimeStarted,
         OnPartA,
-        OnPartB
+        OnPartB,
+        OnSkillBeingUsed
     }
 
     public void Initialize( Action<bool> onBattleEndedCallback )
@@ -690,6 +691,8 @@ public class BattleAnimationManager : MonoBehaviour
     public IEnumerator RunBattleAnimationV2( BattleGameManager battleGameManager, BattleFlowRound_V2 battleFlowRound, BattleFlowATL_V2 battleFlowATL )
     {
         BattleResultData _battleResultData = null;
+        BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = null;
+        BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = null;
 
         PlayerCharacter _playerCharacter = battleGameManager.GetPlayerCharacter();
         _playerCharacter.Reset();
@@ -780,9 +783,15 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (_isAbleToUseSkill)
         {
+            _attacker.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
+
             _battleResultData = new BattleResultData();
             BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, _attacker, _attackTarget );
-            _attacker.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _attacker ) );
+
+            _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
+            _attacker.ApplyBattleResultData( _attackerBattleResultData );
+
+            StartCoroutine( ShowPopUpDisplayInfo( _attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
 
             _attackTarget.SetCurrentAttacker( _attacker );
             ShowSkillInfo( _attacker, _attackTarget );
@@ -901,8 +910,13 @@ public class BattleAnimationManager : MonoBehaviour
         }
 
         _battleResultData = BattleLogicManagerV2.DetermineResultForPartB( _attacker, _attackTarget, out _winner, out _loser );
-        BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
-        BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _attackTarget );
+        _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
+        _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _attackTarget );
+
+        _attackTarget.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
+        StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
+        ShowSkillInfo( _attacker, _attackTarget );
+        this.currentCaster = _attackTarget;
 
         _attacker.TriggerEvent( AnimationEvent.OnPartB );
         _attackTarget.TriggerEvent( AnimationEvent.OnPartB );
@@ -969,12 +983,6 @@ public class BattleAnimationManager : MonoBehaviour
 
                 _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                 StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
-
-                CharacterSkill _repulseSkill = _attackTarget.GetCurrentSkill();
-                BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
-                ShowSkillInfo( _attacker, _attackTarget );
-                this.currentCaster = _attackTarget;
-
                 BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
@@ -1063,10 +1071,6 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
                     }
                 }
-
-                BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
-                ShowSkillInfo( _attacker, _attackTarget );
-                this.currentCaster = _attackTarget;
 
                 BattleLog.Instance.AddOnScreenBattleLog( _log );
 
@@ -1438,7 +1442,7 @@ public class BattleAnimationManager : MonoBehaviour
     }
 
     private IEnumerator ShowPopUpDisplayInfo( GameCharacter gameCharacter,
-                                              float damageTaken = 0, float stressValueIncreased = 0, float statePointReduced = 0 )
+                                              float damageTaken = 0, float stressValueIncreased = 0, float statePointReduced = 0, float maximumStatePointIncreased = 0 )
     {
         if (damageTaken > 0)
         {
@@ -1456,6 +1460,12 @@ public class BattleAnimationManager : MonoBehaviour
         {
             yield return new WaitForSeconds( 0.5f );
             gameCharacter.ShowPopUpDisplayInfo( "+" + stressValueIncreased.ToString() + " SV", Color.magenta );
+        }
+
+        if (maximumStatePointIncreased > 0)
+        {
+            yield return new WaitForSeconds( 0.5f );
+            gameCharacter.ShowPopUpDisplayInfo( "+" + maximumStatePointIncreased.ToString() + " MaxSP", Color.yellow );
         }
     }
 

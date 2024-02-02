@@ -185,6 +185,20 @@ public class SkillSlotListPanelV2 : MonoBehaviour
         return this.skillSlots;
     }
 
+    public SkillSlotV2 GetSkillSlot( CharacterSkill skill )
+    {
+        for (int i = 0; i < this.skillSlots.Length; i++)
+        {
+            SkillSlotV2 _skillSlot = this.skillSlots[ i ];
+            if (_skillSlot.GetSelectedSkill() == skill)
+            {
+                return _skillSlot;
+            }
+        }
+
+        return null;
+    }
+
     public void ResetLastRoundSelectedActiveSkill()
     {
         this.selectedGameCharacter.SetSelectedActiveSkillList( this.selectedSkills );

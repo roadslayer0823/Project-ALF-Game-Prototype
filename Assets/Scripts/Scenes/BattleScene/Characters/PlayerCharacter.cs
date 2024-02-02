@@ -115,6 +115,12 @@ public class PlayerCharacter : GameCharacter
                 }
 
                 break;
+
+            case AnimationEvent.OnSkillBeingUsed:
+
+                _battleUiManager.OnSkillBeingUsed();
+
+                break;
         }
     }
 }

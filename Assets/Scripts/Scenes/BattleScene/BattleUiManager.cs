@@ -357,5 +357,14 @@ public class BattleUiManager : MonoBehaviour
         this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Observation, skillTypeList.Contains( SkillType.Observe ) );
     }
 
+    public void OnSkillBeingUsed()
+    {
+        SkillSlotV2 _skillSlot = this.skillSlotListPanelV2.GetSkillSlot( this.selectedGameCharacter.GetCurrentSkill() );
+        if (_skillSlot != null)
+        {
+            _skillSlot.SetCurrentStateType( SkillSlotV2.StateType.Activated );
+        }
+    }
+
 #endregion
 }
