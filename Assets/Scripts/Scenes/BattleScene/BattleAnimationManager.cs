@@ -794,10 +794,7 @@ public class BattleAnimationManager : MonoBehaviour
             StartCoroutine( ShowPopUpDisplayInfo( _attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
 
             _attackTarget.SetCurrentAttacker( _attacker );
-            ShowSkillInfo( _attacker, _attackTarget );
             this.currentCaster = _attacker;
-
-            BattleLog.Instance.AddOnScreenBattleLog( _log );
 
             _attacker.TriggerEvent( AnimationEvent.OnPartA );
             _attackTarget.TriggerEvent( AnimationEvent.OnPartA );
@@ -915,7 +912,6 @@ public class BattleAnimationManager : MonoBehaviour
 
         _attackTarget.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
         StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
-        ShowSkillInfo( _attacker, _attackTarget );
         this.currentCaster = _attackTarget;
 
         _attacker.TriggerEvent( AnimationEvent.OnPartB );
@@ -983,7 +979,6 @@ public class BattleAnimationManager : MonoBehaviour
 
                 _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                 StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
-                BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
