@@ -690,6 +690,8 @@ public class BattleAnimationManager : MonoBehaviour
 
     public IEnumerator RunBattleAnimationV2( BattleGameManager battleGameManager, BattleFlowRound_V2 battleFlowRound, BattleFlowATL_V2 battleFlowATL )
     {
+        ATLSlotListPanelV2 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
+
         BattleResultData _battleResultData = null;
         BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = null;
         BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = null;
@@ -710,7 +712,9 @@ public class BattleAnimationManager : MonoBehaviour
         _enemyCharacter.TriggerEvent( AnimationEvent.OnCombatCommandTimeStarted );
 
         battleFlowATL.StartAttackOpportunityCountdownTimer( this.skillPromptPanel );
+        _atlSlotListPanel.GoToATL( battleFlowATL.GetATLNumber(), battleFlowATL.GetAttackOpportunityDuration() );
         yield return new WaitUntil( () => ( !battleFlowATL.GetIsDuringAttackOpportunityPeriod() || ( _playerCharacter.GetCurrentSkill() != null && _enemyCharacter.GetCurrentSkill() != null ) ) );
+        _atlSlotListPanel.GoToMiddleAtCurrentAtlSlot( 0.1f );
         this.skillPromptPanel.HideCommandPhase( true );
         this.skillPromptPanel.HideCommandPhase( false );
 
@@ -733,7 +737,6 @@ public class BattleAnimationManager : MonoBehaviour
         _attacker.PlayCharacterAnimation( "Idle" );
         _attackTarget.PlayCharacterAnimation( "Idle" );
 
-        ATLSlotListPanelV2 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
         float _skillAnimationLength = 0.0f;
         float _skillCountdownTime = 0.0f;
         bool _hasCounterAttack = false;
@@ -794,10 +797,7 @@ public class BattleAnimationManager : MonoBehaviour
             StartCoroutine( ShowPopUpDisplayInfo( _attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
 
             _attackTarget.SetCurrentAttacker( _attacker );
-            ShowSkillInfo( _attacker, _attackTarget );
             this.currentCaster = _attacker;
-
-            BattleLog.Instance.AddOnScreenBattleLog( _log );
 
             _attacker.TriggerEvent( AnimationEvent.OnPartA );
             _attackTarget.TriggerEvent( AnimationEvent.OnPartA );
@@ -812,8 +812,6 @@ public class BattleAnimationManager : MonoBehaviour
             this.skillPromptPanel.ShowCommandPhase( TerminologyManager.REPULSE_COMMAND_TIME, _attackTarget is PlayerCharacter, _skillCountdownTime );
             ShowCommandPhaseCountdownTimer( true, _attackTarget is PlayerCharacter, _skillCountdownTime );
             BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.REPULSE_COMMAND_TIME } 】</color>。" );
-
-            _atlSlotListPanel.GoToATL( battleFlowATL.GetATLNumber(), _skillAnimationLength, _attacker.GetCurrentSkill() );
         }
         else
         {
@@ -915,7 +913,6 @@ public class BattleAnimationManager : MonoBehaviour
 
         _attackTarget.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
         StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
-        ShowSkillInfo( _attacker, _attackTarget );
         this.currentCaster = _attackTarget;
 
         _attacker.TriggerEvent( AnimationEvent.OnPartB );
@@ -983,7 +980,6 @@ public class BattleAnimationManager : MonoBehaviour
 
                 _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                 StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
-                BattleLog.Instance.AddOnScreenBattleLog( _log );
 
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );

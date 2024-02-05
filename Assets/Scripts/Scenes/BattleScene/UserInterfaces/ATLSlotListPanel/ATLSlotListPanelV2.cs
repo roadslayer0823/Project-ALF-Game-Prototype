@@ -19,6 +19,7 @@ public class ATLSlotListPanelV2 : MonoBehaviour
     private float progressBarLength = 0.0f;
 
     private int lastAtlNumber = 0;
+    private ATLSlotV2 currentAtlSlot = null;
 
     public void Initialize()
     {
@@ -53,7 +54,7 @@ public class ATLSlotListPanelV2 : MonoBehaviour
         Reset();
     }
 
-    public void GoToATL(int atlNumber, float animationDuration, CharacterSkill skill)
+    public void GoToATL(int atlNumber, float animationDuration, CharacterSkill skill = null)
     {
         if (atlNumber == lastAtlNumber)
         {
@@ -68,9 +69,17 @@ public class ATLSlotListPanelV2 : MonoBehaviour
         }
 
         int _atlIndex = atlNumber - 1;
-        int _usedAtlIndex = _atlIndex - ((skill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse) ? 1 : 0);
+        int _usedAtlIndex = _atlIndex;
 
-        ATLSlotV2 _currentAtlSlot = null;
+        if (skill != null)
+        {
+            if (skill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse)
+            {
+                _usedAtlIndex -= 1;
+            }
+        }
+
+        currentAtlSlot = null;
         for (int i = 0; i < this.theATLSlots.Length; i++)
         {
             ATLSlotV2 _atlSlot = this.theATLSlots[i];
@@ -84,7 +93,7 @@ public class ATLSlotListPanelV2 : MonoBehaviour
             else if (i <= _atlIndex)
             {
                 _currentStatus = ATLSlotV2.ATLCurrentStatus.Using;
-                _currentAtlSlot = _atlSlot;
+                currentAtlSlot = _atlSlot;
             }
 
             else
@@ -95,10 +104,19 @@ public class ATLSlotListPanelV2 : MonoBehaviour
             _atlSlot.Show(_currentStatus);
         }
 
-        PlayProgressBarAnimation( this.repulseAndDefendPointer, this.repulseAndDefendProgressBar, _currentAtlSlot, animationDuration );
-        PlayProgressBarAnimation( this.activeSkillPointer, this.activeSkillProgressBar, _currentAtlSlot, animationDuration );
+        PlayProgressBarAnimation( this.repulseAndDefendPointer, this.repulseAndDefendProgressBar, currentAtlSlot, animationDuration );
+        PlayProgressBarAnimation( this.activeSkillPointer, this.activeSkillProgressBar, currentAtlSlot, animationDuration );
 
         this.lastAtlNumber = atlNumber;
+    }
+
+    public void GoToMiddleAtCurrentAtlSlot( float animationDuration )
+    {
+        LeanTween.cancel( this.gameObject );
+
+        float _atlSlotMiddlePoint = currentAtlSlot.GetMiddlePointX();
+        PlayProgressBarAnimation( this.repulseAndDefendPointer, this.repulseAndDefendProgressBar, _atlSlotMiddlePoint, animationDuration );
+        PlayProgressBarAnimation( this.activeSkillPointer, this.activeSkillProgressBar, _atlSlotMiddlePoint, animationDuration );
     }
 
     public void GoToFinish(float duration)
@@ -123,25 +141,24 @@ public class ATLSlotListPanelV2 : MonoBehaviour
             });
     }
 
-    public void PlayProgressBarAnimation(Image pointer, Image progressBar, ATLSlotV2 atlSlot, float duration)
+    public void PlayProgressBarAnimation( Image pointer, Image progressBar, ATLSlotV2 atlSlot, float duration )
     {
         float _atlSlotStartPoint = atlSlot.GetStartingPointX();
-        float _atlSlotMiddlePoiint = atlSlot.GetMiddlePointX();
+        float _atlSlotMiddlePoint = atlSlot.GetMiddlePointX();
 
-        LeanTween.value(this.gameObject, this.progressBarLastPosition, _atlSlotStartPoint, duration * 0.1f).
-            setOnUpdate((float value) =>
-            {
-                UpdateProgress(pointer, progressBar, value);
-            }
-            )
-            .setEase(LeanTweenType.easeOutQuad).setOnComplete(() => {
-                LeanTween.value(this.gameObject, this.progressBarLastPosition, _atlSlotMiddlePoiint, duration * 0.9f)
-                .setOnUpdate((float value) => {
-                    UpdateProgress(pointer, progressBar, value);
-                });
-            });
+        PlayProgressBarAnimation( pointer, progressBar, _atlSlotStartPoint, duration * 0.1f )
+            .setEase( LeanTweenType.easeOutQuad ).setOnComplete( () => PlayProgressBarAnimation( pointer, progressBar, _atlSlotMiddlePoint, duration * 0.9f ) );
 
-        pointer.gameObject.SetActive(true);
+        pointer.gameObject.SetActive( true );
+    }
+
+    public LTDescr PlayProgressBarAnimation( Image pointer, Image progressBar, float targetPoint, float duration )
+    {
+        return  LeanTween.value( this.gameObject, this.progressBarLastPosition, targetPoint, duration )
+                    .setOnUpdate( ( float value ) =>
+                    {
+                        UpdateProgress( pointer, progressBar, value );
+                    } );
     }
 
     private void UpdateProgress(Image pointer, Image progressBar, float progress)
@@ -176,5 +193,6 @@ public class ATLSlotListPanelV2 : MonoBehaviour
         this.activeSkillProgressBar.fillAmount = 0;
         this.progressBarFiller.fillAmount = 0;
         this.lastAtlNumber = 0;
+        this.currentAtlSlot = null;
     }
 }

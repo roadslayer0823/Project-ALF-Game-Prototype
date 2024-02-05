@@ -1,4 +1,6 @@
 using Skill = DatabaseManager.Skill;
+using Subskill = DatabaseManager.Subskill;
+using RangeType = DatabaseManager.Subskill.RangeType;
 
 public class TerminologyManager
 {
@@ -97,5 +99,49 @@ public class TerminologyManager
         _wideEffectTypeText += "廣角";
 
         return _wideEffectTypeText;
+    }
+
+    public static string GetRangeTypeText( RangeType rangeType )
+    {
+        string _rangeTypeText = "";
+
+        switch ( rangeType )
+        {
+            case RangeType.melee:
+
+                _rangeTypeText = "近戰";
+
+                break;
+
+            case RangeType.ranged:
+
+                _rangeTypeText = "遠程";
+
+                break;
+        }
+
+        return _rangeTypeText;
+    }
+
+    public static string GetSkillInformationText( CharacterSkill characterSkill )
+    {
+        Skill _characterSkillData = characterSkill.GetSkillData();
+        Subskill _characterSubskillData = characterSkill.GetCharacterSubskillData().GetSubskillData();
+
+        string _skillInformationText = $"{ GetSkillTypeText( _characterSkillData.skillType ) }: { GetRangeTypeText( _characterSubskillData.Range ) }，";
+
+        if (_characterSubskillData.EffectType == Subskill.EffectTypeEnum.wide)
+        {
+            _skillInformationText += $"{ GetWideEffectTypeText( _characterSkillData ) }，";
+        }
+
+        _skillInformationText += GetSpeedLevelText( _characterSubskillData.Speed );
+
+        if (_characterSubskillData.Strength > 1)
+        {
+            _skillInformationText += $"，強度+{ _characterSubskillData.Strength - 1 }";
+        }
+
+        return _skillInformationText;
     }
 }

@@ -48,7 +48,7 @@ public class BattleLogicManagerV2
 
             string _logOne = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>按下了的技能是"
                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterOneCurrentSkillSubskillData.DisplayName }</color>"
-                           + $" （{ TerminologyManager.GetSkillTypeText( _gameCharacterOneCurrentSkill.GetSkillData().skillType ) }）。";
+                           + $" （{ TerminologyManager.GetSkillInformationText( _gameCharacterOneCurrentSkill ) }）。";
 
             BattleLog.Instance.AddOnScreenBattleLog( _logOne );
         }
@@ -59,7 +59,7 @@ public class BattleLogicManagerV2
 
             string _logTwo = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>按下了的技能是"
                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterTwoCurrentSkillSubskillData.DisplayName }</color>"
-                           + $" （{ TerminologyManager.GetSkillTypeText( _gameCharacterTwoCurrentSkill.GetSkillData().skillType ) }）。";
+                           + $" （{ TerminologyManager.GetSkillInformationText( _gameCharacterTwoCurrentSkill ) }）。";
 
             BattleLog.Instance.AddOnScreenBattleLog( _logTwo );
         }
@@ -193,6 +193,22 @@ public class BattleLogicManagerV2
 
                 // 判定迎擊中途結果。
                 CompareCharacterSkillAttributes( ActionType.Repulse, lead, improviser, out winner, out loser );
+
+                string _repulseResultLog = $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定迎擊中途結果</color>為";
+                if (winner == lead)
+                {
+                    _repulseResultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ lead.GetCharacterName() }</color>攻擊勝利。";
+                }
+                else if (winner == improviser)
+                {
+                    _repulseResultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ improviser.GetCharacterName() }</color>迎擊勝利。";
+                }
+                else
+                {
+                    _repulseResultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>雙方打平</color>。";
+                }
+
+                BattleLog.Instance.AddOnScreenBattleLog( _repulseResultLog );
 
                 RangeType _leadRangeType = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
                 RangeType _improviserRangeType = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
@@ -344,9 +360,11 @@ public class BattleLogicManagerV2
     public static void ExecuteCasterSkillOnUse( ref BattleResultData battleResultData, GameCharacter caster, GameCharacter target )
     {
         CharacterSkill _casterSkill = caster.GetCurrentSkill();
+        Skill _casterSkillData = _casterSkill.GetSkillData();
         Subskill _casterSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
 
         float _statePointCost = GetStatePointCost( _casterSubskillData );
+        string _evasionStressLog = "";
 
         CharacterSkill _targetSkill = target.GetCurrentSkill();
         if (_targetSkill != null)
@@ -356,6 +374,7 @@ public class BattleLogicManagerV2
                 Subskill _targetSubskillData = _targetSkill.GetCharacterSubskillData().GetSubskillData();
                 float _evasionStress = _targetSubskillData.EvasionStress * ( ( caster.HasEnergyMarker() ) ? _targetSubskillData.EnergyMarkerEvasionStressRate : 1.0f );
                 _statePointCost += _evasionStress;
+                _evasionStressLog = $"（迴避壓力：{ _evasionStress }）";
             }
         }
 
@@ -364,6 +383,48 @@ public class BattleLogicManagerV2
 
         float _maxStatePointUp = AdjustAmount( GetMaxStatePointUp( _casterSubskillData ) );
         battleResultData.AddGameCharacterResultData( gameCharacter: caster, maximumStatePointIncrease: _maxStatePointUp );
+
+        string _log = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ caster.GetCharacterName() }</color>使出了"
+                    + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _casterSubskillData.DisplayName }</color>"
+                    + $" （{ TerminologyManager.GetSkillInformationText( _casterSkill ) }）";
+
+        string _extraLog = "";
+
+        if (_statePointCost > 0)
+        {
+            _extraLog += $"，消耗了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _statePointCost }{ TerminologyManager.STATE_POINT }</color>";
+
+            if (_evasionStressLog != "")
+            {
+                _extraLog += _evasionStressLog;
+            }
+        }
+
+        if (_maxStatePointUp > 0)
+        {
+            if (_extraLog != "")
+            {
+                _extraLog += "和";
+            }
+
+            _extraLog += $"提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maxStatePointUp }最大{ TerminologyManager.STATE_POINT }</color>";
+        }
+
+        if (_extraLog != "")
+        {
+            _extraLog += "。";
+        }
+
+        if (_extraLog == "")
+        {
+            _log += "。";
+        }
+        else
+        {
+            _log += _extraLog;
+        }
+
+        BattleLog.Instance.AddOnScreenBattleLog( _log );
     }
 
     public static void ExecuteCasterSkillOnHit( ref BattleResultData battleResultData, GameCharacter caster, GameCharacter target,
