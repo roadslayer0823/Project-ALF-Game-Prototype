@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 
-public class SkillSlotListPanelV2 : MonoBehaviour
+public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 {
     [SerializeField] private SkillSlotV2[] skillSlots = new SkillSlotV2[0];
     [SerializeField] private GameObject clickAreaTop;

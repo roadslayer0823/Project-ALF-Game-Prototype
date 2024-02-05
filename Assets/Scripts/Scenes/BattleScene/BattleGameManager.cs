@@ -181,7 +181,7 @@ public class BattleGameManager : MonoBehaviour
 
         if (this.battleUiManager.IsUsingSkillSlotListPanelV2())
         {
-            this.battleUiManager.GetSkillSlotListPanelV2().ResetLastRoundSelectedActiveSkill();
+            this.battleUiManager.GetActiveSkillSlotListPanelV2().ResetLastRoundSelectedActiveSkill();
         }
         else
         {
