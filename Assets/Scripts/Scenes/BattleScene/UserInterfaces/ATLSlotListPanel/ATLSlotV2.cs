@@ -20,6 +20,7 @@ public class ATLSlotV2 : MonoBehaviour
     [SerializeField] private RectTransform PlayerStartPoint;
     [SerializeField] private RectTransform EnemyStartPoint;
     [SerializeField] private RectTransform MiddlePoint;
+    [SerializeField] private RectTransform EndingPoint;
 
     [Header("")]
     private BattleFlowATL battleFlowATL = null;
@@ -135,5 +136,10 @@ public class ATLSlotV2 : MonoBehaviour
     public float GetMiddlePointX()
     {
         return this.MiddlePoint.position.x;
+    }
+
+    public float GetEndingPointX()
+    {
+        return this.EndingPoint.position.x;
     }
 }
