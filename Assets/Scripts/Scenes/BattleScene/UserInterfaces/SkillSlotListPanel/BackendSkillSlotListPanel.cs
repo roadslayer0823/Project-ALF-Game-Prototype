@@ -88,7 +88,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             CharacterSkill _selectedSkill = this.selectedSkills[i];
             if (_selectedSkill == _currentSkill)
             {
-                this.selectedSkills[i] = _currentSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
+                this.selectedSkills[i] = _currentSkill.GetCharacterSubskillData().GetSelectedCounterSkill();
             }
             SetQTEActionButton(this.selectedSkills[i]);
         }
