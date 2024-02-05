@@ -194,6 +194,22 @@ public class BattleLogicManagerV2
                 // 判定迎擊中途結果。
                 CompareCharacterSkillAttributes( ActionType.Repulse, lead, improviser, out winner, out loser );
 
+                string _repulseResultLog = $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定迎擊中途結果</color>為";
+                if (winner == lead)
+                {
+                    _repulseResultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ lead.GetCharacterName() }</color>攻擊勝利。";
+                }
+                else if (winner == improviser)
+                {
+                    _repulseResultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ improviser.GetCharacterName() }</color>迎擊勝利。";
+                }
+                else
+                {
+                    _repulseResultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>雙方打平</color>。";
+                }
+
+                BattleLog.Instance.AddOnScreenBattleLog( _repulseResultLog );
+
                 RangeType _leadRangeType = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
                 RangeType _improviserRangeType = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
 
