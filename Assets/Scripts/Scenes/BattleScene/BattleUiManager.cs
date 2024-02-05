@@ -7,7 +7,7 @@ public class BattleUiManager : MonoBehaviour
 {
     [SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
     [System.Obsolete][SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
-    [SerializeField] private SkillSlotListPanelV2 skillSlotListPanelV2 = null;
+    [SerializeField] private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
     [System.Obsolete][SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
     [SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
     [SerializeField] private PlayerActionPanel playerActionPanel = null;
@@ -24,14 +24,14 @@ public class BattleUiManager : MonoBehaviour
         this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
         this.playerActionPanel.Initialize( OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel);
 
-        if (this.skillSlotListPanelV2 == null)
+        if (this.activeSkillSlotListPanelV2 == null)
         {
             this.skillSlotListPanel.Initialize( OnSkillSlotSwiped );
         }
         else
         {
             this.skillSlotListPanel.SetIsSkillSlotListScrollable( false );
-            this.skillSlotListPanelV2.Initialize();
+            this.activeSkillSlotListPanelV2.Initialize();
         }
 
         this.atlSlotListPanelV2.Initialize();
@@ -58,13 +58,13 @@ public class BattleUiManager : MonoBehaviour
     {
         this.skillSelectionPanel.gameObject.SetActive( value );
 
-        if (this.skillSlotListPanelV2 == null)
+        if (this.activeSkillSlotListPanelV2 == null)
         {
             this.skillSlotListPanel.gameObject.SetActive( value );
         }
         else
         {
-            this.skillSlotListPanelV2.gameObject.SetActive( value );
+            this.activeSkillSlotListPanelV2.gameObject.SetActive( value );
         }
 
         if (this.atlSlotListPanelV2 == null)
@@ -131,31 +131,31 @@ public class BattleUiManager : MonoBehaviour
 
     public void ShowSkillSlotListPanel()
     {
-        if (this.skillSlotListPanelV2 == null)
+        if (this.activeSkillSlotListPanelV2 == null)
         {
             this.skillSlotListPanel.Show();
         }
         else
         {
-            this.skillSlotListPanelV2.Show();
+            this.activeSkillSlotListPanelV2.Show();
         }
     }
 
     public void HideSkillSlotListPanel()
     {
-        if (this.skillSlotListPanelV2 == null)
+        if (this.activeSkillSlotListPanelV2 == null)
         {
             this.skillSlotListPanel.Hide();
         }
         else
         {
-            this.skillSlotListPanelV2.Hide();
+            this.activeSkillSlotListPanelV2.Hide();
         }
     }
 
     public void UpdateSkillSlotListPanel( GameCharacter gameCharacter )
     {
-        if (this.skillSlotListPanelV2 == null)
+        if (this.activeSkillSlotListPanelV2 == null)
         {
             this.skillSlotListPanel.UpdateSkillSlots( gameCharacter );
         }
@@ -170,9 +170,9 @@ public class BattleUiManager : MonoBehaviour
         return this.skillSlotListPanel;
     }
 
-    public SkillSlotListPanelV2 GetSkillSlotListPanelV2()
+    public ActiveSkillSlotListPanelV2 GetActiveSkillSlotListPanelV2()
     {
-        return this.skillSlotListPanelV2;
+        return this.activeSkillSlotListPanelV2;
     }
 
     public void OnSkillSlotSwiped()
@@ -182,7 +182,7 @@ public class BattleUiManager : MonoBehaviour
 
     public bool IsUsingSkillSlotListPanelV2()
     {
-        return ( this.skillSlotListPanelV2 != null );
+        return ( this.activeSkillSlotListPanelV2 != null );
     }
 
 #endregion
@@ -219,13 +219,13 @@ public class BattleUiManager : MonoBehaviour
 
     public void OnATLSlotExecuted()
     {
-        if (this.skillSlotListPanelV2 == null)
+        if (this.activeSkillSlotListPanelV2 == null)
         {
             this.skillSlotListPanel.SwipeLeft();
         }
         else
         {
-            this.skillSlotListPanelV2.ClickBottom();
+            this.activeSkillSlotListPanelV2.ClickBottom();
         }
     }
 
@@ -323,7 +323,7 @@ public class BattleUiManager : MonoBehaviour
         if (skillTypeList.Contains( SkillType.Repulse ))
         {
             Debug.Log( "SkillType.Repulse" );
-            this.skillSlotListPanelV2.ChangeToRepulseMode( this.selectedGameCharacter );
+            this.activeSkillSlotListPanelV2.ChangeToRepulseMode( this.selectedGameCharacter );
 
             CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
             if (_currentSkill != null)
@@ -334,21 +334,21 @@ public class BattleUiManager : MonoBehaviour
         else if (skillTypeList.Contains( SkillType.Derive ))
         {
             Debug.Log( "SkillType.Derive" );
-            this.skillSlotListPanelV2.ChangeToDerivedMode( this.selectedGameCharacter );
+            this.activeSkillSlotListPanelV2.ChangeToDerivedMode( this.selectedGameCharacter );
 
             if (skillTypeList.Contains( SkillType.Active ))
             {
-                this.skillSlotListPanelV2.EnableInteraction();
+                this.activeSkillSlotListPanelV2.EnableInteraction();
             }
             else
             {
-                this.skillSlotListPanelV2.DisableInteraction();
+                this.activeSkillSlotListPanelV2.DisableInteraction();
             }
         }
         else
         {
             Debug.Log( "Default" );
-            this.skillSlotListPanelV2.ChangeToDefaultMode( this.selectedGameCharacter );
+            this.activeSkillSlotListPanelV2.ChangeToDefaultMode( this.selectedGameCharacter );
         }
 
         this.playerActionPanel.ShowSkillActionButtons( this.selectedGameCharacter.GetSelectedBackendSkillList().ToArray() );
@@ -359,7 +359,7 @@ public class BattleUiManager : MonoBehaviour
 
     public void OnSkillBeingUsed()
     {
-        SkillSlotV2 _skillSlot = this.skillSlotListPanelV2.GetSkillSlot( this.selectedGameCharacter.GetCurrentSkill() );
+        SkillSlotV2 _skillSlot = this.activeSkillSlotListPanelV2.GetSkillSlot( this.selectedGameCharacter.GetCurrentSkill() );
         if (_skillSlot != null)
         {
             _skillSlot.SetCurrentStateType( SkillSlotV2.StateType.Activated );

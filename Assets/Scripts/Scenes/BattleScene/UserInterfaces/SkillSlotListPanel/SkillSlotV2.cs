@@ -9,6 +9,7 @@ public class SkillSlotV2 : MonoBehaviour
 {
     [Header( "Settings" )]
     [SerializeField] private SkillType skillType = SkillType.None;
+    [SerializeField] public BackendSkillType backendSkillType = BackendSkillType.None;
     [SerializeField] private float skillIconScale = 1.0f;
 
     [Header("Skill UI")]
@@ -45,7 +46,8 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private Animator skillBoxAnimation = null;
 
     private CharacterSkill selectedSkill = null;
-    private SkillSlotListPanelV2 skillSlotListPanelV2 = null;
+    private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
+    private BackendSkillSlotListPanel backendSkillSlotListPanel = null;
     private Vector2 mousePressPosition = new Vector2();
     private Vector2 mouseReleasePosition = new Vector2();
     private Vector2 currentSwipe = new Vector2();
@@ -69,6 +71,14 @@ public class SkillSlotV2 : MonoBehaviour
         BackendSkill
     }
 
+    public enum BackendSkillType
+    {
+        None,
+        Defense,
+        Evasion,
+        Generic
+    }
+
     public enum StateType
     {
         None,
@@ -83,11 +93,18 @@ public class SkillSlotV2 : MonoBehaviour
         Swipe();
     }
 
-    public void Initialize(SkillSlotListPanelV2 skillSlotListPanelV2)
+    public void Initialize(ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2)
     {
-        this.skillSlotListPanelV2 = skillSlotListPanelV2;
+        this.activeSkillSlotListPanelV2 = activeSkillSlotListPanelV2;
         this.SetBlankFrame( this.skillType );
         this.skillIcon.transform.localScale = new Vector3( this.skillIconScale, this.skillIconScale, 1.0f );
+    }
+
+    public void InitializeBackendSkillSlot(BackendSkillSlotListPanel backendSkillSlotListPanel)
+    {
+        this.backendSkillSlotListPanel = backendSkillSlotListPanel;
+        this.SetBlankFrame(this.skillType);
+        this.skillIcon.transform.localScale = new Vector3(this.skillIconScale, this.skillIconScale, 1.0f);
     }
 
     public void Clear()
@@ -102,7 +119,7 @@ public class SkillSlotV2 : MonoBehaviour
     {
         if (this.currentStateType == StateType.Enabled)
         {
-            this.skillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill( this.selectedSkill );
+            this.activeSkillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill( this.selectedSkill );
             SetCurrentStateType( StateType.Selected );
             SetSelectSkillAnimation();
         }
@@ -314,7 +331,6 @@ public class SkillSlotV2 : MonoBehaviour
         if (frameType == SkillType.ActiveSkill)
         {
             this.skillFrame.sprite = this.BlankActiveSkillFrame;
-            this.skillFrame.SetNativeSize();
         }
         else if (frameType == SkillType.BackendSkill)
         {

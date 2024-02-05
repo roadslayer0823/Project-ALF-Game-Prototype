@@ -467,7 +467,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 849206529592973445, guid: 7b16df37c944d417aa85d90784c07f98, type: 3}
       propertyPath: m_Name
-      value: SkillSlotListPanelV2
+      value: ActiveSkillSlotListPanelV2
       objectReference: {fileID: 0}
     - target: {fileID: 7665806968079913483, guid: 7b16df37c944d417aa85d90784c07f98, type: 3}
       propertyPath: m_Pivot.x
@@ -1229,7 +1229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillSelectionPanel: {fileID: 273914593}
   skillSlotListPanel: {fileID: 3997569853165876366}
-  skillSlotListPanelV2: {fileID: 133278226}
+  activeSkillSlotListPanelV2: {fileID: 133278226}
   atlSlotListPanel: {fileID: 4695614838772435066}
   atlSlotListPanelV2: {fileID: 962829249}
   playerActionPanel: {fileID: 1871516447}
