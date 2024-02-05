@@ -21,6 +21,16 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         }
     }
 
+    public void Show()
+    {
+        base.gameObject.SetActive(true);
+    }
+
+    public void Hide()
+    {
+        base.gameObject.SetActive(false);
+    }
+
     public void HideQTEButton()
     {
         this.qteButton.SetActive(false);
