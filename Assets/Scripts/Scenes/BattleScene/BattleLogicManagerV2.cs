@@ -1,5 +1,6 @@
 using UnityEngine;
 using Skill = DatabaseManager.Skill;
+using SkillType = DatabaseManager.Skill.SkillType;
 using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
 using BattleResultData_GameCharacter = BattleResultData.BattleResultData_GameCharacter;
@@ -20,15 +21,22 @@ public class BattleLogicManagerV2
         if (skill != null)
         {
             Skill _skillData = skill.GetSkillData();
+            SkillType _skillType = _skillData.skillType;
 
-            if (_skillData.skillType == Skill.SkillType.active
-                || _skillData.skillType == Skill.SkillType.counter)
+            if (_skillType == SkillType.active
+                || _skillType == SkillType.derived
+                || _skillType == SkillType.counter)
             {
                 return true;
             }
         }
 
         return false;
+    }
+
+    public static bool ShouldCombatCommandTimeBeSkipped( GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
+    {
+        return ( IsAttackingSkill( gameCharacterOne.GetCurrentSkill() ) || IsAttackingSkill( gameCharacterTwo.GetCurrentSkill() ) );
     }
 
     public static ( GameCharacter lead, GameCharacter improviser ) DetermineLeadAndImproviser( GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )

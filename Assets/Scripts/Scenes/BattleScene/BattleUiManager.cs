@@ -328,7 +328,7 @@ public class BattleUiManager : MonoBehaviour
             CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
             if (_currentSkill != null)
             {
-                this.selectedGameCharacter.SetCurrentSkill( _currentSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() );
+                this.selectedGameCharacter.SetAssignedSkill( _currentSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() );
             }
         }
         else if (skillTypeList.Contains( SkillType.Derive ))

@@ -54,6 +54,7 @@ public class GameCharacter : MonoBehaviour
     private List<PopUpDisplayInfo> popUpDisplayInfoList = new List<PopUpDisplayInfo>();
 
     // Version 2
+    private CharacterSkill assignedSkill = null;
     private bool isCounterAttacking = false;
 
     // Break Status
@@ -762,6 +763,20 @@ public class GameCharacter : MonoBehaviour
     public Animator GetSkillEffectAnimator()
     {
         return this.skillEffectAnimator;
+    }
+
+    public void SetAssignedSkill( CharacterSkill assignedSkill )
+    {
+        this.assignedSkill = assignedSkill;
+    }
+
+    public void ApplyAssignedSkillAsCurrentSkill()
+    {
+        if (this.assignedSkill != null)
+        {
+            SetCurrentSkill( this.assignedSkill );
+            this.assignedSkill = null;
+        }
     }
 
     public void SetCurrentSkill( CharacterSkill currentSkill )

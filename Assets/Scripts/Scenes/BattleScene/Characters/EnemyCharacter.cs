@@ -259,7 +259,7 @@ public class EnemyCharacter : GameCharacter
 
         if (_availableSkillList.Count > 0)
         {
-            base.SetCurrentSkill( _availableSkillList[ new System.Random().Next( _availableSkillList.Count ) ] );
+            base.SetAssignedSkill( _availableSkillList[ new System.Random().Next( _availableSkillList.Count ) ] );
         }
 
         if (_availableObservingSkillList.Count > 0)

@@ -11,6 +11,7 @@ public class TerminologyManager
     public const string KNOCKOUT = "擊飛";
     public const string COMBAT_COMMAND_TIME = "臨戰指令時間";
     public const string REPULSE_COMMAND_TIME = "迎擊指令時間";
+    public const string COUNTER_COMMAND_TIME = "反擊指令時間";
 
     public static string GetSkillTypeText( Skill.SkillType skillType )
     {

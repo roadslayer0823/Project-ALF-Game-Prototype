@@ -119,7 +119,7 @@ public class SkillSlotV2 : MonoBehaviour
     {
         if (this.currentStateType == StateType.Enabled)
         {
-            this.activeSkillSlotListPanelV2.GetSelectedGameCharacter().SetCurrentSkill( this.selectedSkill );
+            this.activeSkillSlotListPanelV2.GetSelectedGameCharacter().SetAssignedSkill( this.selectedSkill );
             SetCurrentStateType( StateType.Selected );
             SetSelectSkillAnimation();
         }
