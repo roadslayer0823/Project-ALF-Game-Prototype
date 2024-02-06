@@ -119,6 +119,15 @@ public class ATLSlotListPanelV2 : MonoBehaviour
         PlayProgressBarAnimation( this.activeSkillPointer, this.activeSkillProgressBar, _atlSlotMiddlePoint, animationDuration );
     }
 
+    public void GoToEndAtCurrentAtlSlot( float animationDuration )
+    {
+        LeanTween.cancel( this.gameObject );
+
+        float _atlSlotEndingPoint = currentAtlSlot.GetEndingPointX();
+        PlayProgressBarAnimation( this.repulseAndDefendPointer, this.repulseAndDefendProgressBar, _atlSlotEndingPoint, animationDuration );
+        PlayProgressBarAnimation( this.activeSkillPointer, this.activeSkillProgressBar, _atlSlotEndingPoint, animationDuration );
+    }
+
     public void GoToFinish(float duration)
     {
         MarkPreviousATLSlotsAsUsed();

@@ -992,6 +992,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                 ShowCommandPhaseCountdownTimer( true, _attacker is PlayerCharacter, _skillCountdownTime );
                 ShowCommandPhaseCountdownTimer( true, _attackTarget is PlayerCharacter, _skillCountdownTime );
+                _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
                 if (_attackerCharacterPartB != NO_ANIMATION)
                 {
@@ -1034,6 +1035,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                 ShowCommandPhaseCountdownTimer( true, _attacker is PlayerCharacter, _skillCountdownTime );
                 ShowCommandPhaseCountdownTimer( true, _attackTarget is PlayerCharacter, _skillCountdownTime );
+                _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
@@ -1085,6 +1087,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                 ShowCommandPhaseCountdownTimer( true, _attacker is PlayerCharacter, _skillCountdownTime );
                 ShowCommandPhaseCountdownTimer( true, _attackTarget is PlayerCharacter, _skillCountdownTime );
+                _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
                 if (_attackerCharacterPartB != NO_ANIMATION)
                 {
