@@ -62,26 +62,29 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         for (int i = 0; i < selectedSkills.Count; i++)
         {
             Subskill _subskillData = selectedSkills[i].GetCharacterSubskillData().GetSubskillData();
-            switch (backendSkillSlot[i].backendSkillType)
+            SkillSlotV2 _backendSkillSlot = backendSkillSlot[i];
+            CharacterSkill _selectedSkill = selectedSkills[i];
+
+            switch (_backendSkillSlot.backendSkillType)
             {
                 case SkillSlotV2.BackendSkillType.Defense:
                     if (_subskillData.IsDefendingSkill)
                     {
-                        backendSkillSlot[i].SetSelectedSkill(selectedSkills[i]);
+                        _backendSkillSlot.SetSelectedSkill(_selectedSkill);
                     }
                     break;
 
                 case SkillSlotV2.BackendSkillType.Evasion:
                     if (_subskillData.IsEvadingSkill)
                     {
-                        backendSkillSlot[i].SetSelectedSkill(selectedSkills[i]);
+                       _backendSkillSlot.SetSelectedSkill(_selectedSkill);
                     }
                     break;
 
                 case SkillSlotV2.BackendSkillType.Generic:
                     if (_subskillData.IsObservingSkill || _subskillData.IsDefendingSkill || _subskillData.IsEvadingSkill)
                     {
-                        backendSkillSlot[i].SetSelectedSkill(selectedSkills[i]);
+                        _backendSkillSlot.SetSelectedSkill(_selectedSkill);
                     }
                     break;
             }

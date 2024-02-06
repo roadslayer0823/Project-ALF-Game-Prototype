@@ -971,7 +971,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2736373586925060710}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5487131496355016715}
+        m_TargetAssemblyTypeName: SkillInfoPanel, Assembly-CSharp
+        m_MethodName: IncreaseSkillInfoLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1399859790603416430
 GameObject:
   m_ObjectHideFlags: 0
@@ -2229,7 +2241,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3918079345926865331}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5487131496355016715}
+        m_TargetAssemblyTypeName: SkillInfoPanel, Assembly-CSharp
+        m_MethodName: DecreaseSkillInfoLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2778514344404129625
 GameObject:
   m_ObjectHideFlags: 0
@@ -2626,7 +2650,7 @@ GameObject:
   - component: {fileID: 2410091350577756149}
   - component: {fileID: 5487131496355016715}
   m_Layer: 5
-  m_Name: SkillInfoPanelV2
+  m_Name: SkillInfoPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2684,6 +2708,8 @@ MonoBehaviour:
   yellowLevelBackground: {fileID: 21300000, guid: 485f3a6020e354b19a68c89feb38c93a, type: 3}
   blueLevelBackground: {fileID: 21300000, guid: 414a4a797341c48a19155be7d6d5f7e5, type: 3}
   derivedSkillLevelBackground: {fileID: 21300000, guid: a23feec27b24640038d5094aba9bf194, type: 3}
+  increaseSkillnfoLevel: {fileID: 0}
+  decreaseSkillnfoLevel: {fileID: 0}
   skillNameBackground: {fileID: 1887347628605492694}
   yellowSkillNameBackground: {fileID: 21300000, guid: 19e323d32027b47b3be9bed79bdb29fd, type: 3}
   blueSkillNameBackground: {fileID: 21300000, guid: 5af2122d0ce974de19de55f53f62bff2, type: 3}
@@ -2710,7 +2736,7 @@ MonoBehaviour:
   statePointDamageValue: {fileID: 1608467659931163089}
   speedValue: {fileID: 6019695908993933955}
   tagListRectTransform: {fileID: 837631151620853174}
-  tagRange: {fileID: 8533802665495705438}
+  tagArea: {fileID: 8533802665495705438}
   tagEffectType: {fileID: 0}
   attackDamage: {fileID: 4561148038622597349}
   statePointCost: {fileID: 1254167523350908380}

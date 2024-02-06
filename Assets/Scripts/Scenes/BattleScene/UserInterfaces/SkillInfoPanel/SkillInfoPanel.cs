@@ -27,6 +27,8 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private Sprite yellowLevelBackground;
     [SerializeField] private Sprite blueLevelBackground;
     [SerializeField] private Sprite derivedSkillLevelBackground;
+    [SerializeField] private Button increaseSkillnfoLevel;
+    [SerializeField] private Button decreaseSkillnfoLevel;
 
     [Header("Skill Name UI")]
     [SerializeField] private Image skillNameBackground;
@@ -57,7 +59,7 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI statePointDamageValue;
     [SerializeField] private TextMeshProUGUI speedValue;
     [SerializeField] private RectTransform tagListRectTransform;
-    [SerializeField] private TextMeshProUGUI tagRange;
+    [SerializeField] private TextMeshProUGUI tagArea;
     [SerializeField] private TextMeshProUGUI tagEffectType;
 
     [Header("SkillInfoGameObject")]
@@ -234,35 +236,27 @@ public class SkillInfoPanel : MonoBehaviour
             this.statePointDamage.SetActive(false);
         }
 
-        if (_subskillData.Range != Subskill.RangeType.none)
+        if (_subskillData.Range != Subskill.RangeType.none || _subskillData.EffectType == Subskill.EffectTypeEnum.wide)
         {
+            string rangeTagText = "";
             if (_subskillData.Range == Subskill.RangeType.melee)
             {
-                this.tagRange.text = "【近戰】";
+                rangeTagText = "【近戰】";
             }
             else if (_subskillData.Range == Subskill.RangeType.ranged)
             {
-                this.tagRange.text = "【遠程】";
+                rangeTagText = "【遠程】";
             }
-
-            this.tagRange.gameObject.SetActive(true);
+            string tagEffectTypeText = $"【{ TerminologyManager.GetWideEffectTypeText(characterSkill.GetSkillData()) }】";
+            string integratedText = rangeTagText + "" + tagEffectTypeText;
+            this.tagArea.text = integratedText;
+            this.tagArea.gameObject.SetActive(true);
         }
+
         else
         {
-            this.tagRange.gameObject.SetActive(false);
+            this.tagArea.gameObject.SetActive(false);
         }
-
-        if (_subskillData.EffectType == Subskill.EffectTypeEnum.wide) // tag effect type
-        {
-            this.tagEffectType.text = $"【{ TerminologyManager.GetWideEffectTypeText(characterSkill.GetSkillData()) }】";
-            this.tagEffectType.gameObject.SetActive(true);
-        }
-        else
-        {
-            this.tagEffectType.gameObject.SetActive(false);
-        }
-
-        LayoutRebuilder.ForceRebuildLayoutImmediate(tagListRectTransform);
 
         if (_subskillData.Description == "-") // Description
         {
@@ -373,6 +367,16 @@ public class SkillInfoPanel : MonoBehaviour
     public void ShowCounterSkillPanelUI()
     {
         SetSkillPanelUI(counterSkillInfoBackground, yellowLevelBackground, yellowSkillNameBackground);
+    }
+
+    public void IncreaseSkillInfoLevel()
+    {
+        //increase the skill level
+    }
+
+    public void DecreaseSkillInfoLevel()
+    {
+        //decrease the skill level
     }
 
     private void SetSkillPanelUI(Sprite skillPanelBackground, Sprite skillLevelBackground, Sprite skillNameBackground)
