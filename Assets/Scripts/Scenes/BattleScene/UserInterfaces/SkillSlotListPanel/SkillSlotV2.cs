@@ -121,7 +121,9 @@ public class SkillSlotV2 : MonoBehaviour
         {
             this.activeSkillSlotListPanelV2.GetSelectedGameCharacter().SetAssignedSkill( this.selectedSkill );
             SetCurrentStateType( StateType.Selected );
-            SetSelectSkillAnimation();
+            PlaySkillOutlineAnimation();
+
+            this.activeSkillSlotListPanelV2.OnSkillSlotSelected( this );
         }
     }
 
@@ -353,6 +355,7 @@ public class SkillSlotV2 : MonoBehaviour
             case StateType.Enabled:
 
                 EnableButton();
+                this.SelectedSkillEffect.SetActive( false );
                 ShowSkillFrame( this.selectedSkill );
                 UpdateSkillIcon( false );
 
@@ -360,14 +363,15 @@ public class SkillSlotV2 : MonoBehaviour
 
             case StateType.Disabled:
 
+                this.SelectedSkillEffect.SetActive( false );
                 SetBlankFrame( this.skillType );
                 UpdateSkillIcon( false );
                 break;
 
             case StateType.Selected:
 
-                this.SelectedSkillEffect.SetActive( true );
                 DisableButton();
+                this.SelectedSkillEffect.SetActive( true );
                 UpdateSkillIcon( true );
 
                 break;
@@ -377,13 +381,13 @@ public class SkillSlotV2 : MonoBehaviour
                 this.SelectedSkillEffect.SetActive( false );
                 SetBlankFrame(this.skillType);
                 UpdateSkillIcon( false );
-                SetSelectSkillAnimation();
+                PlaySkillOutlineAnimation();
 
                 break;
         }
     }
 
-    public void SetSelectSkillAnimation()
+    public void PlaySkillOutlineAnimation()
     {
         if (this.skillType == SkillType.ActiveSkill)
         {

@@ -228,7 +228,7 @@ public class EnemyCharacter : GameCharacter
                 }
             }
         }
-        else
+        else if (skillTypeList.Contains( BattleSkillManager.SkillType.Active ))
         {
             for (int i = 0; i < _activeSkillList.Count; i++)
             {
