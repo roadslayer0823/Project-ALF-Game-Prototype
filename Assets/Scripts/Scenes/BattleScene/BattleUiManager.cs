@@ -6,6 +6,7 @@ using SkillType = BattleSkillManager.SkillType;
 public class BattleUiManager : MonoBehaviour
 {
     [SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
+    [SerializeField] private SkillInfoPanel skillInfoPanel = null;
     [System.Obsolete][SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
     [SerializeField] private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
     [System.Obsolete][SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
