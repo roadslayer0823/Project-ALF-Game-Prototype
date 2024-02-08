@@ -26,6 +26,9 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
             this.skillSlots[i].Initialize(this);
         }
 
+        SetActiveRecursively(skillInformation[1].transform, false);
+        SetActiveRecursively(skillInformation[2].transform, false);
+
         this.middleSkillSlot = this.skillSlots[ 0 ];
         ArrangeSkillSlot(1);
     }
