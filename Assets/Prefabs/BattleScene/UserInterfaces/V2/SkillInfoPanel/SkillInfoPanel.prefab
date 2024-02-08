@@ -542,7 +542,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7865563713919361178}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5487131496355016715}
+        m_TargetAssemblyTypeName: SkillInfoPanel, Assembly-CSharp
+        m_MethodName: ShowActiveSkillPanelUI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &911762082325052904
 GameObject:
   m_ObjectHideFlags: 0
@@ -1277,7 +1289,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5344253631071807320}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5487131496355016715}
+        m_TargetAssemblyTypeName: SkillInfoPanel, Assembly-CSharp
+        m_MethodName: ShowDerivedSkillPanelUI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1897076450900371996
 GameObject:
   m_ObjectHideFlags: 0
@@ -2873,7 +2897,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5629325800372636650}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5487131496355016715}
+        m_TargetAssemblyTypeName: SkillInfoPanel, Assembly-CSharp
+        m_MethodName: ShowCounterSkillPanelUI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4561148038622597349
 GameObject:
   m_ObjectHideFlags: 0
@@ -4729,7 +4765,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8595512183024919208}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5487131496355016715}
+        m_TargetAssemblyTypeName: SkillInfoPanel, Assembly-CSharp
+        m_MethodName: ShowRepulseSkillPanelUI
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7561532137615053362
 GameObject:
   m_ObjectHideFlags: 0
