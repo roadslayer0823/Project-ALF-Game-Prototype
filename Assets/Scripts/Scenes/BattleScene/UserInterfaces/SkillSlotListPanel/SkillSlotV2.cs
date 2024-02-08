@@ -119,6 +119,11 @@ public class SkillSlotV2 : MonoBehaviour
 
     public void ClickToSelectSkill()
     {
+        SelectSkill();
+    }
+
+    public void SelectSkill()
+    {
         if (this.currentStateType == StateType.Enabled)
         {
             this.activeSkillSlotListPanelV2.GetSelectedGameCharacter().SetAssignedSkill( this.selectedSkill );
@@ -319,12 +324,10 @@ public class SkillSlotV2 : MonoBehaviour
             this.skillPrefixText.SetText("[" + _subskillData.Prefix.ToString() + "]");
         }
 
-        ShowSkillFrame(this.selectedSkill);
         UpdateCharacterSkillLevel(this.skillLevel);
         SetSkillSlotText(_subskillData.DisplayName);
-
-        UpdateSkillIcon( false );
         this.skillIcon.gameObject.SetActive(true);
+        UpdateDisplay();
     }
 
     public void ShowSkillFrame(CharacterSkill selectedSkill)
@@ -359,6 +362,7 @@ public class SkillSlotV2 : MonoBehaviour
         if (frameType == SkillType.ActiveSkill)
         {
             this.skillFrame.sprite = this.BlankActiveSkillFrame;
+            this.skillFrame.SetNativeSize();
         }
         else if (frameType == SkillType.BackendSkill)
         {
@@ -375,7 +379,11 @@ public class SkillSlotV2 : MonoBehaviour
         }
 
         this.currentStateType = currentStateType;
+        UpdateDisplay();
+    }
 
+    private void UpdateDisplay()
+    {
         switch ( this.currentStateType )
         {
             case StateType.Enabled:

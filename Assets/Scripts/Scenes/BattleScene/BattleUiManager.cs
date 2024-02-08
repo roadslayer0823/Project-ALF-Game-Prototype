@@ -331,7 +331,7 @@ public class BattleUiManager : MonoBehaviour
             {
                 CharacterSkill _repulseSkill = _currentSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
                 this.selectedGameCharacter.SetAssignedSkill( _repulseSkill );
-                this.activeSkillSlotListPanelV2.GetSkillSlot( _repulseSkill ).SetCurrentStateType( SkillSlotV2.StateType.Selected );
+                this.activeSkillSlotListPanelV2.GetSkillSlot( _repulseSkill ).SelectSkill();
             }
         }
         else if (skillTypeList.Contains( SkillType.Derive ))
