@@ -163,10 +163,12 @@ public class SkillInfoPanel : MonoBehaviour
         {
             this.strengthState.sprite = this.strengthOn;
             this.strengthValue.SetText("+" + (_subskillData.Strength - 1).ToString());
+            this.strengthValue.gameObject.SetActive(true);
         }
         else
         {
             this.strengthState.sprite = this.strengthOff;
+            this.strengthValue.gameObject.SetActive(false);
         }
 
         if (_subskillData.Speed > 1) // Speed
@@ -184,6 +186,11 @@ public class SkillInfoPanel : MonoBehaviour
                 this.speedIcon.sprite = this.speedIconLevelFour;
             }
             this.speedValue.SetText(TerminologyManager.GetSpeedLevelText(_subskillData.Speed));
+            this.speedValue.gameObject.SetActive(true);
+        }
+        else
+        {
+            this.speedValue.gameObject.SetActive(false);
         }
 
         if (_subskillData.EvasionStress > 1) // Evasion Stress
