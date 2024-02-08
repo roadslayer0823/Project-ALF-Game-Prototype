@@ -52,6 +52,8 @@ public class SkillSlotV2 : MonoBehaviour
     private Vector2 mouseReleasePosition = new Vector2();
     private Vector2 currentSwipe = new Vector2();
 
+    private bool isSkillLevelReachedMaximum = false;
+    private bool isSkillLevelReachedMinimum = false;
     private bool isSkillLevelChanged = false;
     private int skillLevel = 1;
     private StateType currentStateType = StateType.None;
@@ -188,6 +190,15 @@ public class SkillSlotV2 : MonoBehaviour
         int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
 
+        if (this.skillLevel == _maximumSkillLevel)
+        {
+            isSkillLevelReachedMaximum = true;
+        }
+        else
+        {
+            isSkillLevelReachedMaximum = false;
+        }
+
         this.skillLevel = Math.Clamp( skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
 
         while (!this.selectedSkill.IsSkillLevelAvailable(this.skillLevel))
@@ -195,7 +206,10 @@ public class SkillSlotV2 : MonoBehaviour
             this.skillLevel = Math.Clamp(skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
         }
         UpdateCharacterSkillLevel(this.skillLevel);
-        ModifySkillLevelAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
+        if(isSkillLevelReachedMaximum == false)
+        {
+            ModifySkillLevelAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
+        }
     }
 
     public void DecreaseSkillLevel()
@@ -205,6 +219,15 @@ public class SkillSlotV2 : MonoBehaviour
         int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
 
+        if (this.skillLevel == _minimumSkillLevel)
+        {
+            isSkillLevelReachedMinimum = true;
+        }
+        else
+        {
+            isSkillLevelReachedMinimum = false;
+        }
+
         this.skillLevel = Math.Clamp(skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
 
         while (!this.selectedSkill.IsSkillLevelAvailable(this.skillLevel))
@@ -212,7 +235,10 @@ public class SkillSlotV2 : MonoBehaviour
             this.skillLevel = Math.Clamp(skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
         }
         UpdateCharacterSkillLevel(this.skillLevel);
-        ModifySkillLevelAnimation(minusLevelImage, minusLevelBackground, minusLevelOriginalPosition, minusLevelTargetPosition);
+        if(isSkillLevelReachedMaximum == false)
+        {
+            ModifySkillLevelAnimation(minusLevelImage, minusLevelBackground, minusLevelOriginalPosition, minusLevelTargetPosition);
+        }
     }
 
     private void UpdateCharacterSkillLevel(int skillLevel)
@@ -421,5 +447,10 @@ public class SkillSlotV2 : MonoBehaviour
         Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
         this.skillIcon.sprite = Resources.Load<Sprite>( ( isOn ) ? _subskillData.IconFilePathOn : _subskillData.IconFilePathOff );
         this.skillIcon.SetNativeSize();
+    }
+
+    private void CheckCurrentSkillLevel(bool reachedLevel)
+    {
+        isSkillLevelReachedMaximum = reachedLevel;
     }
 }
