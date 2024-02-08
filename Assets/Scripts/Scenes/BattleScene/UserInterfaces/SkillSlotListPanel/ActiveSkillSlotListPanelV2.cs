@@ -278,7 +278,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 LeanTween.scale(slotToMove, initialScale * 0.5f, 0.1f)
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = false;
-                //SetActiveRecursively(skillInformation[i].transform, false);
+                SetActiveRecursively(skillInformation[i].transform, false);
             }
         }
         ArrangeSkillSlot(direction);
