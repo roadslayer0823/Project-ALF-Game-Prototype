@@ -12,6 +12,7 @@ public class BattleFlowRound_V2
     private int flowATLIndex = 0;
 
     private Action<PhaseType> onCurrentPhaseChangedCallback = null;
+    private BattleFlowATL_V2 extraATL = null;
 
     public enum PhaseType
     {
@@ -30,7 +31,7 @@ public class BattleFlowRound_V2
         List<BattleFlowATL_V2> _atlList = new List<BattleFlowATL_V2>();
         for (int i = 0; i < GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots(); i++)
         {
-            _atlList.Add( new BattleFlowATL_V2( battleFlowManager, i + 1, GameConfiguration.Instance.GetBattleConfiguration().GetAttackOpportunityDurationInSeconds(), OnAttackOpportunityEnded ) );
+            _atlList.Add( GetNewATL( i + 1 ) );
         }
 
         this.flowATLs = _atlList.ToArray();
@@ -56,6 +57,7 @@ public class BattleFlowRound_V2
             }
 
             _currentATL.SetIsATLSlotExecuted( true );
+
             this.battleFlowManager.OnNewATLStarted();
 
             yield return battleFlowManager.StartCoroutine( this.battleFlowManager.RunBattleAnimation( this, _currentATL ) );
@@ -63,6 +65,11 @@ public class BattleFlowRound_V2
             if (this.battleFlowManager.GetBattleGameManager().GetHasBattleEnded())
             {
                 yield break;
+            }
+
+            if (_currentATL == this.extraATL)
+            {
+                this.extraATL = null;
             }
 
             _currentATL = GetCurrentATL();
@@ -139,7 +146,21 @@ public class BattleFlowRound_V2
         {
             return this.flowATLs[ this.flowATLIndex ];
         }
+        else if (this.extraATL != null)
+        {
+            return this.extraATL;
+        }
 
         return null;
+    }
+
+    public void AddExtraATL()
+    {
+        this.extraATL = GetNewATL( GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots() + 1 );
+    }
+
+    public BattleFlowATL_V2 GetNewATL( int atlNumber )
+    {
+        return new BattleFlowATL_V2( this.battleFlowManager, atlNumber, GameConfiguration.Instance.GetBattleConfiguration().GetAttackOpportunityDurationInSeconds(), OnAttackOpportunityEnded );
     }
 }

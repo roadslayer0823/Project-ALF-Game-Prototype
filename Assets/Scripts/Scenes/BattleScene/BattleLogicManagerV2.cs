@@ -435,9 +435,9 @@ public class BattleLogicManagerV2
         BattleLog.Instance.AddOnScreenBattleLog( _log );
     }
 
-    public static void ExecuteCasterSkillOnHit( ref BattleResultData battleResultData, GameCharacter caster, GameCharacter target,
-                                                bool hasHealthPointDamage = false, bool hasStatePointDamage = false, bool hasStressValueDamage = false, bool isBreakStatusAvailable = true,
-                                                float stressValueDamageMultiplier = 1.0f )
+    private static void ExecuteCasterSkillOnHit( ref BattleResultData battleResultData, GameCharacter caster, GameCharacter target,
+                                                 bool hasHealthPointDamage = false, bool hasStatePointDamage = false, bool hasStressValueDamage = false, bool isBreakStatusAvailable = true,
+                                                 float stressValueDamageMultiplier = 1.0f )
     {
         CharacterSkill _casterSkill = caster.GetCurrentSkill();
         Subskill _casterSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
@@ -537,8 +537,8 @@ public class BattleLogicManagerV2
         }
     }
 
-    public static void CompareCharacterSkillAttributes( ActionType actionType, GameCharacter lead, GameCharacter improviser,
-                                                        out GameCharacter winner, out GameCharacter loser )
+    private static void CompareCharacterSkillAttributes( ActionType actionType, GameCharacter lead, GameCharacter improviser,
+                                                         out GameCharacter winner, out GameCharacter loser )
     {
         winner = null;
         loser = null;
