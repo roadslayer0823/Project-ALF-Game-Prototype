@@ -1,20 +1,23 @@
 using UnityEngine;
 using Skill = DatabaseManager.Skill;
+using Subskill = DatabaseManager.Subskill;
 
 public class ObservedSkillData
 {
-    private int featureId = 0;
-    private string skillName = "";
-    private Skill.SkillType skillType = Skill.SkillType.none;
+    private CharacterSkill characterSkill = null;
+    private Skill skillData = null;
+    private Subskill subskillData = null;
+
     private float maximumObservedRate = 0.0f;
     private float currentObservedRate = 0.0f;
     private int roundNumber = 0;
 
-    public ObservedSkillData( int featureId, string skillName, Skill.SkillType skillType, float maximumObservedRate )
+    public ObservedSkillData( CharacterSkill characterSkill, float maximumObservedRate )
     {
-        this.featureId = featureId;
-        this.skillName = skillName;
-        this.skillType = skillType;
+        this.characterSkill = characterSkill;
+        this.skillData = this.characterSkill.GetSkillData();
+        this.subskillData = this.characterSkill.GetCharacterSubskillData().GetSubskillData();
+
         this.maximumObservedRate = maximumObservedRate;
         this.currentObservedRate = 0.0f;
         this.roundNumber = 0;
@@ -38,19 +41,9 @@ public class ObservedSkillData
         return this.roundNumber;
     }
 
-    public int GetFeatureId()
+    public CharacterSkill GetCharacterSkill()
     {
-        return this.featureId;
-    }
-
-    public string GetSkillName()
-    {
-        return this.skillName;
-    }
-
-    public Skill.SkillType GetSkillType()
-    {
-        return this.skillType;
+        return this.characterSkill;
     }
 
     public float GetCurrentObservedRate()
@@ -61,5 +54,25 @@ public class ObservedSkillData
     public int GetRoundNumber()
     {
         return this.roundNumber;
+    }
+
+    public int GetFeatureId()
+    {
+        return this.subskillData.FeatureId;
+    }
+
+    public string GetSkillName()
+    {
+        return this.subskillData.DisplayName;
+    }
+
+    public Skill.SkillType GetSkillType()
+    {
+        return this.skillData.skillType;
+    }
+
+    public string GetSkillIconFilePath()
+    {
+        return this.subskillData.IconFilePathOn;
     }
 }
