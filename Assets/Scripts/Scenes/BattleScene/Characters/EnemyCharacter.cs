@@ -177,7 +177,11 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnPartA:
 
-                if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
+                if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
+                {
+                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
+                }
+                else if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
                 {
                     _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
@@ -228,7 +232,7 @@ public class EnemyCharacter : GameCharacter
                 }
             }
         }
-        else
+        else if (skillTypeList.Contains( BattleSkillManager.SkillType.Active ))
         {
             for (int i = 0; i < _activeSkillList.Count; i++)
             {

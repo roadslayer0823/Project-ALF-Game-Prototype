@@ -17,6 +17,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
     private const string AUDIO_ID_WHEEL = "wheel";
     private SkillSlotV2 middleSkillSlot = null;
+    private SkillSlotV2 selectedSkillSlot = null;
 
     public void Initialize()
     {
@@ -24,6 +25,9 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         {
             this.skillSlots[i].Initialize(this);
         }
+
+        SetActiveRecursively(skillInformation[1].transform, false);
+        SetActiveRecursively(skillInformation[2].transform, false);
 
         this.middleSkillSlot = this.skillSlots[ 0 ];
         ArrangeSkillSlot(1);
@@ -51,6 +55,16 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         clickAreaBottom.SetActive(false);
     }
 
+    public void OnSkillSlotSelected( SkillSlotV2 skillSlot )
+    {
+        if (this.selectedSkillSlot != null)
+        {
+            this.selectedSkillSlot.SetCurrentStateType( SkillSlotV2.StateType.Enabled );
+        }
+
+        this.selectedSkillSlot = skillSlot;
+    }
+
     private void SetActiveRecursively(Transform parentTransform, bool active)
     {
         parentTransform.gameObject.SetActive(active);
@@ -60,13 +74,13 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         }
     }
 
-    public void ChangeToDefaultMode( GameCharacter gameCharacter )
+    public void ChangeToDefaultMode( GameCharacter gameCharacter, SkillSlotV2.StateType stateType )
     {
         this.selectedGameCharacter = gameCharacter;
 
         int _middleSkillSlotSkillIndex = ( this.selectedSkills.Count == 2 ) ? GetMiddleSkillSlotSkillIndex() : 0;
         this.selectedSkills = new List<CharacterSkill>( this.selectedGameCharacter.GetSelectedActiveSkillList() );
-        UpdateSkillSlotsWithSelectedSkills( _middleSkillSlotSkillIndex );
+        UpdateSkillSlotsWithSelectedSkills( _middleSkillSlotSkillIndex, stateType );
     }
 
     public void ChangeToRepulseMode( GameCharacter gameCharacter )
@@ -116,8 +130,9 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         return -1;
     }
 
-    private void UpdateSkillSlotsWithSelectedSkills( int middleSkillSlotSkillIndex = 0 )
+    private void UpdateSkillSlotsWithSelectedSkills( int middleSkillSlotSkillIndex = 0, SkillSlotV2.StateType stateType = SkillSlotV2.StateType.Enabled )
     {
+        this.selectedSkillSlot = null;
         ClearSkillSlots();
 
         if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
@@ -157,7 +172,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 
         for (int i = 0; i < this.skillSlots.Length; i++)
         {
-            this.skillSlots[ i ].SetCurrentStateType( SkillSlotV2.StateType.Enabled );
+            this.skillSlots[ i ].SetCurrentStateType( stateType );
         }
 
         if (this.selectedSkills.Count == 1)
@@ -266,7 +281,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 LeanTween.scale(slotToMove, initialScale * 0.5f, 0.1f)
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = false;
-                //SetActiveRecursively(skillInformation[i].transform, false);
+                SetActiveRecursively(skillInformation[i].transform, false);
             }
         }
         ArrangeSkillSlot(direction);

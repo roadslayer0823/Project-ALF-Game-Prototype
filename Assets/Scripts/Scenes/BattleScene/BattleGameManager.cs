@@ -271,8 +271,7 @@ public class BattleGameManager : MonoBehaviour
                 CharacterSkill _observedSkill = _currentObservingSkill.GetObservedSkill();
                 Subskill _observedSubskillData = _observedSkill.GetCharacterSubskillData().GetSubskillData();
 
-                float _currentObservedRate = _gameCharacterCurrentSkill.AddObservedSkillData( _observedSubskillData.FeatureId, _observedSubskillData.DisplayName, _observedSkill.GetSkillData().skillType,
-                                                                                              _gameCharacterCurrentSubskillData.ObservationRate );
+                float _currentObservedRate = _gameCharacterCurrentSkill.AddObservedSkillData( _observedSkill, _gameCharacterCurrentSubskillData.ObservationRate );
 
                 BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + gameCharacter.GetCharacterName() + "</color>使用" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _gameCharacterCurrentSubskillData.DisplayName + "</color>（看破技能）來看破"
                                                          + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _observedSkillCaster.GetCharacterName() + "</color>使用的" + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _observedSubskillData.DisplayName + "</color>和對"

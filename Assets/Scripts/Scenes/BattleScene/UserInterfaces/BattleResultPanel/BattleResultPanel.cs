@@ -33,6 +33,6 @@ public class BattleResultPanel : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
 
-        SceneManager.LoadScene( "BattleScene" );
+        SceneManager.LoadScene( SceneManager.GetActiveScene().name );
     }
 }

@@ -138,14 +138,17 @@ public class CharacterSkill
 
 #region Observed Skill Data
 
-    public float AddObservedSkillData( int featureId, string skillName, Skill.SkillType skillType, float observedRate )
+    public float AddObservedSkillData( CharacterSkill characterSkill, float observedRate )
     {
-        if (skillType != Skill.SkillType.active
-            && skillType != Skill.SkillType.backend)
+        Skill.SkillType _skillType = characterSkill.GetSkillData().skillType;
+
+        if (_skillType != Skill.SkillType.active
+            && _skillType != Skill.SkillType.backend)
         {
             return 0.0f;
         }
 
+        int _featureId = characterSkill.GetCharacterSubskillData().GetSubskillData().FeatureId;
         int _numberOfSkillDataMatched = 0;
         ObservedSkillData _firstSkillDataMatched = null;
         ObservedSkillData _skillDataFound = null;
@@ -153,13 +156,13 @@ public class CharacterSkill
         {
             ObservedSkillData _observedSkillData = this.observedSkillDataList[ i ];
 
-            if (_observedSkillData.GetFeatureId() == featureId)
+            if (_observedSkillData.GetFeatureId() == _featureId)
             {
                 _skillDataFound = _observedSkillData;
                 break;
             }
 
-            if (_observedSkillData.GetSkillType() == skillType)
+            if (_observedSkillData.GetSkillType() == _skillType)
             {
                 if (_firstSkillDataMatched == null)
                 {
@@ -175,11 +178,11 @@ public class CharacterSkill
         if (_skillDataFound == null)
         {
             int _maximumObservedSkills = 0;
-            if (skillType == Skill.SkillType.active)
+            if (_skillType == Skill.SkillType.active)
             {
                 _maximumObservedSkills = _battleConfiguration.GetMaximumObservedActiveSkills();
             }
-            else if (skillType == Skill.SkillType.backend)
+            else if (_skillType == Skill.SkillType.backend)
             {
                 _maximumObservedSkills = _battleConfiguration.GetMaximumObservedBackendSkills();
             }
@@ -189,7 +192,7 @@ public class CharacterSkill
                 this.observedSkillDataList.Remove( _firstSkillDataMatched );
             }
 
-            _skillDataFound = new ObservedSkillData( featureId, skillName, skillType, _battleConfiguration.GetMaximumObservedRate() );
+            _skillDataFound = new ObservedSkillData( characterSkill, _battleConfiguration.GetMaximumObservedRate() );
             this.observedSkillDataList.Add( _skillDataFound );
         }
 

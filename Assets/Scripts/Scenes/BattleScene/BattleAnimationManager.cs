@@ -814,7 +814,11 @@ public class BattleAnimationManager : MonoBehaviour
             Skill.SkillType _attackerSkillType = _attacker.GetCurrentSkill().GetSkillData().skillType;
             if (_attackerSkillType == Skill.SkillType.derived)
             {
-                yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound, _atlSlotListPanel ) );
+                _battleResultData = BattleLogicManagerV2.DetermineResultForPartB( _attacker, _attackTarget, out _, out _ );
+                _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
+                _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _attackTarget );
+
+                yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound, _atlSlotListPanel, _battleResultData, _attackerBattleResultData, _attackTargetBattleResultData ) );
 
                 if (CheckHasBattleEnded( battleGameManager ))
                 {
@@ -1175,6 +1179,18 @@ public class BattleAnimationManager : MonoBehaviour
 
         _attackTarget.Reset();
         _attackTarget.ApplyAssignedSkillAsCurrentSkill();
+
+        if (battleFlowRound.GetCurrentATL().GetATLNumber() == GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots())
+        {
+            CharacterSkill _attackerCurrentSkill = _attacker.GetCurrentSkill();
+            if (_attackerCurrentSkill != null)
+            {
+                if (_attackerCurrentSkill.GetSkillData().skillType == Skill.SkillType.derived)
+                {
+                    battleFlowRound.AddExtraATL();
+                }
+            }
+        }
     }
 
     private void ShowCommandPhaseCountdownTimer( bool isActiveSkill, bool isPlayer, float countdownTime )
@@ -1227,27 +1243,29 @@ public class BattleAnimationManager : MonoBehaviour
         }
     }
 
-    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound_V2 battleFlowRound, ATLSlotListPanelV2 atlSlotListPanel )
+    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound_V2 battleFlowRound, ATLSlotListPanelV2 atlSlotListPanel,
+                                         BattleResultData battleResultData, BattleResultData.BattleResultData_GameCharacter attackerBattleResultData, BattleResultData.BattleResultData_GameCharacter attackTargetBattleResultData )
     {
         attackTarget.Reset();
         attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
 
         bool _isAbleToUseSkill = BattleLogicManager.IsAbleToUseSkill( attacker );
 
-        string _log = "";
-        BattleFlowATL_V2 _targetATL = null;
-
         if (_isAbleToUseSkill)
         {
-            _targetATL = battleFlowRound.GoToNextATL();
-            BattleLogicManager.ExecuteCasterSkillOnUse( attacker, attackTarget, out _log );
+            BattleResultData _battleResultData = new BattleResultData();
+            BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, attacker, attackTarget );
+
+            BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( attacker );
+            attacker.ApplyBattleResultData( _attackerBattleResultData );
+
+            StartCoroutine( ShowPopUpDisplayInfo( attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
+
             ShowSkillInfo( attacker, attackTarget );
             this.currentCaster = attacker;
-
-            BattleLog.Instance.AddOnScreenBattleLog( _log );
         }
 
-        yield return StartCoroutine( RunDerivedSkill( attacker, attackTarget, atlSlotListPanel, ( _targetATL != null ) ? _targetATL.GetATLNumber() : 6, _isAbleToUseSkill ) );
+        yield return StartCoroutine( RunDerivedSkill( attacker, attackTarget, atlSlotListPanel, battleFlowRound.GetCurrentATL().GetATLNumber(), battleResultData, attackerBattleResultData, attackTargetBattleResultData ) );
     }
 
     private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber, bool isAbleToUseSkill )
@@ -1273,29 +1291,7 @@ public class BattleAnimationManager : MonoBehaviour
         {
             if (isAbleToUseSkill)
             {
-                SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackerSubskillData.Id );
-                string _characterPartB = _skillAnimation.CharacterPartB;
-                string _skillEffectPartB = _skillAnimation.SkillEffectPartB;
-
-                if (attacker is EnemyCharacter)
-                {
-                    _characterPartB = "Attack_Part_B";
-                    _skillEffectPartB = "HittingEffect";
-                }
-
-                atlSlotListPanel.GoToATL( atlNumber, GetAttackAnimationLength( attacker, _characterPartB, _skillEffectPartB ), _attackerSkill );
-
-                yield return StartCoroutine( PlayShowingSkillInformation( attacker ) );
-
-                if (_characterPartB != NO_ANIMATION)
-                {
-                    yield return StartCoroutine( PlayCharacterAnimation( attacker, _characterPartB ) );
-                }
-
-                if (_skillEffectPartB != NO_ANIMATION)
-                {
-                    yield return StartCoroutine( PlaySkillEffectAnimation( attacker, _skillEffectPartB ) );
-                }
+                yield return StartCoroutine( RunMeleeDerivedSkillAnimation( attacker, _attackerSkill, DatabaseManager.Instance.GetSkillAnimation( _attackerSubskillData.Id ), atlSlotListPanel, atlNumber ) );
 
                 BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressValueDamage, out _statePointDamage, out _log );
                 BattleLog.Instance.AddOnScreenBattleLog( _log );
@@ -1313,33 +1309,7 @@ public class BattleAnimationManager : MonoBehaviour
 
             if (isAbleToUseSkill)
             {
-                atlSlotListPanel.GoToATL( atlNumber, 4.5f, _attackerSkill );
-
-                yield return StartCoroutine( PlayShowingSkillInformation( attacker ) );
-                yield return StartCoroutine( PlayCharacterAnimation( attacker, "Attack" ) );
-                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
-                yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_A" ) );
-                attacker.HideCharacterObject();
-
-                ChangeToBackgroundPartB();
-                attacker.GetOpponentContainer().SetActive( true );
-                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME ) );
-                yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_B" ) );
-                attacker.ShowCharacterObject();
-
-                ChangeToBackgroundPartA();
-                attacker.GetOpponentContainer().SetActive( false );
-                yield return StartCoroutine( PlayCharacterAnimation( attacker, DERIVE_ANIMATION_NAME ) );
-                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
-                yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_C" ) );
-                attacker.HideCharacterObject();
-
-                ChangeToBackgroundPartB();
-                attacker.GetOpponentContainer().SetActive( true );
-                StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME ) );
-                yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_D" ) );
-
+                yield return StartCoroutine( RunRangedDerivedSkillAnimation( attacker, _attackerSkill, attackTarget, atlSlotListPanel, atlNumber ) );
                 BattleLogicManager.ExecuteCasterSkillOnHit( attacker, attackTarget, true, out _attackDamage, out _stressValueDamage, out _statePointDamage, out _log );
                 BattleLog.Instance.AddOnScreenBattleLog( _log );
 
@@ -1360,6 +1330,130 @@ public class BattleAnimationManager : MonoBehaviour
             OnCasterBeingUnableToUseSkill( attacker );
             yield return new WaitForSeconds( 1.0f );
         }
+    }
+
+    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber,
+                                         BattleResultData battleResultData, BattleResultData.BattleResultData_GameCharacter attackerBattleResultData, BattleResultData.BattleResultData_GameCharacter attackTargetBattleResultData )
+    {
+        attacker.GetSortingGroup().sortingOrder = 3;
+        attackTarget.GetSortingGroup().sortingOrder = 1;
+
+        CharacterSkill _attackerSkill = attacker.GetCurrentSkill();
+        Subskill _attackerSubskillData = _attackerSkill.GetCharacterSubskillData().GetSubskillData();
+        RangeType _attackerRangeType = _attackerSubskillData.Range;
+
+        if (attacker is EnemyCharacter)
+        {
+            _attackerRangeType = RangeType.melee;
+        }
+
+        if (_attackerRangeType == RangeType.melee)
+        {
+            if (battleResultData != null)
+            {
+                yield return StartCoroutine( RunMeleeDerivedSkillAnimation( attacker, _attackerSkill, DatabaseManager.Instance.GetSkillAnimation( _attackerSubskillData.Id ), atlSlotListPanel, atlNumber ) );
+
+                attacker.ApplyBattleResultData( attackerBattleResultData );
+                attackTarget.ApplyBattleResultData( attackTargetBattleResultData );
+
+                this.cameraEffect.Shake();
+                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
+                yield return StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME, attackTargetBattleResultData ) );
+            }
+        }
+        else
+        {
+            attacker.ShowCharacterObject();
+            ChangeToBackgroundPartA();
+            attacker.GetOpponentContainer().SetActive( false );
+
+            if (battleResultData != null)
+            {
+                yield return StartCoroutine( RunRangedDerivedSkillAnimation( attacker, _attackerSkill, attackTarget, atlSlotListPanel, atlNumber ) );
+
+                attacker.ApplyBattleResultData( attackerBattleResultData );
+                attackTarget.ApplyBattleResultData( attackTargetBattleResultData );
+
+                this.cameraEffect.Shake();
+                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
+                yield return null;
+                ShowPopUpDisplayInfo( attackTarget, attackTargetBattleResultData );
+                yield return new WaitForSeconds( 0.7f );
+            }
+        }
+
+        if (battleResultData != null)
+        {
+            yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+        }
+        else
+        {
+            OnCasterBeingUnableToUseSkill( attacker );
+            yield return new WaitForSeconds( 1.0f );
+        }
+    }
+
+    private IEnumerator RunMeleeDerivedSkillAnimation( GameCharacter attacker, CharacterSkill attackerSkill, SkillAnimation skillAnimation, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber )
+    {
+        string _characterPartB = skillAnimation.CharacterPartB;
+        string _skillEffectPartB = skillAnimation.SkillEffectPartB;
+
+        if (attacker is PlayerCharacter)
+        {
+            ChangeToBackgroundPartB();
+        }
+        else if (attacker is EnemyCharacter)
+        {
+            _characterPartB = "Attack_Part_B";
+            _skillEffectPartB = "HittingEffect";
+
+            ChangeToBackgroundPartA();
+        }
+
+        attacker.GetOpponentContainer().SetActive( true );
+        atlSlotListPanel.GoToATL( atlNumber, GetAttackAnimationLength( attacker, _characterPartB, _skillEffectPartB ), attackerSkill );
+
+        yield return StartCoroutine( PlayShowingSkillInformation( attacker ) );
+
+        if (_characterPartB != NO_ANIMATION)
+        {
+            yield return StartCoroutine( PlayCharacterAnimation( attacker, _characterPartB ) );
+        }
+
+        if (_skillEffectPartB != NO_ANIMATION)
+        {
+            yield return StartCoroutine( PlaySkillEffectAnimation( attacker, _skillEffectPartB ) );
+        }
+    }
+
+    private IEnumerator RunRangedDerivedSkillAnimation( GameCharacter attacker, CharacterSkill attackerSkill, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber )
+    {
+        atlSlotListPanel.GoToATL( atlNumber, 4.5f, attackerSkill );
+
+        yield return StartCoroutine( PlayShowingSkillInformation( attacker ) );
+        yield return StartCoroutine( PlayCharacterAnimation( attacker, "Attack" ) );
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
+        yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_A" ) );
+        attacker.HideCharacterObject();
+
+        ChangeToBackgroundPartB();
+        attacker.GetOpponentContainer().SetActive( true );
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
+        StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME ) );
+        yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_B" ) );
+        attacker.ShowCharacterObject();
+
+        ChangeToBackgroundPartA();
+        attacker.GetOpponentContainer().SetActive( false );
+        yield return StartCoroutine( PlayCharacterAnimation( attacker, DERIVE_ANIMATION_NAME ) );
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
+        yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_C" ) );
+        attacker.HideCharacterObject();
+
+        ChangeToBackgroundPartB();
+        attacker.GetOpponentContainer().SetActive( true );
+        StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME ) );
+        yield return StartCoroutine( PlaySkillEffectAnimation( attacker, DERIVE_ANIMATION_NAME + "_Part_D" ) );
     }
 
     private void OnHitWithNoDamage( GameCharacter caster, GameCharacter target, bool isBreakStatusAvailable )

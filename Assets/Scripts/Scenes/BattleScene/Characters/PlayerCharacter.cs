@@ -95,7 +95,11 @@ public class PlayerCharacter : GameCharacter
 
             case AnimationEvent.OnPartA:
 
-                if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
+                if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
+                {
+                    _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
+                }
+                else if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
                 {
                     _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }

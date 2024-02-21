@@ -329,7 +329,9 @@ public class BattleUiManager : MonoBehaviour
             CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
             if (_currentSkill != null)
             {
-                this.selectedGameCharacter.SetAssignedSkill( _currentSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() );
+                CharacterSkill _repulseSkill = _currentSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
+                this.selectedGameCharacter.SetAssignedSkill( _repulseSkill );
+                this.activeSkillSlotListPanelV2.GetSkillSlot( _repulseSkill ).SelectSkill();
             }
         }
         else if (skillTypeList.Contains( SkillType.Derive ))
@@ -349,7 +351,7 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             Debug.Log( "Default" );
-            this.activeSkillSlotListPanelV2.ChangeToDefaultMode( this.selectedGameCharacter );
+            this.activeSkillSlotListPanelV2.ChangeToDefaultMode( this.selectedGameCharacter, ( skillTypeList.Contains( SkillType.Active ) ) ? SkillSlotV2.StateType.Enabled : SkillSlotV2.StateType.Disabled );
         }
 
         this.playerActionPanel.ShowSkillActionButtons( this.selectedGameCharacter.GetSelectedBackendSkillList().ToArray() );

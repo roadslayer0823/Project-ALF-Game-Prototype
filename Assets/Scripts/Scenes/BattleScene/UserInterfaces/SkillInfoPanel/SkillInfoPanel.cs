@@ -8,6 +8,7 @@ using Subskill = DatabaseManager.Subskill;
 public class SkillInfoPanel : MonoBehaviour
 {
     [SerializeField] private RectTransform skillInfoPanel;
+    [SerializeField] private GameObject skillInfomation;
 
     [Header("SkillTabButtons")]
     [SerializeField] private Image skillInfoPanelBackground = null;
@@ -17,6 +18,7 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private Sprite counterSkillInfoBackground = null;
     [SerializeField] private Sprite backendSkillInfoBackground = null;
     [SerializeField] private Sprite evasionSkillInfoBackground = null;
+    [SerializeField] private Sprite observeSkillInfoBackground = null;
     [SerializeField] private GameObject attackSkillSelectionTabButton = null;
     [SerializeField] private GameObject repulseSkillSelectionTabButton = null;
     [SerializeField] private GameObject derivedSkillSelectionTabButton = null;
@@ -58,9 +60,9 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI evasionStressValue;
     [SerializeField] private TextMeshProUGUI statePointDamageValue;
     [SerializeField] private TextMeshProUGUI speedValue;
-    [SerializeField] private RectTransform tagListRectTransform;
     [SerializeField] private TextMeshProUGUI tagArea;
     [SerializeField] private TextMeshProUGUI tagEffectType;
+    [SerializeField] private RectTransform tagListRectTransform;
 
     [Header("SkillInfoGameObject")]
     [SerializeField] private GameObject attackDamage;
@@ -74,16 +76,14 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private GameObject speed;
 
     [Header("SkillInfoBox")]
-    [SerializeField] private GameObject skillDataBox = null;
     [SerializeField] private GameObject observedSkillListBox = null;
 
     [Header("ObservedSkillInfo")]
     [SerializeField] private GameObject observedSkillInfo = null;
-    [SerializeField] private ObservedSkillBox observedSkillBoxPrefab = null;
+    [SerializeField] private SpecialSkillInfoPanel observedSkillBoxPrefab = null;
     [SerializeField] private RectTransform observedSkillListContent = null;
-    [SerializeField] private TextMeshProUGUI noRecordFoundText = null;
 
-    private List<ObservedSkillBox> observedSkillBoxList = new List<ObservedSkillBox>();
+    private List<SpecialSkillInfoPanel> observedSkillBoxList = new List<SpecialSkillInfoPanel>();
     private SkillInfoUIPanel skillInfoUIPanel = SkillInfoUIPanel.none;
     private SkillSelectionBoxV2 skillSelectionBox = null;
 
@@ -124,7 +124,6 @@ public class SkillInfoPanel : MonoBehaviour
         }
         else
         {
-            //this.skillDataBox.SetActive(true);
             //this.observedSkillListBox.SetActive(false);
             //this.observedSkillInfo.SetActive(false);
         }
@@ -139,9 +138,8 @@ public class SkillInfoPanel : MonoBehaviour
         {
             this.skillType.SetText("[" + _subskillData.Prefix.ToString() + "]");
         }
-
-        // Display Name
-        this.displayName.SetText(_subskillData.DisplayName);
+        
+        this.displayName.SetText(_subskillData.DisplayName); // Display Name
 
         if (BattleLogicManager.GetAttackDamage(_subskillData) > 0) // Attack Damage
         {
@@ -167,10 +165,12 @@ public class SkillInfoPanel : MonoBehaviour
         {
             this.strengthState.sprite = this.strengthOn;
             this.strengthValue.SetText("+" + (_subskillData.Strength - 1).ToString());
+            this.strengthValue.gameObject.SetActive(true);
         }
         else
         {
             this.strengthState.sprite = this.strengthOff;
+            this.strengthValue.gameObject.SetActive(false);
         }
 
         if (_subskillData.Speed > 1) // Speed
@@ -188,6 +188,11 @@ public class SkillInfoPanel : MonoBehaviour
                 this.speedIcon.sprite = this.speedIconLevelFour;
             }
             this.speedValue.SetText(TerminologyManager.GetSpeedLevelText(_subskillData.Speed));
+            this.speedValue.gameObject.SetActive(true);
+        }
+        else
+        {
+            this.speedValue.gameObject.SetActive(false);
         }
 
         if (_subskillData.EvasionStress > 1) // Evasion Stress
@@ -274,7 +279,6 @@ public class SkillInfoPanel : MonoBehaviour
 
     private void SetupObservedSkillList(CharacterSkill characterSkill)
     {
-        this.skillDataBox.SetActive(false);
         this.observedSkillListBox.SetActive(true);
         this.observedSkillInfo.SetActive(false); // Change back to true in future if needed
 
@@ -282,19 +286,21 @@ public class SkillInfoPanel : MonoBehaviour
 
         if (characterSkill.GetObservedSkillDataList().Count == 0)
         {
-            this.noRecordFoundText.SetText("暫無記錄");
-            this.noRecordFoundText.gameObject.SetActive(true);
+            this.observedSkillInfo.gameObject.SetActive(false);
+            this.skillInfomation.SetActive(true);
         }
         else
         {
-            this.noRecordFoundText.gameObject.SetActive(false);
+            this.observedSkillInfo.gameObject.SetActive(true);
+            this.skillInfomation.SetActive(false);
+            this.displayName.SetText("看破");
 
             // Initialize the ObservedSkillBox so that the skill can be display on it respectively. 
             for (int i = 0; i < characterSkill.GetObservedSkillDataList().Count; i++)
             {
                 ObservedSkillData _observedSkillData = characterSkill.GetObservedSkillDataList()[i];
 
-                ObservedSkillBox _observedSkillBox = Instantiate(this.observedSkillBoxPrefab, this.observedSkillListContent, false);
+                SpecialSkillInfoPanel _observedSkillBox = Instantiate(this.observedSkillBoxPrefab, this.observedSkillListContent, false);
                 _observedSkillBox.Initialize(_observedSkillData);
 
                 this.observedSkillBoxList.Add(_observedSkillBox);
@@ -306,7 +312,7 @@ public class SkillInfoPanel : MonoBehaviour
     {
         for (int i = 0; i < this.observedSkillBoxList.Count; i++)
         {
-            ObservedSkillBox _observedSkillBox = this.observedSkillBoxList[i];
+            SpecialSkillInfoPanel _observedSkillBox = this.observedSkillBoxList[i];
             Destroy(_observedSkillBox.gameObject);
         }
 
@@ -371,6 +377,11 @@ public class SkillInfoPanel : MonoBehaviour
     public void ShowCounterSkillPanelUI()
     {
         SetSkillPanelUI(counterSkillInfoBackground, yellowLevelBackground, yellowSkillNameBackground);
+    }
+
+    public void ShowObserveSkillPanelUI()
+    {
+        SetSkillPanelUI(observeSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
     }
 
     public void IncreaseSkillInfoLevel()
