@@ -85,6 +85,7 @@ public class SkillInfoPanel : MonoBehaviour
 
     private List<SpecialSkillInfoPanel> observedSkillBoxList = new List<SpecialSkillInfoPanel>();
     private SkillInfoUIPanel skillInfoUIPanel = SkillInfoUIPanel.none;
+    private SkillSelectionBoxV2 skillSelectionBox = null;
 
     public enum SkillInfoUIPanel
     {
@@ -93,16 +94,19 @@ public class SkillInfoPanel : MonoBehaviour
         backend
     }
 
-    public void Show(CharacterSkill characterSkill)
+    public void Show(SkillSelectionBoxV2 skillSelectionBox) // CharacterSkill characterSkill
     {
-        if (characterSkill == null)
+        this.skillSelectionBox = skillSelectionBox;
+
+        CharacterSkill _characterSkill = skillSelectionBox.GetCharacterSkill();
+        if (_characterSkill == null)
         {
             Hide();
             return;
         }
 
         this.skillInfoPanel.gameObject.SetActive(true);
-        SetupSkillInfomation(characterSkill);
+        SetupSkillInfomation(_characterSkill);
     }
 
     public void Hide()
@@ -116,12 +120,12 @@ public class SkillInfoPanel : MonoBehaviour
 
         if (_characterSubskill.GetSubskillData().IsObservingSkill)
         {
-            SetupObservedSkillList(characterSkill);
+            //SetupObservedSkillList(characterSkill);
         }
         else
         {
-            this.observedSkillListBox.SetActive(false);
-            this.observedSkillInfo.SetActive(false);
+            //this.observedSkillListBox.SetActive(false);
+            //this.observedSkillInfo.SetActive(false);
         }
 
         Subskill _subskillData = _characterSubskill.GetSubskillData();
@@ -265,11 +269,11 @@ public class SkillInfoPanel : MonoBehaviour
 
         if (_subskillData.Description == "-") // Description
         {
-            this.skillDescription.SetText("");
+            //this.skillDescription.SetText("");
         }
         else
         {
-            this.skillDescription.SetText(_subskillData.Description);
+            //this.skillDescription.SetText(_subskillData.Description);
         }
     }
 
@@ -383,11 +387,15 @@ public class SkillInfoPanel : MonoBehaviour
     public void IncreaseSkillInfoLevel()
     {
         //increase the skill level
+        this.skillSelectionBox.IncreaseSkillLevel();
+        this.SetupSkillInfomation(this.skillSelectionBox.GetCharacterSkill());
     }
 
     public void DecreaseSkillInfoLevel()
     {
         //decrease the skill level
+        this.skillSelectionBox.DecreaseSkillLevel();
+        this.SetupSkillInfomation(this.skillSelectionBox.GetCharacterSkill());
     }
 
     private void SetSkillPanelUI(Sprite skillPanelBackground, Sprite skillLevelBackground, Sprite skillNameBackground)
