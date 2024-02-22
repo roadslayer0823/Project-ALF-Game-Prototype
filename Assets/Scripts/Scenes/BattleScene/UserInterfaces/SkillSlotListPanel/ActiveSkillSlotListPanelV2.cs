@@ -262,6 +262,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
             int newIndex = (i + direction + skillSlotList.Count) % skillSlotList.Count; // Calculate the new index
 
             GameObject slotToMove = skillSlotList[i];
+            SkillSlotV2 currentSlot = skillSlots[i];
             Vector3 targetPosition = fixedSlotPosition[newIndex].position;
 
             // Use LeanTween to move the slot to the new position
@@ -274,6 +275,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 .setEase(LeanTweenType.easeInOutQuad);
                 skillSlotsButton[i].interactable = true;
                 SetActiveRecursively(skillInformation[i].transform, true);
+                currentSlot.UpdateCharacterSkillLevel(currentSlot.skillLevel);
                 middleSkillSlot = skillSlotList[i].GetComponent<SkillSlotV2>();
             }
             else
@@ -295,33 +297,39 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
             int i = skillSlotList.Count - 1;
             GameObject tempSlot = skillSlotList[i];
             GameObject tempSkillInformation = skillInformation[i];
+            SkillSlotV2 tempSkillSlot = skillSlots[i];
             Button tempButton = skillSlotsButton[i];
             while (i > 0)
             {
                 skillSlotList[i] = skillSlotList[i - 1];
                 skillSlotsButton[i] = skillSlotsButton[i - 1];
                 skillInformation[i] = skillInformation[i - 1];
+                skillSlots[i] = skillSlots[i - 1];
                 i--;
             }
 
             skillSlotList[i] = tempSlot;
             skillSlotsButton[i] = tempButton;
             skillInformation[i] = tempSkillInformation;
+            skillSlots[i] = tempSkillSlot;
         }
         else if (direction == -1)
         {
             int i = 0;
             GameObject tempSlot = skillSlotList[i];
             GameObject tempSkillInformation = skillInformation[i];
+            SkillSlotV2 tempSkillSlot = skillSlots[i];
             Button tempButton = skillSlotsButton[i];
             while (i < skillSlotList.Count - 1)
             {
                 skillSlotList[i] = skillSlotList[i + 1];
                 skillSlotsButton[i] = skillSlotsButton[i + 1];
                 skillInformation[i] = skillInformation[i + 1];
+                skillSlots[i] = skillSlots[i + 1];
                 i++;
             }
 
+            skillSlots[skillSlots.Length - 1] = tempSkillSlot;
             skillSlotList[skillSlotList.Count - 1] = tempSlot;
             skillSlotsButton[skillSlotsButton.Count - 1] = tempButton;
             skillInformation[skillInformation.Count - 1] = tempSkillInformation;

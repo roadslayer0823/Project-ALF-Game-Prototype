@@ -1469,8 +1469,8 @@ MonoBehaviour:
   skillIconScale: 1
   skillFrame: {fileID: 1078840878763072139}
   skillIcon: {fileID: 2635130088466552121}
-  BlankActiveSkillFrame: {fileID: 21300000, guid: 2311f73e6bd474ce79367cffdbd5c5f6, type: 3}
-  BlankBackendSkillFrame: {fileID: 21300000, guid: cfd1bf8f8b50a4e23a2b78181427f644, type: 3}
+  BlankActiveSkillFrame: {fileID: 21300000, guid: b454ba89091474789a6f304afa20a108, type: 3}
+  BlankBackendSkillFrame: {fileID: 21300000, guid: f170434b7a04e463d83b3b0abc748aba, type: 3}
   ActiveSkillFrame: {fileID: 21300000, guid: 505c52cbb79b74beebb19089ccad6dd6, type: 3}
   BackendSkillFrame: {fileID: 21300000, guid: b8daf13fff6f14cfb8ff9331ffaae024, type: 3}
   RepulseSkillFrame: {fileID: 21300000, guid: f547947f633fd49959011296e616d71f, type: 3}
@@ -1494,6 +1494,9 @@ MonoBehaviour:
   minusLevelImage: {fileID: 2771280233484179831}
   minusLevelBackground: {fileID: 1455066168055056994}
   skillBoxAnimation: {fileID: 3903610091004816897}
+  skillLevel: 1
+  isSkillLevelReachedMaximum: 0
+  isSkillLevelReachedMinimum: 0
 --- !u!114 &8742595457740914751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1871,7 +1874,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -44.7, y: 180.6}
+  m_AnchoredPosition: {x: -44.70006, y: 180.6}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8475285647865084221
