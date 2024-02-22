@@ -30,8 +30,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1012267114182258824}
-  - {fileID: 7882923261070061789}
   - {fileID: 377780452721206961}
+  - {fileID: 7882923261070061789}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -52,13 +52,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20ebbe636057f43efb31c1d194566512, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  skillSlotUnselectBackgroundImage: {fileID: 21300000, guid: b454ba89091474789a6f304afa20a108, type: 3}
-  skillSlotSelectBackgroundImage: {fileID: 21300000, guid: 6992347dd6c1d44869cba541d1c6b34f, type: 3}
-  skillSlotSelectedBackgroundImage: {fileID: 21300000, guid: 505c52cbb79b74beebb19089ccad6dd6, type: 3}
+  activeSkillSlotUnselectBackgroundImage: {fileID: 0}
+  activeSkillSlotSelectBackgroundImage: {fileID: 0}
+  activeSkillSlotSelectedBackgroundImage: {fileID: 0}
   skillSelectionSequenceImages:
   - {fileID: 21300000, guid: bac0ba5552c094d8eb0ca9bffe5bcd92, type: 3}
   - {fileID: 21300000, guid: 8618b935c360b4867a3a6027b2c11392, type: 3}
   - {fileID: 21300000, guid: 7a17ccfb88f4a47498d42954e11c70ff, type: 3}
+  backendSkillSlotUnselectBackgroundImage: {fileID: 0}
+  backendSkillSlotSelectedBackgroundImage: {fileID: 0}
+  backendDefenceSlotSelectedImage: {fileID: 0}
+  backendEvasionSlotSelectedImage: {fileID: 0}
+  backendGenericSlotSelectedImage: {fileID: 0}
+  backendDefenceSlotImage: {fileID: 0}
+  backendEvasionSlotImage: {fileID: 0}
+  backendGenericSlotImage: {fileID: 0}
   activeSkillSelectionListGO: {fileID: 8872988638114683259}
   activeSkillSlotPositions:
   - {fileID: 1118958145470253056}
@@ -87,6 +95,10 @@ MonoBehaviour:
   - {fileID: 8049667077353952146}
   backendSkillSlotPrefab: {fileID: 7502477272755232957, guid: 1f16a69f1dd134f9f871ba8fe2048e8c, type: 3}
   backendSkillListBoxButton: {fileID: 7175918739225714531}
+  backendDefenceSlotIcon: {fileID: 0}
+  backendEvasionSlotIcon: {fileID: 0}
+  backendGenericSlotIcon: {fileID: 0}
+  returnButton: {fileID: 982782964219806141}
   skillInfoPanel: {fileID: 0}
 --- !u!1 &5189946530786782906
 GameObject:
@@ -120,7 +132,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4076745988354898789}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -592,7 +604,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8000175405524141311, guid: 52c8909fa7961401a91717341276e706, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8000175405524141311, guid: 52c8909fa7961401a91717341276e706, type: 3}
       propertyPath: m_AnchorMax.x

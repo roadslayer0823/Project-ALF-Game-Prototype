@@ -1,4 +1,3 @@
-using System;
 using TMPro;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -98,14 +97,14 @@ public class SkillInfoPanel : MonoBehaviour
         this.skillSelectionBox = skillSelectionBox;
 
         this.selectedSkill = skillSelectionBox.GetCharacterSkill();
-        if ( this.selectedSkill == null)
+        if (this.selectedSkill == null)
         {
             Hide();
             return;
         }
 
         this.skillInfoPanel.gameObject.SetActive(true);
-        SetupSkillInfomation(selectedSkill);
+        SetupSkillInfomation( this.selectedSkill );
     }
 
     public void Hide()

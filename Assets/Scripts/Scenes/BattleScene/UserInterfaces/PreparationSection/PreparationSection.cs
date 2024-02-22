@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class PreparationSection : MonoBehaviour
 {
-    [SerializeField] private GameObject preparationSection = null;
+    [SerializeField] private GameObject skillMenuContainer = null;
 
     [Header("SkillSelectionPanel button")]
     [SerializeField] private Button showActiveSkillSelectionPanelButton = null;
@@ -50,14 +50,25 @@ public class PreparationSection : MonoBehaviour
         }
     }
 
-    public void ShowPreparationSection()
+    public void Show()
     {
-        this.preparationSection.SetActive(true);
+        this.gameObject.SetActive( true );
+        ShowSkillMenu();
     }
 
-    public void HidePreparationSection()
+    public void Hide()
     {
-        this.preparationSection.SetActive(false);
+        this.gameObject.SetActive( false );
+    }
+
+    public void ShowSkillMenu()
+    {
+        this.skillMenuContainer.SetActive( true );
+    }
+
+    public void HideSkillMenu()
+    {
+        this.skillMenuContainer.SetActive( false );
     }
 
     public void EnableExecuteButton()
