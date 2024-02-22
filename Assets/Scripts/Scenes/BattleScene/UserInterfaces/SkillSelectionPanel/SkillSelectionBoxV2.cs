@@ -11,12 +11,9 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     [Header("Settings")]
     [SerializeField] private float clickDelay = 0.2f;
 
-    [Header("")]
-    [SerializeField] private Image selectionHighlight = null;
-    [SerializeField] private Image skillSlotFrame = null;
+    [Header("ActiveSkillSelectionBox")]
     [SerializeField] private Image currentSkillSelectionSequence = null;
     [SerializeField] private TextMeshProUGUI skillTypeText = null;
-    [SerializeField] private TextMeshProUGUI skillNameText = null;
     [SerializeField] private TextMeshProUGUI skillLevelAnimationText = null;
     [SerializeField] private TextMeshProUGUI skillLevelText = null;
     [SerializeField] private Image plusLevelImage = null;
@@ -27,6 +24,14 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     [SerializeField] private Transform plusLevelOriginalPosition = null;
     [SerializeField] private Transform minusLevelTargetPosition = null;
     [SerializeField] private Transform minusLevelOriginalPosition = null;
+
+    [Header("BackendSkillSelectionBox")]
+    [SerializeField] private Image skillSelectedImage = null;
+
+    [Header("")]
+    [SerializeField] private Image selectionHighlight = null;
+    [SerializeField] private Image skillSlotFrame = null;
+    [SerializeField] private TextMeshProUGUI skillNameText = null;
     private SkillSelectionPanelV2 skillSelectionPanel = null;
     private CharacterSkill characterSkill = null;
     private bool isSelected = false;
@@ -40,6 +45,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     private Vector2 currentSwipe = new Vector2();
     private int skillLevel = 0;
     private int clickCount = 0;
+    private Skill.SkillType skillType = Skill.SkillType.none;
 
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
@@ -48,92 +54,21 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     {
         this.skillSelectionPanel = skillSelectionPanel;
         this.characterSkill = characterSkill;
+        this.skillType = characterSkill.GetSkillData().skillType;
 
         this.skillSlotFrame.gameObject.SetActive(true);
         this.skillNameText.gameObject.SetActive(true);
 
         if (characterSkill != null)
         {
-            this.skillTypeText.SetText("[" + characterSkill.GetCharacterSubskillData().GetSubskillData().Prefix + "]");
+            if (characterSkill.GetCharacterSubskillData().GetSubskillData().Prefix != "-" && this.skillTypeText != null)
+            {
+                this.skillTypeText.SetText("[" + characterSkill.GetCharacterSubskillData().GetSubskillData().Prefix + "]");
+            }
+            
             this.skillNameText.SetText(characterSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
 
             this.skillLevel = characterSkill.GetMinumumSkillLevel();
-        }
-    }
-
-    public void ShowSelectionHighlight()
-    {
-        if (!this.isSelected)
-        {
-            SetSkillSlotFrame(this.skillSelectionPanel.GetSkillSlotSelectBackgroundImage());
-        }
-        
-        this.selectionHighlight.gameObject.SetActive(true);
-    }
-
-    private void HideSelectionHighlight()
-    {
-        if (!this.isSelected)
-        {
-            SetSkillSlotFrame(this.skillSelectionPanel.GetSkillSlotUnselectBackgroundImage());
-        }
-        
-        this.selectionHighlight.gameObject.SetActive(false);
-    }
-
-    IEnumerator SelectSkillSlot()
-    {
-        this.isWaitingSecondClick = true;
-
-        yield return new WaitForSeconds(this.clickDelay);
-
-        this.isWaitingSecondClick = false;
-        this.clickCount = 0;
-
-        SkillSelectionBoxV2 _lastSelectedSkillSelectionBox = this.skillSelectionPanel.GetLastSelectedSkillSelectionBox();
-
-        if (!this.isDoubleTap)
-        {
-            if (_lastSelectedSkillSelectionBox != null && _lastSelectedSkillSelectionBox != this)
-            {
-                _lastSelectedSkillSelectionBox.HideSelectionHighlight();
-            }
-
-            if (_lastSelectedSkillSelectionBox == this && this.selectionHighlight.gameObject.activeSelf
-                && this.skillSelectionPanel.GetSelectedActiveSkillList().Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills()
-                && !this.isSelected)
-            {
-                this.skillSelectionPanel.AddSelectedActiveSkilSlot(this);
-
-                this.skillSelectionPanel.OnSkillSelected(this);
-
-                this.isSelected = true;
-            }
-
-            ShowSelectionHighlight();
-            this.skillSelectionPanel.ShowSkillInfoPanel(this);
-            this.skillSelectionPanel.SetLastSelectedSkillSelectionBox(this);
-        }
-        else
-        {
-            /*if (_lastSelectedSkillSelectionBox != null && _lastSelectedSkillSelectionBox != this && !this.selectionHighlight.gameObject.activeSelf)
-            {
-                if (this.isSelected && this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(_lastSelectedSkillSelectionBox) && this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this))
-                {
-                    //Swap these two selected skill
-                    this.skillSelectionPanel.SwapSelectedActiveSkill(this);
-                }
-                else if (!this.isSelected && !this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(_lastSelectedSkillSelectionBox))
-                {
-                    //Replace selected skill with this one
-                    this.skillSelectionPanel.ReplaceSelectedActiveSkill(this);
-                }
-            }*/
-
-            if (this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.isSelected)
-            {
-                this.skillSelectionPanel.MoveSelectedSkillToFirst(this, this.skillSelectionPanel.GetSelectedActiveSkillList());
-            }
         }
     }
 
@@ -222,6 +157,122 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
+    public void ShowSelectionHighlight()
+    {
+        if (!this.isSelected && this.skillType == Skill.SkillType.active)
+        {
+            SetSkillSlotFrame(this.skillSelectionPanel.GetSkillSlotSelectBackgroundImage());
+        }
+        
+        this.selectionHighlight.gameObject.SetActive(true);
+    }
+
+    private void HideSelectionHighlight()
+    {
+        if (!this.isSelected && this.skillType == Skill.SkillType.active)
+        {
+            SetSkillSlotFrame(this.skillSelectionPanel.GetSkillSlotUnselectBackgroundImage());
+        }
+        
+        this.selectionHighlight.gameObject.SetActive(false);
+    }
+
+    IEnumerator SelectSkillSlot()
+    {
+        this.isWaitingSecondClick = true;
+
+        yield return new WaitForSeconds(this.clickDelay);
+
+        if (this.skillType == Skill.SkillType.active)
+        {
+            SelectActiveSkill();
+        }
+        else if (this.skillType == Skill.SkillType.backend)
+        {
+            SelectBackendSkill();
+        }
+    }
+
+    private void SelectActiveSkill()
+    {
+        this.isWaitingSecondClick = false;
+        this.clickCount = 0;
+
+        SkillSelectionBoxV2 _lastSelectedSkillSelectionBox = this.skillSelectionPanel.GetLastSelectedActiveSkillSelectionBox();
+
+        if (!this.isDoubleTap)
+        {
+            if (_lastSelectedSkillSelectionBox != null && _lastSelectedSkillSelectionBox != this)
+            {
+                _lastSelectedSkillSelectionBox.HideSelectionHighlight();
+            }
+
+            if (_lastSelectedSkillSelectionBox == this && this.selectionHighlight.gameObject.activeSelf
+                && this.skillSelectionPanel.GetSelectedActiveSkillList().Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills()
+                && !this.isSelected)
+            {
+                this.skillSelectionPanel.AddSelectedSkilSlot(this);
+
+                this.skillSelectionPanel.OnSkillSelected(this);
+
+                this.isSelected = true;
+            }
+
+            ShowSelectionHighlight();
+            this.skillSelectionPanel.ShowSkillInfoPanel(this);
+            this.skillSelectionPanel.SetLastSelectedActiveSkillSelectionBox(this);
+        }
+        else
+        {
+            /*if (_lastSelectedSkillSelectionBox != null && _lastSelectedSkillSelectionBox != this && !this.selectionHighlight.gameObject.activeSelf)
+            {
+                if (this.isSelected && this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(_lastSelectedSkillSelectionBox) && this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this))
+                {
+                    //Swap these two selected skill
+                    this.skillSelectionPanel.SwapSelectedActiveSkill(this);
+                }
+                else if (!this.isSelected && !this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(_lastSelectedSkillSelectionBox))
+                {
+                    //Replace selected skill with this one
+                    this.skillSelectionPanel.ReplaceSelectedActiveSkill(this);
+                }
+            }*/
+
+            if (this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.isSelected)
+            {
+                this.skillSelectionPanel.MoveSelectedSkillToFirst(this, this.skillSelectionPanel.GetSelectedActiveSkillList());
+            }
+        }
+    }
+
+    private void SelectBackendSkill()
+    {
+        this.isWaitingSecondClick = false;
+        this.clickCount = 0;
+
+        SkillSelectionBoxV2 _lastSelectedSkillSelectionBox = this.skillSelectionPanel.GetLastSelectedBackendSkillSelectionBox();
+
+        if (_lastSelectedSkillSelectionBox != null && _lastSelectedSkillSelectionBox != this)
+        {
+            _lastSelectedSkillSelectionBox.HideSelectionHighlight();
+        }
+
+        if (_lastSelectedSkillSelectionBox == this && this.selectionHighlight.gameObject.activeSelf
+            && this.skillSelectionPanel.GetSelectedBackendSkillList().Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills()
+            && !this.isSelected)
+        {
+            //TODO: Select backend skill
+
+            this.skillSelectionPanel.AddSelectedSkilSlot(this);
+
+            this.isSelected = true;
+        }
+
+        ShowSelectionHighlight();
+        this.skillSelectionPanel.ShowSkillInfoPanel(this);
+        this.skillSelectionPanel.SetLastSelectedBackendSkillSelectionBox(this);
+    }
+
     private void DeselectSkill()
     {
         if (!this.isSelected)
@@ -229,9 +280,13 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             return;
         }
 
-        this.skillSelectionPanel.RemoveSelectedActiveSkilSlot(this);
-        this.currentSkillSelectionSequence.gameObject.SetActive(false);
-
+        if (this.skillType == Skill.SkillType.active)
+        {
+            this.currentSkillSelectionSequence.gameObject.SetActive(false);
+        }
+        
+        this.skillSelectionPanel.RemoveSelectedSkilSlot(this);
+        
         this.isSelected = false;
     }
 
@@ -244,19 +299,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             DeselectSkill();
 
             this.isLongPress = true;
-        }
-    }
-
-    public void SetCurrentSkillSelectionSequence(Sprite numberImage)
-    {
-        if (numberImage == null)
-        {
-            this.currentSkillSelectionSequence.gameObject.SetActive(false);
-        }
-        else
-        {
-            this.currentSkillSelectionSequence.gameObject.SetActive(true);
-            this.currentSkillSelectionSequence.sprite = numberImage;
         }
     }
 
@@ -434,6 +476,39 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         else
         {
             return false;
+        }
+    }
+
+    public Skill.SkillType GetCharacterSkillType()
+    {
+        return this.skillType;
+    }
+
+    // Set sequence image for selected active skill slot
+    public void SetCurrentSkillSelectionSequence(Sprite numberImage)
+    {
+        if (numberImage == null)
+        {
+            this.currentSkillSelectionSequence.gameObject.SetActive(false);
+        }
+        else
+        {
+            this.currentSkillSelectionSequence.gameObject.SetActive(true);
+            this.currentSkillSelectionSequence.sprite = numberImage;
+        }
+    }
+
+    // Set selected image for selected backend skill slot based on skill type
+    public void SetSkillSelectedImage(Sprite imageToDisplay)
+    {
+        if (imageToDisplay == null)
+        {
+            this.skillSelectedImage.gameObject.SetActive(false);
+        }
+        else
+        {
+            this.skillSelectedImage.gameObject.SetActive(true);
+            this.skillSelectedImage.sprite = imageToDisplay;
         }
     }
 }

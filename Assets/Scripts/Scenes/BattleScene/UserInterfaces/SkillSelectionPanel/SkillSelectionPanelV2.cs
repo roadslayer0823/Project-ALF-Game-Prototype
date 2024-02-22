@@ -1,17 +1,25 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using static DatabaseManager;
-using System;
 
 public class SkillSelectionPanelV2 : MonoBehaviour
 {
     [Header("UI Images")]
-    [SerializeField] private Sprite skillSlotUnselectBackgroundImage = null;
-    [SerializeField] private Sprite skillSlotSelectBackgroundImage = null;
-    [SerializeField] private Sprite skillSlotSelectedBackgroundImage = null;
+    [SerializeField] private Sprite activeSkillSlotUnselectBackgroundImage = null;
+    [SerializeField] private Sprite activeSkillSlotSelectBackgroundImage = null;
+    [SerializeField] private Sprite activeSkillSlotSelectedBackgroundImage = null;
     [SerializeField] private Sprite[] skillSelectionSequenceImages = null;
+    [SerializeField] private Sprite backendSkillSlotUnselectBackgroundImage = null;
+    [SerializeField] private Sprite backendSkillSlotSelectedBackgroundImage = null;
+    [SerializeField] private Sprite backendDefenceSlotSelectedImage = null;
+    [SerializeField] private Sprite backendEvasionSlotSelectedImage = null;
+    [SerializeField] private Sprite backendGenericSlotSelectedImage = null;
+    [SerializeField] private Sprite backendDefenceSlotImage = null;
+    [SerializeField] private Sprite backendEvasionSlotImage = null;
+    [SerializeField] private Sprite backendGenericSlotImage = null;
 
     [Header("Active Skill")]
     [SerializeField] private GameObject activeSkillSelectionListGO = null;
@@ -23,18 +31,23 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     private List<SkillSelectionBoxV2> activeSkillSlotList = new List<SkillSelectionBoxV2>();
     private List<SkillSelectionBoxV2> selectedActiveSkilSlotlList = new List<SkillSelectionBoxV2>();
     private List<CharacterSkill> characterActiveSkillList = new List<CharacterSkill>();
+    private SkillSelectionBoxV2 lastSelectedActiveSkillSelectionBox = null;
 
     [Header("Backend Skill")]
     [SerializeField] private GameObject backendSkillSelectionListGO = null;
     [SerializeField] private GameObject[] backendSkillSlotPositions = null;
     [SerializeField] private SkillSelectionBoxV2 backendSkillSlotPrefab = null;
     [SerializeField] private Button backendSkillListBoxButton = null;
+    [SerializeField] private Image backendDefenceSlotIcon = null;
+    [SerializeField] private Image backendEvasionSlotIcon = null;
+    [SerializeField] private Image backendGenericSlotIcon = null;
     private List<SkillSelectionBoxV2> backendSkillSlotList = new List<SkillSelectionBoxV2>();
+    private List<SkillSelectionBoxV2> selectedBackendSkilSlotlList = new List<SkillSelectionBoxV2>();
     private List<CharacterSkill> characterBackendSkillList = new List<CharacterSkill>();
+    private SkillSelectionBoxV2 lastSelectedBackendSkillSelectionBox = null;
 
     [Header("")]
     [SerializeField] private SkillInfoPanel skillInfoPanel = null;
-    private SkillSelectionBoxV2 lastSelectedSkillSelectionBox = null;
     private Action<SkillSelectionBoxV2> onSkillSelectedCallback = null;
     private Action<SkillSelectionBoxV2> onSkillDeselectedCallback = null;
 
@@ -66,6 +79,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             else if (_characterSkill.GetSkillData().skillType == Skill.SkillType.backend)
             {
                 this.characterBackendSkillList.Add(_characterSkill);
+
+                Debug.Log("Backend skill: " + _characterSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
             }
         }
 
@@ -74,13 +89,12 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             InitializeActiveSkillList();
         }
 
-        // TODO: This block of code is temporarily commented out to prevent an error from occurring.
-        //if (this.backendSkillSlotList.Count == 0)
-        //{
-        //    InitializeBackendSkillList();
-        //}
+        if (this.backendSkillSlotList.Count == 0)
+        {
+            InitializeBackendSkillList();
+        }
 
-        this.gameObject.SetActive( true );
+        ShowSkillSelectionPanel();
     }
 
     private void OnActiveSkillListBoxButtonClick()
@@ -123,12 +137,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         {
             Transform _slotPosition = this.activeSkillSlotPositions[i].transform;
             SkillSelectionBoxV2 _activeSkillSlot = Instantiate(this.activeSkillSlotPrefab, _slotPosition);
-            _activeSkillSlot.SetSkillSlotFrame(this.skillSlotUnselectBackgroundImage);
             this.activeSkillSlotList.Add(_activeSkillSlot);
         }
-
-        //TODO: Replace will character skill list
-        //TODO: Show highlight for the first slot
 
         for (int i = 0; i < this.characterActiveSkillList.Count; i++)
         {
@@ -140,7 +150,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             {
                 this.activeSkillSlotList[i].ShowSelectionHighlight();
                 ShowSkillInfoPanel(this.activeSkillSlotList[i]);
-                this.lastSelectedSkillSelectionBox = this.activeSkillSlotList[i];
+                this.lastSelectedActiveSkillSelectionBox = this.activeSkillSlotList[i];
             }
         }
     }
@@ -151,21 +161,63 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         {
             Transform _slotPosition = this.backendSkillSlotPositions[i].transform;
             SkillSelectionBoxV2 _backendSkillSlot = Instantiate(this.backendSkillSlotPrefab, _slotPosition);
-            _backendSkillSlot.SetSkillSlotFrame(this.skillSlotUnselectBackgroundImage);
             this.backendSkillSlotList.Add(_backendSkillSlot);
         }
 
         for (int i = 0; i < this.characterBackendSkillList.Count; i++)
         {
             CharacterSkill _characterSkill = this.characterBackendSkillList[i];
+            Subskill _subskillData = _characterSkill.GetCharacterSubskillData().GetSubskillData();
 
-            this.backendSkillSlotList[i].Initialize(this, _characterSkill);
+            for (int j = 0; j < this.backendSkillSlotList.Count; j++)
+            {
+                SkillSelectionBoxV2 _backendSkillSelectionBox = this.backendSkillSlotList[j];
 
-            if (i == 1)
+                if (_backendSkillSelectionBox.GetCharacterSkill() == null)
+                {
+                    if (_subskillData.IsDefendingSkill)
+                    {
+                        if (j == 1)
+                        {
+                            _backendSkillSelectionBox.Initialize(this, _characterSkill);
+                        }
+                        else if (j == 4 && this.backendSkillSlotList[j - 3].GetCharacterSkill() != _characterSkill)
+                        {
+                            _backendSkillSelectionBox.Initialize(this, _characterSkill);
+                        }
+                    }
+                    else if (_subskillData.IsEvadingSkill)
+                    {
+                        if (j == 0)
+                        {
+                            _backendSkillSelectionBox.Initialize(this, _characterSkill);
+                        }
+                        else if (j == 3 && this.backendSkillSlotList[j - 3].GetCharacterSkill() != _characterSkill)
+                        {
+                            _backendSkillSelectionBox.Initialize(this, _characterSkill);
+                        }
+                    }
+                    else
+                    {
+                        if (j == 2)
+                        {
+                            _backendSkillSelectionBox.Initialize(this, _characterSkill);
+                        }
+                        else if (j == 5 && this.backendSkillSlotList[j - 3].GetCharacterSkill() != _characterSkill)
+                        {
+                            _backendSkillSelectionBox.Initialize(this, _characterSkill);
+                        }
+                    }
+                }
+            }
+
+            this.backendSkillSlotList[i].SetSkillSlotFrame(this.backendSkillSlotUnselectBackgroundImage);
+
+            if (i == 0)
             {
                 this.backendSkillSlotList[i].ShowSelectionHighlight();
                 ShowSkillInfoPanel(this.backendSkillSlotList[i]);
-                this.lastSelectedSkillSelectionBox = this.backendSkillSlotList[i];
+                this.lastSelectedBackendSkillSelectionBox = this.backendSkillSlotList[i];
             }
         }
     }
@@ -204,7 +256,12 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         {
             for (int i = 0; i < this.backendSkillSlotList.Count; i++)
             {
+                SkillSelectionBoxV2 _skillSelectionBox = this.backendSkillSlotList[i];
 
+                if (_skillSelectionBox.IsHighlighted())
+                {
+                    ShowSkillInfoPanel(_skillSelectionBox);
+                }
             }
         }
     }
@@ -222,7 +279,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         {
             SkillSelectionBoxV2 _skillSelectionBox = this.activeSkillSlotList[i];
             _skillSelectionBox.SetCurrentSkillSelectionSequence(null);
-            _skillSelectionBox.SetSkillSlotFrame(this.skillSlotUnselectBackgroundImage);
+            _skillSelectionBox.SetSkillSlotFrame(this.activeSkillSlotUnselectBackgroundImage);
         }
 
         // Show the small slot text
@@ -240,34 +297,108 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
             Sprite _skillSelectionSequenceImage = this.skillSelectionSequenceImages[i];
             _skillSelectionBox.SetCurrentSkillSelectionSequence(_skillSelectionSequenceImage);
-            _skillSelectionBox.SetSkillSlotFrame(this.skillSlotSelectedBackgroundImage);
+            _skillSelectionBox.SetSkillSlotFrame(this.activeSkillSlotSelectedBackgroundImage);
 
             Debug.Log($"Selected skill box[{i}]: {_skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().DisplayName}");
         }
     }
 
-    public void AddSelectedActiveSkilSlot(SkillSelectionBoxV2 skillSelectionBox)
+    private void UpdateBackendSkillListSlot()
     {
-        if (this.selectedActiveSkilSlotlList.Count >= 3)
+        this.backendDefenceSlotIcon.gameObject.SetActive(false);
+        this.backendEvasionSlotIcon.gameObject.SetActive(false);
+        this.backendGenericSlotIcon.gameObject.SetActive(false);
+
+        for (int i = 0; i < this.backendSkillSlotList.Count; i++)
         {
-            return;
+            SkillSelectionBoxV2 _skillSelectionBox = this.backendSkillSlotList[i];
+
+            if (_skillSelectionBox.GetCharacterSkill() != null)
+            {
+                _skillSelectionBox.SetSkillSelectedImage(null);
+                _skillSelectionBox.SetSkillSlotFrame(this.backendSkillSlotUnselectBackgroundImage);
+            }
         }
 
-        this.selectedActiveSkilSlotlList.Add(skillSelectionBox);
+        for (int i = 0; i < this.selectedBackendSkilSlotlList.Count; i++)
+        {
+            SkillSelectionBoxV2 _skillSelectionBox = this.selectedBackendSkilSlotlList[i];
+            Subskill _subskillData = _skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData();
 
-        UpdateActiveSkillListSlot();
+            _skillSelectionBox.SetSkillSlotFrame(this.backendSkillSlotSelectedBackgroundImage);
+
+            if (_subskillData.IsDefendingSkill)
+            {
+                _skillSelectionBox.SetSkillSelectedImage(this.backendDefenceSlotSelectedImage);
+
+                this.backendDefenceSlotIcon.gameObject.SetActive(true);
+            }
+            else if (_subskillData.IsEvadingSkill)
+            {
+                _skillSelectionBox.SetSkillSelectedImage(this.backendEvasionSlotSelectedImage);
+
+                this.backendEvasionSlotIcon.gameObject.SetActive(true);
+            }
+            else
+            {
+                _skillSelectionBox.SetSkillSelectedImage(this.backendGenericSlotSelectedImage);
+
+                this.backendGenericSlotIcon.gameObject.SetActive(true);
+            }
+        }
     }
 
-    public void RemoveSelectedActiveSkilSlot(SkillSelectionBoxV2 skillSelectionBox)
+    public void AddSelectedSkilSlot(SkillSelectionBoxV2 skillSelectionBox)
     {
-        if (this.selectedActiveSkilSlotlList.Count == 0 || !this.selectedActiveSkilSlotlList.Contains(skillSelectionBox))
+        if (skillSelectionBox.GetCharacterSkillType() == Skill.SkillType.active)
         {
-            return;
+            if (this.selectedActiveSkilSlotlList.Count >= GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills())
+            {
+                return;
+            }
+
+            this.selectedActiveSkilSlotlList.Add(skillSelectionBox);
+
+            UpdateActiveSkillListSlot();
         }
+        else if (skillSelectionBox.GetCharacterSkillType() == Skill.SkillType.backend)
+        {
+            if (this.selectedBackendSkilSlotlList.Count >= GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills())
+            {
+                return;
+            }
 
-        this.selectedActiveSkilSlotlList.Remove(skillSelectionBox);
+            this.selectedBackendSkilSlotlList.Add(skillSelectionBox);
 
-        UpdateActiveSkillListSlot();
+            //TODO: Update ???
+            UpdateBackendSkillListSlot();
+        }
+    }
+
+    public void RemoveSelectedSkilSlot(SkillSelectionBoxV2 skillSelectionBox)
+    {
+        if (skillSelectionBox.GetCharacterSkillType() == Skill.SkillType.active)
+        {
+            if (this.selectedActiveSkilSlotlList.Count == 0 || !this.selectedActiveSkilSlotlList.Contains(skillSelectionBox))
+            {
+                return;
+            }
+
+            this.selectedActiveSkilSlotlList.Remove(skillSelectionBox);
+
+            UpdateActiveSkillListSlot();
+        }
+        else if (skillSelectionBox.GetCharacterSkillType() == Skill.SkillType.backend)
+        {
+            if (this.selectedBackendSkilSlotlList.Count == 0 || !this.selectedBackendSkilSlotlList.Contains(skillSelectionBox))
+            {
+                return;
+            }
+
+            this.selectedBackendSkilSlotlList.Remove(skillSelectionBox);
+
+            UpdateBackendSkillListSlot();
+        }
     }
 
     public void SwapSelectedActiveSkill(SkillSelectionBoxV2 targetToSwap)
@@ -283,9 +414,9 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
             if (_skillSelectionBox == targetToSwap)
             {
-                this.selectedActiveSkilSlotlList[i] = this.lastSelectedSkillSelectionBox;
+                this.selectedActiveSkilSlotlList[i] = this.lastSelectedActiveSkillSelectionBox;
             }
-            else if (_skillSelectionBox == GetLastSelectedSkillSelectionBox())
+            else if (_skillSelectionBox == GetLastSelectedActiveSkillSelectionBox())
             {
                 this.selectedActiveSkilSlotlList[i] = targetToSwap;
             }
@@ -305,9 +436,9 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         {
             SkillSelectionBoxV2 _skillSelectionBox = GetSelectedActiveSkillList()[i];
 
-            if (_skillSelectionBox == GetLastSelectedSkillSelectionBox())
+            if (_skillSelectionBox == GetLastSelectedActiveSkillSelectionBox())
             {
-                GetLastSelectedSkillSelectionBox().SetIsSelected(false);
+                GetLastSelectedActiveSkillSelectionBox().SetIsSelected(false);
                 targetToSwap.SetIsSelected(true);
 
                 this.selectedActiveSkilSlotlList[i] = targetToSwap;
@@ -502,6 +633,16 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         }*/
     }
 
+    public void ShowSkillSelectionPanel()
+    {
+        this.gameObject.SetActive(true);
+    }
+
+    public void HideSkillSelectionPanel()
+    {
+        this.gameObject.SetActive(false);
+    }
+
     public void OnSkillSelected(SkillSelectionBoxV2 skillSelectionBox)
     {
         this.onSkillSelectedCallback(skillSelectionBox);
@@ -522,14 +663,24 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         this.skillInfoPanel.Hide();
     }
 
-    public SkillSelectionBoxV2 GetLastSelectedSkillSelectionBox()
+    public SkillSelectionBoxV2 GetLastSelectedActiveSkillSelectionBox()
     {
-        return this.lastSelectedSkillSelectionBox;
+        return this.lastSelectedActiveSkillSelectionBox;
     }
 
-    public void SetLastSelectedSkillSelectionBox(SkillSelectionBoxV2 skillSelectionBox)
+    public void SetLastSelectedActiveSkillSelectionBox(SkillSelectionBoxV2 skillSelectionBox)
     {
-        this.lastSelectedSkillSelectionBox = skillSelectionBox;
+        this.lastSelectedActiveSkillSelectionBox = skillSelectionBox;
+    }
+
+    public SkillSelectionBoxV2 GetLastSelectedBackendSkillSelectionBox()
+    {
+        return this.lastSelectedBackendSkillSelectionBox;
+    }
+
+    public void SetLastSelectedBackendSkillSelectionBox(SkillSelectionBoxV2 skillSelectionBox)
+    {
+        this.lastSelectedBackendSkillSelectionBox = skillSelectionBox;
     }
 
     public List<SkillSelectionBoxV2> GetSelectedActiveSkillList()
@@ -537,13 +688,18 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         return this.selectedActiveSkilSlotlList;
     }
 
+    public List<SkillSelectionBoxV2> GetSelectedBackendSkillList()
+    {
+        return this.selectedBackendSkilSlotlList;
+    }
+
     public Sprite GetSkillSlotSelectBackgroundImage()
     {
-        return this.skillSlotSelectBackgroundImage;
+        return this.activeSkillSlotSelectBackgroundImage;
     }
 
     public Sprite GetSkillSlotUnselectBackgroundImage()
     {
-        return this.skillSlotUnselectBackgroundImage;
+        return this.activeSkillSlotUnselectBackgroundImage;
     }
 }
