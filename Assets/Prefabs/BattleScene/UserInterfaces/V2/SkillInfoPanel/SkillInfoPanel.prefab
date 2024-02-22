@@ -1064,8 +1064,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u706B\u708E\u6C23\u529F\u5F48"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
-  m_sharedMaterial: {fileID: -8331989788932644591, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d820d13fe549d431296db73193852419, type: 2}
+  m_sharedMaterial: {fileID: 5552093590376774946, guid: d820d13fe549d431296db73193852419, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2753,7 +2753,7 @@ MonoBehaviour:
   speedIconLevelFour: {fileID: 21300000, guid: b8c7469bcda804b93a16455077b95d74, type: 3}
   skillType: {fileID: 3463562954817480929}
   displayName: {fileID: 2340678541912844770}
-  levelText: {fileID: 0}
+  levelText: {fileID: 2464666500926274432}
   attackDamageValue: {fileID: 272702936548887233}
   statePointCostValue: {fileID: 4061918537752941848}
   maxStatePointUpValue: {fileID: 2349676765872028955}
@@ -5196,8 +5196,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "[\u706B\u4E4B\u66F8]"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
-  m_sharedMaterial: {fileID: -8331989788932644591, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d820d13fe549d431296db73193852419, type: 2}
+  m_sharedMaterial: {fileID: 5552093590376774946, guid: d820d13fe549d431296db73193852419, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
