@@ -29,8 +29,6 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private Sprite yellowLevelBackground;
     [SerializeField] private Sprite blueLevelBackground;
     [SerializeField] private Sprite derivedSkillLevelBackground;
-    [SerializeField] private Button increaseSkillnfoLevel;
-    [SerializeField] private Button decreaseSkillnfoLevel;
 
     [Header("Skill Name UI")]
     [SerializeField] private Image skillNameBackground;
@@ -49,7 +47,7 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private Sprite speedIconLevelFour;
     [SerializeField] private TextMeshProUGUI skillType;
     [SerializeField] private TextMeshProUGUI displayName;
-    [SerializeField] private TextMeshProUGUI skillPanelLevelText;
+    [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private TextMeshProUGUI attackDamageValue;
     [SerializeField] private TextMeshProUGUI statePointCostValue;
     [SerializeField] private TextMeshProUGUI maxStatePointUpValue;
@@ -84,6 +82,7 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private RectTransform observedSkillListContent = null;
 
     private List<SpecialSkillInfoPanel> observedSkillBoxList = new List<SpecialSkillInfoPanel>();
+    private CharacterSkill selectedSkill;
     private SkillInfoUIPanel skillInfoUIPanel = SkillInfoUIPanel.none;
     private SkillSelectionBoxV2 skillSelectionBox = null;
 
@@ -98,15 +97,15 @@ public class SkillInfoPanel : MonoBehaviour
     {
         this.skillSelectionBox = skillSelectionBox;
 
-        CharacterSkill _characterSkill = skillSelectionBox.GetCharacterSkill();
-        if (_characterSkill == null)
+        this.selectedSkill = skillSelectionBox.GetCharacterSkill();
+        if ( this.selectedSkill == null)
         {
             Hide();
             return;
         }
 
         this.skillInfoPanel.gameObject.SetActive(true);
-        SetupSkillInfomation(_characterSkill);
+        SetupSkillInfomation(selectedSkill);
     }
 
     public void Hide()
@@ -141,6 +140,9 @@ public class SkillInfoPanel : MonoBehaviour
         
         this.displayName.SetText(_subskillData.DisplayName); // Display Name
 
+        this.levelText.SetText(_characterSubskill.GetSubskillData().Level.ToString()); // Level Text
+
+
         if (BattleLogicManager.GetAttackDamage(_subskillData) > 0) // Attack Damage
         {
             this.attackDamage.SetActive(true);
@@ -161,7 +163,7 @@ public class SkillInfoPanel : MonoBehaviour
             this.statePointCost.SetActive(false);
         }
 
-        if (_subskillData.Strength > 1) // Strength
+        if (_subskillData.Strength > 0) // Strength
         {
             this.strengthState.sprite = this.strengthOn;
             this.strengthValue.SetText("+" + (_subskillData.Strength - 1).ToString());
@@ -351,36 +353,43 @@ public class SkillInfoPanel : MonoBehaviour
 
     public void ShowActiveSkillPanelUI()
     {
+        SetupSkillInfomation(this.selectedSkill);
         SetSkillPanelUI(activeSkillInfoBackground, yellowLevelBackground, yellowSkillNameBackground);
     }
 
     public void ShowRepulseSkillPanelUI()
     {
+        SetupSkillInfomation(this.selectedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill());
         SetSkillPanelUI(repulseSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
     }
 
     public void ShowDerivedSkillPanelUI()
     {
+        SetupSkillInfomation(this.selectedSkill.GetCharacterSubskillData().GetSelectedDerivedSkill());
         SetSkillPanelUI(derivedSkillInfoBackground, derivedSkillLevelBackground, derivedSkillNameBackground);
     }
 
     public void ShowBackendSkillPanelUI()
     {
+        SetupSkillInfomation(this.selectedSkill);
         SetSkillPanelUI(repulseSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
     }
 
     public void ShowEvasionSkillPanelUI()
     {
+        SetupSkillInfomation(this.selectedSkill);
         SetSkillPanelUI(repulseSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
     }
 
     public void ShowCounterSkillPanelUI()
     {
+        SetupSkillInfomation(this.selectedSkill.GetCharacterSubskillData().GetSelectedCounterSkill());
         SetSkillPanelUI(counterSkillInfoBackground, yellowLevelBackground, yellowSkillNameBackground);
     }
 
     public void ShowObserveSkillPanelUI()
     {
+        SetupSkillInfomation(this.selectedSkill);
         SetSkillPanelUI(observeSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
     }
 
