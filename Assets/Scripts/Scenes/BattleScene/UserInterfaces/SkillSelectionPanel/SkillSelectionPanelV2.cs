@@ -74,10 +74,13 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             InitializeActiveSkillList();
         }
 
-        if (this.backendSkillSlotList.Count == 0)
-        {
-            InitializeBackendSkillList();
-        }
+        // TODO: This block of code is temporarily commented out to prevent an error from occurring.
+        //if (this.backendSkillSlotList.Count == 0)
+        //{
+        //    InitializeBackendSkillList();
+        //}
+
+        this.gameObject.SetActive( true );
     }
 
     private void OnActiveSkillListBoxButtonClick()
