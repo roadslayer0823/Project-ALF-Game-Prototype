@@ -29,8 +29,6 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private Sprite yellowLevelBackground;
     [SerializeField] private Sprite blueLevelBackground;
     [SerializeField] private Sprite derivedSkillLevelBackground;
-    [SerializeField] private Button increaseSkillnfoLevel;
-    [SerializeField] private Button decreaseSkillnfoLevel;
 
     [Header("Skill Name UI")]
     [SerializeField] private Image skillNameBackground;
@@ -99,15 +97,15 @@ public class SkillInfoPanel : MonoBehaviour
     {
         this.skillSelectionBox = skillSelectionBox;
 
-        CharacterSkill _characterSkill = skillSelectionBox.GetCharacterSkill();
-        if (_characterSkill == null)
+        this.selectedSkill = skillSelectionBox.GetCharacterSkill();
+        if ( this.selectedSkill == null)
         {
             Hide();
             return;
         }
 
         this.skillInfoPanel.gameObject.SetActive(true);
-        SetupSkillInfomation(_characterSkill);
+        SetupSkillInfomation(selectedSkill);
     }
 
     public void Hide()
@@ -165,7 +163,7 @@ public class SkillInfoPanel : MonoBehaviour
             this.statePointCost.SetActive(false);
         }
 
-        if (_subskillData.Strength > 1) // Strength
+        if (_subskillData.Strength > 0) // Strength
         {
             this.strengthState.sprite = this.strengthOn;
             this.strengthValue.SetText("+" + (_subskillData.Strength - 1).ToString());
