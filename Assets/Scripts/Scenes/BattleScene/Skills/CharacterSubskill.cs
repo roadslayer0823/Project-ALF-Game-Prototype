@@ -61,6 +61,11 @@ public class CharacterSubskill
                 }
             }
         }
+
+        if (this.repulseSkillList.Count > 0)
+        {
+            SetSelectedRepulseSkill(this.repulseSkillList[0]);
+        }
     }
 
     private void SetDerivedSkillList()
@@ -88,6 +93,11 @@ public class CharacterSubskill
                 }
             }
         }
+
+        if (this.derivedSkillList.Count > 0)
+        {
+            SetSelectedDerivedSkill(this.derivedSkillList[0]);
+        }
     }
 
     private void SetCounterSkillList()
@@ -114,6 +124,11 @@ public class CharacterSubskill
                     break;
                 }
             }
+        }
+
+        if (this.counterSkillList.Count > 0)
+        {
+            SetSelectedCounterSkill(this.counterSkillList[0]);
         }
     }
 
