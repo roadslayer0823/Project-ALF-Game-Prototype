@@ -52,10 +52,10 @@ public class SkillSlotV2 : MonoBehaviour
     private Vector2 mouseReleasePosition = new Vector2();
     private Vector2 currentSwipe = new Vector2();
 
-    private bool isSkillLevelReachedMaximum = false;
-    private bool isSkillLevelReachedMinimum = false;
+    public int skillLevel = 1;
+    public bool isSkillLevelReachedMaximum = false;
+    public bool isSkillLevelReachedMinimum = false;
     private bool isSkillLevelChanged = false;
-    private int skillLevel = 1;
     private StateType currentStateType = StateType.None;
 
     //audio and animation clip id
@@ -246,13 +246,18 @@ public class SkillSlotV2 : MonoBehaviour
         }
     }
 
-    private void UpdateCharacterSkillLevel(int skillLevel)
+    public void UpdateCharacterSkillLevel(int skillLevel)
     {
         this.selectedSkill.SetSelectedSkillLevel(this.skillLevel);
-        this.skillLevelText.SetText($"<size=30>LV.</size> {skillLevel}");
-        //this.skillPanelUI.currentPanelLevelText.SetText(skillLevel.ToString());
-        this.skillLevelAnimationText.SetText($"<size=30>LV.</size> {skillLevel}");
-
+        if(skillLevel == 1)
+        {
+            this.skillLevelText.SetText("");
+        }
+        else
+        {
+            this.skillLevelText.SetText($"<size=30>LV.</size> {skillLevel}");
+            this.skillLevelAnimationText.SetText($"<size=30>LV.</size> {skillLevel}");
+        }
         UpdateSkillSelectionBoxData();
     }
 
@@ -355,6 +360,7 @@ public class SkillSlotV2 : MonoBehaviour
                 this.skillFrame.sprite = this.CounterSkillFrame;
                 break;
         }
+        this.skillFrame.SetNativeSize();
     }
 
     public void SetBlankFrame(SkillType frameType)
