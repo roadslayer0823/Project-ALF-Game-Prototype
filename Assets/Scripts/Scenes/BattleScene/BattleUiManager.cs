@@ -5,7 +5,8 @@ using SkillType = BattleSkillManager.SkillType;
 
 public class BattleUiManager : MonoBehaviour
 {
-    [SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
+    [System.Obsolete][SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
+    [SerializeField] private SkillSelectionPanelV2 skillSelectionPanelV2 = null;
     [SerializeField] private SkillInfoPanel skillInfoPanel = null;
     [System.Obsolete][SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
     [SerializeField] private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
@@ -22,7 +23,16 @@ public class BattleUiManager : MonoBehaviour
     public void Initialize( BattleGameManager battleGameManager )
     {
         this.battleGameManager = battleGameManager;
-        this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
+
+        if (this.skillSelectionPanelV2 == null)
+        {
+            this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
+        }
+        else
+        {
+            this.skillSelectionPanelV2.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
+        }
+
         this.playerActionPanel.Initialize( OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel);
 
         if (this.activeSkillSlotListPanelV2 == null)
@@ -57,7 +67,14 @@ public class BattleUiManager : MonoBehaviour
 
     public void SetAllActive( bool value )
     {
-        this.skillSelectionPanel.gameObject.SetActive( value );
+        if (this.skillSelectionPanelV2 == null)
+        {
+            this.skillSelectionPanel.gameObject.SetActive( value );
+        }
+        else
+        {
+            this.skillSelectionPanelV2.gameObject.SetActive( value );
+        }
 
         if (this.activeSkillSlotListPanelV2 == null)
         {
@@ -95,12 +112,26 @@ public class BattleUiManager : MonoBehaviour
 
     public void ShowSkillSelectionPanel()
     {
-        this.skillSelectionPanel.Show( this.selectedGameCharacter );
+        if (this.skillSelectionPanelV2 == null)
+        {
+            this.skillSelectionPanel.Show( this.selectedGameCharacter );
+        }
+        else
+        {
+            this.skillSelectionPanelV2.Show( this.selectedGameCharacter );
+        }
     }
 
     public void HideSkillSelectionPanel()
     {
-        this.skillSelectionPanel.Hide();
+        if (this.skillSelectionPanelV2 == null)
+        {
+            this.skillSelectionPanel.Hide();
+        }
+        else
+        {
+            this.skillSelectionPanelV2.gameObject.SetActive( false );
+        }
     }
 
     public void OnSkillSelectedFromSkillSelectionPanel( SkillSelectionBox skillSelectionBox )
@@ -114,10 +145,22 @@ public class BattleUiManager : MonoBehaviour
         CheckWhetherToEnableExecuteButton();
     }
 
+    public void OnSkillSelectedFromSkillSelectionPanel( SkillSelectionBoxV2 skillSelectionBox )
+    {
+        this.selectedGameCharacter.AddSelectedSkill( skillSelectionBox.GetCharacterSkill() );
+        CheckWhetherToEnableExecuteButton();
+    }
+
     public void OnSkillDeselectedFromSkillSelectionPanel( SkillSelectionBox skillSelectionBox )
     {
         this.selectedGameCharacter.RemoveSelectedSkill( skillSelectionBox.GetCharacterSkill() );
         UpdateSkillSlotListPanel( this.selectedGameCharacter );
+        CheckWhetherToEnableExecuteButton();
+    }
+
+    public void OnSkillDeselectedFromSkillSelectionPanel( SkillSelectionBoxV2 skillSelectionBox )
+    {
+        this.selectedGameCharacter.RemoveSelectedSkill( skillSelectionBox.GetCharacterSkill() );
         CheckWhetherToEnableExecuteButton();
     }
 
@@ -248,6 +291,11 @@ public class BattleUiManager : MonoBehaviour
 
     public void ShowBattleSection( GameCharacter gameCharacter )
     {
+        if (this.skillInfoPanel != null)
+        {
+            this.skillInfoPanel.gameObject.SetActive( false );
+        }
+
         DisablePlayerActionPanelButtons();
         this.playerActionPanel.ShowSkillActionButtons( gameCharacter.GetSelectedBackendSkillList().ToArray() );
         this.playerActionPanel.ShowBattleSection();
