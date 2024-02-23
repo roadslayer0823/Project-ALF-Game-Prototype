@@ -116,8 +116,16 @@ public class BattleGameManager : MonoBehaviour
     {
         this.battleUiManager.SetSelectedGameCharacter( this.playerCharacter );
         this.battleUiManager.HideATLSlotListPanel();
-        this.battleUiManager.ShowSkillSelectionPanel();
-        this.battleUiManager.ShowPreparationSection();
+
+        if (this.battleUiManager.GetPreparationSection() == null)
+        {
+            this.battleUiManager.ShowSkillSelectionPanel();
+            this.battleUiManager.ShowPreparationSection();
+        }
+        else
+        {
+            this.battleUiManager.GetPreparationSection().Show();
+        }
 
         this.battleAnimationManager.ChangeToBackgroundPartB();
         this.playerContainer.SetActive( true );
@@ -129,7 +137,15 @@ public class BattleGameManager : MonoBehaviour
 
     public void OnExecutionPhaseStarted()
     {
-        this.battleUiManager.ShowBattleSection( this.playerCharacter );
+        if (this.battleUiManager.GetPreparationSection() == null)
+        {
+            this.battleUiManager.ShowBattleSection( this.playerCharacter );
+        }
+        else
+        {
+            this.battleUiManager.ShowBattleSection();
+        }
+
         this.battleUiManager.HideSkillSelectionPanel();
         this.battleUiManager.ShowSkillSlotListPanel();
 

@@ -12,7 +12,8 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
     [System.Obsolete][SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
     [SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
-    [SerializeField] private PlayerActionPanel playerActionPanel = null;
+    [System.Obsolete][SerializeField] private PlayerActionPanel playerActionPanel = null;
+    [SerializeField] private PreparationSection preparationSection = null;
     [SerializeField] private CharacterInfoPanel characterInfoPanel = null;
     [SerializeField] private BattleResultPanel battleResultPanel = null;
     [SerializeField] private TMP_Text instructionLabel = null;
@@ -30,10 +31,17 @@ public class BattleUiManager : MonoBehaviour
         }
         else
         {
-            this.skillSelectionPanelV2.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
+            this.skillSelectionPanelV2.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel, ReturnToSkillMenu );
         }
 
-        this.playerActionPanel.Initialize( OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel);
+        if (this.preparationSection == null)
+        {
+            this.playerActionPanel.Initialize( OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel );
+        }
+        else
+        {
+            this.preparationSection.Initialize( OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel );
+        }
 
         if (this.activeSkillSlotListPanelV2 == null)
         {
@@ -57,11 +65,25 @@ public class BattleUiManager : MonoBehaviour
     {
         if (this.selectedGameCharacter.GetSelectedActiveSkillList().Count > 0)
         {
-            this.playerActionPanel.EnableExecuteButton();
+            if (this.preparationSection == null)
+            {
+                this.playerActionPanel.EnableExecuteButton();
+            }
+            else
+            {
+                this.preparationSection.EnableExecuteButton();
+            }
         }
         else
         {
-            this.playerActionPanel.DisableExecuteButton();
+            if (this.preparationSection == null)
+            {
+                this.playerActionPanel.DisableExecuteButton();
+            }
+            else
+            {
+                this.preparationSection.DisableExecuteButton();
+            }
         }
     }
 
@@ -94,7 +116,15 @@ public class BattleUiManager : MonoBehaviour
             this.atlSlotListPanelV2.gameObject.SetActive( value );
         }
 
-        this.playerActionPanel.gameObject.SetActive( value );
+        if (this.preparationSection == null)
+        {
+            this.playerActionPanel.gameObject.SetActive( value );
+        }
+        else
+        {
+            this.preparationSection.gameObject.SetActive( value );
+        }
+
         this.characterInfoPanel.gameObject.SetActive( value );
         this.battleResultPanel.gameObject.SetActive( value );
     }
@@ -107,6 +137,28 @@ public class BattleUiManager : MonoBehaviour
             this.instructionLabel.gameObject.SetActive( false );
         } );
     }
+
+    public void ShowBattleSection()
+    {
+        this.skillInfoPanel.Hide();
+        this.preparationSection.Hide();
+    }
+
+#region Preparation Section
+
+    public void ReturnToSkillMenu()
+    {
+        HideSkillSelectionPanel();
+        this.skillInfoPanel.Hide();
+        this.preparationSection.ShowSkillMenu();
+    }
+
+    public PreparationSection GetPreparationSection()
+    {
+        return this.preparationSection;
+    }
+
+#endregion
 
 #region Skill Selection Panel
 
@@ -291,11 +343,6 @@ public class BattleUiManager : MonoBehaviour
 
     public void ShowBattleSection( GameCharacter gameCharacter )
     {
-        if (this.skillInfoPanel != null)
-        {
-            this.skillInfoPanel.gameObject.SetActive( false );
-        }
-
         DisablePlayerActionPanelButtons();
         this.playerActionPanel.ShowSkillActionButtons( gameCharacter.GetSelectedBackendSkillList().ToArray() );
         this.playerActionPanel.ShowBattleSection();
@@ -326,12 +373,28 @@ public class BattleUiManager : MonoBehaviour
 
     private void ShowActiveSkillSelectionPanel()
     {
-        this.skillSelectionPanel.ShowActiveSkillSelectionPanel();
+        if (this.preparationSection == null)
+        {
+            this.skillSelectionPanel.ShowActiveSkillSelectionPanel();
+        }
+        else
+        {
+            this.preparationSection.HideSkillMenu();
+            ShowSkillSelectionPanel();
+        }
     }
 
     private void ShowBackendSkillSelectionPanel()
     {
-        this.skillSelectionPanel.ShowBackendSkillSelectionPanel();
+        if (this.preparationSection == null)
+        {
+            this.skillSelectionPanel.ShowBackendSkillSelectionPanel();
+        }
+        else
+        {
+            this.preparationSection.HideSkillMenu();
+            ShowSkillSelectionPanel();
+        }
     }
 
     public PlayerActionPanel GetPlayerActionPanel()

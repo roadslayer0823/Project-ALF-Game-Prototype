@@ -47,14 +47,18 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     private SkillSelectionBoxV2 lastSelectedBackendSkillSelectionBox = null;
 
     [Header("")]
+    [SerializeField] private Button returnButton = null;
     [SerializeField] private SkillInfoPanel skillInfoPanel = null;
+
     private Action<SkillSelectionBoxV2> onSkillSelectedCallback = null;
     private Action<SkillSelectionBoxV2> onSkillDeselectedCallback = null;
+    private Action onReturnedCallback = null;
 
-    public void Initialize(Action<SkillSelectionBoxV2> onSkillSelectedCallback, Action<SkillSelectionBoxV2> onSkillDeselectedCallback)
+    public void Initialize( Action<SkillSelectionBoxV2> onSkillSelectedCallback, Action<SkillSelectionBoxV2> onSkillDeselectedCallback, Action onReturnedCallback )
     {
         this.onSkillSelectedCallback = onSkillSelectedCallback;
         this.onSkillDeselectedCallback = onSkillDeselectedCallback;
+        this.onReturnedCallback = onReturnedCallback;
 
         this.activeSkillSelectionListGO.SetActive(false);
         this.backendSkillSelectionListGO.SetActive(false);
@@ -62,6 +66,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
         this.activeSkillListBoxButton.onClick.AddListener(OnActiveSkillListBoxButtonClick);
         this.backendSkillListBoxButton.onClick.AddListener(OnBackendSkillListBoxButtonClick);
+        this.returnButton.onClick.AddListener( OnReturnButtonClick );
     }
 
     public void Show(GameCharacter gameCharacter)
@@ -89,12 +94,14 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             InitializeActiveSkillList();
         }
 
-        if (this.backendSkillSlotList.Count == 0)
-        {
-            InitializeBackendSkillList();
-        }
+        // TODO: This block of code is temporarily commented out to prevent an error from occurring.
+        //if (this.backendSkillSlotList.Count == 0)
+        //{
+        //    InitializeBackendSkillList();
+        //}
 
         ShowSkillSelectionPanel();
+        ShowActiveSkillSelectionList( true );
     }
 
     private void OnActiveSkillListBoxButtonClick()
@@ -131,6 +138,11 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         Debug.Log("BackendSkillListBoxButton clicked");
     }
 
+    private void OnReturnButtonClick()
+    {
+        this.onReturnedCallback?.Invoke();
+    }
+
     private void InitializeActiveSkillList()
     {
         for (int i = 0; i < this.activeSkillSlotPositions.Length; i++)
@@ -149,7 +161,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             if (i == 0)
             {
                 this.activeSkillSlotList[i].ShowSelectionHighlight();
-                ShowSkillInfoPanel(this.activeSkillSlotList[i]);
                 this.lastSelectedActiveSkillSelectionBox = this.activeSkillSlotList[i];
             }
         }
