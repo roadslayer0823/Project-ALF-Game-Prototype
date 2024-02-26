@@ -634,7 +634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: skillIconScale
-      value: 0.65
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Name
@@ -824,7 +824,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: skillIconScale
-      value: 0.65
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Name
@@ -998,7 +998,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: skillIconScale
-      value: 0.65
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Name
