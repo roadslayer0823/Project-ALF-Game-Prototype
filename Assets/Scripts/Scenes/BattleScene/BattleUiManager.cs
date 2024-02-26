@@ -182,7 +182,7 @@ public class BattleUiManager : MonoBehaviour
         }
         else
         {
-            this.skillSelectionPanelV2.gameObject.SetActive( false );
+            this.skillSelectionPanelV2.HideSkillSelectionPanel();
         }
     }
 
