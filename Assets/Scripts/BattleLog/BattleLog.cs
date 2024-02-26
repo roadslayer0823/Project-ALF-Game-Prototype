@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,11 +9,17 @@ public class BattleLog : Singleton<BattleLog>
 {
     [SerializeField] private ScrollRect scrollRect = null;
     [SerializeField] private RectTransform battleLogContentBox = null;
+    [SerializeField] private GameObject battleLogPanel = null;
     [SerializeField] private TextMeshProUGUI battleLogText = null;
     [SerializeField] private Image lineBreak = null;
     [SerializeField] private Button clearAllButton = null;
+    [SerializeField] private Button battleLogButton = null;
 
     private List<TextMeshProUGUI> battleLogTextList = new List<TextMeshProUGUI>();
+    private Action isShowBattleLogPanel = null;
+    private Action isHideBattleLogPanel = null;
+    private bool isShowingBattleLogPanel = false;
+
     private List<Image> lineBreakList = new List<Image>();
 
     private const string AUDIO_ID_CLICK = "click";
@@ -20,9 +27,44 @@ public class BattleLog : Singleton<BattleLog>
     public const string KEYWORD_COLOR_CODE = "#FFFF00";
     public const string SPECIAL_COLOR_CODE = "#FFAAFF";
 
+    public void Initialize(Action onShowBattleLogPanel, Action onHideBattleLogPanel)
+    {
+        this.battleLogButton.onClick.AddListener(OnBattleLogPanelButtonClicked);
+        this.isShowBattleLogPanel = onShowBattleLogPanel;
+        this.isHideBattleLogPanel = onHideBattleLogPanel;
+    }
+
     void Start()
     {
         this.clearAllButton.onClick.AddListener(OnClearAllButtonClick);
+    }
+
+    public void HideBattleLogPanel()
+    {
+        if(isHideBattleLogPanel != null)
+        {
+            isHideBattleLogPanel();
+        }
+        else
+        {
+            Debug.Log("the hideBattleLogPanel is empty");
+        }
+        this.battleLogPanel.SetActive(false);
+        this.isShowingBattleLogPanel = false;
+    }
+
+    public void ShowBattleLogPanel()
+    {
+        if (isShowBattleLogPanel != null)
+        {
+            isShowBattleLogPanel();
+        }
+        else
+        {
+            Debug.Log("the showBattleLogPanel is empty");
+        }
+        this.battleLogPanel.SetActive(true);
+        this.isShowingBattleLogPanel = true;
     }
 
     public void AddOnScreenBattleLog(string logText, Color? textColor = null)
@@ -75,5 +117,17 @@ public class BattleLog : Singleton<BattleLog>
 
         this.battleLogTextList.Clear();
         this.lineBreakList.Clear();
+    }
+
+    public void OnBattleLogPanelButtonClicked()
+    {
+        if (isShowingBattleLogPanel)
+        {
+            ShowBattleLogPanel();
+        }
+        else
+        {
+            HideBattleLogPanel(); 
+        }
     }
 }
