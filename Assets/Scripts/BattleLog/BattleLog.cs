@@ -16,8 +16,8 @@ public class BattleLog : Singleton<BattleLog>
     [SerializeField] private Button battleLogButton = null;
 
     private List<TextMeshProUGUI> battleLogTextList = new List<TextMeshProUGUI>();
-    private Action showBattleLogPanel = null;
-    private Action hideBattleLogPanel = null;
+    private Action isShowBattleLogPanel = null;
+    private Action isHideBattleLogPanel = null;
     private bool isShowingBattleLogPanel = false;
 
     private List<Image> lineBreakList = new List<Image>();
@@ -30,8 +30,8 @@ public class BattleLog : Singleton<BattleLog>
     public void Initialize(Action onShowBattleLogPanel, Action onHideBattleLogPanel)
     {
         this.battleLogButton.onClick.AddListener(OnBattleLogPanelButtonClicked);
-        this.showBattleLogPanel = onShowBattleLogPanel;
-        this.hideBattleLogPanel = onHideBattleLogPanel;
+        this.isShowBattleLogPanel = onShowBattleLogPanel;
+        this.isHideBattleLogPanel = onHideBattleLogPanel;
     }
 
     void Start()
@@ -41,9 +41,9 @@ public class BattleLog : Singleton<BattleLog>
 
     public void HideBattleLogPanel()
     {
-        if(hideBattleLogPanel != null)
+        if(isHideBattleLogPanel != null)
         {
-            hideBattleLogPanel();
+            isHideBattleLogPanel();
         }
         else
         {
@@ -55,9 +55,9 @@ public class BattleLog : Singleton<BattleLog>
 
     public void ShowBattleLogPanel()
     {
-        if (showBattleLogPanel != null)
+        if (isShowBattleLogPanel != null)
         {
-            showBattleLogPanel();
+            isShowBattleLogPanel();
         }
         else
         {
