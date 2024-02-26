@@ -98,6 +98,7 @@ MonoBehaviour:
   backendDefenceSlotIcon: {fileID: 6919659403055479984}
   backendEvasionSlotIcon: {fileID: 5229519123398882678}
   backendGenericSlotIcon: {fileID: 7717804889433358919}
+  returnButton: {fileID: 982782964219806141}
   skillInfoPanel: {fileID: 0}
 --- !u!1 &5189946530786782906
 GameObject:
