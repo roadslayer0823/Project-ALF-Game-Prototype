@@ -44,7 +44,6 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private Sprite speedIconLevelTwo;
     [SerializeField] private Sprite speedIconLevelThree;
     [SerializeField] private Sprite speedIconLevelFour;
-    [SerializeField] private TextMeshProUGUI skillType;
     [SerializeField] private TextMeshProUGUI displayName;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private TextMeshProUGUI attackDamageValue;
@@ -84,6 +83,7 @@ public class SkillInfoPanel : MonoBehaviour
     private CharacterSkill selectedSkill;
     private SkillInfoUIPanel skillInfoUIPanel = SkillInfoUIPanel.none;
     private SkillSelectionBoxV2 skillSelectionBox = null;
+    private string integratedText = "";
 
     public enum SkillInfoUIPanel
     {
@@ -128,16 +128,19 @@ public class SkillInfoPanel : MonoBehaviour
 
         Subskill _subskillData = _characterSubskill.GetSubskillData();
 
+        string skillTypeText = "";
         if (_subskillData.Prefix.ToString() == "-") // Prefix
         {
-            this.skillType.SetText("");
+            skillTypeText = "";
         }
         else
         {
-            this.skillType.SetText("[" + _subskillData.Prefix.ToString() + "]");
+            skillTypeText = "[" + _subskillData.Prefix.ToString() + "]";
         }
-        
-        this.displayName.SetText(_subskillData.DisplayName); // Display Name
+
+        string skillNameText = _subskillData.DisplayName; // display name
+        integratedText = skillTypeText + " " + skillNameText;
+        displayName.SetText(integratedText);
 
         this.levelText.SetText(_characterSubskill.GetSubskillData().Level.ToString()); // Level Text
 
@@ -258,7 +261,7 @@ public class SkillInfoPanel : MonoBehaviour
                 rangeTagText = "【遠程】";
             }
             string tagEffectTypeText = $"【{ TerminologyManager.GetWideEffectTypeText(characterSkill.GetSkillData()) }】";
-            string integratedText = rangeTagText + "" + tagEffectTypeText;
+            integratedText = rangeTagText + "" + tagEffectTypeText;
             this.tagArea.text = integratedText;
             this.tagArea.gameObject.SetActive(true);
         }
