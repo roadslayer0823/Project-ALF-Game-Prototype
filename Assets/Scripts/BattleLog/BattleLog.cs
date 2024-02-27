@@ -13,11 +13,8 @@ public class BattleLog : Singleton<BattleLog>
     [SerializeField] private TextMeshProUGUI battleLogText = null;
     [SerializeField] private Image lineBreak = null;
     [SerializeField] private Button clearAllButton = null;
-    [SerializeField] private Button battleLogButton = null;
 
     private List<TextMeshProUGUI> battleLogTextList = new List<TextMeshProUGUI>();
-    private Action isShowBattleLogPanel = null;
-    private Action isHideBattleLogPanel = null;
     private bool isShowingBattleLogPanel = false;
 
     private List<Image> lineBreakList = new List<Image>();
@@ -27,44 +24,9 @@ public class BattleLog : Singleton<BattleLog>
     public const string KEYWORD_COLOR_CODE = "#FFFF00";
     public const string SPECIAL_COLOR_CODE = "#FFAAFF";
 
-    public void Initialize(Action onShowBattleLogPanel, Action onHideBattleLogPanel)
-    {
-        this.battleLogButton.onClick.AddListener(OnBattleLogPanelButtonClicked);
-        this.isShowBattleLogPanel = onShowBattleLogPanel;
-        this.isHideBattleLogPanel = onHideBattleLogPanel;
-    }
-
     void Start()
     {
         this.clearAllButton.onClick.AddListener(OnClearAllButtonClick);
-    }
-
-    public void HideBattleLogPanel()
-    {
-        if(isHideBattleLogPanel != null)
-        {
-            isHideBattleLogPanel();
-        }
-        else
-        {
-            Debug.Log("the hideBattleLogPanel is empty");
-        }
-        this.battleLogPanel.SetActive(false);
-        this.isShowingBattleLogPanel = false;
-    }
-
-    public void ShowBattleLogPanel()
-    {
-        if (isShowBattleLogPanel != null)
-        {
-            isShowBattleLogPanel();
-        }
-        else
-        {
-            Debug.Log("the showBattleLogPanel is empty");
-        }
-        this.battleLogPanel.SetActive(true);
-        this.isShowingBattleLogPanel = true;
     }
 
     public void AddOnScreenBattleLog(string logText, Color? textColor = null)
@@ -121,13 +83,15 @@ public class BattleLog : Singleton<BattleLog>
 
     public void OnBattleLogPanelButtonClicked()
     {
-        if (isShowingBattleLogPanel)
+        if(isShowingBattleLogPanel == true)
         {
-            ShowBattleLogPanel();
+            this.battleLogPanel.SetActive(false);
+            isShowingBattleLogPanel = false;
         }
-        else
+        else if (isShowingBattleLogPanel == false)
         {
-            HideBattleLogPanel(); 
+            this.battleLogPanel.SetActive(true);
+            isShowingBattleLogPanel = true;
         }
     }
 }
