@@ -126,11 +126,29 @@ public class SkillSlotV2 : MonoBehaviour
     {
         if (this.currentStateType == StateType.Enabled)
         {
-            this.activeSkillSlotListPanelV2.GetSelectedGameCharacter().SetAssignedSkill( this.selectedSkill );
+            GameCharacter _selectedGameCharacter = null;
+
+            if (this.activeSkillSlotListPanelV2 != null)
+            {
+                _selectedGameCharacter = this.activeSkillSlotListPanelV2.GetSelectedGameCharacter();
+            }
+            else if (this.backendSkillSlotListPanel != null)
+            {
+                _selectedGameCharacter = this.backendSkillSlotListPanel.GetSelectedGameCharacter();
+            }
+
+            _selectedGameCharacter.SetAssignedSkill( this.selectedSkill );
             SetCurrentStateType( StateType.Selected );
             PlaySkillOutlineAnimation();
 
-            this.activeSkillSlotListPanelV2.OnSkillSlotSelected( this );
+            if (this.activeSkillSlotListPanelV2 != null)
+            {
+                this.activeSkillSlotListPanelV2.OnSkillSlotSelected( this );
+            }
+            else if (this.backendSkillSlotListPanel != null)
+            {
+                this.backendSkillSlotListPanel.OnSkillSlotSelected( this );
+            }
         }
     }
 
@@ -386,6 +404,11 @@ public class SkillSlotV2 : MonoBehaviour
 
         this.currentStateType = currentStateType;
         UpdateDisplay();
+    }
+
+    public StateType GetCurrentStateType()
+    {
+        return this.currentStateType;
     }
 
     private void UpdateDisplay()

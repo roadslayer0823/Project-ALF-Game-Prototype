@@ -1,17 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Subskill = DatabaseManager.Subskill;
-using Skill = DatabaseManager.Skill;
+using SkillType = BattleSkillManager.SkillType;
+using BackendSkillType = SkillSlotV2.BackendSkillType;
+using StateType = SkillSlotV2.StateType;
 
 public class BackendSkillSlotListPanel : MonoBehaviour
 {
-    [SerializeField] private SkillSlotV2[] backendSkillSlot = new SkillSlotV2[0];
-    [SerializeField] private SkillSlotV2 qteSkillSlot;
-    [SerializeField] private GameObject qteButton;
+    [SerializeField] private SkillSlotV2[] backendSkillSlot = new SkillSlotV2[ 0 ];
+    [SerializeField] private SkillSlotV2 qteSkillSlot = null;
+    [SerializeField] private GameObject qteButton = null;
 
-    private CharacterSkill qteSkill;
-    private GameCharacter selectedCharacter;
+    private CharacterSkill qteSkill = null;
+    private GameCharacter selectedGameCharacter = null;
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
+    private SkillSlotV2 selectedSkillSlot = null;
 
     public void Initialize()
     {
@@ -41,61 +44,92 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         this.qteButton.SetActive(true);
     }
 
-    public void UpdateBackendSkillSlots(GameCharacter gameCharacter)
+    public void OnSkillSlotSelected( SkillSlotV2 skillSlot )
     {
-        if (gameCharacter != null)
+        if (this.selectedSkillSlot != null)
         {
-            this.selectedCharacter = gameCharacter;
-
-            this.selectedSkills = new List<CharacterSkill>(gameCharacter.GetSelectedBackendSkillList());
-            if (this.selectedSkills.Count > backendSkillSlot.Length)
-            {
-                return;
-            }
-
-            InsertIntoBackendSkillSlot(this.selectedSkills);
+            this.selectedSkillSlot.SetCurrentStateType( StateType.Enabled );
         }
+
+        this.selectedSkillSlot = skillSlot;
     }
 
-    private void InsertIntoBackendSkillSlot(List<CharacterSkill> selectedSkills)
+    public void UpdateBackendSkillSlots( GameCharacter gameCharacter, List<SkillType> skillTypeList )
     {
-        for (int i = 0; i < selectedSkills.Count; i++)
-        {
-            Subskill _subskillData = selectedSkills[i].GetCharacterSubskillData().GetSubskillData();
-            SkillSlotV2 _backendSkillSlot = backendSkillSlot[i];
-            CharacterSkill _selectedSkill = selectedSkills[i];
+        this.selectedGameCharacter = gameCharacter;
+        this.selectedSkills = new List<CharacterSkill>( gameCharacter.GetSelectedBackendSkillList() );
+        this.selectedSkillSlot = null;
 
-            switch (_backendSkillSlot.backendSkillType)
+        for (int i = 0; i < this.selectedSkills.Count; i++)
+        {
+            CharacterSkill _selectedSkill = this.selectedSkills[ i ];
+            Subskill _subskillData = _selectedSkill.GetCharacterSubskillData().GetSubskillData();
+            SkillSlotV2 _backendSkillSlot = backendSkillSlot[ i ];
+
+            switch ( _backendSkillSlot.backendSkillType )
             {
-                case SkillSlotV2.BackendSkillType.Defense:
+                case BackendSkillType.Defense:
+
                     if (_subskillData.IsDefendingSkill)
                     {
-                        _backendSkillSlot.SetSelectedSkill(_selectedSkill);
+                        _backendSkillSlot.SetSelectedSkill( _selectedSkill );
                     }
+
                     break;
 
-                case SkillSlotV2.BackendSkillType.Evasion:
+                case BackendSkillType.Evasion:
+
                     if (_subskillData.IsEvadingSkill)
                     {
-                       _backendSkillSlot.SetSelectedSkill(_selectedSkill);
+                        _backendSkillSlot.SetSelectedSkill( _selectedSkill );
                     }
+
                     break;
 
-                case SkillSlotV2.BackendSkillType.Generic:
+                case BackendSkillType.Generic:
+
                     if (_subskillData.IsObservingSkill || _subskillData.IsDefendingSkill || _subskillData.IsEvadingSkill)
                     {
-                        _backendSkillSlot.SetSelectedSkill(_selectedSkill);
+                        _backendSkillSlot.SetSelectedSkill( _selectedSkill );
                     }
+
                     break;
+            }
+        }
+
+        bool _isAbleToDefend = skillTypeList.Contains( SkillType.Defend );
+        bool _isAbleToEvade = skillTypeList.Contains( SkillType.Evade );
+        bool _isAbleToObserve = skillTypeList.Contains( SkillType.Observe );
+
+        for (int i = 0; i < this.backendSkillSlot.Length; i++)
+        {
+            SkillSlotV2 _backendSkillSlot = backendSkillSlot[ i ];
+            CharacterSkill _backendSkill = _backendSkillSlot.GetSelectedSkill();
+
+            if (_backendSkill != null)
+            {
+                Subskill _subskillData = _backendSkill.GetCharacterSubskillData().GetSubskillData();
+
+                if (( _isAbleToDefend && _subskillData.IsDefendingSkill )
+                   || ( _isAbleToEvade && _subskillData.IsEvadingSkill )
+                   || ( _isAbleToObserve && _subskillData.IsObservingSkill )
+                   )
+                {
+                    _backendSkillSlot.SetCurrentStateType( ( _backendSkill == this.selectedGameCharacter.GetCurrentSkill() ) ? StateType.Selected : StateType.Enabled );
+                }
+                else
+                {
+                    _backendSkillSlot.SetCurrentStateType( StateType.Disabled );
+                }
             }
         }
     }
 
     public void ShowQteSkillSlot(GameCharacter gameCharacter)
     {
-        this.selectedCharacter = gameCharacter;
+        this.selectedGameCharacter = gameCharacter;
 
-        CharacterSkill _currentSkill = this.selectedCharacter.GetCurrentSkill();
+        CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
         for (int i = 0; i < this.selectedSkills.Count; i++)
         {
             CharacterSkill _selectedSkill = this.selectedSkills[i];
@@ -115,5 +149,24 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         {
             qteSkillSlot.SetSelectedSkill(qteSkill);
         }
+    }
+
+    public GameCharacter GetSelectedGameCharacter()
+    {
+        return this.selectedGameCharacter;
+    }
+
+    public SkillSlotV2 GetSkillSlot( CharacterSkill skill )
+    {
+        for (int i = 0; i < this.backendSkillSlot.Length; i++)
+        {
+            SkillSlotV2 _skillSlot = this.backendSkillSlot[ i ];
+            if (_skillSlot.GetSelectedSkill() == skill)
+            {
+                return _skillSlot;
+            }
+        }
+
+        return null;
     }
 }

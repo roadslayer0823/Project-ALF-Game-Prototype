@@ -5,18 +5,21 @@ using SkillType = BattleSkillManager.SkillType;
 
 public class BattleUiManager : MonoBehaviour
 {
-    [System.Obsolete][SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
-    [SerializeField] private SkillSelectionPanelV2 skillSelectionPanelV2 = null;
-    [SerializeField] private SkillInfoPanel skillInfoPanel = null;
-    [System.Obsolete][SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
-    [SerializeField] private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
-    [System.Obsolete][SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
-    [SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
     [System.Obsolete][SerializeField] private PlayerActionPanel playerActionPanel = null;
-    [SerializeField] private PreparationSection preparationSection = null;
+    [System.Obsolete][SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
+    [System.Obsolete][SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
+    [System.Obsolete][SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
     [SerializeField] private CharacterInfoPanel characterInfoPanel = null;
     [SerializeField] private BattleResultPanel battleResultPanel = null;
     [SerializeField] private TMP_Text instructionLabel = null;
+
+    [Header( "Version 2" )]
+    [SerializeField] private PreparationSection preparationSection = null;
+    [SerializeField] private SkillSelectionPanelV2 skillSelectionPanelV2 = null;
+    [SerializeField] private SkillInfoPanel skillInfoPanel = null;
+    [SerializeField] private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
+    [SerializeField] private BackendSkillSlotListPanel backendSkillSlotListPanel = null;
+    [SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
 
     private BattleGameManager battleGameManager = null;
     private GameCharacter selectedGameCharacter = null;
@@ -24,15 +27,6 @@ public class BattleUiManager : MonoBehaviour
     public void Initialize( BattleGameManager battleGameManager )
     {
         this.battleGameManager = battleGameManager;
-
-        if (this.skillSelectionPanelV2 == null)
-        {
-            this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
-        }
-        else
-        {
-            this.skillSelectionPanelV2.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel, ReturnToSkillMenu );
-        }
 
         if (this.preparationSection == null)
         {
@@ -43,6 +37,15 @@ public class BattleUiManager : MonoBehaviour
             this.preparationSection.Initialize( OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel );
         }
 
+        if (this.skillSelectionPanelV2 == null)
+        {
+            this.skillSelectionPanel.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel );
+        }
+        else
+        {
+            this.skillSelectionPanelV2.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel, ReturnToSkillMenu );
+        }
+
         if (this.activeSkillSlotListPanelV2 == null)
         {
             this.skillSlotListPanel.Initialize( OnSkillSlotSwiped );
@@ -51,6 +54,7 @@ public class BattleUiManager : MonoBehaviour
         {
             this.skillSlotListPanel.SetIsSkillSlotListScrollable( false );
             this.activeSkillSlotListPanelV2.Initialize();
+            this.backendSkillSlotListPanel.Initialize();
         }
 
         this.atlSlotListPanelV2.Initialize();
@@ -89,6 +93,15 @@ public class BattleUiManager : MonoBehaviour
 
     public void SetAllActive( bool value )
     {
+        if (this.preparationSection == null)
+        {
+            this.playerActionPanel.gameObject.SetActive( value );
+        }
+        else
+        {
+            this.preparationSection.gameObject.SetActive( value );
+        }
+
         if (this.skillSelectionPanelV2 == null)
         {
             this.skillSelectionPanel.gameObject.SetActive( value );
@@ -105,6 +118,7 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             this.activeSkillSlotListPanelV2.gameObject.SetActive( value );
+            this.backendSkillSlotListPanel.gameObject.SetActive( value );
         }
 
         if (this.atlSlotListPanelV2 == null)
@@ -114,15 +128,6 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             this.atlSlotListPanelV2.gameObject.SetActive( value );
-        }
-
-        if (this.preparationSection == null)
-        {
-            this.playerActionPanel.gameObject.SetActive( value );
-        }
-        else
-        {
-            this.preparationSection.gameObject.SetActive( value );
         }
 
         this.characterInfoPanel.gameObject.SetActive( value );
@@ -143,6 +148,79 @@ public class BattleUiManager : MonoBehaviour
         this.skillInfoPanel.Hide();
         this.preparationSection.Hide();
     }
+
+#region Player Action Panel
+
+    public void ShowPreparationSection()
+    {
+        this.playerActionPanel.gameObject.SetActive( true );
+        this.playerActionPanel.ShowPreparationSection();
+        this.playerActionPanel.ShowActiveSkillSelectionPanel();
+        this.playerActionPanel.HideBattleSection();
+    }
+
+    public void ShowBattleSection( GameCharacter gameCharacter )
+    {
+        DisablePlayerActionPanelButtons();
+        this.playerActionPanel.ShowSkillActionButtons( gameCharacter.GetSelectedBackendSkillList().ToArray() );
+        this.playerActionPanel.ShowBattleSection();
+        this.playerActionPanel.HidePreparationSection();
+    }
+
+    public void UpdatePlayerActionPanelCharacter( GameCharacter gameCharacter )
+    {
+        this.playerActionPanel.SetSelectedGameCharacter( gameCharacter );
+    }
+
+    public void UpdatePlayerActionPanelButtons( CharacterSkill qteSkill, bool canDefend, bool canEvade, bool canObserve, float countdownTime )
+    {
+        this.playerActionPanel.ShowQTEActionButton( qteSkill, countdownTime );
+        this.playerActionPanel.UpdateSkillActionButtons( canDefend, canEvade, canObserve, countdownTime );
+    }
+
+    public void DisablePlayerActionPanelButtons()
+    {
+        UpdatePlayerActionPanelButtons( null, false, false, false, 0.0f );
+    }
+
+    public void OnExecuteButtonClicked()
+    {
+        this.skillSelectionPanel.CheckForNecessarySkill();
+        this.battleGameManager.StartExecution();
+    }
+
+    private void ShowActiveSkillSelectionPanel()
+    {
+        if (this.preparationSection == null)
+        {
+            this.skillSelectionPanel.ShowActiveSkillSelectionPanel();
+        }
+        else
+        {
+            this.preparationSection.HideSkillMenu();
+            ShowSkillSelectionPanel();
+        }
+    }
+
+    private void ShowBackendSkillSelectionPanel()
+    {
+        if (this.preparationSection == null)
+        {
+            this.skillSelectionPanel.ShowBackendSkillSelectionPanel();
+        }
+        else
+        {
+            this.preparationSection.HideSkillMenu();
+            ShowSkillSelectionPanel();
+        }
+    }
+
+    public PlayerActionPanel GetPlayerActionPanel()
+    {
+        return this.playerActionPanel;
+    }
+
+#endregion
 
 #region Preparation Section
 
@@ -234,6 +312,7 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             this.activeSkillSlotListPanelV2.Show();
+            this.backendSkillSlotListPanel.Show();
         }
     }
 
@@ -246,6 +325,7 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             this.activeSkillSlotListPanelV2.Hide();
+            this.backendSkillSlotListPanel.Hide();
         }
     }
 
@@ -269,6 +349,11 @@ public class BattleUiManager : MonoBehaviour
     public ActiveSkillSlotListPanelV2 GetActiveSkillSlotListPanelV2()
     {
         return this.activeSkillSlotListPanelV2;
+    }
+
+    public BackendSkillSlotListPanel GetBackendSkillSlotListPanel()
+    {
+        return this.backendSkillSlotListPanel;
     }
 
     public void OnSkillSlotSwiped()
@@ -332,78 +417,6 @@ public class BattleUiManager : MonoBehaviour
 
 #endregion
 
-#region Player Action Panel
-
-    public void ShowPreparationSection()
-    {
-        this.playerActionPanel.ShowPreparationSection();
-        this.playerActionPanel.ShowActiveSkillSelectionPanel();
-        this.playerActionPanel.HideBattleSection();
-    }
-
-    public void ShowBattleSection( GameCharacter gameCharacter )
-    {
-        DisablePlayerActionPanelButtons();
-        this.playerActionPanel.ShowSkillActionButtons( gameCharacter.GetSelectedBackendSkillList().ToArray() );
-        this.playerActionPanel.ShowBattleSection();
-        this.playerActionPanel.HidePreparationSection();
-    }
-
-    public void UpdatePlayerActionPanelCharacter( GameCharacter gameCharacter )
-    {
-        this.playerActionPanel.SetSelectedGameCharacter( gameCharacter );
-    }
-
-    public void UpdatePlayerActionPanelButtons( CharacterSkill qteSkill, bool canDefend, bool canEvade, bool canObserve, float countdownTime )
-    {
-        this.playerActionPanel.ShowQTEActionButton( qteSkill, countdownTime );
-        this.playerActionPanel.UpdateSkillActionButtons( canDefend, canEvade, canObserve, countdownTime );
-    }
-
-    public void DisablePlayerActionPanelButtons()
-    {
-        UpdatePlayerActionPanelButtons( null, false, false, false, 0.0f );
-    }
-
-    public void OnExecuteButtonClicked()
-    {
-        this.skillSelectionPanel.CheckForNecessarySkill();
-        this.battleGameManager.StartExecution();
-    }
-
-    private void ShowActiveSkillSelectionPanel()
-    {
-        if (this.preparationSection == null)
-        {
-            this.skillSelectionPanel.ShowActiveSkillSelectionPanel();
-        }
-        else
-        {
-            this.preparationSection.HideSkillMenu();
-            ShowSkillSelectionPanel();
-        }
-    }
-
-    private void ShowBackendSkillSelectionPanel()
-    {
-        if (this.preparationSection == null)
-        {
-            this.skillSelectionPanel.ShowBackendSkillSelectionPanel();
-        }
-        else
-        {
-            this.preparationSection.HideSkillMenu();
-            ShowSkillSelectionPanel();
-        }
-    }
-
-    public PlayerActionPanel GetPlayerActionPanel()
-    {
-        return this.playerActionPanel;
-    }
-
-#endregion
-
 #region Character Info Panel
 
     public CharacterInfoPanel GetCharacterInfoPanel()
@@ -440,9 +453,12 @@ public class BattleUiManager : MonoBehaviour
             CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
             if (_currentSkill != null)
             {
-                CharacterSkill _repulseSkill = _currentSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
-                this.selectedGameCharacter.SetAssignedSkill( _repulseSkill );
-                this.activeSkillSlotListPanelV2.GetSkillSlot( _repulseSkill ).SelectSkill();
+                if (_currentSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+                {
+                    CharacterSkill _repulseSkill = _currentSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
+                    this.selectedGameCharacter.SetAssignedSkill( _repulseSkill );
+                    this.activeSkillSlotListPanelV2.GetSkillSlot( _repulseSkill ).SelectSkill();
+                }
             }
         }
         else if (skillTypeList.Contains( SkillType.Derive ))
@@ -465,15 +481,34 @@ public class BattleUiManager : MonoBehaviour
             this.activeSkillSlotListPanelV2.ChangeToDefaultMode( this.selectedGameCharacter, ( skillTypeList.Contains( SkillType.Active ) ) ? SkillSlotV2.StateType.Enabled : SkillSlotV2.StateType.Disabled );
         }
 
-        this.playerActionPanel.ShowSkillActionButtons( this.selectedGameCharacter.GetSelectedBackendSkillList().ToArray() );
-        this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Defense, skillTypeList.Contains( SkillType.Defend ) );
-        this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Evasion, skillTypeList.Contains( SkillType.Evade ) );
-        this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Observation, skillTypeList.Contains( SkillType.Observe ) );
+        if (this.backendSkillSlotListPanel == null)
+        {
+            this.playerActionPanel.ShowSkillActionButtons( this.selectedGameCharacter.GetSelectedBackendSkillList().ToArray() );
+            this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Defense, skillTypeList.Contains( SkillType.Defend ) );
+            this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Evasion, skillTypeList.Contains( SkillType.Evade ) );
+            this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Observation, skillTypeList.Contains( SkillType.Observe ) );
+        }
+        else
+        {
+            if (this.preparationSection == null)
+            {
+                this.playerActionPanel.gameObject.SetActive( false );
+            }
+
+            this.backendSkillSlotListPanel.UpdateBackendSkillSlots( this.selectedGameCharacter, skillTypeList );
+        }
     }
 
     public void OnSkillBeingUsed()
     {
-        SkillSlotV2 _skillSlot = this.activeSkillSlotListPanelV2.GetSkillSlot( this.selectedGameCharacter.GetCurrentSkill() );
+        CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
+        SkillSlotV2 _skillSlot = this.activeSkillSlotListPanelV2.GetSkillSlot( _currentSkill );
+
+        if (_skillSlot == null)
+        {
+            _skillSlot = this.backendSkillSlotListPanel.GetSkillSlot( _currentSkill );
+        }
+
         if (_skillSlot != null)
         {
             _skillSlot.SetCurrentStateType( SkillSlotV2.StateType.Activated );
