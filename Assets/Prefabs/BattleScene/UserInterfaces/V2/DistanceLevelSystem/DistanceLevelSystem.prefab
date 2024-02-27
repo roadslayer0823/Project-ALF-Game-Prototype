@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7109164040688948972}
   - component: {fileID: 8502464301658814150}
   m_Layer: 5
-  m_Name: Pointer1
+  m_Name: PointerLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 5012490265573659577}
   - component: {fileID: 8724930158330806147}
   m_Layer: 5
-  m_Name: MeleeRangePosition1
+  m_Name: NearDistanceLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -170,7 +170,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2478964355498087005}
   m_Layer: 5
-  m_Name: MeleeRange
+  m_Name: NearDistance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -209,7 +209,7 @@ GameObject:
   - component: {fileID: 5439298821458169108}
   - component: {fileID: 2999077413732483228}
   m_Layer: 5
-  m_Name: MiddleRangePosition1
+  m_Name: NormalDistanceLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -254,7 +254,7 @@ GameObject:
   - component: {fileID: 7391817104931209955}
   - component: {fileID: 1731737326269756916}
   m_Layer: 5
-  m_Name: LongRangePosition2
+  m_Name: FarDistanceRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -299,7 +299,7 @@ GameObject:
   - component: {fileID: 6656217799090717885}
   - component: {fileID: 2024858553057773951}
   m_Layer: 5
-  m_Name: MeleeRangePosition2
+  m_Name: NearDistanceRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -343,7 +343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4619973555927559609}
   m_Layer: 5
-  m_Name: LongRange
+  m_Name: FarDistancePosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -382,7 +382,7 @@ GameObject:
   - component: {fileID: 8465873538487633394}
   - component: {fileID: 2995453022066712026}
   m_Layer: 5
-  m_Name: MiddleRangePosition2
+  m_Name: NormalDistanceRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -427,7 +427,7 @@ GameObject:
   - component: {fileID: 7500740973962799525}
   - component: {fileID: 7315363247397335892}
   m_Layer: 5
-  m_Name: RangeSystem
+  m_Name: DistanceLevelSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -467,14 +467,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48b030751e0a1459eb5d9d939a486178, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointer1: {fileID: 8502464301658814150}
-  pointer2: {fileID: 2551811416569632342}
-  meleePosition1: {fileID: 5012490265573659577}
-  meleePosition2: {fileID: 6656217799090717885}
-  middlePosition1: {fileID: 5439298821458169108}
-  middlePosition2: {fileID: 8465873538487633394}
-  longPosition1: {fileID: 7509908266644085719}
-  longPosition2: {fileID: 7391817104931209955}
+  pointerLeft: {fileID: 8502464301658814150}
+  pointerRight: {fileID: 2551811416569632342}
+  nearDistanceLeft: {fileID: 5012490265573659577}
+  nearDistanceRight: {fileID: 6656217799090717885}
+  normalDistanceLeft: {fileID: 5439298821458169108}
+  normalDistanceRight: {fileID: 8465873538487633394}
+  farDistanceLeft: {fileID: 7509908266644085719}
+  farDistanceRight: {fileID: 7391817104931209955}
+  currentDistanceLevel: 0
 --- !u!1 &4205840974970762361
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,7 +487,7 @@ GameObject:
   - component: {fileID: 7509908266644085719}
   - component: {fileID: 5382623363781121981}
   m_Layer: 5
-  m_Name: LongRangePosition1
+  m_Name: FarDistanceLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -530,7 +531,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5726103533773039873}
   m_Layer: 5
-  m_Name: RangePointer
+  m_Name: DistanceLevelPointer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -570,7 +571,7 @@ GameObject:
   - component: {fileID: 4832067972233808365}
   - component: {fileID: 2551811416569632342}
   m_Layer: 5
-  m_Name: Pointer2
+  m_Name: PointerRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -644,7 +645,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2788578440825418553}
   m_Layer: 5
-  m_Name: MiddleRange
+  m_Name: NormalDistance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
