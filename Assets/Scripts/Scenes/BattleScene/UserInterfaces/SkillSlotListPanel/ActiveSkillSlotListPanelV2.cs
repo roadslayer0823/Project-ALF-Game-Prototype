@@ -162,28 +162,28 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 }
             }
         }
+        else if (this.selectedSkills.Count == 1)
+        {
+            for (int i = 0; i < this.selectedSkills.Count; i++)
+            {
+                this.skillSlots[1].SetSelectedSkill(this.selectedSkills[i]);
+            }
+            this.clickAreaTop.SetActive(false);
+            this.clickAreaBottom.SetActive(false);
+        }
         else
         {
             for (int i = 0; i < this.selectedSkills.Count; i++)
             {
                 this.skillSlots[ i ].SetSelectedSkill( this.selectedSkills[ i ] );
             }
+            this.clickAreaBottom.SetActive(true);
+            this.clickAreaTop.SetActive(true);
         }
 
         for (int i = 0; i < this.skillSlots.Length; i++)
         {
-            this.skillSlots[ i ].SetCurrentStateType( stateType );
-        }
-
-        if (this.selectedSkills.Count == 1)
-        {
-            this.clickAreaTop.SetActive( false );
-            this.clickAreaBottom.SetActive( false );
-        }
-        else
-        {
-            this.clickAreaBottom.SetActive( true );
-            this.clickAreaTop.SetActive( true );
+            this.skillSlots[i].SetCurrentStateType(stateType);
         }
     }
 
