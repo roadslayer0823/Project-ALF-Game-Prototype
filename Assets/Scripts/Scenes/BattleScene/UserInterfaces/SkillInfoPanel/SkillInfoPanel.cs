@@ -104,7 +104,15 @@ public class SkillInfoPanel : MonoBehaviour
         }
 
         this.skillInfoPanel.gameObject.SetActive(true);
-        SetupSkillInfomation( this.selectedSkill );
+
+        if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+        {
+            ShowActiveSkillPanelUI();
+        }
+        else
+        {
+            ShowBackendSkillPanelUI();
+        }
     }
 
     public void Hide()
@@ -357,18 +365,29 @@ public class SkillInfoPanel : MonoBehaviour
     {
         SetupSkillInfomation(this.selectedSkill);
         SetSkillPanelUI(activeSkillInfoBackground, yellowLevelBackground, yellowSkillNameBackground);
+
+        if (this.skillSelectionBox.GetIsSelected())
+        {
+            this.skillSelectionBox.SetSkillSlotFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillSlotSelectedBackgroundImage());
+        }
+        else
+        {
+            this.skillSelectionBox.SetSkillSlotFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillSlotSelectBackgroundImage());
+        }
     }
 
     public void ShowRepulseSkillPanelUI()
     {
         SetupSkillInfomation(this.selectedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill());
         SetSkillPanelUI(repulseSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
+        this.skillSelectionBox.SetSkillSlotFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetRepulseSkillSlotFrameImage());
     }
 
     public void ShowDerivedSkillPanelUI()
     {
         SetupSkillInfomation(this.selectedSkill.GetCharacterSubskillData().GetSelectedDerivedSkill());
         SetSkillPanelUI(derivedSkillInfoBackground, derivedSkillLevelBackground, derivedSkillNameBackground);
+        this.skillSelectionBox.SetSkillSlotFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetDerivedSkillSlotFrameImage());
     }
 
     public void ShowBackendSkillPanelUI()

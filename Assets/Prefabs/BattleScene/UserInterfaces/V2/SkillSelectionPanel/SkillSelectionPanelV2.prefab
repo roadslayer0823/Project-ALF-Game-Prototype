@@ -55,6 +55,8 @@ MonoBehaviour:
   activeSkillSlotUnselectBackgroundImage: {fileID: 21300000, guid: b454ba89091474789a6f304afa20a108, type: 3}
   activeSkillSlotSelectBackgroundImage: {fileID: 21300000, guid: 6992347dd6c1d44869cba541d1c6b34f, type: 3}
   activeSkillSlotSelectedBackgroundImage: {fileID: 21300000, guid: 505c52cbb79b74beebb19089ccad6dd6, type: 3}
+  repulseSkillSlotFrameImage: {fileID: 21300000, guid: f547947f633fd49959011296e616d71f, type: 3}
+  derivedSkillSlotFrameImage: {fileID: 21300000, guid: c7c04b4c451f64661838dfc40bfecc8b, type: 3}
   skillSelectionSequenceImages:
   - {fileID: 21300000, guid: bac0ba5552c094d8eb0ca9bffe5bcd92, type: 3}
   - {fileID: 21300000, guid: 8618b935c360b4867a3a6027b2c11392, type: 3}

@@ -11,6 +11,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     [SerializeField] private Sprite activeSkillSlotUnselectBackgroundImage = null;
     [SerializeField] private Sprite activeSkillSlotSelectBackgroundImage = null;
     [SerializeField] private Sprite activeSkillSlotSelectedBackgroundImage = null;
+    [SerializeField] private Sprite repulseSkillSlotFrameImage = null;
+    [SerializeField] private Sprite derivedSkillSlotFrameImage = null;
     [SerializeField] private Sprite[] skillSelectionSequenceImages = null;
     [SerializeField] private Sprite backendSkillSlotUnselectBackgroundImage = null;
     [SerializeField] private Sprite backendSkillSlotSelectedBackgroundImage = null;
@@ -29,7 +31,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     [SerializeField] private Image[] activeSkillListSlotBackgrounds = null;
     [SerializeField] private TextMeshProUGUI[] activeSkillListSlotTexts = null;
     private List<SkillSelectionBoxV2> activeSkillSlotList = new List<SkillSelectionBoxV2>();
-    private List<SkillSelectionBoxV2> selectedActiveSkilSlotlList = new List<SkillSelectionBoxV2>();
+    private List<SkillSelectionBoxV2> selectedActiveSkillSlotList = new List<SkillSelectionBoxV2>();
     private List<CharacterSkill> characterActiveSkillList = new List<CharacterSkill>();
     private SkillSelectionBoxV2 lastSelectedActiveSkillSelectionBox = null;
 
@@ -42,7 +44,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     [SerializeField] private Image backendEvasionSlotIcon = null;
     [SerializeField] private Image backendGenericSlotIcon = null;
     private List<SkillSelectionBoxV2> backendSkillSlotList = new List<SkillSelectionBoxV2>();
-    private List<SkillSelectionBoxV2> selectedBackendSkilSlotlList = new List<SkillSelectionBoxV2>();
+    private List<SkillSelectionBoxV2> selectedBackendSkillSlotList = new List<SkillSelectionBoxV2>();
     private List<CharacterSkill> characterBackendSkillList = new List<CharacterSkill>();
     private SkillSelectionBoxV2 lastSelectedBackendSkillSelectionBox = null;
 
@@ -94,14 +96,13 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             InitializeActiveSkillList();
         }
 
-        // TODO: This block of code is temporarily commented out to prevent an error from occurring.
-        //if (this.backendSkillSlotList.Count == 0)
-        //{
-        //    InitializeBackendSkillList();
-        //}
+        if (this.backendSkillSlotList.Count == 0)
+        {
+            InitializeBackendSkillList();
+        }
 
         ShowSkillSelectionPanel();
-        ShowActiveSkillSelectionList( true );
+        //ShowActiveSkillSelectionList( true );
     }
 
     private void OnActiveSkillListBoxButtonClick()
@@ -234,7 +235,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     }
 
     // Show the ActiveSkillSelectionList
-    private void ShowActiveSkillSelectionList(bool show)
+    public void ShowActiveSkillSelectionList(bool show)
     {
         this.activeSkillSelectionListGO.SetActive(show);
 
@@ -259,7 +260,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     }
 
     // Show the BackendSkillSelectionList
-    private void ShowBackendSkillSelectionList(bool show)
+    public void ShowBackendSkillSelectionList(bool show)
     {
         this.backendSkillSelectionListGO.SetActive(show);
 
@@ -294,9 +295,9 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         }
 
         // Show the small slot text
-        for (int i = 0; i < this.selectedActiveSkilSlotlList.Count; i++)
+        for (int i = 0; i < this.selectedActiveSkillSlotList.Count; i++)
         {
-            SkillSelectionBoxV2 _skillSelectionBox = this.selectedActiveSkilSlotlList[i];
+            SkillSelectionBoxV2 _skillSelectionBox = this.selectedActiveSkillSlotList[i];
 
             if (i >= this.activeSkillListSlotTexts.Length || i >= this.skillSelectionSequenceImages.Length)
             {
@@ -331,9 +332,9 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < this.selectedBackendSkilSlotlList.Count; i++)
+        for (int i = 0; i < this.selectedBackendSkillSlotList.Count; i++)
         {
-            SkillSelectionBoxV2 _skillSelectionBox = this.selectedBackendSkilSlotlList[i];
+            SkillSelectionBoxV2 _skillSelectionBox = this.selectedBackendSkillSlotList[i];
             Subskill _subskillData = _skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData();
 
             _skillSelectionBox.SetSkillSlotFrame(this.backendSkillSlotSelectedBackgroundImage);
@@ -363,25 +364,24 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     {
         if (skillSelectionBox.GetCharacterSkillType() == Skill.SkillType.active)
         {
-            if (this.selectedActiveSkilSlotlList.Count >= GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills())
+            if (this.selectedActiveSkillSlotList.Count >= GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills())
             {
                 return;
             }
 
-            this.selectedActiveSkilSlotlList.Add(skillSelectionBox);
+            this.selectedActiveSkillSlotList.Add(skillSelectionBox);
 
             UpdateActiveSkillListSlot();
         }
         else if (skillSelectionBox.GetCharacterSkillType() == Skill.SkillType.backend)
         {
-            if (this.selectedBackendSkilSlotlList.Count >= GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills())
+            if (this.selectedBackendSkillSlotList.Count >= GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills())
             {
                 return;
             }
 
-            this.selectedBackendSkilSlotlList.Add(skillSelectionBox);
+            this.selectedBackendSkillSlotList.Add(skillSelectionBox);
 
-            //TODO: Update ???
             UpdateBackendSkillListSlot();
         }
     }
@@ -390,23 +390,23 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     {
         if (skillSelectionBox.GetCharacterSkillType() == Skill.SkillType.active)
         {
-            if (this.selectedActiveSkilSlotlList.Count == 0 || !this.selectedActiveSkilSlotlList.Contains(skillSelectionBox))
+            if (this.selectedActiveSkillSlotList.Count == 0 || !this.selectedActiveSkillSlotList.Contains(skillSelectionBox))
             {
                 return;
             }
 
-            this.selectedActiveSkilSlotlList.Remove(skillSelectionBox);
+            this.selectedActiveSkillSlotList.Remove(skillSelectionBox);
 
             UpdateActiveSkillListSlot();
         }
         else if (skillSelectionBox.GetCharacterSkillType() == Skill.SkillType.backend)
         {
-            if (this.selectedBackendSkilSlotlList.Count == 0 || !this.selectedBackendSkilSlotlList.Contains(skillSelectionBox))
+            if (this.selectedBackendSkillSlotList.Count == 0 || !this.selectedBackendSkillSlotList.Contains(skillSelectionBox))
             {
                 return;
             }
 
-            this.selectedBackendSkilSlotlList.Remove(skillSelectionBox);
+            this.selectedBackendSkillSlotList.Remove(skillSelectionBox);
 
             UpdateBackendSkillListSlot();
         }
@@ -425,11 +425,11 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
             if (_skillSelectionBox == targetToSwap)
             {
-                this.selectedActiveSkilSlotlList[i] = this.lastSelectedActiveSkillSelectionBox;
+                this.selectedActiveSkillSlotList[i] = this.lastSelectedActiveSkillSelectionBox;
             }
             else if (_skillSelectionBox == GetLastSelectedActiveSkillSelectionBox())
             {
-                this.selectedActiveSkilSlotlList[i] = targetToSwap;
+                this.selectedActiveSkillSlotList[i] = targetToSwap;
             }
         }
 
@@ -452,7 +452,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
                 GetLastSelectedActiveSkillSelectionBox().SetIsSelected(false);
                 targetToSwap.SetIsSelected(true);
 
-                this.selectedActiveSkilSlotlList[i] = targetToSwap;
+                this.selectedActiveSkillSlotList[i] = targetToSwap;
             }
         }
 
@@ -474,174 +474,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         selectedSkillSelectionList[0] = targetToMove;
 
         UpdateActiveSkillListSlot();
-    }
-
-    // Final check to make sure default skill assigned if player did not select.
-    public void CheckForNecessarySkill()
-    {
-        for (int i = 0; i < this.selectedActiveSkilSlotlList.Count; i++)
-        {
-            SkillSelectionBoxV2 _activeSkillSelectionBox = this.selectedActiveSkilSlotlList[i];
-            CharacterSkill _characterActiveSkill = _activeSkillSelectionBox.GetCharacterSkill();
-
-            CharacterSkill _selectedRepulseSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
-            CharacterSkill _selectedDerivedSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
-
-            for (int j = 0; j < _characterActiveSkill.GetCharacterSubskillList().Count; j++)
-            {
-                CharacterSubskill _currentLevelActiveSkill = _characterActiveSkill.GetCharacterSubskillList()[j];
-
-                if (!_currentLevelActiveSkill.GetSubskillData().IsAvailable)
-                {
-                    continue;
-                }
-
-                CharacterSkill _currentLevelRepulseSkill = _currentLevelActiveSkill.GetSelectedRepulseSkill();
-                CharacterSkill _currentLevelDerivedSkill = _currentLevelActiveSkill.GetSelectedDerivedSkill();
-
-                List<CharacterSkill> _currentLevelRepulseSkillList = _currentLevelActiveSkill.GetRepulseSkillList();
-                List<CharacterSkill> _currentLevelDerivedSkillList = _currentLevelActiveSkill.GetDerivedSkillList();
-
-                if (_currentLevelActiveSkill.GetSubskillData().Level == _activeSkillSelectionBox.GetCurrentSkillLevel())
-                {
-                    if (_selectedRepulseSkill != null)
-                    {
-                        _currentLevelActiveSkill.SetSelectedRepulseSkill(_selectedRepulseSkill);
-                        _characterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_selectedRepulseSkill);
-                    }
-                    else if (_selectedRepulseSkill == null && _currentLevelRepulseSkillList.Count > 0)
-                    {
-                        CharacterSkill _repulseSkill = _currentLevelRepulseSkillList[0];
-
-                        if (_selectedDerivedSkill != null)
-                        {
-                            _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_selectedDerivedSkill);
-                        }
-                        else
-                        {
-                            if (_currentLevelDerivedSkillList.Count == 0)
-                            {
-                                _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(null);
-                            }
-                            else
-                            {
-                                _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_currentLevelDerivedSkillList[0]);
-                            }
-
-                        }
-
-                        _characterActiveSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(_repulseSkill);
-                        _currentLevelActiveSkill.SetSelectedRepulseSkill(_repulseSkill);
-                        _selectedRepulseSkill = _characterActiveSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
-                    }
-                    else
-                    {
-                        _currentLevelActiveSkill.SetSelectedRepulseSkill(null);
-                    }
-
-                    if (_selectedDerivedSkill == null && _currentLevelDerivedSkillList.Count > 0)
-                    {
-                        CharacterSkill _derivedSkill = _currentLevelDerivedSkillList[0];
-
-                        _characterActiveSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_derivedSkill);
-                        _currentLevelActiveSkill.SetSelectedDerivedSkill(_derivedSkill);
-
-                        _selectedDerivedSkill = _derivedSkill;
-                    }
-
-                    if (_selectedRepulseSkill != null && _selectedRepulseSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
-                    {
-                        _selectedRepulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_selectedDerivedSkill);
-                    }
-                }
-                else
-                {
-                    if (_currentLevelRepulseSkill == null && _currentLevelRepulseSkillList.Count > 0)
-                    {
-                        CharacterSkill _repulseSkill = _currentLevelRepulseSkillList[0];
-
-                        if (_currentLevelDerivedSkill != null)
-                        {
-                            _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_currentLevelDerivedSkill);
-                        }
-                        else
-                        {
-                            if (_currentLevelDerivedSkillList.Count == 0)
-                            {
-                                _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(null);
-                            }
-                            else
-                            {
-                                _repulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_currentLevelDerivedSkillList[0]);
-                            }
-
-                        }
-                        _currentLevelActiveSkill.SetSelectedRepulseSkill(_repulseSkill);
-                        _currentLevelRepulseSkill = _currentLevelActiveSkill.GetSelectedRepulseSkill();
-                    }
-
-                    if (_currentLevelDerivedSkill == null && _currentLevelDerivedSkillList.Count > 0)
-                    {
-                        CharacterSkill _derivedSkill = _currentLevelDerivedSkillList[0];
-
-                        _currentLevelActiveSkill.SetSelectedDerivedSkill(_derivedSkill);
-                        _currentLevelDerivedSkill = _derivedSkill;
-                    }
-
-                    if (_currentLevelRepulseSkill != null && _currentLevelRepulseSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
-                    {
-                        _currentLevelRepulseSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(_currentLevelDerivedSkill);
-                    }
-                }
-            }
-        }
-
-        /*for (int i = 0; i < this.selectedBackendSkillList.Count; i++)
-        {
-            SkillSelectionBoxV2 _backendSkillSelectionBox = this.selectedBackendSkillList[i];
-            CharacterSkill _characterBackendSkill = _backendSkillSelectionBox.GetCharacterSkill();
-
-            CharacterSkill _selectedCounterSkill = _characterBackendSkill.GetCharacterSubskillData().GetSelectedCounterSkill();
-
-            for (int j = 0; j < _characterBackendSkill.GetCharacterSubskillList().Count; j++)
-            {
-                CharacterSubskill _currentLevelBackendSkill = _characterBackendSkill.GetCharacterSubskillList()[j];
-
-                if (!_currentLevelBackendSkill.GetSubskillData().IsAvailable)
-                {
-                    continue;
-                }
-
-                CharacterSkill _currentLevelCounterSkill = _currentLevelBackendSkill.GetSelectedCounterSkill();
-                List<CharacterSkill> _currentLevelCounterSkillList = _characterBackendSkill.GetCharacterSubskillData().GetCounterSkillList();
-
-                if (_currentLevelBackendSkill.GetSubskillData().Level == _backendSkillSelectionBox.GetCurrentSkillLevel())
-                {
-                    if (_selectedCounterSkill != null)
-                    {
-                        _currentLevelBackendSkill.SetSelectedRepulseSkill(_selectedCounterSkill);
-                        _characterBackendSkill.GetCharacterSubskillData().SetSelectedCounterSkill(_selectedCounterSkill);
-                    }
-                    else if (_selectedCounterSkill == null && _currentLevelCounterSkillList.Count > 0)
-                    {
-                        CharacterSkill _counterSkill = _currentLevelCounterSkillList[0];
-
-                        _characterBackendSkill.GetCharacterSubskillData().SetSelectedCounterSkill(_counterSkill);
-                        _currentLevelBackendSkill.SetSelectedCounterSkill(_counterSkill);
-                        _selectedCounterSkill = _counterSkill;
-                    }
-                    else
-                    {
-                        _currentLevelBackendSkill.SetSelectedRepulseSkill(null);
-                    }
-                }
-                else
-                {
-                    CharacterSkill _counterSkill = _currentLevelCounterSkillList[0];
-                    _currentLevelBackendSkill.SetSelectedCounterSkill(_counterSkill);
-                }
-            }
-        }*/
     }
 
     public void ShowSkillSelectionPanel()
@@ -696,12 +528,12 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
     public List<SkillSelectionBoxV2> GetSelectedActiveSkillList()
     {
-        return this.selectedActiveSkilSlotlList;
+        return this.selectedActiveSkillSlotList;
     }
 
     public List<SkillSelectionBoxV2> GetSelectedBackendSkillList()
     {
-        return this.selectedBackendSkilSlotlList;
+        return this.selectedBackendSkillSlotList;
     }
 
     public Sprite GetSkillSlotSelectBackgroundImage()
@@ -709,8 +541,23 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         return this.activeSkillSlotSelectBackgroundImage;
     }
 
+    public Sprite GetSkillSlotSelectedBackgroundImage()
+    {
+        return this.activeSkillSlotSelectedBackgroundImage;
+    }
+
     public Sprite GetSkillSlotUnselectBackgroundImage()
     {
         return this.activeSkillSlotUnselectBackgroundImage;
+    }
+
+    public Sprite GetRepulseSkillSlotFrameImage()
+    {
+        return this.repulseSkillSlotFrameImage;
+    }
+
+    public Sprite GetDerivedSkillSlotFrameImage()
+    {
+        return this.derivedSkillSlotFrameImage;
     }
 }

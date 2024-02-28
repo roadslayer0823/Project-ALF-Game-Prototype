@@ -31,6 +31,8 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     [Header("")]
     [SerializeField] private Image selectionHighlight = null;
     [SerializeField] private Image skillSlotFrame = null;
+    [SerializeField] private Image skillIcon = null;
+    [SerializeField] private GameObject skillNameGO = null;
     [SerializeField] private TextMeshProUGUI skillNameText = null;
     private SkillSelectionPanelV2 skillSelectionPanel = null;
     private CharacterSkill characterSkill = null;
@@ -38,7 +40,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     private bool isLongPress = false;
     private bool isDoubleTap = false;
     private bool isWaitingSecondClick = false;
-    private bool isSkillLevelChanged = false;
     private IEnumerator deselectSkillTimer = null;
     private Vector2 mousePressPosition = new Vector2();
     private Vector2 mouseReleasePosition = new Vector2();
@@ -57,7 +58,9 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         this.skillType = characterSkill.GetSkillData().skillType;
 
         this.skillSlotFrame.gameObject.SetActive(true);
-        this.skillNameText.gameObject.SetActive(true);
+        this.skillNameGO.SetActive(true);
+
+        UpdateSkillIcon(false);
 
         if (characterSkill != null)
         {
@@ -165,16 +168,25 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
         
         this.selectionHighlight.gameObject.SetActive(true);
+        this.skillNameGO.SetActive(false);
     }
 
     private void HideSelectionHighlight()
     {
-        if (!this.isSelected && this.skillType == Skill.SkillType.active)
+        if (this.skillType == Skill.SkillType.active)
         {
-            SetSkillSlotFrame(this.skillSelectionPanel.GetSkillSlotUnselectBackgroundImage());
+            if (!this.isSelected)
+            {
+                SetSkillSlotFrame(this.skillSelectionPanel.GetSkillSlotUnselectBackgroundImage());
+            }
+            else
+            {
+                SetSkillSlotFrame(this.skillSelectionPanel.GetSkillSlotSelectedBackgroundImage());
+            }
         }
-        
+
         this.selectionHighlight.gameObject.SetActive(false);
+        this.skillNameGO.SetActive(true);
     }
 
     IEnumerator SelectSkillSlot()
@@ -216,6 +228,8 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
                 this.skillSelectionPanel.OnSkillSelected(this);
 
                 this.isSelected = true;
+
+                UpdateSkillIcon(true);
             }
 
             ShowSelectionHighlight();
@@ -224,20 +238,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
         else
         {
-            /*if (_lastSelectedSkillSelectionBox != null && _lastSelectedSkillSelectionBox != this && !this.selectionHighlight.gameObject.activeSelf)
-            {
-                if (this.isSelected && this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(_lastSelectedSkillSelectionBox) && this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this))
-                {
-                    //Swap these two selected skill
-                    this.skillSelectionPanel.SwapSelectedActiveSkill(this);
-                }
-                else if (!this.isSelected && !this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(_lastSelectedSkillSelectionBox))
-                {
-                    //Replace selected skill with this one
-                    this.skillSelectionPanel.ReplaceSelectedActiveSkill(this);
-                }
-            }*/
-
             if (this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.isSelected)
             {
                 this.skillSelectionPanel.MoveSelectedSkillToFirst(this, this.skillSelectionPanel.GetSelectedActiveSkillList());
@@ -261,11 +261,13 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             && this.skillSelectionPanel.GetSelectedBackendSkillList().Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills()
             && !this.isSelected)
         {
-            //TODO: Select backend skill
-
             this.skillSelectionPanel.AddSelectedSkilSlot(this);
 
+            this.skillSelectionPanel.OnSkillSelected(this);
+
             this.isSelected = true;
+
+            UpdateSkillIcon(true);
         }
 
         ShowSelectionHighlight();
@@ -286,8 +288,11 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
         
         this.skillSelectionPanel.RemoveSelectedSkilSlot(this);
+        this.skillSelectionPanel.OnSkillDeselected(this);
         
         this.isSelected = false;
+
+        UpdateSkillIcon(false);
     }
 
     IEnumerator DeselectSkillCountDownTimer(float seconds)
@@ -371,8 +376,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         this.skillLevelText.SetText($"<size=30>LV.</size> {skillLevel}");
         this.skillLevelAnimationText.SetText($"<size=30>LV.</size> {skillLevel}");
 
-        //TODO: Show skill info
-        //this.skillSelectionListBox.ShowSelectedSkillInfo(this);
         this.skillSelectionPanel.ShowSkillInfoPanel(this);
 
         UpdateSkillSelectionBoxData();
@@ -457,6 +460,11 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         this.isSelected = isSelected;
     }
 
+    public bool GetIsSelected()
+    {
+        return this.isSelected;
+    }
+
     public int GetCurrentSkillLevel()
     {
         return this.skillLevel;
@@ -510,5 +518,19 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             this.skillSelectedImage.gameObject.SetActive(true);
             this.skillSelectedImage.sprite = imageToDisplay;
         }
+    }
+
+    private void UpdateSkillIcon(bool isOn)
+    {
+        this.skillIcon.gameObject.SetActive(true);
+
+        Subskill _subskillData = this.characterSkill.GetCharacterSubskillData().GetSubskillData();
+        this.skillIcon.sprite = Resources.Load<Sprite>((isOn) ? _subskillData.IconFilePathOn : _subskillData.IconFilePathOff);
+        this.skillIcon.SetNativeSize();
+    }
+
+    public SkillSelectionPanelV2 GetSkillSelectionPanel()
+    {
+        return this.skillSelectionPanel;
     }
 }
