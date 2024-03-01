@@ -198,7 +198,7 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             this.preparationSection.HideSkillMenu();
-            ShowSkillSelectionPanel();
+            ShowSkillSelectionPanel( SkillSelectionPanelV2.SkillType.Active );
         }
     }
 
@@ -211,7 +211,7 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             this.preparationSection.HideSkillMenu();
-            ShowSkillSelectionPanel();
+            ShowSkillSelectionPanel( SkillSelectionPanelV2.SkillType.Backend );
         }
     }
 
@@ -242,14 +242,12 @@ public class BattleUiManager : MonoBehaviour
 
     public void ShowSkillSelectionPanel()
     {
-        if (this.skillSelectionPanelV2 == null)
-        {
-            this.skillSelectionPanel.Show( this.selectedGameCharacter );
-        }
-        else
-        {
-            this.skillSelectionPanelV2.Show( this.selectedGameCharacter );
-        }
+        this.skillSelectionPanel.Show( this.selectedGameCharacter );
+    }
+
+    public void ShowSkillSelectionPanel( SkillSelectionPanelV2.SkillType skillType )
+    {
+        this.skillSelectionPanelV2.Show( this.selectedGameCharacter, skillType );
     }
 
     public void HideSkillSelectionPanel()

@@ -62,6 +62,13 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     private const string AUDIO_ID_SKILL_ON = "skill_on";
     private const string AUDIO_ID_CLICK = "click";
 
+    public enum SkillType
+    {
+        None,
+        Active,
+        Backend
+    }
+
     public void Initialize( Action<SkillSelectionBoxV2> onSkillSelectedCallback, Action<SkillSelectionBoxV2> onSkillDeselectedCallback, Action onReturnedCallback )
     {
         this.onSkillSelectedCallback = onSkillSelectedCallback;
@@ -77,7 +84,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         this.returnButton.onClick.AddListener( OnReturnButtonClick );
     }
 
-    public void Show(GameCharacter gameCharacter)
+    public void Show( GameCharacter gameCharacter, SkillType skillType )
     {
         this.gameCharacter = gameCharacter;
 
@@ -173,7 +180,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             }
         }
 
-        ShowSkillSelectionPanel();
+        ShowSkillSelectionPanel( skillType );
     }
 
     private void OnActiveSkillListBoxButtonClick()
@@ -551,9 +558,11 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         UpdateActiveSkillListBox();
     }
 
-    public void ShowSkillSelectionPanel()
+    public void ShowSkillSelectionPanel( SkillType skillType )
     {
-        this.gameObject.SetActive(true);
+        this.gameObject.SetActive( true );
+        ShowActiveSkillSelectionList( skillType == SkillType.Active );
+        ShowBackendSkillSelectionList( skillType == SkillType.Backend );
     }
 
     public void HideSkillSelectionPanel()
