@@ -114,6 +114,15 @@ public class SkillInfoPanel : MonoBehaviour
 
         this.skillInfoPanel.gameObject.SetActive(true);
         SetupSkillInfomation(this.selectedSkill, this.skillSelectionBox.GetCharacterSkill());
+
+        if (this.skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+        {
+            ShowActiveSkillPanelUI();
+        }
+        else
+        {
+            ShowBackendSkillPanelUI();
+        }
     }
 
     public void Hide()
@@ -370,28 +379,38 @@ public class SkillInfoPanel : MonoBehaviour
 
         if (this.skillSelectionBox.GetIsSelected())
         {
-            this.skillSelectionBox.SetSkillSlotFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillSlotSelectedBackgroundImage());
+            this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillBoxSelectedBackgroundImage());
         }
         else
         {
-            this.skillSelectionBox.SetSkillSlotFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillSlotSelectBackgroundImage());
+            this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillBoxSelectBackgroundImage());
         }
     }
 
     public void ShowRepulseSkillPanelUI()
     {
+        if (this.selectedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() == null)
+        {
+            return;
+        }
+
         skillType = SubSkillType.repulse;
         UpdateSkillInfoPanel(this.selectedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill());
         SetSkillPanelUI(repulseSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
-        this.skillSelectionBox.SetSkillSlotFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetRepulseSkillSlotFrameImage());
+        this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetRepulseSkillBoxFrameImage());
     }
 
     public void ShowDerivedSkillPanelUI()
     {
+        if (this.selectedSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
+        {
+            return;
+        }
+
         skillType = SubSkillType.derived;
         UpdateSkillInfoPanel(this.selectedSkill.GetCharacterSubskillData().GetSelectedDerivedSkill());
         SetSkillPanelUI(derivedSkillInfoBackground, derivedSkillLevelBackground, derivedSkillNameBackground);
-        this.skillSelectionBox.SetSkillSlotFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetDerivedSkillSlotFrameImage());
+        this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetDerivedSkillBoxFrameImage());
     }
 
     public void ShowBackendSkillPanelUI()

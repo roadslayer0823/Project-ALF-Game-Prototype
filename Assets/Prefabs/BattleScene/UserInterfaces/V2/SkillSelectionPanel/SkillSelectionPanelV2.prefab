@@ -52,54 +52,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20ebbe636057f43efb31c1d194566512, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  activeSkillSlotUnselectBackgroundImage: {fileID: 21300000, guid: b454ba89091474789a6f304afa20a108, type: 3}
-  activeSkillSlotSelectBackgroundImage: {fileID: 21300000, guid: 6992347dd6c1d44869cba541d1c6b34f, type: 3}
-  activeSkillSlotSelectedBackgroundImage: {fileID: 21300000, guid: 505c52cbb79b74beebb19089ccad6dd6, type: 3}
-  repulseSkillSlotFrameImage: {fileID: 21300000, guid: f547947f633fd49959011296e616d71f, type: 3}
-  derivedSkillSlotFrameImage: {fileID: 21300000, guid: c7c04b4c451f64661838dfc40bfecc8b, type: 3}
+  activeSkillBoxUnselectBackgroundImage: {fileID: 21300000, guid: b454ba89091474789a6f304afa20a108, type: 3}
+  activeSkillBoxSelectBackgroundImage: {fileID: 21300000, guid: 6992347dd6c1d44869cba541d1c6b34f, type: 3}
+  activeSkillBoxSelectedBackgroundImage: {fileID: 21300000, guid: 505c52cbb79b74beebb19089ccad6dd6, type: 3}
+  repulseSkillBoxFrameImage: {fileID: 21300000, guid: f547947f633fd49959011296e616d71f, type: 3}
+  derivedSkillBoxFrameImage: {fileID: 21300000, guid: c7c04b4c451f64661838dfc40bfecc8b, type: 3}
   skillSelectionSequenceImages:
   - {fileID: 21300000, guid: bac0ba5552c094d8eb0ca9bffe5bcd92, type: 3}
   - {fileID: 21300000, guid: 8618b935c360b4867a3a6027b2c11392, type: 3}
   - {fileID: 21300000, guid: 7a17ccfb88f4a47498d42954e11c70ff, type: 3}
-  backendSkillSlotUnselectBackgroundImage: {fileID: 21300000, guid: f170434b7a04e463d83b3b0abc748aba, type: 3}
-  backendSkillSlotSelectedBackgroundImage: {fileID: 21300000, guid: b8daf13fff6f14cfb8ff9331ffaae024, type: 3}
-  backendDefenceSlotSelectedImage: {fileID: 21300000, guid: 903dccbcfebd84be0b1477f4d812dfbe, type: 3}
-  backendEvasionSlotSelectedImage: {fileID: 21300000, guid: 1e8959fb4ba784d528088f4e9e842328, type: 3}
-  backendGenericSlotSelectedImage: {fileID: 21300000, guid: d44d32b38140b485bb596cedd576f1bd, type: 3}
-  backendDefenceSlotImage: {fileID: 21300000, guid: 7daf790595978429381fc25386ec2e09, type: 3}
-  backendEvasionSlotImage: {fileID: 21300000, guid: 67a3741026bd14d65ad920fc05070f78, type: 3}
-  backendGenericSlotImage: {fileID: 21300000, guid: dbf768741d87d4098b04cfa10768a615, type: 3}
+  backendSkillBoxUnselectBackgroundImage: {fileID: 21300000, guid: f170434b7a04e463d83b3b0abc748aba, type: 3}
+  backendSkillBoxSelectedBackgroundImage: {fileID: 21300000, guid: b8daf13fff6f14cfb8ff9331ffaae024, type: 3}
+  backendDefenceBoxSelectedImage: {fileID: 21300000, guid: 903dccbcfebd84be0b1477f4d812dfbe, type: 3}
+  backendEvasionBoxSelectedImage: {fileID: 21300000, guid: 1e8959fb4ba784d528088f4e9e842328, type: 3}
+  backendGenericBoxSelectedImage: {fileID: 21300000, guid: d44d32b38140b485bb596cedd576f1bd, type: 3}
+  backendDefenceBoxImage: {fileID: 21300000, guid: 7daf790595978429381fc25386ec2e09, type: 3}
+  backendEvasionBoxImage: {fileID: 21300000, guid: 67a3741026bd14d65ad920fc05070f78, type: 3}
+  backendGenericBoxImage: {fileID: 21300000, guid: dbf768741d87d4098b04cfa10768a615, type: 3}
   activeSkillSelectionListGO: {fileID: 8872988638114683259}
-  activeSkillSlotPositions:
+  activeSkillBoxPositions:
   - {fileID: 1118958145470253056}
   - {fileID: 1862926793033839636}
   - {fileID: 5971703049034364944}
   - {fileID: 8882947172428897920}
   - {fileID: 6951353022980014500}
   - {fileID: 8183183060650565151}
-  activeSkillSlotPrefab: {fileID: 9126710129763126092, guid: ba6f694748d174ba6b18b7bfefaa17d2, type: 3}
+  activeSkillBoxPrefab: {fileID: 9126710129763126092, guid: ba6f694748d174ba6b18b7bfefaa17d2, type: 3}
   activeSkillListBoxButton: {fileID: 7425561169133927942}
-  activeSkillListSlotBackgrounds:
+  activeSkillListBoxBackgrounds:
   - {fileID: 4598975237757781770}
   - {fileID: 6910377629933145094}
   - {fileID: 8001019681179815490}
-  activeSkillListSlotTexts:
+  activeSkillListBoxTexts:
   - {fileID: 1532004875142119033}
   - {fileID: 8464099998595118453}
   - {fileID: 5015115318754555697}
   backendSkillSelectionListGO: {fileID: 5589860315559340121}
-  backendSkillSlotPositions:
+  backendSkillBoxPositions:
   - {fileID: 8360343073494445730}
   - {fileID: 3048965043570953594}
   - {fileID: 2528420606520922113}
   - {fileID: 2050068103443849762}
   - {fileID: 4438077907307380564}
   - {fileID: 8049667077353952146}
-  backendSkillSlotPrefab: {fileID: 7502477272755232957, guid: 1f16a69f1dd134f9f871ba8fe2048e8c, type: 3}
+  backendSkillBoxPrefab: {fileID: 7502477272755232957, guid: 1f16a69f1dd134f9f871ba8fe2048e8c, type: 3}
   backendSkillListBoxButton: {fileID: 7175918739225714531}
-  backendDefenceSlotIcon: {fileID: 6919659403055479984}
-  backendEvasionSlotIcon: {fileID: 5229519123398882678}
-  backendGenericSlotIcon: {fileID: 7717804889433358919}
+  backendDefenceBoxIcon: {fileID: 6919659403055479984}
+  backendEvasionBoxIcon: {fileID: 5229519123398882678}
+  backendGenericBoxIcon: {fileID: 7717804889433358919}
   returnButton: {fileID: 982782964219806141}
   skillInfoPanel: {fileID: 0}
 --- !u!1 &5189946530786782906

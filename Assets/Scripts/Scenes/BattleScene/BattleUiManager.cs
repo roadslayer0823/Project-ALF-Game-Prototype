@@ -43,7 +43,7 @@ public class BattleUiManager : MonoBehaviour
         }
         else
         {
-            this.skillSelectionPanelV2.Initialize( OnSkillSelectedFromSkillSelectionPanel, OnSkillDeselectedFromSkillSelectionPanel, ReturnToSkillMenu );
+            this.skillSelectionPanelV2.Initialize( OnSkillSelectedFromSkillSelectionPanelV2, OnSkillDeselectedFromSkillSelectionPanelV2, ReturnToSkillMenu );
         }
 
         if (this.activeSkillSlotListPanelV2 == null)
@@ -275,9 +275,10 @@ public class BattleUiManager : MonoBehaviour
         CheckWhetherToEnableExecuteButton();
     }
 
-    public void OnSkillSelectedFromSkillSelectionPanel( SkillSelectionBoxV2 skillSelectionBox )
+    public void OnSkillSelectedFromSkillSelectionPanelV2( SkillSelectionBoxV2 skillSelectionBox )
     {
         this.selectedGameCharacter.AddSelectedSkill( skillSelectionBox.GetCharacterSkill() );
+        UpdateSkillSlotListPanel(this.selectedGameCharacter);
         CheckWhetherToEnableExecuteButton();
     }
 
@@ -288,9 +289,10 @@ public class BattleUiManager : MonoBehaviour
         CheckWhetherToEnableExecuteButton();
     }
 
-    public void OnSkillDeselectedFromSkillSelectionPanel( SkillSelectionBoxV2 skillSelectionBox )
+    public void OnSkillDeselectedFromSkillSelectionPanelV2( SkillSelectionBoxV2 skillSelectionBox )
     {
         this.selectedGameCharacter.RemoveSelectedSkill( skillSelectionBox.GetCharacterSkill() );
+        UpdateSkillSlotListPanel(this.selectedGameCharacter);
         CheckWhetherToEnableExecuteButton();
     }
 
