@@ -1676,8 +1676,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: a7b2488dc883848e4bf6e7de4cbc793a, type: 2}
+  m_sharedMaterial: {fileID: -7611729042475746319, guid: a7b2488dc883848e4bf6e7de4cbc793a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2170,7 +2170,7 @@ MonoBehaviour:
   minusLevelOriginalPosition: {fileID: 277033777902513974}
   skillSelectedImage: {fileID: 0}
   selectionHighlight: {fileID: 82868480090983170}
-  skillSlotFrame: {fileID: 5981589497772984173}
+  skillBoxFrame: {fileID: 5981589497772984173}
   skillIcon: {fileID: 9185839212698956057}
   skillNameGO: {fileID: 5218442499915591824}
   skillNameText: {fileID: 2194774549794930642}

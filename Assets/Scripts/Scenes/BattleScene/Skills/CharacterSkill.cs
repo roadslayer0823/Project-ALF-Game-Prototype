@@ -71,6 +71,11 @@ public class CharacterSkill
         this.selectedSkillLevel = selectedSkillLevel;
     }
 
+    public int GetSelectedSkillLevel()
+    {
+        return this.selectedSkillLevel;
+    }
+
     public int GetMinumumSkillLevel()
     {
         int _totalSubskill = this.characterSubskillList.Count;
