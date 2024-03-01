@@ -1238,8 +1238,8 @@ MonoBehaviour:
   characterInfoPanel: {fileID: 2121141753}
   battleResultPanel: {fileID: 821837345700175049}
   instructionLabel: {fileID: 599217568}
-  preparationSection: {fileID: 0}
-  skillSelectionPanelV2: {fileID: 0}
+  preparationSection: {fileID: 1496856987}
+  skillSelectionPanelV2: {fileID: 657785054}
   skillInfoPanel: {fileID: 1263108855}
   activeSkillSlotListPanelV2: {fileID: 133278226}
   backendSkillSlotListPanel: {fileID: 1269230629}
@@ -1718,6 +1718,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4076745988354898789, guid: d224e885ba0374983b44a75a427d1f04, type: 3}
   m_PrefabInstance: {fileID: 657785052}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &657785054 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6275619936993992689, guid: d224e885ba0374983b44a75a427d1f04, type: 3}
+  m_PrefabInstance: {fileID: 657785052}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20ebbe636057f43efb31c1d194566512, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &674399078 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5847496022770585197, guid: 84f02c95e53b14345a0865763fa56b25, type: 3}
@@ -3563,6 +3574,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5677165813010128528, guid: 6b1e0f906280e46b08c26c4d71bf6a09, type: 3}
   m_PrefabInstance: {fileID: 1496856985}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1496856987 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 557852181107011184, guid: 6b1e0f906280e46b08c26c4d71bf6a09, type: 3}
+  m_PrefabInstance: {fileID: 1496856985}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 170b4768bff8d4da28e3025bc6c9e1ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1645766761
 GameObject:
   m_ObjectHideFlags: 0
