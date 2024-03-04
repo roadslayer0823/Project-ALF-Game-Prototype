@@ -113,16 +113,27 @@ public class SkillInfoPanel : MonoBehaviour
 
         this.skillInfoPanel.gameObject.SetActive(true);
         SetupSkillInfomation(this.selectedSkill, this.skillSelectionBox.GetCharacterSkill());
+        Subskill subskill = skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData();
 
         if (this.skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
         {
             ShowActiveSkillInfoPanel();
-            ShowActiveSkillPanelUI();
+            if(skillType == SubSkillType.repulse)
+            {
+                ShowRepulseSkillPanelUI();
+            }
+            else if(skillType == SubSkillType.derived)
+            {
+                ShowDerivedSkillPanelUI();
+            }
+            else
+            {
+                ShowActiveSkillPanelUI();
+            }
         }
         else
         {
-            ShowBackendSkillPanelUI();
-            Subskill subskill = skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData();
+            ShowBackendSkillInfoPanel();
             if (subskill.IsDefendingSkill)
             {
                 ShowBackendSkillPanelUI();
@@ -134,6 +145,10 @@ public class SkillInfoPanel : MonoBehaviour
             else if (subskill.IsObservingSkill)
             {
                 ShowObserveSkillPanelUI();
+            }
+            else if (skillType == SubSkillType.counter)
+            {
+                ShowCounterSkillPanelUI();
             }
         }
     }
