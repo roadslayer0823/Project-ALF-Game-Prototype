@@ -135,9 +135,20 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         this.selectedSkillSlot = null;
         ClearSkillSlots();
 
+
+        for (int i = 0; i < this.selectedSkills.Count; i++)
+        {
+            this.skillSlots[i].SetSelectedSkill(this.selectedSkills[i]);
+        }
+
+        for (int i = 0; i < this.skillSlots.Length; i++)
+        {
+            this.skillSlots[i].SetCurrentStateType(stateType);
+        }
+
         if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
         {
-            int _middleSkillIndex = ( middleSkillSlotSkillIndex < 0 ) ? 0 : middleSkillSlotSkillIndex;
+            int _middleSkillIndex = (middleSkillSlotSkillIndex < 0) ? 0 : middleSkillSlotSkillIndex;
             int _otherSkillIndex = -1;
 
             for (int i = 0; i < this.selectedSkills.Count; i++)
@@ -151,36 +162,25 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 
             for (int i = 0; i < this.skillSlots.Length; i++)
             {
-                SkillSlotV2 _skillSlot = this.skillSlots[ i ];
+                SkillSlotV2 _skillSlot = this.skillSlots[i];
                 if (_skillSlot == this.middleSkillSlot)
                 {
-                    _skillSlot.SetSelectedSkill( this.selectedSkills[ _middleSkillIndex ] );
+                    _skillSlot.SetSelectedSkill(this.selectedSkills[_middleSkillIndex]);
                 }
                 else
                 {
-                    _skillSlot.SetSelectedSkill( this.selectedSkills[ _otherSkillIndex ] );
+                    _skillSlot.SetSelectedSkill(this.selectedSkills[_otherSkillIndex]);
                 }
             }
         }
+
         else if (this.selectedSkills.Count == 1)
         {
-            this.clickAreaTop.SetActive(false);
-            this.clickAreaBottom.SetActive(false);
+            LockSkillSlot();
         }
         else
         {
-            this.clickAreaBottom.SetActive(true);
-            this.clickAreaTop.SetActive(true);
-        }
-
-        for (int i = 0; i < this.selectedSkills.Count; i++)
-        {
-            this.skillSlots[i].SetSelectedSkill(this.selectedSkills[i]);
-        }
-
-        for (int i = 0; i < this.skillSlots.Length; i++)
-        {
-            this.skillSlots[i].SetCurrentStateType(stateType);
+            UnlockSkillSlot();
         }
     }
 
@@ -207,7 +207,6 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 return _skillSlot;
             }
         }
-
         return null;
     }
 
@@ -227,6 +226,18 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_WHEEL);
         MoveSlot(1);
+    }
+
+    public void LockSkillSlot()
+    {
+        this.clickAreaTop.SetActive(false);
+        this.clickAreaBottom.SetActive(false);
+    }
+
+    public void UnlockSkillSlot()
+    {
+        this.clickAreaBottom.SetActive(true);
+        this.clickAreaTop.SetActive(true);
     }
 
     private void MoveSlot(int direction)
