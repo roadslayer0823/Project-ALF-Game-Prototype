@@ -358,20 +358,17 @@ public class SkillSlotV2 : MonoBehaviour
 
         Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
         this.skillLevel = _subskillData.Level;
-        string skillTypeText = "";
 
-        if (_subskillData.Prefix.ToString() == "-")
+        if (_subskillData.NamePartB == "-")
         {
-            skillTypeText = "";
+            this.bottomRowText.SetText(_subskillData.NamePartA);
         }
+
         else
         {
-            this.topRowText.SetText("[" + _subskillData.Prefix.ToString() + "]");
+            this.topRowText.SetText(_subskillData.NamePartA);
+            this.bottomRowText.SetText(_subskillData.NamePartB);
         }
-
-        string skillNameText = _subskillData.DisplayName;
-        string integratedText = skillTypeText + " " + skillNameText;
-        SpiltTextFunction(integratedText);
 
         UpdateCharacterSkillLevel(this.skillLevel);
         this.skillIcon.gameObject.SetActive(true);
