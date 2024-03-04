@@ -393,6 +393,7 @@ public class SkillInfoPanel : MonoBehaviour
         skillType = SubSkillType.none;
         UpdateSkillInfoPanel(this.selectedSkill);
         SetSkillPanelUI(activeSkillInfoBackground, yellowLevelBackground, yellowSkillNameBackground);
+        this.derivedSkillSelectionTabButton.gameObject.SetActive(true);
 
         if (this.skillSelectionBox.GetIsSelected())
         {
@@ -412,6 +413,7 @@ public class SkillInfoPanel : MonoBehaviour
         }
 
         skillType = SubSkillType.repulse;
+        this.derivedSkillSelectionTabButton.gameObject.SetActive(true);
         UpdateSkillInfoPanel(this.selectedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill());
         SetSkillPanelUI(repulseSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
         this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetRepulseSkillBoxFrameImage());
@@ -425,6 +427,7 @@ public class SkillInfoPanel : MonoBehaviour
         }
 
         skillType = SubSkillType.derived;
+        this.derivedSkillSelectionTabButton.gameObject.SetActive(false);
         UpdateSkillInfoPanel(this.selectedSkill.GetCharacterSubskillData().GetSelectedDerivedSkill());
         SetSkillPanelUI(derivedSkillInfoBackground, derivedSkillLevelBackground, derivedSkillNameBackground);
         this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetDerivedSkillBoxFrameImage());
