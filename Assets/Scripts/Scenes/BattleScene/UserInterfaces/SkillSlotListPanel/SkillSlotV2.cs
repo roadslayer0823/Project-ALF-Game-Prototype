@@ -11,23 +11,44 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private SkillType skillType = SkillType.None;
     [SerializeField] public BackendSkillType backendSkillType = BackendSkillType.None;
     [SerializeField] private float skillIconScale = 1.0f;
+    [SerializeField] private float alphaThreshold = 0.1f;
 
     [Header("Skill UI")]
     [SerializeField] private Image skillFrame;
     [SerializeField] private Image skillIcon;
-    [SerializeField] private Sprite BlankActiveSkillFrame;
-    [SerializeField] private Sprite BlankBackendSkillFrame;
-    [SerializeField] private Sprite ActiveSkillFrame;
-    [SerializeField] private Sprite BackendSkillFrame;
-    [SerializeField] private Sprite RepulseSkillFrame;
-    [SerializeField] private Sprite DerivedSkillFrame;
-    [SerializeField] private Sprite CounterSkillFrame;
-    [SerializeField] private GameObject SelectedSkillEffect;
+    [SerializeField] private Sprite blankActiveSkillFrame;
+    [SerializeField] private Sprite blankBackendSkillFrame;
+    [SerializeField] private Sprite activeSkillFrame;
+    [SerializeField] private Sprite backendSkillFrame;
+    [SerializeField] private Sprite repulseSkillFrame;
+    [SerializeField] private Sprite derivedSkillFrame;
+    [SerializeField] private Sprite counterSkillFrame;
+    [SerializeField] private GameObject selectedSkillEffect;
+
+    [Header("Activate Skill UI Frame")]
+    [SerializeField] private Sprite activateActiveSkillFrame;
+    [SerializeField] private Sprite activeteRepulseSkillFrame;
+    [SerializeField] private Sprite activeteDerivedSkillFrame;
+    [SerializeField] private Sprite activeteBackendSkillFrame;
+    [SerializeField] private Sprite activeteCounterSkillFrame;
+
+    [Header("Skill Display Text Background")]
+    [SerializeField] private Image skillNameBackground;
+    [SerializeField] private Image skillPrefixBackground;
+    [SerializeField] private Sprite blankSkillNameBackground;
+    [SerializeField] private Sprite blankSkillPrefixBackground;
+    [SerializeField] private Sprite yellowSkillNameBackground;
+    [SerializeField] private Sprite yellowSkillPrefixBackground;
+    [SerializeField] private Sprite blueSkillNameBackground;
+    [SerializeField] private Sprite blueSkillPrefixBackground;
+    [SerializeField] private Sprite derivedSkillNameBackground;
+    [SerializeField] private Sprite derivedSkillPrefixBackground;
+    [SerializeField] private GameObject skillDisplayTextUI;
 
     [Header("Modify Skill Level UI")]
-    [SerializeField] private TextMeshProUGUI skillSlotText;
+    [SerializeField] private TextMeshProUGUI topRowText;
+    [SerializeField] private TextMeshProUGUI bottomRowText;
     [SerializeField] private TextMeshProUGUI skillLevelText;
-    [SerializeField] private TextMeshProUGUI skillPrefixText;
     [SerializeField] private TextMeshProUGUI skillLevelAnimationText;
     [SerializeField] private RectTransform swipeableArea = null;
     [SerializeField] private GameObject skillLevelGameObject;
@@ -56,6 +77,7 @@ public class SkillSlotV2 : MonoBehaviour
     public bool isSkillLevelReachedMaximum = false;
     public bool isSkillLevelReachedMinimum = false;
     private bool isSkillLevelChanged = false;
+    private char[] splitSymbols = { '[', ']', '‧' };
     private StateType currentStateType = StateType.None;
 
     //audio and animation clip id
@@ -90,6 +112,11 @@ public class SkillSlotV2 : MonoBehaviour
         Activated
     }
 
+    private void Start()
+    {
+        this.skillFrame.alphaHitTestMinimumThreshold = alphaThreshold;
+    }
+
     void Update()
     {
         Swipe();
@@ -113,8 +140,8 @@ public class SkillSlotV2 : MonoBehaviour
     {
         this.selectedSkill = null;
         this.SetBlankFrame( this.skillType );
-        this.skillSlotText.SetText("");
-        this.skillPrefixText.SetText("");
+        this.topRowText.SetText("");
+        this.bottomRowText.SetText("");
     }
 
     public void ClickToSelectSkill()
@@ -229,6 +256,7 @@ public class SkillSlotV2 : MonoBehaviour
             this.skillLevel = Math.Clamp(skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
         }
         UpdateCharacterSkillLevel(this.skillLevel);
+        SetSelectedSkill(this.selectedSkill);
         if(isSkillLevelReachedMaximum == false)
         {
             ModifySkillLevelAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
@@ -258,7 +286,8 @@ public class SkillSlotV2 : MonoBehaviour
             this.skillLevel = Math.Clamp(skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
         }
         UpdateCharacterSkillLevel(this.skillLevel);
-        if(isSkillLevelReachedMaximum == false)
+        SetSelectedSkill(this.selectedSkill);
+        if (isSkillLevelReachedMaximum == false)
         {
             ModifySkillLevelAnimation(minusLevelImage, minusLevelBackground, minusLevelOriginalPosition, minusLevelTargetPosition);
         }
@@ -276,14 +305,6 @@ public class SkillSlotV2 : MonoBehaviour
             this.skillLevelText.SetText($"<size=30>LV.</size> {skillLevel}");
             this.skillLevelAnimationText.SetText($"<size=30>LV.</size> {skillLevel}");
         }
-        UpdateSkillSelectionBoxData();
-    }
-
-    private void UpdateSkillSelectionBoxData()
-    {
-        Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
-        this.skillSlotText.SetText(_subskillData.DisplayName);
-        this.skillSlotText.SetText(_subskillData.DisplayName.ToString());
     }
 
     //modify current skill level animation
@@ -338,17 +359,18 @@ public class SkillSlotV2 : MonoBehaviour
         Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
         this.skillLevel = _subskillData.Level;
 
-        if (_subskillData.Prefix.ToString() == "-")
+        if (_subskillData.NamePartB == "-")
         {
-            this.skillPrefixText.SetText("");
+            this.bottomRowText.SetText(_subskillData.NamePartA);
         }
+
         else
         {
-            this.skillPrefixText.SetText("[" + _subskillData.Prefix.ToString() + "]");
+            this.topRowText.SetText(_subskillData.NamePartA);
+            this.bottomRowText.SetText(_subskillData.NamePartB);
         }
 
         UpdateCharacterSkillLevel(this.skillLevel);
-        SetSkillSlotText(_subskillData.DisplayName);
         this.skillIcon.gameObject.SetActive(true);
         UpdateDisplay();
     }
@@ -359,40 +381,93 @@ public class SkillSlotV2 : MonoBehaviour
         switch (this.selectedSkill.GetSkillData().skillType)
         {
             case Skill.SkillType.active:
-                this.skillFrame.sprite = this.ActiveSkillFrame;
+                this.skillFrame.sprite = this.activeSkillFrame;
                 break;
 
             case Skill.SkillType.backend:
-                this.skillFrame.sprite = this.BackendSkillFrame;
+                this.skillFrame.sprite = this.backendSkillFrame;
                 break;
 
             case Skill.SkillType.repulse:
-                this.skillFrame.sprite = this.RepulseSkillFrame;
+                this.skillFrame.sprite = this.repulseSkillFrame;
                 break;
 
             case Skill.SkillType.derived:
-                this.skillFrame.sprite = this.DerivedSkillFrame;
+                this.skillFrame.sprite = this.derivedSkillFrame;
                 break;
 
             case Skill.SkillType.counter:
-                this.skillFrame.sprite = this.CounterSkillFrame;
+                this.skillFrame.sprite = this.counterSkillFrame;
                 break;
         }
         this.skillFrame.SetNativeSize();
+        ShowSkillDisplayTextBackground(this.selectedSkill);
+    }
+
+    public void ShowActivateSkillFrame(CharacterSkill selectedSkill)
+    {
+        this.selectedSkill = selectedSkill;
+        switch (this.selectedSkill.GetSkillData().skillType)
+        {
+            case Skill.SkillType.active:
+                this.skillFrame.sprite = this.activateActiveSkillFrame;
+                break;
+
+            case Skill.SkillType.backend:
+                this.skillFrame.sprite = this.activeteBackendSkillFrame;
+                break;
+
+            case Skill.SkillType.repulse:
+                this.skillFrame.sprite = this.activeteRepulseSkillFrame;
+                break;
+
+            case Skill.SkillType.derived:
+                this.skillFrame.sprite = this.activeteDerivedSkillFrame;
+                break;
+
+            case Skill.SkillType.counter:
+                this.skillFrame.sprite = this.activeteCounterSkillFrame;
+                break;
+        }
+        this.skillFrame.SetNativeSize();
+    }
+
+    public void ShowSkillDisplayTextBackground(CharacterSkill selectedSkill)
+    {
+        this.selectedSkill = selectedSkill;
+        Skill.SkillType _skillType = this.selectedSkill.GetSkillData().skillType;
+
+        if (_skillType == Skill.SkillType.active || _skillType == Skill.SkillType.counter)
+        {
+            this.skillNameBackground.sprite = yellowSkillNameBackground;
+            this.skillPrefixBackground.sprite = yellowSkillPrefixBackground;
+        }
+        else if(_skillType == Skill.SkillType.backend || _skillType == Skill.SkillType.repulse)
+        {
+            this.skillNameBackground.sprite = blueSkillNameBackground;
+            this.skillPrefixBackground.sprite = blueSkillPrefixBackground;
+        }
+        else if(_skillType == Skill.SkillType.derived)
+        {
+            this.skillNameBackground.sprite = derivedSkillNameBackground;
+            this.skillPrefixBackground.sprite = derivedSkillPrefixBackground;
+        }
     }
 
     public void SetBlankFrame(SkillType frameType)
     {
         if (frameType == SkillType.ActiveSkill)
         {
-            this.skillFrame.sprite = this.BlankActiveSkillFrame;
+            this.skillFrame.sprite = this.blankActiveSkillFrame;
             this.skillFrame.SetNativeSize();
         }
         else if (frameType == SkillType.BackendSkill)
         {
-            this.skillFrame.sprite = this.BlankBackendSkillFrame;
+            this.skillFrame.sprite = this.blankBackendSkillFrame;
             this.skillFrame.SetNativeSize();
         }
+        this.skillNameBackground.sprite = blankSkillNameBackground;
+        this.skillPrefixBackground.sprite = blankSkillPrefixBackground;
     }
 
     public void SetCurrentStateType( StateType currentStateType )
@@ -418,15 +493,14 @@ public class SkillSlotV2 : MonoBehaviour
             case StateType.Enabled:
 
                 EnableButton();
-                this.SelectedSkillEffect.SetActive( false );
+                this.selectedSkillEffect.SetActive( false );
                 ShowSkillFrame( this.selectedSkill );
                 UpdateSkillIcon( false );
-
                 break;
 
             case StateType.Disabled:
 
-                this.SelectedSkillEffect.SetActive( false );
+                this.selectedSkillEffect.SetActive( false );
                 SetBlankFrame( this.skillType );
                 UpdateSkillIcon( false );
                 break;
@@ -434,14 +508,14 @@ public class SkillSlotV2 : MonoBehaviour
             case StateType.Selected:
 
                 DisableButton();
-                this.SelectedSkillEffect.SetActive( true );
+                this.selectedSkillEffect.SetActive( true );
+                ShowActivateSkillFrame(this.selectedSkill);
                 UpdateSkillIcon( true );
-
                 break;
 
             case StateType.Activated:
 
-                this.SelectedSkillEffect.SetActive( false );
+                this.selectedSkillEffect.SetActive( false );
                 SetBlankFrame(this.skillType);
                 UpdateSkillIcon( false );
                 PlaySkillOutlineAnimation();
@@ -474,20 +548,61 @@ public class SkillSlotV2 : MonoBehaviour
         return this.isSkillLevelChanged;
     }
 
-    public void SetSkillSlotText(string slotText)
+    public void UpdateCurrentSkillDisplayTextUI(bool isEnable)
     {
-        this.skillSlotText.SetText(slotText);
+        if(isEnable == true)
+        {
+            this.skillDisplayTextUI.SetActive(true);
+        }
+        else if(isEnable == false)
+        {
+            this.skillDisplayTextUI.SetActive(false);
+        }
     }
 
-    private void UpdateSkillIcon( bool isOn )
+    private void UpdateSkillIcon( bool isOn)
     {
         Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
         this.skillIcon.sprite = Resources.Load<Sprite>( ( isOn ) ? _subskillData.IconFilePathOn : _subskillData.IconFilePathOff );
         this.skillIcon.SetNativeSize();
     }
 
-    private void CheckCurrentSkillLevel(bool reachedLevel)
+    private void SpiltTextFunction(string text)
     {
-        isSkillLevelReachedMaximum = reachedLevel;
+       if(text.Length > 6)
+       {
+            int splitIndex = -1;
+            foreach(char symbol in splitSymbols)
+            {
+                splitIndex = text.IndexOf(symbol, 0, 6);
+                if(splitIndex != -1)
+                {
+                    break;
+                }
+            }
+
+            if(splitIndex != -1)
+            {
+                string firstPart = text.Substring(0, splitIndex + 1);
+                string secondPart = text.Substring(splitIndex + 1).TrimStart();
+
+                if(topRowText != null)
+                {
+                    topRowText.text = firstPart;
+                }
+
+                if(bottomRowText != null)
+                {
+                    bottomRowText.text = secondPart;
+                }
+            }
+       }
+       else
+       {
+           if(bottomRowText != null)
+           {
+               bottomRowText.text = text;
+           }
+       }
     }
 }

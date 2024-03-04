@@ -76,7 +76,6 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private GameObject observedSkillListBox = null;
 
     [Header("ObservedSkillInfo")]
-    [SerializeField] private GameObject observedSkillInfo = null;
     [SerializeField] private SpecialSkillInfoPanel observedSkillBoxPrefab = null;
     [SerializeField] private RectTransform observedSkillListContent = null;
 
@@ -117,11 +116,25 @@ public class SkillInfoPanel : MonoBehaviour
 
         if (this.skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
         {
+            ShowActiveSkillInfoPanel();
             ShowActiveSkillPanelUI();
         }
         else
         {
             ShowBackendSkillPanelUI();
+            Subskill subskill = skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData();
+            if (subskill.IsDefendingSkill)
+            {
+                ShowBackendSkillPanelUI();
+            }
+            else if (subskill.IsEvadingSkill)
+            {
+                ShowEvasionSkillPanelUI();
+            }
+            else if (subskill.IsObservingSkill)
+            {
+                ShowObserveSkillPanelUI();
+            }
         }
     }
 
@@ -134,14 +147,16 @@ public class SkillInfoPanel : MonoBehaviour
     {
         CharacterSubskill _characterSubskill = characterSkill.GetCharacterSubskillData();
 
-        if (_characterSubskill.GetSubskillData().IsObservingSkill)
+        if (skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
         {
-            //SetupObservedSkillList(characterSkill);
+            SetupObservedSkill(characterSkill);
+            this.skillInfomation.SetActive(false);
+            this.observedSkillListBox.SetActive(true);
         }
         else
         {
-            //this.observedSkillListBox.SetActive(false);
-            //this.observedSkillInfo.SetActive(false);
+            this.skillInfomation.SetActive(true);
+            this.observedSkillListBox.SetActive(false);
         }
 
         Subskill _subskillData = _characterSubskill.GetSubskillData();
@@ -299,34 +314,21 @@ public class SkillInfoPanel : MonoBehaviour
         }
     }
 
-    private void SetupObservedSkillList(CharacterSkill characterSkill)
+    private void SetupObservedSkill(CharacterSkill characterSkill)
     {
-        this.observedSkillListBox.SetActive(true);
-        this.observedSkillInfo.SetActive(false); // Change back to true in future if needed
+        this.displayName.SetText("看破");
 
-        ClearObservedSkillList();
-
-        if (characterSkill.GetObservedSkillDataList().Count == 0)
+        if (characterSkill.GetObservedSkillDataList().Count != 0)
         {
-            this.observedSkillInfo.gameObject.SetActive(false);
-            this.skillInfomation.SetActive(true);
-        }
-        else
-        {
-            this.observedSkillInfo.gameObject.SetActive(true);
-            this.skillInfomation.SetActive(false);
-            this.displayName.SetText("看破");
-
-            // Initialize the ObservedSkillBox so that the skill can be display on it respectively. 
             for (int i = 0; i < characterSkill.GetObservedSkillDataList().Count; i++)
             {
                 ObservedSkillData _observedSkillData = characterSkill.GetObservedSkillDataList()[i];
-
-                SpecialSkillInfoPanel _observedSkillBox = Instantiate(this.observedSkillBoxPrefab, this.observedSkillListContent, false);
-                _observedSkillBox.Initialize(_observedSkillData);
-
-                this.observedSkillBoxList.Add(_observedSkillBox);
+                observedSkillBoxPrefab.Initialize(_observedSkillData);
             }
+        }
+        else
+        {
+            Debug.Log("none observe skill");
         }
     }
 
@@ -364,7 +366,7 @@ public class SkillInfoPanel : MonoBehaviour
         }
         else if (this.skillInfoTabButton == SkillInfoTabButton.backend)
         {
-            this.attackSkillSelectionTabButton.gameObject.SetActive(true);
+            this.attackSkillSelectionTabButton.gameObject.SetActive(false);
             this.repulseSkillSelectionTabButton.gameObject.SetActive(false);
             this.derivedSkillSelectionTabButton.gameObject.SetActive(false);
             this.counterSkillSelectionTabButton.gameObject.SetActive(true);
@@ -416,13 +418,13 @@ public class SkillInfoPanel : MonoBehaviour
     public void ShowBackendSkillPanelUI()
     {
         UpdateSkillInfoPanel(this.selectedSkill);
-        SetSkillPanelUI(repulseSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
+        SetSkillPanelUI(backendSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
     }
 
     public void ShowEvasionSkillPanelUI()
     {
         UpdateSkillInfoPanel(this.selectedSkill);
-        SetSkillPanelUI(repulseSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
+        SetSkillPanelUI(evasionSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
     }
 
     public void ShowCounterSkillPanelUI()
