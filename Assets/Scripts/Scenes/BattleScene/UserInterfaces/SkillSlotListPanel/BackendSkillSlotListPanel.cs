@@ -140,6 +140,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             if (_backendSkill != null)
             {
                 Subskill _subskillData = _backendSkill.GetCharacterSubskillData().GetSubskillData();
+                backendSkillSlot[i].UpdateCurrentSkillDisplayTextUI(true);
 
                 if (( _isAbleToDefend && _subskillData.IsDefendingSkill )
                    || ( _isAbleToEvade && _subskillData.IsEvadingSkill )
@@ -152,6 +153,10 @@ public class BackendSkillSlotListPanel : MonoBehaviour
                 {
                     _backendSkillSlot.SetCurrentStateType( StateType.Disabled );
                 }
+            }
+            else
+            {
+                backendSkillSlot[i].UpdateCurrentSkillDisplayTextUI(false);
             }
         }
     }
