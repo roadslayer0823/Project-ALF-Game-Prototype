@@ -115,6 +115,8 @@ public class SkillSlotV2 : MonoBehaviour
         this.SetBlankFrame( this.skillType );
         this.skillSlotText.SetText("");
         this.skillPrefixText.SetText("");
+        this.skillIcon.gameObject.SetActive(false);
+        this.currentStateType = StateType.Disabled;
     }
 
     public void ClickToSelectSkill()
@@ -333,6 +335,13 @@ public class SkillSlotV2 : MonoBehaviour
 
     public void SetSelectedSkill(CharacterSkill selectedSkill)
     {
+        if (selectedSkill == null)
+        {
+            Clear();
+
+            return;
+        }
+
         this.selectedSkill = selectedSkill;
 
         Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
