@@ -23,6 +23,8 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private GameObject repulseSkillSelectionTabButton = null;
     [SerializeField] private GameObject derivedSkillSelectionTabButton = null;
     [SerializeField] private GameObject counterSkillSelectionTabButton = null;
+    [SerializeField] private GameObject defenceSkillSelectionTabButton = null;
+    [SerializeField] private GameObject evasionSkillSelectionTabButton = null;
 
     [Header("Level Modifier UI")]
     [SerializeField] private Image skillLevelBackground;
@@ -136,15 +138,18 @@ public class SkillInfoPanel : MonoBehaviour
             ShowBackendSkillInfoPanel();
             if (subskill.IsDefendingSkill)
             {
-                ShowBackendSkillPanelUI();
+                ShowDefenceSkillPanelUI();
+                ShowBackendSkillTabButton(true, false);
             }
             else if (subskill.IsEvadingSkill)
             {
                 ShowEvasionSkillPanelUI();
+                ShowBackendSkillTabButton(false, true);
             }
             else if (subskill.IsObservingSkill)
             {
                 ShowObserveSkillPanelUI();
+                ShowBackendSkillTabButton(false, false);
             }
             else if (skillType == SubSkillType.counter)
             {
@@ -433,7 +438,7 @@ public class SkillInfoPanel : MonoBehaviour
         this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetDerivedSkillBoxFrameImage());
     }
 
-    public void ShowBackendSkillPanelUI()
+    public void ShowDefenceSkillPanelUI()
     {
         UpdateSkillInfoPanel(this.selectedSkill);
         SetSkillPanelUI(backendSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
@@ -475,6 +480,12 @@ public class SkillInfoPanel : MonoBehaviour
     public void UpdateSkillInfoPanel(CharacterSkill selectedSkill)
     {
         SetupSkillInfomation(selectedSkill, this.skillSelectionBox.GetCharacterSkill());
+    }
+
+    public void ShowBackendSkillTabButton(bool isDefenceSkill, bool isEvasionSkill)
+    {
+        this.defenceSkillSelectionTabButton.SetActive(isDefenceSkill);
+        this.evasionSkillSelectionTabButton.SetActive(isEvasionSkill);
     }
 
     public void UpdateSubSkillType()
