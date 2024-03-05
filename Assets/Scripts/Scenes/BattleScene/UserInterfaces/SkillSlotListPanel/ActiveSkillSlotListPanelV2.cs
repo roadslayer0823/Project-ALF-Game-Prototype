@@ -135,17 +135,6 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         this.selectedSkillSlot = null;
         ClearSkillSlots();
 
-
-        for (int i = 0; i < this.selectedSkills.Count; i++)
-        {
-            this.skillSlots[i].SetSelectedSkill(this.selectedSkills[i]);
-        }
-
-        for (int i = 0; i < this.skillSlots.Length; i++)
-        {
-            this.skillSlots[i].SetCurrentStateType(stateType);
-        }
-
         if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
         {
             int _middleSkillIndex = (middleSkillSlotSkillIndex < 0) ? 0 : middleSkillSlotSkillIndex;
@@ -173,7 +162,6 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 }
             }
         }
-
         else if (this.selectedSkills.Count == 1)
         {
             LockSkillSlot();
@@ -181,6 +169,16 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         else
         {
             UnlockSkillSlot();
+        }
+
+        for (int i = 0; i < this.selectedSkills.Count; i++)
+        {
+            this.skillSlots[i].SetSelectedSkill(this.selectedSkills[i]);
+        }
+
+        for (int i = 0; i < this.skillSlots.Length; i++)
+        {
+            this.skillSlots[i].SetCurrentStateType(stateType);
         }
     }
 
