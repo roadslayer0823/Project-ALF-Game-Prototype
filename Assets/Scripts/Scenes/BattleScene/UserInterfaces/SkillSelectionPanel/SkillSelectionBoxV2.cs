@@ -87,7 +87,9 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             //save began touch 2d point
             this.mousePressPosition = Input.mousePosition;
 
-            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+            Color _skillIconPointerDownColor = this.skillIcon.color;
+            _skillIconPointerDownColor.a = 0.5f;
+            this.skillIcon.color = _skillIconPointerDownColor;
         }
         else
         {
@@ -161,6 +163,12 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 
                 this.isLongPress = false;
             }
+
+            Color _skillIconPointerUpColor = this.skillIcon.color;
+            _skillIconPointerUpColor.a = 1.0f;
+            this.skillIcon.color = _skillIconPointerUpColor;
+
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
         }
     }
 
@@ -266,10 +274,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             && !this.isSelected)
         {
             this.skillSelectionPanel.AddSelectedSkilBox(this);
-
-            this.isSelected = true;
-
-            UpdateSkillIcon(true);
         }
 
         ShowSelectionHighlight();
@@ -536,7 +540,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
-    private void UpdateSkillIcon(bool isOn)
+    public void UpdateSkillIcon(bool isOn)
     {
         this.skillIcon.gameObject.SetActive(true);
 

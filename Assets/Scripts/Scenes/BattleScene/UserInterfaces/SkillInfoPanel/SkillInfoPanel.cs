@@ -379,13 +379,16 @@ public class SkillInfoPanel : MonoBehaviour
         UpdateSkillInfoPanel(this.selectedSkill);
         SetSkillPanelUI(activeSkillInfoBackground, yellowLevelBackground, yellowSkillNameBackground);
 
-        if (this.skillSelectionBox.GetIsSelected())
+        if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
         {
-            this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillBoxSelectedBackgroundImage());
-        }
-        else
-        {
-            this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillBoxSelectBackgroundImage());
+            if (this.skillSelectionBox.GetIsSelected())
+            {
+                this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillBoxSelectedBackgroundImage());
+            }
+            else
+            {
+                this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillBoxSelectBackgroundImage());
+            }
         }
     }
 
