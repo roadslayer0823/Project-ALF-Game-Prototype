@@ -149,6 +149,7 @@ public class SkillInfoPanel : MonoBehaviour
             else if (subskill.IsObservingSkill)
             {
                 ShowObserveSkillPanelUI();
+                this.counterSkillSelectionTabButton.SetActive(false);
                 ShowBackendSkillTabButton(false, false);
             }
             else if (skillType == SubSkillType.counter)
