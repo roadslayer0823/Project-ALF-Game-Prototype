@@ -126,7 +126,14 @@ public class SkillInfoPanel : MonoBehaviour
             }
             else if(skillType == SubSkillType.derived)
             {
-                ShowDerivedSkillPanelUI();
+                if(this.skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
+                {
+                    ShowActiveSkillPanelUI();
+                }
+                else
+                {
+                    ShowDerivedSkillPanelUI();
+                }
             }
             else
             {
@@ -384,6 +391,7 @@ public class SkillInfoPanel : MonoBehaviour
             this.repulseSkillSelectionTabButton.gameObject.SetActive(true);
             this.derivedSkillSelectionTabButton.gameObject.SetActive(true);
             this.counterSkillSelectionTabButton.gameObject.SetActive(false);
+            ShowBackendSkillTabButton(false, false);
         }
         else if (this.skillInfoTabButton == SkillInfoTabButton.backend)
         {
@@ -420,7 +428,6 @@ public class SkillInfoPanel : MonoBehaviour
         {
             return;
         }
-
         skillType = SubSkillType.repulse;
         this.derivedSkillSelectionTabButton.gameObject.SetActive(true);
         UpdateSkillInfoPanel(this.selectedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill());
