@@ -146,18 +146,15 @@ public class SkillInfoPanel : MonoBehaviour
             if (subskill.IsDefendingSkill)
             {
                 ShowDefenceSkillPanelUI();
-                ShowBackendSkillTabButton(true, false);
             }
             else if (subskill.IsEvadingSkill)
             {
                 ShowEvasionSkillPanelUI();
-                ShowBackendSkillTabButton(false, true);
             }
             else if (subskill.IsObservingSkill)
             {
                 ShowObserveSkillPanelUI();
                 this.counterSkillSelectionTabButton.SetActive(false);
-                ShowBackendSkillTabButton(false, false);
             }
             else if (skillType == SubSkillType.counter)
             {
@@ -452,12 +449,14 @@ public class SkillInfoPanel : MonoBehaviour
     public void ShowDefenceSkillPanelUI()
     {
         UpdateSkillInfoPanel(this.selectedSkill);
+        ShowBackendSkillTabButton(false, false);
         SetSkillPanelUI(backendSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
     }
 
     public void ShowEvasionSkillPanelUI()
     {
         UpdateSkillInfoPanel(this.selectedSkill);
+        ShowBackendSkillTabButton(false, false);
         SetSkillPanelUI(evasionSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
     }
 
@@ -466,11 +465,25 @@ public class SkillInfoPanel : MonoBehaviour
         skillType = SubSkillType.counter;
         UpdateSkillInfoPanel(this.selectedSkill.GetCharacterSubskillData().GetSelectedCounterSkill());
         SetSkillPanelUI(counterSkillInfoBackground, yellowLevelBackground, yellowSkillNameBackground);
+
+        if (this.selectedSkill.GetCharacterSubskillData().GetSubskillData().IsDefendingSkill)
+        {
+            ShowBackendSkillTabButton(true, false);
+        }
+        else if (this.selectedSkill.GetCharacterSubskillData().GetSubskillData().IsEvadingSkill)
+        {
+            ShowBackendSkillTabButton(false, true);
+        }
+        else if (this.selectedSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+        {
+            ShowBackendSkillTabButton(false, false);
+        }
     }
 
     public void ShowObserveSkillPanelUI()
     {
         UpdateSkillInfoPanel(this.selectedSkill);
+        ShowBackendSkillTabButton(false, false);
         SetSkillPanelUI(observeSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
     }
 
