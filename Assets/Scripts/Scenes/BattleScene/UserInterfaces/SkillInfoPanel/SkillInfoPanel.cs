@@ -155,6 +155,7 @@ public class SkillInfoPanel : MonoBehaviour
             {
                 ShowObserveSkillPanelUI();
                 this.counterSkillSelectionTabButton.SetActive(false);
+                
             }
             else if (skillType == SubSkillType.counter)
             {
@@ -491,14 +492,12 @@ public class SkillInfoPanel : MonoBehaviour
     {
         //increase the skill level
         this.skillSelectionBox.IncreaseSkillLevel();
-        UpdateSubSkillType();
     }
 
     public void DecreaseSkillInfoLevel()
     {
         //decrease the skill level
         this.skillSelectionBox.DecreaseSkillLevel();
-        UpdateSubSkillType();
     }
 
     public void UpdateSkillInfoPanel(CharacterSkill selectedSkill)
@@ -510,25 +509,6 @@ public class SkillInfoPanel : MonoBehaviour
     {
         this.defenceSkillSelectionTabButton.SetActive(isDefenceSkill);
         this.evasionSkillSelectionTabButton.SetActive(isEvasionSkill);
-    }
-
-    public void UpdateSubSkillType()
-    {
-        CharacterSkill activeSkill = this.skillSelectionBox.GetCharacterSkill();
-        CharacterSubskill subSkill = activeSkill.GetCharacterSubskillData();
-        this.SetupSkillInfomation(activeSkill, activeSkill);
-        if (skillType == SubSkillType.repulse)
-        {
-            this.SetupSkillInfomation(subSkill.GetSelectedRepulseSkill(), activeSkill);
-        }
-        else if (skillType == SubSkillType.derived)
-        {
-            this.SetupSkillInfomation(subSkill.GetSelectedDerivedSkill(), activeSkill);
-        }
-        else if (skillType == SubSkillType.counter)
-        {
-            this.SetupSkillInfomation(subSkill.GetSelectedCounterSkill(), activeSkill);
-        }
     }
 
     private void SetSkillPanelUI(Sprite skillPanelBackground, Sprite skillLevelBackground, Sprite skillNameBackground)
