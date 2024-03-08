@@ -417,6 +417,8 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         {
             this.skillTypeText.SetText("[" + _subskillData.Prefix.ToString() + "]");
         }
+
+        UpdateSkillIcon(this.isSelected);
     }
 
     //modify current skill level animation
