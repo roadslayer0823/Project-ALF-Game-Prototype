@@ -10,6 +10,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 {
     [Header("Settings")]
     [SerializeField] private float clickDelay = 0.2f;
+    [SerializeField] private float alphaThreshold = 0.1f;
 
     [Header("ActiveSkillSelectionBox")]
     [SerializeField] private Image currentSkillSelectionSequence = null;
@@ -29,6 +30,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     [SerializeField] private Image skillSelectedImage = null;
 
     [Header("")]
+    [SerializeField] private Image skillSlot = null;
     [SerializeField] private Image selectionHighlight = null;
     [SerializeField] private Image skillBoxFrame = null;
     [SerializeField] private Image skillIcon = null;
@@ -59,6 +61,8 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         this.characterSkill = characterSkill;
         this.skillType = characterSkill.GetSkillData().skillType;
 
+        this.skillSlot.alphaHitTestMinimumThreshold = this.alphaThreshold;
+        this.skillBoxFrame.alphaHitTestMinimumThreshold = this.alphaThreshold;
         this.skillBoxFrame.gameObject.SetActive(true);
         this.skillNameGO.SetActive(true);
 
@@ -134,7 +138,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 
             if (!this.isLongPress && !this.isWaitingSecondClick)
             {
-
                 StartCoroutine(SelectSkillBox());
             }
             else
@@ -150,6 +153,11 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             else
             {
                 this.isDoubleTap = false;
+            }
+
+            if (!this.isWaitingSecondClick)
+            {
+                this.clickCount = 0;
             }
 
             if (this.isLongPress)
@@ -207,7 +215,10 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     {
         this.isWaitingSecondClick = true;
 
-        yield return new WaitForSeconds(this.clickDelay);
+        if (this.isSelected)
+        {
+            yield return new WaitForSeconds(this.clickDelay);
+        }
 
         if (this.skillType == Skill.SkillType.active)
         {
@@ -222,7 +233,11 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     private void SelectActiveSkill()
     {
         this.isWaitingSecondClick = false;
-        this.clickCount = 0;
+
+        if (!this.isSelected)
+        {
+            this.clickCount = 0;
+        }
 
         SkillSelectionBoxV2 _lastSelectedSkillSelectionBox = this.skillSelectionPanel.GetLastSelectedActiveSkillSelectionBox();
 
@@ -247,12 +262,17 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             ShowSelectionHighlight();
             this.skillSelectionPanel.ShowSkillInfoPanel(this);
             this.skillSelectionPanel.SetLastSelectedActiveSkillSelectionBox(this);
+
+            this.clickCount = 0;
         }
         else
         {
             if (this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.isSelected)
             {
                 this.skillSelectionPanel.MoveSelectedSkillToFirst(this, this.skillSelectionPanel.GetSelectedActiveSkillList());
+
+                this.isDoubleTap = false;
+                this.clickCount = 0;
             }
         }
     }
@@ -287,6 +307,11 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         {
             return;
         }
+
+        this.isWaitingSecondClick = false;
+        this.clickCount = 0;
+        this.isLongPress = false;
+        this.isDoubleTap = false;
 
         if (this.skillType == Skill.SkillType.active)
         {
