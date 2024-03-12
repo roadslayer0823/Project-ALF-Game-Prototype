@@ -7,6 +7,9 @@ using static DatabaseManager;
 
 public class SkillSelectionPanelV2 : MonoBehaviour
 {
+    [Header("Settings")]
+    [SerializeField] private float slideSpeed = 0.1f;
+
     [Header("UI Images")]
     [SerializeField] private Sprite activeSkillBoxUnselectBackgroundImage = null;
     [SerializeField] private Sprite activeSkillBoxSelectBackgroundImage = null;
@@ -37,6 +40,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
     [Header("Backend Skill")]
     [SerializeField] private GameObject backendSkillSelectionListGO = null;
+    [SerializeField] private GameObject backendSkillListBoxGO = null;
     [SerializeField] private GameObject[] backendSkillBoxPositions = null;
     [SerializeField] private SkillSelectionBoxV2 backendSkillBoxPrefab = null;
     [SerializeField] private Button backendSkillListBoxButton = null;
@@ -46,6 +50,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     [SerializeField] private Image backendEvasionBoxFilledIcon = null;
     [SerializeField] private Image backendGenericBoxIcon = null;
     [SerializeField] private Image backendGenericBoxFilledIcon = null;
+    [SerializeField] private Transform backendSkillListBoxClosePosition = null;
+    [SerializeField] private Transform backendSkillListBoxOpenPosition = null;
     private List<SkillSelectionBoxV2> backendSkillBoxList = new List<SkillSelectionBoxV2>();
     private List<SkillSelectionBoxV2> selectedBackendSkillBoxList = new List<SkillSelectionBoxV2>();
     private List<CharacterSkill> characterBackendSkillList = new List<CharacterSkill>();
@@ -359,40 +365,15 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     // Show the BackendSkillSelectionList
     public void ShowBackendSkillSelectionList(bool show)
     {
-        this.backendSkillSelectionListGO.SetActive(show);
-
         if (show)
         {
-            for (int i = 0; i < this.backendSkillBoxList.Count; i++)
-            {
-                SkillSelectionBoxV2 _skillSelectionBox = this.backendSkillBoxList[i];
-
-                if (_skillSelectionBox.IsHighlighted())
-                {
-                    ShowSkillInfoPanel(_skillSelectionBox);
-                }
-            }
-
-            if (this.backendDefenceBoxFilledIcon.gameObject.activeInHierarchy)
-            {
-                this.backendDefenceBoxFilledIcon.gameObject.SetActive(false);
-                this.backendDefenceBoxIcon.gameObject.SetActive(true);
-            }
-
-            if (this.backendEvasionBoxFilledIcon.gameObject.activeInHierarchy)
-            {
-                this.backendEvasionBoxFilledIcon.gameObject.SetActive(false);
-                this.backendEvasionBoxIcon.gameObject.SetActive(true);
-            }
-
-            if (this.backendGenericBoxFilledIcon.gameObject.activeInHierarchy)
-            {
-                this.backendGenericBoxFilledIcon.gameObject.SetActive(false);
-                this.backendGenericBoxIcon.gameObject.SetActive(true);
-            }
+            LeanTween.move(this.backendSkillListBoxGO, this.backendSkillListBoxOpenPosition, this.slideSpeed).setOnComplete(ShowBackendSkillSelectionList);
         }
         else
         {
+            this.backendSkillSelectionListGO.SetActive(show);
+            LeanTween.move(this.backendSkillListBoxGO, this.backendSkillListBoxClosePosition, this.slideSpeed);
+
             if (this.backendDefenceBoxIcon.gameObject.activeInHierarchy)
             {
                 this.backendDefenceBoxIcon.gameObject.SetActive(false);
@@ -410,6 +391,40 @@ public class SkillSelectionPanelV2 : MonoBehaviour
                 this.backendGenericBoxIcon.gameObject.SetActive(false);
                 this.backendGenericBoxFilledIcon.gameObject.SetActive(true);
             }
+        }
+    }
+
+    // Show the BackendSkillSelectionList when the lean tween is completed
+    private void ShowBackendSkillSelectionList()
+    {
+        this.backendSkillSelectionListGO.SetActive(true);
+
+        for (int i = 0; i < this.backendSkillBoxList.Count; i++)
+        {
+            SkillSelectionBoxV2 _skillSelectionBox = this.backendSkillBoxList[i];
+
+            if (_skillSelectionBox.IsHighlighted())
+            {
+                ShowSkillInfoPanel(_skillSelectionBox);
+            }
+        }
+
+        if (this.backendDefenceBoxFilledIcon.gameObject.activeInHierarchy)
+        {
+            this.backendDefenceBoxFilledIcon.gameObject.SetActive(false);
+            this.backendDefenceBoxIcon.gameObject.SetActive(true);
+        }
+
+        if (this.backendEvasionBoxFilledIcon.gameObject.activeInHierarchy)
+        {
+            this.backendEvasionBoxFilledIcon.gameObject.SetActive(false);
+            this.backendEvasionBoxIcon.gameObject.SetActive(true);
+        }
+
+        if (this.backendGenericBoxFilledIcon.gameObject.activeInHierarchy)
+        {
+            this.backendGenericBoxFilledIcon.gameObject.SetActive(false);
+            this.backendGenericBoxIcon.gameObject.SetActive(true);
         }
     }
 
