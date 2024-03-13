@@ -655,7 +655,8 @@ public class DatabaseManager : Singleton<DatabaseManager>
         {
             none,
             melee,
-            ranged
+            ranged,
+            melee_or_ranged
         }
         public RangeType Range;
 
@@ -758,7 +759,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public float EnergyMarkerEvasionStressRate { get; private set; }
 
         [JsonProperty("stress_resistance")]
-        public int StressResistance { get; private set; }
+        public float StressResistance { get; private set; }
 
         [JsonProperty("effects")]
         [HideInInspector] public string EffectsString { get; private set; }

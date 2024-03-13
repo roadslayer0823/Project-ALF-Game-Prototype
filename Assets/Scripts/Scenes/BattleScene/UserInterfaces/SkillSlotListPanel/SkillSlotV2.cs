@@ -160,24 +160,17 @@ public class SkillSlotV2 : MonoBehaviour
             if (this.activeSkillSlotListPanelV2 != null)
             {
                 _selectedGameCharacter = this.activeSkillSlotListPanelV2.GetSelectedGameCharacter();
+                this.activeSkillSlotListPanelV2.OnSkillSlotSelected( this );
             }
             else if (this.backendSkillSlotListPanel != null)
             {
                 _selectedGameCharacter = this.backendSkillSlotListPanel.GetSelectedGameCharacter();
+                this.backendSkillSlotListPanel.OnSkillSlotSelected( this );
             }
 
             _selectedGameCharacter.SetAssignedSkill( this.selectedSkill );
             SetCurrentStateType( StateType.Selected );
             PlaySkillOutlineAnimation();
-
-            if (this.activeSkillSlotListPanelV2 != null)
-            {
-                this.activeSkillSlotListPanelV2.OnSkillSlotSelected( this );
-            }
-            else if (this.backendSkillSlotListPanel != null)
-            {
-                this.backendSkillSlotListPanel.OnSkillSlotSelected( this );
-            }
         }
     }
 

@@ -717,16 +717,13 @@ public class BattleAnimationManager : MonoBehaviour
 
             battleFlowATL.StartAttackOpportunityCountdownTimer( this.skillPromptPanel );
             _atlSlotListPanel.GoToATL( battleFlowATL.GetATLNumber(), battleFlowATL.GetAttackOpportunityDuration() );
-            yield return new WaitUntil( () => ( !battleFlowATL.GetIsDuringAttackOpportunityPeriod() || ( _playerCharacter.GetCurrentSkill() != null && _enemyCharacter.GetCurrentSkill() != null ) ) );
+            yield return new WaitUntil( () => ( !battleFlowATL.GetIsDuringAttackOpportunityPeriod() || ( _playerCharacter.GetAssignedSkill() != null && _enemyCharacter.GetAssignedSkill() != null ) ) );
             _atlSlotListPanel.GoToMiddleAtCurrentAtlSlot( 0.1f );
             this.skillPromptPanel.HideCommandPhase( true );
             this.skillPromptPanel.HideCommandPhase( false );
         }
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定先後手方</color>" );
-
-        _playerCharacter.ApplyAssignedSkillAsCurrentSkill();
-        _enemyCharacter.ApplyAssignedSkillAsCurrentSkill();
 
         var ( _attacker, _attackTarget ) = BattleLogicManagerV2.DetermineLeadAndImproviser( _playerCharacter, _enemyCharacter );
 
@@ -742,6 +739,8 @@ public class BattleAnimationManager : MonoBehaviour
                                                  + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“先手方”</color>，"
                                                  + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“后手方”</color>。" );
 
+        // “先手方”發動技能。
+        _attacker.ApplyAssignedSkillAsCurrentSkill();
         _attacker.PlayCharacterAnimation( "Idle" );
         _attackTarget.PlayCharacterAnimation( "Idle" );
 
@@ -831,10 +830,7 @@ public class BattleAnimationManager : MonoBehaviour
                 _attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
 
                 _attacker.Reset();
-                _attacker.ApplyAssignedSkillAsCurrentSkill();
-
                 _attackTarget.Reset();
-                _attackTarget.ApplyAssignedSkillAsCurrentSkill();
 
                 yield break;
             }
@@ -917,10 +913,9 @@ public class BattleAnimationManager : MonoBehaviour
         _attacker.GetOpponentContainer().SetActive( true );
         _attackTarget.ShowCharacterObject();
 
+        // “後手方”發動技能。
         _attackTarget.ApplyAssignedSkillAsCurrentSkill();
 
-        GameCharacter _winner = null;
-        GameCharacter _loser = null;
         float _attackDamage = 0;
         float _stressValueDamage = 0;
         float _statePointDamage = 0;
@@ -958,7 +953,7 @@ public class BattleAnimationManager : MonoBehaviour
             }
         }
 
-        _battleResultData = BattleLogicManagerV2.DetermineResultForPartB( _attacker, _attackTarget, out _winner, out _loser );
+        _battleResultData = BattleLogicManagerV2.DetermineResultForPartB( _attacker, _attackTarget, out GameCharacter _winner, out GameCharacter _loser );
         _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
         _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _attackTarget );
 
@@ -1175,10 +1170,7 @@ public class BattleAnimationManager : MonoBehaviour
         _attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
 
         _attacker.Reset();
-        _attacker.ApplyAssignedSkillAsCurrentSkill();
-
         _attackTarget.Reset();
-        _attackTarget.ApplyAssignedSkillAsCurrentSkill();
 
         if (battleFlowRound.GetCurrentATL().GetATLNumber() == GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots())
         {

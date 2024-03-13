@@ -770,6 +770,16 @@ public class GameCharacter : MonoBehaviour
         this.assignedSkill = assignedSkill;
     }
 
+    public void ResetAssignedSkill()
+    {
+        this.assignedSkill = null;
+    }
+
+    public CharacterSkill GetAssignedSkill()
+    {
+        return this.assignedSkill;
+    }
+
     public void ApplyAssignedSkillAsCurrentSkill()
     {
         if (this.assignedSkill != null)

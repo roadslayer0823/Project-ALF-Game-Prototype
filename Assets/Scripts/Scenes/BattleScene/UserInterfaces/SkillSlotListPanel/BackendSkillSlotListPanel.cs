@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Subskill = DatabaseManager.Subskill;
@@ -14,10 +15,13 @@ public class BackendSkillSlotListPanel : MonoBehaviour
     private CharacterSkill qteSkill = null;
     private GameCharacter selectedGameCharacter = null;
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
-    private SkillSlotV2 selectedSkillSlot = null;
 
-    public void Initialize()
+    private Action<SkillSlotV2> onSkillSlotSelectedCallback = null;
+
+    public void Initialize( Action<SkillSlotV2> onSkillSlotSelectedCallback )
     {
+        this.onSkillSlotSelectedCallback = onSkillSlotSelectedCallback;
+
         for (int i = 0; i < this.backendSkillSlot.Length; i++)
         {
             this.backendSkillSlot[i].InitializeBackendSkillSlot(this);
@@ -46,12 +50,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
     public void OnSkillSlotSelected( SkillSlotV2 skillSlot )
     {
-        if (this.selectedSkillSlot != null)
-        {
-            this.selectedSkillSlot.SetCurrentStateType( StateType.Enabled );
-        }
-
-        this.selectedSkillSlot = skillSlot;
+        this.onSkillSlotSelectedCallback?.Invoke( skillSlot );
     }
 
     public void UpdateBackendSkillSlots( GameCharacter gameCharacter, List<SkillType> skillTypeList )
@@ -65,7 +64,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
         this.selectedGameCharacter = gameCharacter;
         this.selectedSkills = new List<CharacterSkill>( gameCharacter.GetSelectedBackendSkillList() );
-        this.selectedSkillSlot = null;
+        OnSkillSlotSelected( null );
 
         CharacterSkill _defenceSlotCharacterSkill = null;
         CharacterSkill _evasionSlotCharacterSkill = null;
@@ -147,11 +146,16 @@ public class BackendSkillSlotListPanel : MonoBehaviour
                    || ( _isAbleToObserve && _subskillData.IsObservingSkill )
                    )
                 {
-                    _backendSkillSlot.SetCurrentStateType( ( _backendSkill == this.selectedGameCharacter.GetCurrentSkill() ) ? StateType.Selected : StateType.Enabled );
+                    _backendSkillSlot.SetCurrentStateType( ( _backendSkill == this.selectedGameCharacter.GetAssignedSkill() ) ? StateType.Selected : StateType.Enabled );
                 }
                 else
                 {
                     _backendSkillSlot.SetCurrentStateType( StateType.Disabled );
+                }
+
+                if (_backendSkillSlot.GetCurrentStateType() == StateType.Selected)
+                {
+                    OnSkillSlotSelected( _backendSkillSlot );
                 }
             }
             else

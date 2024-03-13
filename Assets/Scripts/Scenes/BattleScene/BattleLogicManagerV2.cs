@@ -36,38 +36,38 @@ public class BattleLogicManagerV2
 
     public static bool ShouldCombatCommandTimeBeSkipped( GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
     {
-        return ( IsAttackingSkill( gameCharacterOne.GetCurrentSkill() ) || IsAttackingSkill( gameCharacterTwo.GetCurrentSkill() ) );
+        return ( IsAttackingSkill( gameCharacterOne.GetAssignedSkill() ) || IsAttackingSkill( gameCharacterTwo.GetAssignedSkill() ) );
     }
 
     public static ( GameCharacter lead, GameCharacter improviser ) DetermineLeadAndImproviser( GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
     {
-        CharacterSkill _gameCharacterOneCurrentSkill = gameCharacterOne.GetCurrentSkill();
-        CharacterSkill _gameCharacterTwoCurrentSkill = gameCharacterTwo.GetCurrentSkill();
+        CharacterSkill _gameCharacterOne_Skill = gameCharacterOne.GetAssignedSkill();
+        CharacterSkill _gameCharacterTwo_Skill = gameCharacterTwo.GetAssignedSkill();
 
-        bool _isGameCharacterOneUsingAttackingSkill = IsAttackingSkill( _gameCharacterOneCurrentSkill );
-        bool _isGameCharacterTwoUsingAttackingSkill = IsAttackingSkill( _gameCharacterTwoCurrentSkill );
+        bool _isGameCharacterOneUsingAttackingSkill = IsAttackingSkill( _gameCharacterOne_Skill );
+        bool _isGameCharacterTwoUsingAttackingSkill = IsAttackingSkill( _gameCharacterTwo_Skill );
 
-        Subskill _gameCharacterOneCurrentSkillSubskillData = null;
-        Subskill _gameCharacterTwoCurrentSkillSubskillData = null;
+        Subskill _gameCharacterOne_Skill_SubskillData = null;
+        Subskill _gameCharacterTwo_Skill_SubskillData = null;
 
         if (_isGameCharacterOneUsingAttackingSkill)
         {
-            _gameCharacterOneCurrentSkillSubskillData = _gameCharacterOneCurrentSkill.GetCharacterSubskillData().GetSubskillData();
+            _gameCharacterOne_Skill_SubskillData = _gameCharacterOne_Skill.GetCharacterSubskillData().GetSubskillData();
 
             string _logOne = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>按下了的技能是"
-                           + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterOneCurrentSkillSubskillData.DisplayName }</color>"
-                           + $" （{ TerminologyManager.GetSkillInformationText( _gameCharacterOneCurrentSkill ) }）。";
+                           + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterOne_Skill_SubskillData.DisplayName }</color>"
+                           + $" （{ TerminologyManager.GetSkillInformationText( _gameCharacterOne_Skill ) }）。";
 
             BattleLog.Instance.AddOnScreenBattleLog( _logOne );
         }
 
         if (_isGameCharacterTwoUsingAttackingSkill)
         {
-            _gameCharacterTwoCurrentSkillSubskillData = _gameCharacterTwoCurrentSkill.GetCharacterSubskillData().GetSubskillData();
+            _gameCharacterTwo_Skill_SubskillData = _gameCharacterTwo_Skill.GetCharacterSubskillData().GetSubskillData();
 
             string _logTwo = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>按下了的技能是"
-                           + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterTwoCurrentSkillSubskillData.DisplayName }</color>"
-                           + $" （{ TerminologyManager.GetSkillInformationText( _gameCharacterTwoCurrentSkill ) }）。";
+                           + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterTwo_Skill_SubskillData.DisplayName }</color>"
+                           + $" （{ TerminologyManager.GetSkillInformationText( _gameCharacterTwo_Skill ) }）。";
 
             BattleLog.Instance.AddOnScreenBattleLog( _logTwo );
         }
@@ -77,19 +77,19 @@ public class BattleLogicManagerV2
         {
             BattleLog.Instance.AddOnScreenBattleLog( "雙方都有按下主動技能或反擊技能。" );
 
-            int _gameCharacterOneCurrentSkillSpeed = _gameCharacterOneCurrentSkillSubskillData.Speed + gameCharacterOne.GetCurrentSkillStatIncrement();
-            int _gameCharacterTwoCurrentSkillSpeed = _gameCharacterTwoCurrentSkillSubskillData.Speed + gameCharacterTwo.GetCurrentSkillStatIncrement();
+            int _gameCharacterOne_Skill_Speed = _gameCharacterOne_Skill_SubskillData.Speed + gameCharacterOne.GetCurrentSkillStatIncrement();
+            int _gameCharacterTwo_Skill_Speed = _gameCharacterTwo_Skill_SubskillData.Speed + gameCharacterTwo.GetCurrentSkillStatIncrement();
 
-            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>按下了的技能的速度是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.GetSpeedLevelText( _gameCharacterOneCurrentSkillSpeed ) }</color>。" );
-            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>按下了的技能的速度是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.GetSpeedLevelText( _gameCharacterTwoCurrentSkillSpeed ) }</color>。" );
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>按下了的技能的速度是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.GetSpeedLevelText( _gameCharacterOne_Skill_Speed ) }</color>。" );
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>按下了的技能的速度是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.GetSpeedLevelText( _gameCharacterTwo_Skill_Speed ) }</color>。" );
 
             // 對比雙方技能的速度。
-            if (_gameCharacterOneCurrentSkillSpeed > _gameCharacterTwoCurrentSkillSpeed)
+            if (_gameCharacterOne_Skill_Speed > _gameCharacterTwo_Skill_Speed)
             {
                 gameCharacterOne.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Lead );
                 gameCharacterTwo.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Improviser );
             }
-            else if (_gameCharacterOneCurrentSkillSpeed < _gameCharacterTwoCurrentSkillSpeed)
+            else if (_gameCharacterOne_Skill_Speed < _gameCharacterTwo_Skill_Speed)
             {
                 gameCharacterOne.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Improviser );
                 gameCharacterTwo.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Lead );
@@ -111,19 +111,19 @@ public class BattleLogicManagerV2
                 // 否則：
                 else
                 {
-                    float _gameCharacterOneCurrentStatePoint = gameCharacterOne.GetCurrentStatePoint() - _gameCharacterOneCurrentSkillSubskillData.StatePointCost;
-                    float _gameCharacterTwoCurrentStatePoint = gameCharacterTwo.GetCurrentStatePoint() - _gameCharacterTwoCurrentSkillSubskillData.StatePointCost;
+                    float _gameCharacterOne_StatePoint = gameCharacterOne.GetCurrentStatePoint() - _gameCharacterOne_Skill_SubskillData.StatePointCost;
+                    float _gameCharacterTwo_StatePoint = gameCharacterTwo.GetCurrentStatePoint() - _gameCharacterTwo_Skill_SubskillData.StatePointCost;
 
-                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>的當前以太值（扣除技能以太值消耗後）是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterOneCurrentStatePoint }</color>。" );
-                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>的當前以太值（扣除技能以太值消耗後）是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterTwoCurrentStatePoint }</color>。" );
+                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>的當前以太值（扣除技能以太值消耗後）是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterOne_StatePoint }</color>。" );
+                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>的當前以太值（扣除技能以太值消耗後）是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterTwo_StatePoint }</color>。" );
 
                     // 對比雙方的當前以太值（扣除了按下的技能的以太值消耗後的數值）：
-                    if (_gameCharacterOneCurrentStatePoint > _gameCharacterTwoCurrentStatePoint)
+                    if (_gameCharacterOne_StatePoint > _gameCharacterTwo_StatePoint)
                     {
                         gameCharacterOne.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Lead );
                         gameCharacterTwo.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Improviser );
                     }
-                    else if (_gameCharacterOneCurrentStatePoint < _gameCharacterTwoCurrentStatePoint)
+                    else if (_gameCharacterOne_StatePoint < _gameCharacterTwo_StatePoint)
                     {
                         gameCharacterOne.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Improviser );
                         gameCharacterTwo.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Lead );

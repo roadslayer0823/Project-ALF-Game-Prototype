@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
@@ -17,10 +18,13 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
     private const string AUDIO_ID_WHEEL = "wheel";
     private SkillSlotV2 middleSkillSlot = null;
-    private SkillSlotV2 selectedSkillSlot = null;
 
-    public void Initialize()
+    private Action<SkillSlotV2> onSkillSlotSelectedCallback = null;
+
+    public void Initialize( Action<SkillSlotV2> onSkillSlotSelectedCallback )
     {
+        this.onSkillSlotSelectedCallback = onSkillSlotSelectedCallback;
+
         for (int i = 0; i < this.skillSlots.Length; i++)
         {
             this.skillSlots[i].Initialize(this);
@@ -57,12 +61,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 
     public void OnSkillSlotSelected( SkillSlotV2 skillSlot )
     {
-        if (this.selectedSkillSlot != null)
-        {
-            this.selectedSkillSlot.SetCurrentStateType( SkillSlotV2.StateType.Enabled );
-        }
-
-        this.selectedSkillSlot = skillSlot;
+        this.onSkillSlotSelectedCallback?.Invoke( skillSlot );
     }
 
     private void SetActiveRecursively(Transform parentTransform, bool active)
@@ -132,7 +131,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 
     private void UpdateSkillSlotsWithSelectedSkills( int middleSkillSlotSkillIndex = 0, SkillSlotV2.StateType stateType = SkillSlotV2.StateType.Enabled )
     {
-        this.selectedSkillSlot = null;
+        OnSkillSlotSelected( null );
         ClearSkillSlots();
 
         if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)

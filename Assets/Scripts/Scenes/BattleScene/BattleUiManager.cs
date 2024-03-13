@@ -23,6 +23,7 @@ public class BattleUiManager : MonoBehaviour
 
     private BattleGameManager battleGameManager = null;
     private GameCharacter selectedGameCharacter = null;
+    private SkillSlotV2 selectedSkillSlot = null;
 
     public void Initialize( BattleGameManager battleGameManager )
     {
@@ -53,8 +54,8 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             this.skillSlotListPanel.SetIsSkillSlotListScrollable( false );
-            this.activeSkillSlotListPanelV2.Initialize();
-            this.backendSkillSlotListPanel.Initialize();
+            this.activeSkillSlotListPanelV2.Initialize( OnSkillSlotSelected );
+            this.backendSkillSlotListPanel.Initialize( OnSkillSlotSelected );
         }
 
         this.atlSlotListPanelV2.Initialize();
@@ -361,6 +362,16 @@ public class BattleUiManager : MonoBehaviour
         this.atlSlotListPanel.OnSkillSlotUpdated();
     }
 
+    public void OnSkillSlotSelected( SkillSlotV2 skillSlot )
+    {
+        if (this.selectedSkillSlot != null)
+        {
+            this.selectedSkillSlot.SetCurrentStateType( SkillSlotV2.StateType.Enabled );
+        }
+
+        this.selectedSkillSlot = skillSlot;
+    }
+
     public bool IsUsingSkillSlotListPanelV2()
     {
         return ( this.activeSkillSlotListPanelV2 != null );
@@ -444,22 +455,15 @@ public class BattleUiManager : MonoBehaviour
 
     public void UpdateSkillButtons( List<SkillType> skillTypeList )
     {
+        bool _isAbleToRepulse = false;
+
         Debug.Log( "UpdateSkillButtons" );
         if (skillTypeList.Contains( SkillType.Repulse ))
         {
+            _isAbleToRepulse = true;
+
             Debug.Log( "SkillType.Repulse" );
             this.activeSkillSlotListPanelV2.ChangeToRepulseMode( this.selectedGameCharacter );
-
-            CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
-            if (_currentSkill != null)
-            {
-                if (_currentSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
-                {
-                    CharacterSkill _repulseSkill = _currentSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
-                    this.selectedGameCharacter.SetAssignedSkill( _repulseSkill );
-                    this.activeSkillSlotListPanelV2.GetSkillSlot( _repulseSkill ).SelectSkill();
-                }
-            }
         }
         else if (skillTypeList.Contains( SkillType.Derive ))
         {
@@ -496,6 +500,19 @@ public class BattleUiManager : MonoBehaviour
             }
 
             this.backendSkillSlotListPanel.UpdateBackendSkillSlots( this.selectedGameCharacter, skillTypeList );
+        }
+
+        if (_isAbleToRepulse)
+        {
+            CharacterSkill _assignedSkill = this.selectedGameCharacter.GetAssignedSkill();
+            if (_assignedSkill != null)
+            {
+                if (_assignedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
+                {
+                    CharacterSkill _repulseSkill = _assignedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
+                    this.activeSkillSlotListPanelV2.GetSkillSlot( _repulseSkill ).SelectSkill();
+                }
+            }
         }
     }
 

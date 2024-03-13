@@ -278,14 +278,14 @@ public class SkillInfoPanel : MonoBehaviour
             this.stressDamage.SetActive(false);
         }
 
-        if (_subskillData.StressResistance > 1) // Stress Resistance
+        if (_subskillData.StressResistance > 0) // Stress Resistance
         {
-            this.stressResistance.SetActive(true);
-            this.stressResistanceValue.SetText((_subskillData.StressResistance).ToString() + "%");
+            this.stressResistance.SetActive( true );
+            this.stressResistanceValue.SetText( string.Format( "{0:0%}", _subskillData.StressResistance ) );
         }
         else
         {
-            this.stressResistance.SetActive(false);
+            this.stressResistance.SetActive( false );
         }
 
         if (BattleLogicManager.GetMaxStatePointUp(_subskillData) > 1) // Max State Point Up

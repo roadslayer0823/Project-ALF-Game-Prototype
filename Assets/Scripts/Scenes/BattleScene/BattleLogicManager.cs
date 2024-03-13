@@ -655,6 +655,8 @@ public class BattleLogicManager
 
                 _gameCharacterSkill.CleanUpObservedSkillDataList();
             }
+
+            _gameCharacter.ResetAssignedSkill();
         }
     }
 
