@@ -184,7 +184,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     {
         if (!this.isSelected && this.skillType == Skill.SkillType.active)
         {
-            SetSkillBoxFrame(this.skillSelectionPanel.GetSkillBoxSelectBackgroundImage());
+            SetSkillBoxFrame(this.skillSelectionPanel.GetActiveSkillBoxSelectBackgroundImage());
         }
         
         this.selectionHighlight.gameObject.SetActive(true);
@@ -199,11 +199,22 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         {
             if (!this.isSelected)
             {
-                SetSkillBoxFrame(this.skillSelectionPanel.GetSkillBoxUnselectBackgroundImage());
+                SetSkillBoxFrame(this.skillSelectionPanel.GetActiveSkillBoxUnselectBackgroundImage());
             }
             else
             {
-                SetSkillBoxFrame(this.skillSelectionPanel.GetSkillBoxSelectedBackgroundImage());
+                SetSkillBoxFrame(this.skillSelectionPanel.GetActiveSkillBoxSelectedBackgroundImage());
+            }
+        }
+        else
+        {
+            if (!this.isSelected)
+            {
+                SetSkillBoxFrame(this.skillSelectionPanel.GetBackendSkillBoxUnselectBackgroundImage());
+            }
+            else
+            {
+                SetSkillBoxFrame(this.skillSelectionPanel.GetBackendSkillBoxSelectedBackgroundImage());
             }
         }
 
