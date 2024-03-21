@@ -203,12 +203,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   atlSlot: {fileID: 4648446970793791326}
-  playerUnuseAtlSlot: {fileID: 21300000, guid: 7528b752e217d4e2b869a7ec58c4d03e, type: 3}
-  playerUsingAtlSlot: {fileID: 21300000, guid: bb011126f25994ebc9ca6b42effe486b, type: 3}
-  playerUsedAtlSlot: {fileID: 21300000, guid: aca953ea8ed104b878fba2899c6a3d49, type: 3}
-  enemyUnuseAtlSlot: {fileID: 21300000, guid: 4e7003678417b4b2cb40c23b2e7d082d, type: 3}
-  enemyUsingAtlSlot: {fileID: 21300000, guid: c6971722cae5943ce8b65023be35a237, type: 3}
-  enemyUsedAtlSlot: {fileID: 21300000, guid: a3310b44fdfe04702a1d70a5686c5490, type: 3}
+  playerUnuseAtlSlot: {fileID: 21300000, guid: 21406ac8f186f4f03ad5804ab2892a4a, type: 3}
+  playerUsingAtlSlot: {fileID: 21300000, guid: 7acc7bfcfeea24189b01d2ba6d865c44, type: 3}
+  playerUsedAtlSlot: {fileID: 21300000, guid: 582d45da022ef4a89b9ab6fccacfaf37, type: 3}
+  enemyUnuseAtlSlot: {fileID: 21300000, guid: a1e48ab27f1e347aaa27825c612b2c28, type: 3}
+  enemyUsingAtlSlot: {fileID: 21300000, guid: 5f19f0354bbe44ecdb72efa603fd35f4, type: 3}
+  enemyUsedAtlSlot: {fileID: 21300000, guid: ed577634066054941bed9486002161e1, type: 3}
   PlayerStartPoint: {fileID: 1017321659253278722}
   EnemyStartPoint: {fileID: 837861968491442279}
   MiddlePoint: {fileID: 5088516297050572557}
