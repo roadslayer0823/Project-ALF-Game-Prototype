@@ -19,11 +19,16 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private SkillInfoPanel skillInfoPanel = null;
     [SerializeField] private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
     [SerializeField] private BackendSkillSlotListPanel backendSkillSlotListPanel = null;
-    [SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
+    [System.Obsolete][SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
+    [SerializeField] private PlayerDashboard playerDashboard = null;
 
     private BattleGameManager battleGameManager = null;
     private GameCharacter selectedGameCharacter = null;
     private SkillSlotV2 selectedSkillSlot = null;
+
+    // Version 2
+    private ATLSlotListPanelV3 atlSlotListPanelV3 = null;
+    private CharacterInfoPanelV2 characterInfoPanelV2 = null;
 
     public void Initialize( BattleGameManager battleGameManager )
     {
@@ -36,6 +41,11 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             this.preparationSection.Initialize( OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel );
+
+            if (this.playerDashboard != null)
+            {
+                this.preparationSection.HideExecuteButton();
+            }
         }
 
         if (this.skillSelectionPanelV2 == null)
@@ -58,7 +68,16 @@ public class BattleUiManager : MonoBehaviour
             this.backendSkillSlotListPanel.Initialize( OnSkillSlotSelected );
         }
 
-        this.atlSlotListPanelV2.Initialize();
+        if (this.playerDashboard == null)
+        {
+            this.atlSlotListPanelV2.Initialize();
+        }
+        else
+        {
+            this.playerDashboard.Initialize( OnExecuteButtonClicked );
+            this.atlSlotListPanelV3 = this.playerDashboard.GetAtlSlotListPanelV3();
+            this.characterInfoPanelV2 = this.playerDashboard.GetCharacterInfoPanelV2();
+        }
     }
 
     public void SetSelectedGameCharacter( GameCharacter gameCharacter )
@@ -76,7 +95,14 @@ public class BattleUiManager : MonoBehaviour
             }
             else
             {
-                this.preparationSection.EnableExecuteButton();
+                if (this.playerDashboard == null)
+                {
+                    this.preparationSection.EnableExecuteButton();
+                }
+                else
+                {
+                    this.playerDashboard.ShowExecuteButtonContainer();
+                }
             }
         }
         else
@@ -87,7 +113,14 @@ public class BattleUiManager : MonoBehaviour
             }
             else
             {
-                this.preparationSection.DisableExecuteButton();
+                if (this.playerDashboard == null)
+                {
+                    this.preparationSection.DisableExecuteButton();
+                }
+                else
+                {
+                    this.playerDashboard.HideExecuteButtonContainer();
+                }
             }
         }
     }
@@ -122,16 +155,24 @@ public class BattleUiManager : MonoBehaviour
             this.backendSkillSlotListPanel.gameObject.SetActive( value );
         }
 
-        if (this.atlSlotListPanelV2 == null)
+        if (this.playerDashboard == null)
         {
-            this.atlSlotListPanel.gameObject.SetActive( value );
+            if (this.atlSlotListPanelV2 == null)
+            {
+                this.atlSlotListPanel.gameObject.SetActive( value );
+            }
+            else
+            {
+                this.atlSlotListPanelV2.gameObject.SetActive( value );
+            }
+
+            this.characterInfoPanel.gameObject.SetActive( value );
         }
         else
         {
-            this.atlSlotListPanelV2.gameObject.SetActive( value );
+            this.playerDashboard.gameObject.SetActive( value );
         }
 
-        this.characterInfoPanel.gameObject.SetActive( value );
         this.battleResultPanel.gameObject.SetActive( value );
     }
 
@@ -383,20 +424,30 @@ public class BattleUiManager : MonoBehaviour
 
     public void ShowATLSlotListPanel( BattleFlowATL[] flowATLs )
     {
-        this.atlSlotListPanel.Show( flowATLs, OnSkillSlotSwiped, OnATLSlotExecuted );
-
         if (this.atlSlotListPanelV2 != null)
         {
             this.atlSlotListPanel.gameObject.SetActive( false );
             this.atlSlotListPanelV2.SetUp( flowATLs );
             this.atlSlotListPanelV2.gameObject.SetActive( true );
         }
+        else
+        {
+            this.atlSlotListPanel.Show( flowATLs, OnSkillSlotSwiped, OnATLSlotExecuted );
+        }
     }
 
     public void ShowATLSlotListPanel( BattleFlowATL_V2[] flowATLs )
     {
-        this.atlSlotListPanelV2.SetUp( flowATLs );
-        this.atlSlotListPanelV2.gameObject.SetActive( true );
+        if (this.atlSlotListPanelV3 != null)
+        {
+            this.atlSlotListPanelV3.SetUp( flowATLs );
+            this.atlSlotListPanelV3.gameObject.SetActive( true );
+        }
+        else
+        {
+            this.atlSlotListPanelV2.SetUp( flowATLs );
+            this.atlSlotListPanelV2.gameObject.SetActive( true );
+        }
     }
 
     public void HideATLSlotListPanel()
@@ -426,6 +477,11 @@ public class BattleUiManager : MonoBehaviour
         return this.atlSlotListPanelV2;
     }
 
+    public ATLSlotListPanelV3 GetATLSlotListPanelV3()
+    {
+        return this.atlSlotListPanelV3;
+    }
+
 #endregion
 
 #region Character Info Panel
@@ -433,6 +489,11 @@ public class BattleUiManager : MonoBehaviour
     public CharacterInfoPanel GetCharacterInfoPanel()
     {
         return this.characterInfoPanel;
+    }
+
+    public CharacterInfoPanelV2 GetCharacterInfoPanelV2()
+    {
+        return this.characterInfoPanelV2;
     }
 
 #endregion
@@ -533,4 +594,9 @@ public class BattleUiManager : MonoBehaviour
     }
 
 #endregion
+
+    public PlayerDashboard GetPlayerDashboard()
+    {
+        return this.playerDashboard;
+    }
 }

@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 public class PlayerDashboard : MonoBehaviour
 {
+    [SerializeField] private ATLSlotListPanelV3 atlSlotListPanelV3 = null;
+    [SerializeField] private CharacterInfoPanelV2 characterInfoPanelV2 = null;
+    [SerializeField] private GameObject executeButtonContainer = null;
     [SerializeField] private Button executeButton = null;
 
     private Action onExecuteButtonClickedCallback = null;
@@ -12,13 +15,14 @@ public class PlayerDashboard : MonoBehaviour
     public void Initialize(Action onExecuteButtonClickedCallback)
     {
         this.onExecuteButtonClickedCallback = onExecuteButtonClickedCallback;
+        this.atlSlotListPanelV3.Initialize();
     }
 
     public void ClickOnExecuteButton()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_EXECUTE);
 
-        DisableExecuteButton();
+        HideExecuteButtonContainer();
 
         if (this.onExecuteButtonClickedCallback != null)
         {
@@ -28,6 +32,16 @@ public class PlayerDashboard : MonoBehaviour
         {
             Debug.Log("The value for 'onExecuteButtonClickedCallback' is not assigned.");
         }
+    }
+
+    public void ShowExecuteButtonContainer()
+    {
+        this.executeButtonContainer.SetActive( true );
+    }
+
+    public void HideExecuteButtonContainer()
+    {
+        this.executeButtonContainer.SetActive( false );
     }
 
     public void EnableExecuteButton()
@@ -40,13 +54,13 @@ public class PlayerDashboard : MonoBehaviour
         this.executeButton.interactable = false;
     }
 
-    public void ShowExecuteButton()
+    public ATLSlotListPanelV3 GetAtlSlotListPanelV3()
     {
-        this.executeButton.gameObject.SetActive(true);
+        return this.atlSlotListPanelV3;
     }
 
-    public void HideExecuteButton()
+    public CharacterInfoPanelV2 GetCharacterInfoPanelV2()
     {
-        this.executeButton.gameObject.SetActive(false);
+        return this.characterInfoPanelV2;
     }
 }

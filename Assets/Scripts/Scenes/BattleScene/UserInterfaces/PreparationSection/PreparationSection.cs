@@ -81,6 +81,11 @@ public class PreparationSection : MonoBehaviour
         this.executeButton.interactable = false;
     }
 
+    public void HideExecuteButton()
+    {
+        this.executeButton.gameObject.SetActive( false );
+    }
+
     public void ShowActiveSkillSelectionPanel()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_POPUP);

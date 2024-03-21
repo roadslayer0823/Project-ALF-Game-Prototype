@@ -81,7 +81,14 @@ public class BattleGameManager : MonoBehaviour
             this.battleUiManager.HideSkillSlotListPanel();
             this.battleUiManager.HideATLSlotListPanel();
 
-            this.battleUiManager.GetCharacterInfoPanel().SetSelectedCharacter( this.playerCharacter );
+            if (this.battleUiManager.GetPlayerDashboard() == null)
+            {
+                this.battleUiManager.GetCharacterInfoPanel().SetSelectedCharacter( this.playerCharacter );
+            }
+            else
+            {
+                this.battleUiManager.GetCharacterInfoPanelV2().SetSelectedCharacter( this.playerCharacter );
+            }
 
             if (this.battleFlowManager_V2 == null)
             {
@@ -109,7 +116,10 @@ public class BattleGameManager : MonoBehaviour
             this.battleFlowManager_V2.GetCurrentRound().SetCurrentPhase( BattleFlowRound_V2.PhaseType.Execution );
         }
 
-        this.battleUiManager.GetCharacterInfoPanel().HideRoundInfoText();
+        if (this.battleUiManager.GetPlayerDashboard() == null)
+        {
+            this.battleUiManager.GetCharacterInfoPanel().HideRoundInfoText();
+        }
     }
 
     public void OnPreparationPhaseStarted()
@@ -236,7 +246,11 @@ public class BattleGameManager : MonoBehaviour
 
     public void OnNewRoundStarted( bool isPlayerFirst )
     {
-        this.battleUiManager.GetCharacterInfoPanel().ShowRoundInfoText( isPlayerFirst );
+        if (this.battleUiManager.GetPlayerDashboard() == null)
+        {
+            this.battleUiManager.GetCharacterInfoPanel().ShowRoundInfoText( isPlayerFirst );
+        }
+
         OnNewRoundStarted();
     }
 

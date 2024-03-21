@@ -30,6 +30,7 @@ public class ATLSlotV2 : MonoBehaviour
     public Action onATLSlotExecutedCallback = null;
 
     private float startingPointX = 0.0f;
+    private int atlNumberForPlayer = 0;
 
     public enum ATLCurrentStatus
     {
@@ -52,9 +53,11 @@ public class ATLSlotV2 : MonoBehaviour
         this.atlSlot.SetNativeSize();
     }
 
-    public void DefaultATLSetup( BattleFlowATL_V2 flowATL )
+    public void DefaultATLSetup( BattleFlowATL_V2 flowATL, int atlNumberForPlayer )
     {
         this.battleFlowATL_V2 = flowATL;
+        this.atlNumberForPlayer = atlNumberForPlayer;
+
         Show( ATLCurrentStatus.Unused );
         this.atlSlot.SetNativeSize();
     }
@@ -102,7 +105,7 @@ public class ATLSlotV2 : MonoBehaviour
         if (this.battleFlowATL_V2 != null)
         {
             int _atlNumber = this.battleFlowATL_V2.GetATLNumber();
-            bool _isPlayer = ( _atlNumber % 2 == 1 );
+            bool _isPlayer = ( _atlNumber % 2 == this.atlNumberForPlayer );
 
             if (aTLCurrentStatus == ATLCurrentStatus.Unused)
             {

@@ -76,9 +76,8 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         }
         else
         {
-            this.stressPercentageText.SetText(_currentStressValue + "%");
+            this.stressPercentageText.SetText( _currentStressValue.ToString() );
             this.stressPointStatus.sprite = this.stressPointNoBreak;
-            //this.stressPercentageBar.fillAmount = 0.214f + (_currentStressValue * 0.00737f);
             this.stressPercentageBar.fillAmount = _currentStressValue;
         }
     }

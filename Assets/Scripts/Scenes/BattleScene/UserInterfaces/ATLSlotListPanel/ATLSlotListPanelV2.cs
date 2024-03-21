@@ -47,7 +47,7 @@ public class ATLSlotListPanelV2 : MonoBehaviour
         {
             if (i < flowATLs.Length)
             {
-                this.theATLSlots[ i ].DefaultATLSetup( flowATLs[ i ] );
+                this.theATLSlots[ i ].DefaultATLSetup( flowATLs[ i ], 1 );
             }
         }
 

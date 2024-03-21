@@ -111,7 +111,8 @@ public class BattleAnimationManager : MonoBehaviour
         GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
         _attacker.SetCurrentSkill( battleFlowATL.GetSelectedSkill() );
 
-        ATLSlotListPanelV2 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
+        //ATLSlotListPanelV2 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
+        ATLSlotListPanelV3 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV3();
         float _skillAnimationLength = 0.0f;
         float _skillCountdownTime = 0.0f;
         bool _hasCounterAttack = false;
@@ -690,7 +691,8 @@ public class BattleAnimationManager : MonoBehaviour
 
     public IEnumerator RunBattleAnimationV2( BattleGameManager battleGameManager, BattleFlowRound_V2 battleFlowRound, BattleFlowATL_V2 battleFlowATL )
     {
-        ATLSlotListPanelV2 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
+        //ATLSlotListPanelV2 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
+        ATLSlotListPanelV3 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV3();
 
         BattleResultData _battleResultData = null;
         BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = null;
@@ -1211,7 +1213,8 @@ public class BattleAnimationManager : MonoBehaviour
         this.skillPromptPanel.HideCommandPhase( isPlayer );
     }
 
-    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound battleFlowRound, ATLSlotListPanelV2 atlSlotListPanel )
+    //private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound battleFlowRound, ATLSlotListPanelV2 atlSlotListPanel )
+    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound battleFlowRound, ATLSlotListPanelV3 atlSlotListPanel )
     {
         attackTarget.Reset();
         attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
@@ -1235,7 +1238,8 @@ public class BattleAnimationManager : MonoBehaviour
         }
     }
 
-    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound_V2 battleFlowRound, ATLSlotListPanelV2 atlSlotListPanel,
+    //private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound_V2 battleFlowRound, ATLSlotListPanelV2 atlSlotListPanel,
+    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound_V2 battleFlowRound, ATLSlotListPanelV3 atlSlotListPanel,
                                          BattleResultData battleResultData, BattleResultData.BattleResultData_GameCharacter attackerBattleResultData, BattleResultData.BattleResultData_GameCharacter attackTargetBattleResultData )
     {
         attackTarget.Reset();
@@ -1260,7 +1264,8 @@ public class BattleAnimationManager : MonoBehaviour
         yield return StartCoroutine( RunDerivedSkill( attacker, attackTarget, atlSlotListPanel, battleFlowRound.GetCurrentATL().GetATLNumber(), battleResultData, attackerBattleResultData, attackTargetBattleResultData ) );
     }
 
-    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber, bool isAbleToUseSkill )
+    //private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber, bool isAbleToUseSkill )
+    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV3 atlSlotListPanel, int atlNumber, bool isAbleToUseSkill )
     {
         attacker.GetSortingGroup().sortingOrder = 3;
         attackTarget.GetSortingGroup().sortingOrder = 1;
@@ -1324,7 +1329,8 @@ public class BattleAnimationManager : MonoBehaviour
         }
     }
 
-    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber,
+    //private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber,
+    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV3 atlSlotListPanel, int atlNumber,
                                          BattleResultData battleResultData, BattleResultData.BattleResultData_GameCharacter attackerBattleResultData, BattleResultData.BattleResultData_GameCharacter attackTargetBattleResultData )
     {
         attacker.GetSortingGroup().sortingOrder = 3;
@@ -1385,7 +1391,8 @@ public class BattleAnimationManager : MonoBehaviour
         }
     }
 
-    private IEnumerator RunMeleeDerivedSkillAnimation( GameCharacter attacker, CharacterSkill attackerSkill, SkillAnimation skillAnimation, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber )
+    //private IEnumerator RunMeleeDerivedSkillAnimation( GameCharacter attacker, CharacterSkill attackerSkill, SkillAnimation skillAnimation, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber )
+    private IEnumerator RunMeleeDerivedSkillAnimation( GameCharacter attacker, CharacterSkill attackerSkill, SkillAnimation skillAnimation, ATLSlotListPanelV3 atlSlotListPanel, int atlNumber )
     {
         string _characterPartB = skillAnimation.CharacterPartB;
         string _skillEffectPartB = skillAnimation.SkillEffectPartB;
@@ -1418,7 +1425,8 @@ public class BattleAnimationManager : MonoBehaviour
         }
     }
 
-    private IEnumerator RunRangedDerivedSkillAnimation( GameCharacter attacker, CharacterSkill attackerSkill, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber )
+    //private IEnumerator RunRangedDerivedSkillAnimation( GameCharacter attacker, CharacterSkill attackerSkill, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber )
+    private IEnumerator RunRangedDerivedSkillAnimation( GameCharacter attacker, CharacterSkill attackerSkill, GameCharacter attackTarget, ATLSlotListPanelV3 atlSlotListPanel, int atlNumber )
     {
         atlSlotListPanel.GoToATL( atlNumber, 4.5f, attackerSkill );
 
