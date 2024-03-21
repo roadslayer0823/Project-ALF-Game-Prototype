@@ -469,6 +469,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: ActiveSkillSlotListPanelV2
       objectReference: {fileID: 0}
+    - target: {fileID: 1402361307135755680, guid: 7b16df37c944d417aa85d90784c07f98, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2135954430017680752, guid: 7b16df37c944d417aa85d90784c07f98, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4553464527323099256, guid: 7b16df37c944d417aa85d90784c07f98, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7665806968079913483, guid: 7b16df37c944d417aa85d90784c07f98, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3273,11 +3285,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2410091350577756149, guid: 82db42ef1425e46cb95a335d7df01352, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -150
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2410091350577756149, guid: 82db42ef1425e46cb95a335d7df01352, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 47
       objectReference: {fileID: 0}
     - target: {fileID: 2410091350577756149, guid: 82db42ef1425e46cb95a335d7df01352, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3324,6 +3336,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2121017327}
     m_Modifications:
+    - target: {fileID: 1192311524739415057, guid: 8568de837132a4230ba30f65462b66c5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3191713532244933847, guid: 8568de837132a4230ba30f65462b66c5, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -3408,9 +3424,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5017714432185334705, guid: 8568de837132a4230ba30f65462b66c5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7305615734285251100, guid: 8568de837132a4230ba30f65462b66c5, type: 3}
       propertyPath: m_Name
       value: BackendSkillSlotListPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 9106682387990265375, guid: 8568de837132a4230ba30f65462b66c5, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8568de837132a4230ba30f65462b66c5, type: 3}
@@ -3643,7 +3667,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: cb58948016d5d4d898630d420299f7d4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fffbee32b1dc54877ba52b468b4c9802, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4396,11 +4420,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 427660632138838098, guid: b7c7a290349e542438bff7becc262c6e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 5
+      value: -41
       objectReference: {fileID: 0}
     - target: {fileID: 427660632138838098, guid: b7c7a290349e542438bff7becc262c6e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 427660632138838098, guid: b7c7a290349e542438bff7becc262c6e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

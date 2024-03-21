@@ -207,7 +207,7 @@ public class SkillInfoPanel : MonoBehaviour
         if (BattleLogicManager.GetAttackDamage(_subskillData) > 0) // Attack Damage
         {
             this.attackDamage.SetActive(true);
-            this.attackDamageValue.SetText(BattleLogicManager.GetAttackDamage(_subskillData).ToString() + "%");
+            this.attackDamageValue.SetText(BattleLogicManager.GetAttackDamage(_subskillData).ToString());
         }
         else
         {
