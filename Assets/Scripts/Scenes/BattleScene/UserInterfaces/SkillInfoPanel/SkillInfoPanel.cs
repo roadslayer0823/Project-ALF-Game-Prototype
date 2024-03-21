@@ -411,11 +411,11 @@ public class SkillInfoPanel : MonoBehaviour
         {
             if (this.skillSelectionBox.GetIsSelected())
             {
-                this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillBoxSelectedBackgroundImage());
+                this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetActiveSkillBoxSelectedBackgroundImage());
             }
             else
             {
-                this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetSkillBoxSelectBackgroundImage());
+                this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetActiveSkillBoxSelectBackgroundImage());
             }
         }
     }
@@ -430,7 +430,11 @@ public class SkillInfoPanel : MonoBehaviour
         this.derivedSkillSelectionTabButton.gameObject.SetActive(true);
         UpdateSkillInfoPanel(this.selectedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill());
         SetSkillPanelUI(repulseSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
-        this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetRepulseSkillBoxFrameImage());
+
+        if (this.skillSelectionBox.GetIsSelected())
+        {
+            this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetRepulseSkillBoxFrameImage());
+        }
     }
 
     public void ShowDerivedSkillPanelUI()
@@ -444,7 +448,11 @@ public class SkillInfoPanel : MonoBehaviour
         this.derivedSkillSelectionTabButton.gameObject.SetActive(false);
         UpdateSkillInfoPanel(this.selectedSkill.GetCharacterSubskillData().GetSelectedDerivedSkill());
         SetSkillPanelUI(derivedSkillInfoBackground, derivedSkillLevelBackground, derivedSkillNameBackground);
-        this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetDerivedSkillBoxFrameImage());
+
+        if (this.skillSelectionBox.GetIsSelected())
+        {
+            this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetDerivedSkillBoxFrameImage());
+        }
     }
 
     public void ShowDefenceSkillPanelUI()
@@ -478,6 +486,11 @@ public class SkillInfoPanel : MonoBehaviour
         else if (this.selectedSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
         {
             ShowBackendSkillTabButton(false, false);
+        }
+
+        if (this.skillSelectionBox.GetIsSelected())
+        {
+            this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetCounterSkillBoxFrameImage());
         }
     }
 

@@ -29,8 +29,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1012267114182258824}
   - {fileID: 7882923261070061789}
+  - {fileID: 1012267114182258824}
   - {fileID: 377780452721206961}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -69,6 +69,7 @@ MonoBehaviour:
   backendDefenceBoxImage: {fileID: 21300000, guid: 7daf790595978429381fc25386ec2e09, type: 3}
   backendEvasionBoxImage: {fileID: 21300000, guid: 67a3741026bd14d65ad920fc05070f78, type: 3}
   backendGenericBoxImage: {fileID: 21300000, guid: dbf768741d87d4098b04cfa10768a615, type: 3}
+  counterSkillBoxFrameImage: {fileID: 21300000, guid: 8952c816e58ec4f9790bd31429d3dbd1, type: 3}
   activeSkillSelectionListGO: {fileID: 8872988638114683259}
   activeSkillBoxPositions:
   - {fileID: 1118958145470253056}
@@ -104,8 +105,6 @@ MonoBehaviour:
   backendEvasionBoxFilledIcon: {fileID: 3574421904853762160}
   backendGenericBoxIcon: {fileID: 7717804889433358919}
   backendGenericBoxFilledIcon: {fileID: 6109524651211413141}
-  backendSkillListBoxClosePosition: {fileID: 1024385541274150695}
-  backendSkillListBoxOpenPosition: {fileID: 561601730556932268}
   returnButton: {fileID: 982782964219806141}
   skillInfoPanel: {fileID: 0}
 --- !u!1 &5189946530786782906
@@ -140,12 +139,12 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4076745988354898789}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 192, y: -446}
-  m_SizeDelta: {x: 180, y: 146}
+  m_AnchoredPosition: {x: -687.4521, y: 57.603}
+  m_SizeDelta: {x: 2160.783, y: 1153.206}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4964404302157339057
 CanvasRenderer:
@@ -168,7 +167,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -254,7 +253,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 929896807347168621, guid: 64fdb1b56593445a69eed289cc35997e, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 929896807347168621, guid: 64fdb1b56593445a69eed289cc35997e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -695,16 +694,6 @@ PrefabInstance:
 --- !u!224 &377780452721206961 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8000175405524141311, guid: 52c8909fa7961401a91717341276e706, type: 3}
-  m_PrefabInstance: {fileID: 7653991214338662990}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &561601730556932268 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7922752828526482146, guid: 52c8909fa7961401a91717341276e706, type: 3}
-  m_PrefabInstance: {fileID: 7653991214338662990}
-  m_PrefabAsset: {fileID: 0}
---- !u!224 &1024385541274150695 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 7210026935243294057, guid: 52c8909fa7961401a91717341276e706, type: 3}
   m_PrefabInstance: {fileID: 7653991214338662990}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &2050068103443849762 stripped
