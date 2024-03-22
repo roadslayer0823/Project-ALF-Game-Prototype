@@ -70,7 +70,7 @@ public class BattleUiManager : MonoBehaviour
 
         if (this.playerDashboard == null)
         {
-            this.atlSlotListPanelV2.Initialize();
+            this.atlSlotListPanelV3.Initialize();
         }
         else
         {

@@ -15,7 +15,6 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     [SerializeField] private Sprite stressPointNoBreak = null;
     [SerializeField] private Image stressPointStatus = null;
     [SerializeField] private Image statePointStatus = null;
-    [SerializeField] private Image stressPercentageBar = null;
     [SerializeField] private Image virtualHPBar = null;
     [SerializeField] private Image healthPointBar = null;
     [SerializeField] private Image statePointBar = null;
@@ -78,7 +77,6 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         {
             this.stressPercentageText.SetText( _currentStressValue.ToString() );
             this.stressPointStatus.sprite = this.stressPointNoBreak;
-            this.stressPercentageBar.fillAmount = _currentStressValue;
         }
     }
 }
