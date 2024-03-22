@@ -126,6 +126,7 @@ public class BattleGameManager : MonoBehaviour
     {
         this.battleUiManager.SetSelectedGameCharacter( this.playerCharacter );
         this.battleUiManager.HideATLSlotListPanel();
+        this.battleUiManager.CheckWhetherToEnableExecuteButton();
 
         if (this.battleUiManager.GetPreparationSection() == null)
         {
