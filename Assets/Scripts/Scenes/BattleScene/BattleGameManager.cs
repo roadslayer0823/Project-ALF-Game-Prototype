@@ -288,8 +288,16 @@ public class BattleGameManager : MonoBehaviour
 
             case BattleAnimationManager.AnimationEvent.OnObservingSkillSelected:
 
-                GameCharacter _currentCaster = battleAnimationManager.GetCurrentCaster();
-                _currentObservingSkill.SetObservedSkill( _currentCaster, _currentCaster.GetCurrentSkill() );
+                if (this.battleFlowManager_V2 == null)
+                {
+                    GameCharacter _currentCaster = battleAnimationManager.GetCurrentCaster();
+                    _currentObservingSkill.SetObservedSkill( _currentCaster, _currentCaster.GetCurrentSkill() );
+                }
+                else
+                {
+                    GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
+                    _currentObservingSkill.SetObservedSkill( _currentAttacker, _currentAttacker.GetCurrentSkill() );
+                }
 
                 break;
 

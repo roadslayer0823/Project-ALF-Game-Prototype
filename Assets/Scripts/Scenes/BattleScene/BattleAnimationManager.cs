@@ -352,12 +352,14 @@ public class BattleAnimationManager : MonoBehaviour
                     BattleFlowATL _attackTargetNextATL = battleFlowRound.GetNextATL( _attackTarget );
                     battleFlowRound.GoToTargetATL( _attackTargetNextATL, false );
 
-                    CharacterSkill _repulseSkill = _attackTarget.GetCurrentSkill();
+                    _attacker.SetCurrentAttacker( _attackTarget );
                     BattleLogicManager.ExecuteCasterSkillOnUse( _attackTarget, _attacker, out _log );
                     ShowSkillInfo( _attacker, _attackTarget );
                     this.currentCaster = _attackTarget;
 
                     BattleLog.Instance.AddOnScreenBattleLog( _log );
+
+                    CharacterSkill _repulseSkill = _attackTarget.GetCurrentSkill();
 
                     _atlSlotListPanel.GoToATL( _attackTargetNextATL.GetATLNumber(), GetAttackAnimationLength( _attackTarget, REPULSE_ANIMATION_NAME, REPULSE_ANIMATION_NAME ), _repulseSkill );
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
@@ -771,10 +773,14 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (_attacker is PlayerCharacter)
         {
+            // TODO: Currently, the player character has ranged attack animations only.
+            // TODO: Added a temporary fix here to handle the situation that the skill's range type is melee-or-ranged.
+            _attackerRangeType = RangeType.ranged;
             ChangeToBackgroundPartA();
         }
         else if (_attacker is EnemyCharacter)
         {
+            // TODO: Currently, the enemy character has melee attack animations only.
             _attackerRangeType = RangeType.melee;
             _attackerCharacterPartA = "Attack_Part_A";
             _attackerCharacterPartB = "Attack_Part_B";
