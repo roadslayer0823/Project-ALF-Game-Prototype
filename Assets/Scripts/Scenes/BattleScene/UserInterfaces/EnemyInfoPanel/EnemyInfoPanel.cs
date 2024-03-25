@@ -4,19 +4,21 @@ using TMPro;
 
 public class EnemyInfoPanel : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI enemyNameText = null;
-    [SerializeField] private TextMeshProUGUI effectMarkerLabel = null;
-    [SerializeField] private TextMeshProUGUI stressPercentageText = null;
-    [SerializeField] private GameObject stressBreakStatus = null;
+    [SerializeField] private TextMeshPro enemyNameText = null;
+    [SerializeField] private TextMeshPro effectMarkerLabel = null;
+    [SerializeField] private TextMeshPro stressPercentageText = null;
+    [SerializeField] private GameObject stressBreakUI = null;
+    [SerializeField] private GameObject stateBreakUI = null;
     [SerializeField] private GameObject effectMarker = null;
     [SerializeField] private Sprite statePointBreak = null;
     [SerializeField] private Sprite statePointNoBreak = null;
     [SerializeField] private Sprite stressPointBreak = null;
     [SerializeField] private Sprite stressPointNoBreak = null;
-    [SerializeField] private Image virtualHPBar = null;
-    [SerializeField] private Image statePointStatus = null;
-    [SerializeField] private Image healthPointBar = null;
-    [SerializeField] private Image statePointBar = null;
+    [SerializeField] private SpriteRenderer virtualHPBar = null;
+    [SerializeField] private SpriteRenderer statePointStatus = null;
+    [SerializeField] private SpriteRenderer stressPointStatus = null;
+    [SerializeField] private SpriteRenderer healthPointBar = null;
+    [SerializeField] private SpriteRenderer statePointBar = null;
 
     private GameCharacter selectedCharacter = null;
 
@@ -25,7 +27,7 @@ public class EnemyInfoPanel : MonoBehaviour
         this.selectedCharacter = selectedCharacter;
         this.selectedCharacter.SetOnCharacterInfoUpdated(UpdateDisplayInfo);
 
-        this.enemyNameText.SetText(this.selectedCharacter.GetCharacterName());
+        this.enemyNameText.text = this.selectedCharacter.GetCharacterName();
         UpdateDisplayInfo();
     }
 
@@ -49,8 +51,12 @@ public class EnemyInfoPanel : MonoBehaviour
         {
             _currentHealthPoint = 0;
         }
-        this.healthPointBar.fillAmount = _currentHealthPoint / _maximumHealthPoint;
-        this.virtualHPBar.fillAmount = _virtualHealthPoint / _maximumHealthPoint;
+
+        float _healthPointPercentage = _currentHealthPoint / _maximumHealthPoint;
+        float _virtualPointPercentage = _virtualHealthPoint / _maximumHealthPoint;
+
+        healthPointBar.size = new Vector2((_healthPointPercentage > 0) ? _healthPointPercentage * 10.0f : 0.0f, healthPointBar.size.y);
+        virtualHPBar.size = new Vector2((_virtualPointPercentage > 0) ? _virtualPointPercentage * 10.0f : 0.0f, virtualHPBar.size.y);
 
         // State Point
         float _maximumStatePoint = this.selectedCharacter.GetMaximumStatePoint();
@@ -58,27 +64,31 @@ public class EnemyInfoPanel : MonoBehaviour
 
         if (this.selectedCharacter.GetIsBreakStatusCausedByStatePoint())
         {
-            this.statePointStatus.sprite = this.statePointNoBreak;
-            Debug.Log("break");
+            this.statePointStatus.sprite = this.statePointBreak;
+            this.stateBreakUI.SetActive(true);
         }
         else
         {
-            this.statePointStatus.sprite = this.statePointBreak;
-            this.statePointBar.fillAmount = _currentStatePoint / _maximumStatePoint;
+            this.stateBreakUI.SetActive(false);
+            this.statePointStatus.sprite = this.statePointNoBreak;
+            float _statePointPercentage = _currentStatePoint / _maximumStatePoint;
+            statePointBar.size = new Vector2((_statePointPercentage> 0) ? _statePointPercentage * 10.0f : 0.0f, statePointBar.size.y);
         }
 
         // Stress Value
         float _currentStressValue = this.selectedCharacter.GetCurrentStressValue();
         if (this.selectedCharacter.GetIsBreakStatusCausedByStressValue())
         {
+            this.stressPointStatus.sprite = this.stressPointBreak;
             this.stressPercentageText.gameObject.SetActive(false);
-            this.stressBreakStatus.gameObject.SetActive(true);
+            this.stressBreakUI.gameObject.SetActive(true);
         }
         else
         {
+            this.stressPointStatus.sprite = this.stressPointNoBreak;
             this.stressPercentageText.gameObject.SetActive(true);
-            this.stressPercentageText.SetText(_currentStressValue.ToString());
-            this.stressBreakStatus.gameObject.SetActive(false);
+            this.stressPercentageText.text = _currentStressValue.ToString();
+            this.stressBreakUI.gameObject.SetActive(false);
         }
     }
 }
