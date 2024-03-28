@@ -178,7 +178,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         this.skillNameGO.SetActive(true);
         LeanTween.delayedCall(skillNameShowingDuration, Hide);
 
-        if (caster is PlayerCharacter)
+        if (caster.GetIsPlayer())
         {
             ShowSkillTag(_characterSkill, true);
         }

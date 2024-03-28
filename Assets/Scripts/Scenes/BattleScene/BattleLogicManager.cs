@@ -24,7 +24,7 @@ public class BattleLogicManager
         Skill _casterSkillData = _casterSkill.GetSkillData();
         Subskill _casterSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
 
-        float _statePointCost = GetStatePointCost( _casterSubskillData );
+        float _statePointCost = BattleCalculationManager.GetStatePointCost( _casterSubskillData );
         string _evasionStressLog = "";
 
         CharacterSkill _targetSkill = target.GetCurrentSkill();
@@ -39,10 +39,10 @@ public class BattleLogicManager
             }
         }
 
-        _statePointCost = AdjustAmount( _statePointCost );
+        _statePointCost = BattleCalculationManager.AdjustAmount( _statePointCost );
         caster.MinusCurrentStatePoint( _statePointCost, false, false );
 
-        float _maxStatePointUp = AdjustAmount( GetMaxStatePointUp( _casterSubskillData ) );
+        float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
         caster.AddMaximumStatePoint( _maxStatePointUp );
 
         log = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + caster.GetCharacterName() + "</color>" + "對"
@@ -173,7 +173,7 @@ public class BattleLogicManager
 
         if (hasAttackDamage)
         {
-            attackDamage = AdjustAmount( GetCurrentAttackDamage( _casterSkill, caster, target ) );
+            attackDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetCurrentAttackDamage( _casterSkill, caster, target ) );
             if (attackDamage > 0)
             {
                 target.MinusCurrentHealthPoint( attackDamage );
@@ -208,13 +208,13 @@ public class BattleLogicManager
         // If the target does not take the health damage, then it will take the stress damage.
         if (!hasAttackDamage && hasStressValueDamage)
         {
-            stressValueDamage = AdjustAmount( GetStressValueDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) );
+            stressValueDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStressValueDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) );
             target.AddCurrentStressValue( stressValueDamage, isBreakStatusAvailable );
         }
 
         if (hasStatePointDamage)
         {
-            statePointDamage = AdjustAmount( GetStatePointDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
+            statePointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStatePointDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
             target.MinusCurrentStatePoint( statePointDamage, true, isBreakStatusAvailable );
         }
 
@@ -261,7 +261,7 @@ public class BattleLogicManager
                     {
                         if (_targetSubskillData.Range == Subskill.RangeType.ranged)
                         {
-                            float _maxStatePointUp = AdjustAmount( GetMaxStatePointUp( _casterSubskillData ) );
+                            float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
                             caster.AddMaximumStatePoint( _maxStatePointUp );
 
                             log += $"<color={BattleLog.KEYWORD_COLOR_CODE}>{caster.GetCharacterName()}</color>提升了"
@@ -314,42 +314,6 @@ public class BattleLogicManager
             target.RemoveEnergyMarker();
             log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>帶有的<color={ BattleLog.KEYWORD_COLOR_CODE }>【能量殘響】</color>被消去了。";
         }
-    }
-
-    public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target )
-    {
-        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
-
-        Subskill subskillData = skill.GetCharacterSubskillData().GetSubskillData();
-
-        float _attackDamage = ( GetAttackDamage( skill.GetCharacterSubskillData().GetSubskillData() )
-                              * ( ( target.HasEnergyMarker() ) ? subskillData.EnergyMarkerHealthDamageRate : 1.0f )
-                              * ( ( target.GetIsInBreakStatus() ) ? _battleConfiguration.GetBreakDamageMultiplier() : 1.0f ) );
-
-        CharacterSkill _targetSkill = target.GetCurrentSkill();
-        if (_targetSkill != null)
-        {
-            Subskill _targetSubskillData = _targetSkill.GetCharacterSubskillData().GetSubskillData();
-
-            if (_targetSubskillData.IsDefendingSkill
-                && _targetSubskillData.FailedDefenseDamageRate > 0)
-            {
-                _attackDamage *= _targetSubskillData.FailedDefenseDamageRate;
-            }
-
-            if (_targetSkill.GetSkillData().skillType == Skill.SkillType.repulse
-                && _targetSubskillData.FailedRepulseDamageRate > 0)
-            {
-                _attackDamage -= GetAttackDamage( _targetSubskillData ) * _targetSubskillData.FailedRepulseDamageRate;
-            }
-        }
-
-        if (_attackDamage <= 0)
-        {
-            _attackDamage = 1.0f;
-        }
-
-        return _attackDamage;
     }
 
     /*
@@ -674,35 +638,5 @@ public class BattleLogicManager
             defender.TriggerEvent( BattleAnimationManager.AnimationEvent.OnSkillBeingObserved );
             defender.SetCurrentObservingSkill( null );
         }
-    }
-
-    public static float GetAttackDamage( Subskill subskillData )
-    {
-        return ( subskillData.AttackDamage * GameConfiguration.Instance.GetBattleConfiguration().GetAttackDamageMultiplier() );
-    }
-
-    public static float GetStatePointCost( Subskill subskillData )
-    {
-        return ( subskillData.StatePointCost * GameConfiguration.Instance.GetBattleConfiguration().GetStatePointCostMultiplier() );
-    }
-
-    public static float GetMaxStatePointUp( Subskill subskillData )
-    {
-        return ( subskillData.MaxStatePointUp * GameConfiguration.Instance.GetBattleConfiguration().GetMaxStatePointUpMultiplier() );
-    }
-
-    public static float GetStatePointDamage( Subskill subskillData )
-    {
-        return ( subskillData.StatePointDamage * GameConfiguration.Instance.GetBattleConfiguration().GetStatePointDamageMultiplier() );
-    }
-
-    public static float GetStressValueDamage( Subskill subskillData )
-    {
-        return ( subskillData.StressValueDamage * GameConfiguration.Instance.GetBattleConfiguration().GetStressValueDamageMultiplier() );
-    }
-
-    public static float AdjustAmount( float amount )
-    {
-        return Mathf.Round( amount );
     }
 }
