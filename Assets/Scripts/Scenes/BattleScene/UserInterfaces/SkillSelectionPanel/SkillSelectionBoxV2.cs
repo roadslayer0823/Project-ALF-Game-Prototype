@@ -11,6 +11,9 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     [Header("Settings")]
     [SerializeField] private float clickDelay = 0.2f;
     [SerializeField] private float alphaThreshold = 0.1f;
+    [SerializeField] private float flashDelay = 1.0f;
+    [SerializeField] private float flashIntervalTime = 1.5f;
+    [SerializeField][Range(0, 1)] private float flashFadeOutAlpha = 0.5f;
 
     [Header("ActiveSkillSelectionBox")]
     [SerializeField] private Image currentSkillSelectionSequence = null;
@@ -457,7 +460,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         UpdateSkillIcon(this.isSelected);
     }
 
-    //modify current skill level animation
+    //Modify current skill level animation
     private void ModifySkillLevelAnimation(Image levelModifierImage, Image background, Transform originalPosition, Transform targetPosition)
     {
         if (this.skillLevel > 1)
@@ -556,11 +559,23 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         if (numberImage == null)
         {
             this.currentSkillSelectionSequence.gameObject.SetActive(false);
+
+            Color _initialSkillSelectionSequenceColor = this.currentSkillSelectionSequence.color;
+            _initialSkillSelectionSequenceColor.a = 1.0f;
+
+            this.currentSkillSelectionSequence.color = _initialSkillSelectionSequenceColor;
+
+            LeanTween.cancel(this.currentSkillSelectionSequence.gameObject);
         }
         else
         {
             this.currentSkillSelectionSequence.gameObject.SetActive(true);
             this.currentSkillSelectionSequence.sprite = numberImage;
+
+            Color _newSkillSelectionSequenceColor = this.currentSkillSelectionSequence.color;
+            _newSkillSelectionSequenceColor.a = this.currentSkillSelectionSequence.color.a * this.flashFadeOutAlpha;
+
+            LeanTween.color(currentSkillSelectionSequence.rectTransform, _newSkillSelectionSequenceColor, this.flashIntervalTime).setLoopPingPong().setDelay(this.flashDelay);
         }
     }
 
@@ -570,11 +585,23 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         if (imageToDisplay == null)
         {
             this.skillSelectedImage.gameObject.SetActive(false);
+
+            Color _initialSkillSelectionSequenceColor = this.skillSelectedImage.color;
+            _initialSkillSelectionSequenceColor.a = 1.0f;
+
+            this.skillSelectedImage.color = _initialSkillSelectionSequenceColor;
+
+            LeanTween.cancel(this.skillSelectedImage.gameObject);
         }
         else
         {
             this.skillSelectedImage.gameObject.SetActive(true);
             this.skillSelectedImage.sprite = imageToDisplay;
+
+            Color _newSkillSelectionSequenceColor = this.skillSelectedImage.color;
+            _newSkillSelectionSequenceColor.a = this.skillSelectedImage.color.a * this.flashFadeOutAlpha;
+
+            LeanTween.color(skillSelectedImage.rectTransform, _newSkillSelectionSequenceColor, this.flashIntervalTime).setLoopPingPong().setDelay(this.flashDelay);
         }
     }
 
