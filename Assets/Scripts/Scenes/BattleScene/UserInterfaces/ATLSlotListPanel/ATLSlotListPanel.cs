@@ -49,7 +49,7 @@ public class ATLSlotListPanel : MonoBehaviour
             BattleFlowATL _battleFlowATL = this.battleFlowATLs[ i ];
             GameCharacter _character = _battleFlowATL.GetSelectedCharacter();
 
-            if (_character is PlayerCharacter)
+            if (_character.GetIsPlayer())
             {
                 if (_battleFlowATL.GetIsATLSlotExecuted())
                 {

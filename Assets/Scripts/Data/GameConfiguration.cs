@@ -30,6 +30,7 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private float breakDamageMultiplier = 0.0f;
         private float maxStatePointUpMultiplier = 0.0f;
         private float statePointCostMultiplier = 0.0f;
+        private float statePointCostMultiplierOnSkillUpdate = 0.0f;
         private float statePointDamageMultiplier = 0.0f;
         private float lowestMaximumStatePoint = 0.0f;
         private float minimumCurrentStatePoint = 0.0f;
@@ -53,6 +54,7 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private const string BREAK_DAMAGE_MULTIPLIER = "break_damage_multiplier";
         private const string MAX_STATE_POINT_UP_MULTIPLIER = "max_state_point_up_multiplier";
         private const string STATE_POINT_COST_MULTIPLIER = "state_point_cost_multiplier";
+        private const string STATE_POINT_COST_MULTIPLIER_ON_SKILL_UPDATE = "state_point_cost_multiplier_on_skill_update";
         private const string STATE_POINT_DAMAGE_MULTIPLIER = "state_point_damage_multiplier";
         private const string LOWEST_MAXIMUM_STATE_POINT = "lowest_maximum_state_point";
         private const string MINIMUM_CURRENT_STATE_POINT = "minimum_current_state_point";
@@ -107,6 +109,10 @@ public class GameConfiguration : Singleton<GameConfiguration>
 
                     case STATE_POINT_COST_MULTIPLIER:
                         this.statePointCostMultiplier = _configurationValue;
+                        break;
+
+                    case STATE_POINT_COST_MULTIPLIER_ON_SKILL_UPDATE:
+                        this.statePointCostMultiplierOnSkillUpdate = _configurationValue;
                         break;
 
                     case STATE_POINT_DAMAGE_MULTIPLIER:
@@ -209,6 +215,11 @@ public class GameConfiguration : Singleton<GameConfiguration>
         public float GetStatePointCostMultiplier()
         {
             return this.statePointCostMultiplier;
+        }
+
+        public float GetStatePointCostMultiplierOnSkillUpdate()
+        {
+            return this.statePointCostMultiplierOnSkillUpdate;
         }
 
         public float GetStatePointDamageMultiplier()

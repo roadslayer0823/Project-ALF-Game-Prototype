@@ -38,7 +38,7 @@ public class BattleFlowATL
 
     public bool CheckIsPlayer()
     {
-        return this.selectedCharacter is PlayerCharacter;
+        return this.selectedCharacter.GetIsPlayer();
     }
 
     public void Finish()

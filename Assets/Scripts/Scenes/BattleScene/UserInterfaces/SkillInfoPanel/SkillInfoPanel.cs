@@ -204,20 +204,20 @@ public class SkillInfoPanel : MonoBehaviour
         this.levelText.SetText(activeSkill.GetCharacterSubskillData().GetSubskillData().Level.ToString()); // Level Text
 
 
-        if (BattleLogicManager.GetAttackDamage(_subskillData) > 0) // Attack Damage
+        if (BattleCalculationManager.GetAttackDamage(_subskillData) > 0) // Attack Damage
         {
             this.attackDamage.SetActive(true);
-            this.attackDamageValue.SetText(BattleLogicManager.GetAttackDamage(_subskillData).ToString());
+            this.attackDamageValue.SetText( BattleCalculationManager.GetAttackDamage( _subskillData ).ToString() );
         }
         else
         {
             this.attackDamage.SetActive(false);
         }
 
-        if (BattleLogicManager.GetStatePointCost(_subskillData) > 0) // State Point Cost
+        if (BattleCalculationManager.GetStatePointCost(_subskillData) > 0) // State Point Cost
         {
             this.statePointCost.SetActive(true);
-            this.statePointCostValue.SetText(BattleLogicManager.GetStatePointCost(_subskillData).ToString());
+            this.statePointCostValue.SetText( BattleCalculationManager.GetStatePointCost( _subskillData ).ToString() );
         }
         else
         {
@@ -268,10 +268,10 @@ public class SkillInfoPanel : MonoBehaviour
             this.evasionStress.SetActive(false);
         }
 
-        if (BattleLogicManager.GetStressValueDamage(_subskillData) > 1) // Stress Value Damage
+        if (BattleCalculationManager.GetStressValueDamage(_subskillData) > 1) // Stress Value Damage
         {
             this.stressDamage.SetActive(true);
-            this.stressDamageValue.SetText(BattleLogicManager.GetStressValueDamage(_subskillData).ToString() + "%");
+            this.stressDamageValue.SetText( BattleCalculationManager.GetStressValueDamage( _subskillData ).ToString() + "%" );
         }
         else
         {
@@ -288,20 +288,20 @@ public class SkillInfoPanel : MonoBehaviour
             this.stressResistance.SetActive( false );
         }
 
-        if (BattleLogicManager.GetMaxStatePointUp(_subskillData) > 1) // Max State Point Up
+        if (BattleCalculationManager.GetMaxStatePointUp(_subskillData) > 1) // Max State Point Up
         {
             this.maxStatePointUp.SetActive(true);
-            this.maxStatePointUpValue.SetText(BattleLogicManager.GetMaxStatePointUp(_subskillData).ToString());
+            this.maxStatePointUpValue.SetText( BattleCalculationManager.GetMaxStatePointUp( _subskillData ).ToString() );
         }
         else
         {
             this.maxStatePointUp.SetActive(false);
         }
 
-        if (BattleLogicManager.GetStatePointDamage(_subskillData) > 1) // State Point Damage
+        if (BattleCalculationManager.GetStatePointDamage(_subskillData) > 1) // State Point Damage
         {
             this.statePointDamage.SetActive(true);
-            this.statePointDamageValue.SetText(BattleLogicManager.GetStatePointDamage(_subskillData).ToString());
+            this.statePointDamageValue.SetText( BattleCalculationManager.GetStatePointDamage( _subskillData ).ToString() );
         }
         else
         {
