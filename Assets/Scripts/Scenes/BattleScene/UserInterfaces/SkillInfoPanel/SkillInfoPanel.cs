@@ -460,6 +460,11 @@ public class SkillInfoPanel : MonoBehaviour
         UpdateSkillInfoPanel(this.selectedSkill);
         ShowBackendSkillTabButton(false, false);
         SetSkillPanelUI(backendSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
+
+        if (this.skillSelectionBox.GetIsSelected())
+        {
+            this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetBackendSkillBoxSelectedBackgroundImage());
+        }
     }
 
     public void ShowEvasionSkillPanelUI()
@@ -467,6 +472,11 @@ public class SkillInfoPanel : MonoBehaviour
         UpdateSkillInfoPanel(this.selectedSkill);
         ShowBackendSkillTabButton(false, false);
         SetSkillPanelUI(evasionSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
+
+        if (this.skillSelectionBox.GetIsSelected())
+        {
+            this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetBackendSkillBoxSelectedBackgroundImage());
+        }
     }
 
     public void ShowCounterSkillPanelUI()
