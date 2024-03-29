@@ -4,7 +4,6 @@ using SkillType = DatabaseManager.Skill.SkillType;
 using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
 using BattleResultData_GameCharacter = BattleResultData.BattleResultData_GameCharacter;
-using static BattleLogicManager;
 
 public class BattleLogicManagerV2
 {
@@ -368,28 +367,46 @@ public class BattleLogicManagerV2
     public static void ExecuteCasterSkillOnUse( ref BattleResultData battleResultData, GameCharacter caster, GameCharacter target )
     {
         CharacterSkill _casterSkill = caster.GetCurrentSkill();
-        Skill _casterSkillData = _casterSkill.GetSkillData();
         Subskill _casterSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
 
-        float _statePointCost = GetStatePointCost( _casterSubskillData );
-        string _evasionStressLog = "";
+        float _statePointCost = BattleCalculationManager.GetStatePointCost( _casterSubskillData );
+        string _statePointCostLog = "";
 
-        CharacterSkill _targetSkill = target.GetCurrentSkill();
-        if (_targetSkill != null)
+        // 如果“後手方”已按下的技能有“已更新按下技能”的標記，那麼該技能的以太值消耗會增加基礎值的倍數。
+        if (_casterSkill.GetHasSkillUpdateIndicator())
         {
-            if (_casterSubskillData.IsEvadingSkill)
-            {
-                Subskill _targetSubskillData = _targetSkill.GetCharacterSubskillData().GetSubskillData();
-                float _evasionStress = _targetSubskillData.EvasionStress * ( ( caster.HasEnergyMarker() ) ? _targetSubskillData.EnergyMarkerEvasionStressRate : 1.0f );
-                _statePointCost += _evasionStress;
-                _evasionStressLog = $"（迴避壓力：{ _evasionStress }）";
-            }
+            _casterSkill.SetHasSkillUpdateIndicator( false );
+            _statePointCost *= GameConfiguration.Instance.GetBattleConfiguration().GetStatePointCostMultiplierOnSkillUpdate();
+            _statePointCostLog = "（有“已更新按下技能”的標記";
         }
 
-        _statePointCost = AdjustAmount( _statePointCost );
+        if (_casterSubskillData.IsEvadingSkill)
+        {
+            Subskill _targetSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
+            float _evasionStress = _targetSubskillData.EvasionStress * ( ( caster.HasEnergyMarker() ) ? _targetSubskillData.EnergyMarkerEvasionStressRate : 1.0f );
+            _statePointCost += _evasionStress;
+
+            if (_statePointCostLog == "")
+            {
+                _statePointCostLog += "（";
+            }
+            else
+            {
+                _statePointCostLog += "、";
+            }
+
+            _statePointCostLog += $"迴避壓力：{ _evasionStress }";
+        }
+
+        if (_statePointCostLog != "")
+        {
+            _statePointCostLog += "）";
+        }
+
+        _statePointCost = BattleCalculationManager.AdjustAmount( _statePointCost );
         battleResultData.AddGameCharacterResultData( gameCharacter: caster, statePointCost: _statePointCost );
 
-        float _maxStatePointUp = AdjustAmount( GetMaxStatePointUp( _casterSubskillData ) );
+        float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
         battleResultData.AddGameCharacterResultData( gameCharacter: caster, maximumStatePointIncrease: _maxStatePointUp );
 
         string _log = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ caster.GetCharacterName() }</color>使出了"
@@ -402,9 +419,9 @@ public class BattleLogicManagerV2
         {
             _extraLog += $"，消耗了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _statePointCost }{ TerminologyManager.STATE_POINT }</color>";
 
-            if (_evasionStressLog != "")
+            if (_statePointCostLog != "")
             {
-                _extraLog += _evasionStressLog;
+                _extraLog += _statePointCostLog;
             }
         }
 
@@ -453,7 +470,7 @@ public class BattleLogicManagerV2
 
         if (hasHealthPointDamage)
         {
-            float _healthPointDamage = AdjustAmount( GetCurrentAttackDamage( _casterSkill, caster, target ) );
+            float _healthPointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetCurrentAttackDamage( _casterSkill, caster, target ) );
             if (_healthPointDamage > 0)
             {
                 bool _isActualDamage = false;
@@ -491,13 +508,13 @@ public class BattleLogicManagerV2
 
         if (hasStatePointDamage)
         {
-            float _statePointDamage = AdjustAmount( GetStatePointDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
+            float _statePointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStatePointDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
             battleResultData.AddGameCharacterResultData( gameCharacter: target, statePointDamage: _statePointDamage, isBreakStatusAvailable: isBreakStatusAvailable );
         }
 
         if (hasStressValueDamage)
         {
-            float _stressValueDamage = AdjustAmount( GetStressValueDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) * stressValueDamageMultiplier );
+            float _stressValueDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStressValueDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) * stressValueDamageMultiplier );
             battleResultData.AddGameCharacterResultData( gameCharacter: target, stressValueDamage: _stressValueDamage, isBreakStatusAvailable: isBreakStatusAvailable );
         }
 
@@ -512,7 +529,7 @@ public class BattleLogicManagerV2
                     {
                         if (_targetSubskillData.Range == Subskill.RangeType.ranged)
                         {
-                            float _maxStatePointUp = AdjustAmount( GetMaxStatePointUp( _casterSubskillData ) );
+                            float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
                             battleResultData.AddGameCharacterResultData( gameCharacter: caster, maximumStatePointIncrease: _maxStatePointUp );
                         }
                     }

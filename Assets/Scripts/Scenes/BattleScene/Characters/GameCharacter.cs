@@ -19,29 +19,30 @@ public class GameCharacter : MonoBehaviour
     [SerializeField] private UnityEventHandler characterEventHandler = null;
     [SerializeField] private UnityEventHandler skillEffectEventHandler = null;
 
-    protected string id = null;
-    protected string characterName = null;
-    protected float maximumHealthPoint = 0.0f;
-    protected float currentHealthPoint = 0.0f;
-    protected float virtualHealthPoint = 0.0f;
-    protected float originalStatePoint = 0.0f;
-    protected float maximumStatePoint = 0.0f;
-    protected float minimumStatePoint = 0.0f;
-    protected float currentStatePoint = 0.0f;
-    protected float maximumStressValue = 0.0f;
-    protected float currentStressValue = 0.0f;
+    private string id = null;
+    private string characterName = null;
+    private bool isPlayer = false;
+    private float maximumHealthPoint = 0.0f;
+    private float currentHealthPoint = 0.0f;
+    private float virtualHealthPoint = 0.0f;
+    private float originalStatePoint = 0.0f;
+    private float maximumStatePoint = 0.0f;
+    private float minimumStatePoint = 0.0f;
+    private float currentStatePoint = 0.0f;
+    private float maximumStressValue = 0.0f;
+    private float currentStressValue = 0.0f;
     protected CharacterSkill[] skills = null;
     protected List<CharacterSkill> selectedActiveSkillList = null;
     protected List<CharacterSkill> selectedBackendSkillList = null;
 
-    protected GameObject ownContainer = null;
-    protected GameObject opponentContainer = null;
-    protected GameCharacterInfoBox gameCharacterInfoBox = null;
+    private GameObject ownContainer = null;
+    private GameObject opponentContainer = null;
+    private GameCharacterInfoBox gameCharacterInfoBox = null;
 
-    protected Action<AnimationEvent,GameCharacter> onEventTriggeredCallback = null;
-    protected Action<string> onCharacterAnimationTriggeredCallback = null;
-    protected Action<string> onSkillEffectAnimationTriggeredCallback = null;
-    protected Action onCharacterInfoUpdated = null;
+    private Action<AnimationEvent,GameCharacter> onEventTriggeredCallback = null;
+    private Action<string> onCharacterAnimationTriggeredCallback = null;
+    private Action<string> onSkillEffectAnimationTriggeredCallback = null;
+    private Action onCharacterInfoUpdated = null;
 
     private CharacterIdentityType currentCharacterIdentityType = CharacterIdentityType.None;
     private CharacterSkill currentSkill = null;
@@ -55,6 +56,7 @@ public class GameCharacter : MonoBehaviour
 
     // Version 2
     private CharacterSkill assignedSkill = null;
+    private bool isInRepulseCommandTime = false;
     private bool isCounterAttacking = false;
 
     // Break Status
@@ -96,7 +98,7 @@ public class GameCharacter : MonoBehaviour
         Evade
     }
 
-    public void Initialize( Character characterData, GameObject ownContainer, GameObject opponentContainer, Action<AnimationEvent,GameCharacter> onEventTriggeredCallback = null )
+    public void Initialize( Character characterData, bool isPlayer, GameObject ownContainer, GameObject opponentContainer, Action<AnimationEvent,GameCharacter> onEventTriggeredCallback = null )
     {
         base.gameObject.name = "Character: " + characterData.DisplayName;
         this.ownContainer = ownContainer;
@@ -105,6 +107,7 @@ public class GameCharacter : MonoBehaviour
 
         this.id = characterData.Id;
         this.characterName = characterData.DisplayName;
+        this.isPlayer = isPlayer;
         this.maximumHealthPoint = characterData.MaximumHealthPoint;
         this.currentHealthPoint = this.maximumHealthPoint;
         this.virtualHealthPoint = this.maximumHealthPoint;
@@ -150,6 +153,16 @@ public class GameCharacter : MonoBehaviour
     public CharacterIdentityType GetCurrentCharacterIdentityType()
     {
         return this.currentCharacterIdentityType;
+    }
+
+    public void SetIsInRepulseCommandTime( bool isInRepulseCommandTime )
+    {
+        this.isInRepulseCommandTime = isInRepulseCommandTime;
+    }
+
+    public bool GetIsInRepulseCommandTime()
+    {
+        return this.isInRepulseCommandTime;
     }
 
     public void SetIsCounterAttacking( bool isCounterAttacking )
@@ -672,6 +685,11 @@ public class GameCharacter : MonoBehaviour
         return this.characterName;
     }
 
+    public bool GetIsPlayer()
+    {
+        return this.isPlayer;
+    }
+
     public float GetMaximumHealthPoint()
     {
         return this.maximumHealthPoint;
@@ -768,6 +786,11 @@ public class GameCharacter : MonoBehaviour
     public void SetAssignedSkill( CharacterSkill assignedSkill )
     {
         this.assignedSkill = assignedSkill;
+
+        if (this.isInRepulseCommandTime)
+        {
+            this.assignedSkill?.SetHasSkillUpdateIndicator( true );
+        }
     }
 
     public void ResetAssignedSkill()

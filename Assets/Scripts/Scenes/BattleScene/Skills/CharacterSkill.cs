@@ -9,6 +9,7 @@ public class CharacterSkill
     private Skill skillData = null;
     private List<CharacterSubskill> characterSubskillList = null;
     private int selectedSkillLevel = 1;
+    private bool hasSkillUpdateIndicator = false;
 
     private List<ObservedSkillData> observedSkillDataList = null;
     private GameCharacter observedSkillCaster = null;
@@ -139,6 +140,16 @@ public class CharacterSkill
         return ( ( canDefend && _subskill.IsDefendingSkill )
                || ( canEvade && _subskill.IsEvadingSkill )
                || ( canObserve && _subskill.IsObservingSkill ) );
+    }
+
+    public void SetHasSkillUpdateIndicator( bool hasSkillUpdateIndicator )
+    {
+        this.hasSkillUpdateIndicator = hasSkillUpdateIndicator;
+    }
+
+    public bool GetHasSkillUpdateIndicator()
+    {
+        return this.hasSkillUpdateIndicator;
     }
 
 #region Observed Skill Data
