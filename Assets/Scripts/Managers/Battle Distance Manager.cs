@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using SubSkill = DatabaseManager.Subskill;
 
@@ -36,6 +34,10 @@ public class BattleDistanceManager : MonoBehaviour
                 {
                     distanceType = DistanceType.Normal;
                 }
+                else
+                {
+                    distanceType = DistanceType.Near;
+                }
                 break;
 
             case DistanceType.Normal:
@@ -47,6 +49,10 @@ public class BattleDistanceManager : MonoBehaviour
                 {
                     distanceType = DistanceType.Normal;
                 }
+                else
+                {
+                    distanceType = DistanceType.Near;
+                }
                 break;
 
             case DistanceType.Far:
@@ -57,6 +63,10 @@ public class BattleDistanceManager : MonoBehaviour
                 else if (leadSubskill.Range == SubSkill.RangeType.ranged)
                 {
                     distanceType = DistanceType.Far;
+                }
+                else
+                {
+                    distanceType = DistanceType.Near;
                 }
                 break;
 
@@ -91,6 +101,10 @@ public class BattleDistanceManager : MonoBehaviour
                     {
                         finalDistance = DistanceType.Near;
                     }
+                    else
+                    {
+                        finalDistance = DistanceType.Near;
+                    }
                 }
                 break;
 
@@ -111,9 +125,13 @@ public class BattleDistanceManager : MonoBehaviour
                     {
                         finalDistance = DistanceType.Near;
                     }
+                    else
+                    {
+                        finalDistance = DistanceType.Near;
+                    }
                 }
 
-                if (leadSubSkill.Range == SubSkill.RangeType.ranged)
+                else if (leadSubSkill.Range == SubSkill.RangeType.ranged)
                 {
                     if (improviserSubSkill.Range == SubSkill.RangeType.melee || improviserSubSkill.Range == SubSkill.RangeType.ranged)
                     {
@@ -133,6 +151,10 @@ public class BattleDistanceManager : MonoBehaviour
                     else if (improviserSubSkill.IsEvadingSkill)
                     {
                         finalDistance = DistanceType.Normal;
+                    }
+                    else
+                    {
+                        finalDistance = DistanceType.Near;
                     }
                 }
                 break;
@@ -158,6 +180,10 @@ public class BattleDistanceManager : MonoBehaviour
                     else if (improviserSubSkill.IsEvadingSkill)
                     {
                         finalDistance = DistanceType.Far;
+                    }
+                    else
+                    {
+                        finalDistance = DistanceType.Near;
                     }
                 }
                 break;
