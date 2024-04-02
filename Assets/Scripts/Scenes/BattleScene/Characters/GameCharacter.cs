@@ -7,6 +7,7 @@ using Subskill = DatabaseManager.Subskill;
 using Character = DatabaseManager.Character;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
 using BattleResultData_GameCharacter = BattleResultData.BattleResultData_GameCharacter;
+using static BattleAnimationEventManager;
 
 public class GameCharacter : MonoBehaviour
 {
@@ -70,6 +71,10 @@ public class GameCharacter : MonoBehaviour
 
     // Audios
     private const string AUDIO_ID_BREAK = "break";
+
+    // Animation Event
+    private BattleAnimationEventManager battleAnimationEventManager = null;
+
 
     public enum CharacterIdentityType
     {
@@ -1017,4 +1022,15 @@ public class GameCharacter : MonoBehaviour
             this.onCharacterInfoUpdated?.Invoke();
         }
     }
+
+    public void SetUp(BattleAnimationEventManager battleAnimationEventManager)
+    {
+        this.battleAnimationEventManager = battleAnimationEventManager;
+    }
+
+    public void OnAnimationEventTriggered(CharacterAnimationEventType animationEventType, string parameter = "")
+    {
+        this.battleAnimationEventManager.OnAnimationEventTriggered(animationEventType, parameter);
+    }
+
 }
