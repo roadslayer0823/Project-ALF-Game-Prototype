@@ -5,10 +5,10 @@ using Subskill = DatabaseManager.Subskill;
 public class GameCharacterInfoBox : MonoBehaviour
 {
     [Header( "Settings" )]
+    [SerializeField] private GameCharacter selectedCharacter = null;
     [SerializeField] private bool isSkillInfoEnabled = false;
 
     [Header( "References" )]
-    [SerializeField] private GameCharacter selectedCharacter = null;
     [SerializeField] private SpriteRenderer healthPointFiller = null;
     [SerializeField] private SpriteRenderer virtualHealthPointFiller = null;
     [SerializeField] private TextMeshPro healthPointLabel = null;

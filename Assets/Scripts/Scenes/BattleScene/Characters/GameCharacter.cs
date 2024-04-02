@@ -389,12 +389,12 @@ public class GameCharacter : MonoBehaviour
                 this.currentStressValue = 0.0f;
             }
 
+            this.onCharacterInfoUpdated?.Invoke();
+
             return ( _lastValue - this.currentStressValue );
         }
 
         return 0.0f;
-
-        this.onCharacterInfoUpdated?.Invoke();
     }
 
     public void MinusBreakStatusRemainingATLs()
@@ -494,13 +494,21 @@ public class GameCharacter : MonoBehaviour
     public void ShowCharacterObject()
     {
         this.characterAnimator.gameObject.SetActive( true );
-        this.gameCharacterInfoBox.gameObject.SetActive( true );
+
+        if (this.gameCharacterInfoBox != null)
+        {
+            this.gameCharacterInfoBox.gameObject.SetActive( true );
+        }
     }
 
     public void HideCharacterObject()
     {
         this.characterAnimator.gameObject.SetActive( false );
-        this.gameCharacterInfoBox.gameObject.SetActive( false );
+
+        if (this.gameCharacterInfoBox != null)
+        {
+            this.gameCharacterInfoBox.gameObject.SetActive( false );
+        }
     }
 
     public void TriggerEvent( AnimationEvent animationEvent )
@@ -782,6 +790,11 @@ public class GameCharacter : MonoBehaviour
     public SortingGroup GetSortingGroup()
     {
         return this.sortingGroup;
+    }
+
+    public Transform GetPivot()
+    {
+        return this.pivot;
     }
 
     public Animator GetCharacterAnimator()

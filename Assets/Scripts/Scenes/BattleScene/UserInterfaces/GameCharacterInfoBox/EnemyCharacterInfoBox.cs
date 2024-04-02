@@ -3,6 +3,10 @@ using TMPro;
 
 public class EnemyCharacterInfoBox : MonoBehaviour
 {
+    [Header( "Settings" )]
+    [SerializeField] private GameCharacter selectedCharacter = null;
+
+    [Header( "References" )]
     [SerializeField] private TextMeshPro enemyNameText = null;
     [SerializeField] private TextMeshPro effectMarkerLabel = null;
     [SerializeField] private TextMeshPro stressPercentageText = null;
@@ -19,15 +23,18 @@ public class EnemyCharacterInfoBox : MonoBehaviour
     [SerializeField] private SpriteRenderer healthPointBar = null;
     [SerializeField] private SpriteRenderer statePointBar = null;
 
-    private GameCharacter selectedCharacter = null;
-
-    public void SetSelectedCharacter(GameCharacter selectedCharacter)
+    void Awake()
     {
-        this.selectedCharacter = selectedCharacter;
         this.selectedCharacter.SetOnCharacterInfoUpdated(UpdateDisplayInfo);
 
         this.enemyNameText.text = this.selectedCharacter.GetCharacterName();
         UpdateDisplayInfo();
+    }
+
+    void Update()
+    {
+        // TODO: Temporarily update this game object's position according to the selected character's pivot's position on every frame.
+        this.transform.position = this.selectedCharacter.GetPivot().position + new Vector3( 0.0f, 2.0f, 0.0f );
     }
 
     public void UpdateDisplayInfo()
