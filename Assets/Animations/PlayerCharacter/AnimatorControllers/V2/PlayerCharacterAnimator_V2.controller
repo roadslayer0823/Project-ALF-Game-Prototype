@@ -376,7 +376,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GettingHit_Repulse_Right_V2
+  m_Name: GettingHit_Repulse_Right
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -427,7 +427,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Idle_V2
+  m_Name: Idle
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -480,7 +480,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Prepare_V2
+  m_Name: Prepare
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -634,7 +634,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: GettingHit_V2
+  m_Name: GettingHit
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
