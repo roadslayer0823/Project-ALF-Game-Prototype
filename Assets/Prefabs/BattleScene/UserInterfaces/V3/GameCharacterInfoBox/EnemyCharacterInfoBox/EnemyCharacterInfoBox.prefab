@@ -1299,7 +1299,7 @@ GameObject:
   - component: {fileID: 8780038478600197808}
   - component: {fileID: 5882219965073985688}
   m_Layer: 0
-  m_Name: EnemyInfoPanel
+  m_Name: EnemyCharacterInfoBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -1,8 +1,7 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
-public class EnemyInfoPanel : MonoBehaviour
+public class EnemyCharacterInfoBox : MonoBehaviour
 {
     [SerializeField] private TextMeshPro enemyNameText = null;
     [SerializeField] private TextMeshPro effectMarkerLabel = null;
