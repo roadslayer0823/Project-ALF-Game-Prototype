@@ -338,6 +338,7 @@ public class GameCharacter : MonoBehaviour
 
     public void AddCurrentStressValue( float amount, bool isBreakStatusAvailable )
     {
+        Debug.Log("AddCurrentStressValue");
         if (amount > 0)
         {
             if (!this.isBreakStatusCausedByStressValue)
@@ -372,6 +373,7 @@ public class GameCharacter : MonoBehaviour
 
     public float MinusCurrentStressValue( float amount )
     {
+        Debug.Log("MinusCurrentStressValue");
         if (amount > 0)
         {
             float _lastValue = this.currentStressValue;
@@ -383,12 +385,12 @@ public class GameCharacter : MonoBehaviour
                 this.currentStressValue = 0.0f;
             }
 
-            this.onCharacterInfoUpdated?.Invoke();
-
             return ( _lastValue - this.currentStressValue );
         }
 
         return 0.0f;
+
+        this.onCharacterInfoUpdated?.Invoke();
     }
 
     public void MinusBreakStatusRemainingATLs()
