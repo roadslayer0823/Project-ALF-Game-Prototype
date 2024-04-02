@@ -47,7 +47,8 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
     //animation duration
     private float textAnimationDuration = 0.3f;
-    private float maxStatePointIncreaseDuration = 0.2f;
+    private float maxStatePointScaleDuration = 0.2f;
+    private float maxStatePointGlowDuration = 0.1f;
     private float scaleMultiplier = 0.7f;
 
     //spacing
@@ -55,9 +56,11 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     private float threeCharacterSpacing = -148;
 
     //glow effect
-    private float textOffset = -0.3f;
-    private float textOuter = 0.75f;
-   
+    private float defaultTextOffset = -1f;
+    private float defaultTextOuter = 0.0f;
+    private float targetTextOffset = -0.3f;
+    private float targetTextOuter = 0.75f;
+
 
     public void Initialize()
     {
@@ -70,7 +73,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         startingVirtualPoint = _startingVirtualPoint;
     }
 
-    public void SetSelectedCharacter( GameCharacter selectedCharacter )
+    public void SetSelectedCharacter(GameCharacter selectedCharacter)
     {
         this.selectedCharacter = selectedCharacter;
         this.selectedCharacter.SetOnCharacterInfoUpdated(UpdateDisplayInfo);
@@ -111,6 +114,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
         if (this.startingStatePoint != _currentStatePoint)
         {
+            //curret state point animation
             LeanTween.value(gameObject, this.startingStatePoint, _currentStatePoint, textAnimationDuration)
                 .setOnUpdate((float val) =>
                 {
@@ -119,35 +123,48 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                     this.statePointBar.fillAmount = startingStatePoint / _maximumStatePoint;
                 });
 
-            if(this.startingStatePoint != _maximumStatePoint)
+            //max state point increase animation
+            if (this.startingStatePoint != _maximumStatePoint)
             {
-                if(isSetupComplete == true)
+                if (isSetupComplete == true)
                 {
                     this.characterInfoPanelAnimation.Play(ANIMATION_ID_MAX_STATE_POINT_INCREASE, 1, 0f);
                     Vector2 currentScale = maxStatePointValueFirstText.rectTransform.localScale;
                     Vector2 newScale = new Vector3(currentScale.x / scaleMultiplier, currentScale.y / scaleMultiplier);
 
-                    LeanTween.scale(maxStatePointValueFirstText.gameObject, newScale, maxStatePointIncreaseDuration)
-                        /*.setOnUpdate((float val) =>
-                        {
-                            this.maxStatePointValueFirstText.fontSharedMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, textOffset);
-                        })*/
+                    //first text
+                    maxStatePointScale(maxStatePointValueFirstText, newScale, maxStatePointScaleDuration);
+                    maxStatePointOffset(maxStatePointValueFirstText, defaultTextOffset, targetTextOffset, maxStatePointGlowDuration);
+                    maxStatePointOuter(maxStatePointValueFirstText, defaultTextOuter, targetTextOuter, maxStatePointGlowDuration)
                         .setOnComplete(() =>
                         {
-                            LeanTween.scale(maxStatePointValueFirstText.gameObject, currentScale, maxStatePointIncreaseDuration);
-                            LeanTween.scale(maxStatePointValueSecondText.gameObject, newScale, maxStatePointIncreaseDuration)
+                            maxStatePointOffset(maxStatePointValueFirstText, targetTextOffset, defaultTextOffset, maxStatePointGlowDuration);
+                            maxStatePointOuter(maxStatePointValueFirstText, targetTextOuter, defaultTextOuter, maxStatePointGlowDuration);
+                            maxStatePointScale(maxStatePointValueFirstText, currentScale, maxStatePointScaleDuration);
+
+                            //second text
+                            maxStatePointScale(maxStatePointValueSecondText, newScale, maxStatePointScaleDuration);
+                            maxStatePointOffset(maxStatePointValueSecondText, defaultTextOffset, targetTextOffset, maxStatePointGlowDuration);
+                            maxStatePointOuter(maxStatePointValueSecondText, defaultTextOuter, targetTextOuter, maxStatePointGlowDuration)
                                 .setOnComplete(() =>
                                 {
-                                    LeanTween.scale(maxStatePointValueSecondText.gameObject, currentScale, maxStatePointIncreaseDuration);
-                                    LeanTween.scale(maxStatePointValueThirdText.gameObject, newScale, maxStatePointIncreaseDuration)
+                                    maxStatePointOffset(maxStatePointValueSecondText, targetTextOffset, defaultTextOffset, maxStatePointGlowDuration);
+                                    maxStatePointOuter(maxStatePointValueSecondText, targetTextOuter, defaultTextOuter, maxStatePointGlowDuration);
+                                    maxStatePointScale(maxStatePointValueSecondText, currentScale, maxStatePointScaleDuration);
+
+                                    //third text
+                                    maxStatePointScale(maxStatePointValueThirdText, newScale, maxStatePointScaleDuration);
+                                    maxStatePointOffset(maxStatePointValueThirdText, defaultTextOffset, targetTextOffset, maxStatePointGlowDuration);
+                                    maxStatePointOuter(maxStatePointValueThirdText, defaultTextOuter, targetTextOuter, maxStatePointGlowDuration)
                                         .setOnComplete(() =>
                                         {
-                                            LeanTween.scale(maxStatePointValueThirdText.gameObject, currentScale, maxStatePointIncreaseDuration);
+                                            maxStatePointOffset(maxStatePointValueThirdText, targetTextOffset, defaultTextOffset, maxStatePointGlowDuration);
+                                            maxStatePointOuter(maxStatePointValueThirdText, targetTextOuter, defaultTextOuter, maxStatePointGlowDuration);
+                                            maxStatePointScale(maxStatePointValueThirdText, currentScale, maxStatePointScaleDuration);
                                         });
                                 });
                         });
-
-                }
+                 }
             }
         }
 
@@ -208,7 +225,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             this.stressPercentageText.SetText("BREAK");
             this.stressPointStatus.sprite = this.stressPointBreak;
         }
-        else if(startingStressValue != _currentStressValue )
+        else if (startingStressValue != _currentStressValue)
         {
             this.stressPercentageText.SetText(_currentStressValue.ToString());
             if (isSetupComplete == true)
@@ -255,5 +272,28 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             }
         }
         this.stressPointStatus.sprite = this.stressPointNoBreak;
+    }
+
+    public LTDescr maxStatePointScale(TextMeshProUGUI textObject, Vector3 targetScale, float scaleDuration)
+    {
+        return LeanTween.scale(textObject.gameObject, targetScale, scaleDuration);
+    }
+
+    public LTDescr maxStatePointOffset(TextMeshProUGUI textObject, float defaultOffset, float targetOffset, float glowDuration)
+    {
+        return LeanTween.value(textObject.gameObject, defaultOffset, targetOffset, glowDuration)
+           .setOnUpdate((float val) =>
+           {
+               textObject.fontSharedMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val);
+           });
+    }
+
+    public LTDescr maxStatePointOuter(TextMeshProUGUI textObject, float defaultOuter, float targetOuter, float glowDuration)
+    {
+        return LeanTween.value(textObject.gameObject, defaultOuter, targetOuter, glowDuration)
+           .setOnUpdate((float val) =>
+           {
+               textObject.fontSharedMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val);
+           });
     }
 }
