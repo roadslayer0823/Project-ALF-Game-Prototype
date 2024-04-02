@@ -67,7 +67,11 @@ public class AdminPage : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect( this.buttonClickingAudioClip );
 
-        if (SceneUtility.GetBuildIndexByScenePath( "BattleSceneV2" ) != -1)
+        if (SceneUtility.GetBuildIndexByScenePath( "BattleSceneV3" ) != -1)
+        {
+            SceneManager.LoadScene( "BattleSceneV3" );
+        }
+        else if (SceneUtility.GetBuildIndexByScenePath( "BattleSceneV2" ) != -1)
         {
             SceneManager.LoadScene( "BattleSceneV2" );
         }

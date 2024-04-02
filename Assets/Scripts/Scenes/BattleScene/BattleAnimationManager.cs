@@ -938,6 +938,7 @@ public class BattleAnimationManager : MonoBehaviour
         Skill.SkillType _attackTargetSkillType = Skill.SkillType.none;
         Subskill _attackTargetSubskillData = null;
 
+        // “後手方”有已按下的技能。
         if (_attackTarget.GetCurrentSkill() != null)
         {
             _attackTargetSkillType = _attackTarget.GetCurrentSkill().GetSkillData().skillType;
@@ -963,10 +964,12 @@ public class BattleAnimationManager : MonoBehaviour
             }
         }
 
+        // 判定 Part B 結果及結算。
         _battleResultData = BattleLogicManagerV2.DetermineResultForPartB( _attacker, _attackTarget, out GameCharacter _winner, out GameCharacter _loser );
         _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
         _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _attackTarget );
 
+        // 結算“後手方”已按下的技能的以太值和最大以太值提升。
         _attackTarget.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
         StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
         this.currentCaster = _attackTarget;

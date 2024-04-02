@@ -954,7 +954,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sortingGroup: {fileID: 1752166085130199784}
-  characterAnimator: {fileID: 0}
+  characterAnimator: {fileID: 8778027904609409994}
   skillEffectAnimator: {fileID: 0}
   pivot: {fileID: 5916782224816579521}
   popUpDisplayInfoPrefab: {fileID: 4771544036075216567, guid: 6236c2078a895463e8a7655454c199f3, type: 3}

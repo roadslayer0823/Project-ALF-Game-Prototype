@@ -12,11 +12,12 @@ using static BattleAnimationEventManager;
 public class GameCharacter : MonoBehaviour
 {
     [SerializeField] private SortingGroup sortingGroup = null;
-    [SerializeField] private Animator characterAnimator = null;
-    [SerializeField] private Animator skillEffectAnimator = null;
     [SerializeField] private Transform pivot = null;
-    [SerializeField] private PopUpDisplayInfo popUpDisplayInfoPrefab = null;
+    [SerializeField] private Animator characterAnimator = null;
 
+    [Header( "Version 1" )]
+    [SerializeField] private Animator skillEffectAnimator = null;
+    [SerializeField] private PopUpDisplayInfo popUpDisplayInfoPrefab = null;
     [SerializeField] private UnityEventHandler characterEventHandler = null;
     [SerializeField] private UnityEventHandler skillEffectEventHandler = null;
 
@@ -142,8 +143,11 @@ public class GameCharacter : MonoBehaviour
 
         this.onCharacterInfoUpdated?.Invoke();
 
-        this.characterEventHandler.GetCallback().AddListener( OnCharacterAnimationTriggered );
-        this.skillEffectEventHandler.GetCallback().AddListener( OnSkillEffectAnimationTriggered );
+        if (this.battleAnimationEventManager == null)
+        {
+            this.characterEventHandler.GetCallback().AddListener( OnCharacterAnimationTriggered );
+            this.skillEffectEventHandler.GetCallback().AddListener( OnSkillEffectAnimationTriggered );
+        }
     }
 
     public virtual void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
@@ -1025,6 +1029,8 @@ public class GameCharacter : MonoBehaviour
         }
     }
 
+#region Battle Animation Event Manager
+
     public void SetUp(BattleAnimationEventManager battleAnimationEventManager)
     {
         this.battleAnimationEventManager = battleAnimationEventManager;
@@ -1035,4 +1041,5 @@ public class GameCharacter : MonoBehaviour
         this.battleAnimationEventManager.OnAnimationEventTriggered(animationEventType, parameter);
     }
 
+#endregion
 }

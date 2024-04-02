@@ -220,7 +220,8 @@ public class BattleLogicManagerV2
                 RangeType _leadRangeType = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
                 RangeType _improviserRangeType = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
 
-                if (improviser is EnemyCharacter)
+                // TODO: Temporarily set the enemy's current skill's range type to the melee type because currently the enemy character has melee attack animations only.
+                if (!improviser.GetIsPlayer())
                 {
                     _improviserRangeType = RangeType.melee;
                 }

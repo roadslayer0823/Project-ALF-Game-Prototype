@@ -9,6 +9,7 @@ public class BattleGameManager : MonoBehaviour
     [System.Obsolete][SerializeField] private BattleFlowManager battleFlowManager = null;
     [SerializeField] private BattleFlowManager_V2 battleFlowManager_V2 = null;
     [SerializeField] private BattleAnimationManager battleAnimationManager = null;
+    [SerializeField] private BattleAnimationEventManager battleAnimationEventManager = null;
 
     [Header( "References" )]
     [SerializeField] private GameObject playerContainer = null;
@@ -59,6 +60,7 @@ public class BattleGameManager : MonoBehaviour
         // -------------------- Set up the player's characters --------------------
 
         this.playerCharacterList = new List<PlayerCharacter>();
+        this.playerCharacter.SetUp( this.battleAnimationEventManager );
         this.playerCharacter.Initialize( DatabaseManager.Instance.GetCharacterDataById( "C1" ), true, this.playerContainer, this.opponentContainer, OnCharacterEventTriggered );
         this.playerCharacterList.Add( this.playerCharacter );
 
@@ -67,6 +69,7 @@ public class BattleGameManager : MonoBehaviour
         // -------------------- Set up the enemy's characters --------------------
 
         this.enemyCharacterList = new List<EnemyCharacter>();
+        this.enemyCharacter.SetUp( this.battleAnimationEventManager );
         this.enemyCharacter.Initialize( DatabaseManager.Instance.GetCharacterDataById( "E1" ), false, this.opponentContainer, this.playerContainer, OnCharacterEventTriggered );
         this.enemyCharacterList.Add( this.enemyCharacter );
 
@@ -388,6 +391,11 @@ public class BattleGameManager : MonoBehaviour
     public BattleAnimationManager GetBattleAnimationManager()
     {
         return this.battleAnimationManager;
+    }
+
+    public BattleAnimationEventManager GetBattleAnimationEventManager()
+    {
+        return this.battleAnimationEventManager;
     }
 
     public bool GetHasBattleEnded()

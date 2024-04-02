@@ -872,7 +872,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sortingGroup: {fileID: 6098698254648782925}
-  characterAnimator: {fileID: 0}
+  characterAnimator: {fileID: 3315974477501630972}
   skillEffectAnimator: {fileID: 0}
   pivot: {fileID: 2153725635038805945}
   popUpDisplayInfoPrefab: {fileID: 4771544036075216567, guid: 6236c2078a895463e8a7655454c199f3, type: 3}
