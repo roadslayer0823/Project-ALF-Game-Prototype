@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleAnimationEventManager : MonoBehaviour
@@ -22,7 +20,6 @@ public class BattleAnimationEventManager : MonoBehaviour
         ReadyForRepulse,
         ReadyForDefense,
         ReadyForEvasion
-
     }
 
     public void OnAnimationEventTriggered (CharacterAnimationEventType animationEventType, string parameter = "")
