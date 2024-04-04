@@ -808,7 +808,8 @@ public class BattleAnimationManager : MonoBehaviour
             _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
             _attacker.ApplyBattleResultData( _attackerBattleResultData );
 
-            StartCoroutine( ShowPopUpDisplayInfo( _attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
+            //StartCoroutine( ShowPopUpDisplayInfo( _attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
+            _attacker.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
 
             _attackTarget.SetCurrentAttacker( _attacker );
             this.currentCaster = _attacker;
@@ -971,7 +972,8 @@ public class BattleAnimationManager : MonoBehaviour
 
         // 結算“後手方”已按下的技能的以太值和最大以太值提升。
         _attackTarget.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
-        StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
+        //StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
+        _attackTarget.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackTargetBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackTargetBattleResultData.statePointCost*/ );
         this.currentCaster = _attackTarget;
 
         _attacker.TriggerEvent( AnimationEvent.OnPartB );
@@ -1269,7 +1271,8 @@ public class BattleAnimationManager : MonoBehaviour
             BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( attacker );
             attacker.ApplyBattleResultData( _attackerBattleResultData );
 
-            StartCoroutine( ShowPopUpDisplayInfo( attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
+            //StartCoroutine( ShowPopUpDisplayInfo( attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
+            attacker.ShowPopUpDisplayInfoV2(/* statePointDamage: _attackerBattleResultData.statePointCost,*/ maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease );
 
             ShowSkillInfo( attacker, attackTarget );
             this.currentCaster = attacker;
@@ -1327,7 +1330,8 @@ public class BattleAnimationManager : MonoBehaviour
                 this.cameraEffect.Shake();
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                 yield return null;
-                StartCoroutine( ShowPopUpDisplayInfo( attackTarget, _attackDamage, _stressValueDamage, _statePointDamage ) );
+                //StartCoroutine( ShowPopUpDisplayInfo( attackTarget, _attackDamage, _stressValueDamage, _statePointDamage ) );
+                attackTarget.ShowPopUpDisplayInfoV2( healthPointDamage: _attackDamage, stressValueDamage: _stressValueDamage, statePointDamage: _statePointDamage );
                 yield return new WaitForSeconds( 0.7f );
             }
         }
@@ -1480,7 +1484,8 @@ public class BattleAnimationManager : MonoBehaviour
         BattleLogicManager.ExecuteCasterSkillOnHit( caster, target, false, true, true, isBreakStatusAvailable, out _damageTaken, out _stressValueIncreased, out _statePointReduced, out _log );
         BattleLog.Instance.AddOnScreenBattleLog( _log );
 
-        StartCoroutine( ShowPopUpDisplayInfo( target, _damageTaken, _stressValueIncreased, _statePointReduced ) );
+        //StartCoroutine( ShowPopUpDisplayInfo( target, _damageTaken, _stressValueIncreased, _statePointReduced ) );
+        target.ShowPopUpDisplayInfoV2( healthPointDamage: _damageTaken, stressValueDamage: _stressValueIncreased, statePointDamage: _statePointReduced );
     }
 
     private void OnCasterBeingUnableToUseSkill( GameCharacter caster )
@@ -1517,7 +1522,8 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (animationName.Contains( GETTING_HIT_ANIMATION_NAME ))
         {
-            StartCoroutine( ShowPopUpDisplayInfo( gameCharacter, damageTaken, stressValueIncreased, statePointReduced ) );
+            //StartCoroutine( ShowPopUpDisplayInfo( gameCharacter, damageTaken, stressValueIncreased, statePointReduced ) );
+            gameCharacter.ShowPopUpDisplayInfoV2( healthPointDamage: damageTaken, stressValueDamage: stressValueIncreased, statePointDamage: statePointReduced );
         }
 
         yield return StartCoroutine( WaitForAnimationEventTriggered() );
@@ -1535,7 +1541,8 @@ public class BattleAnimationManager : MonoBehaviour
             _damageTaken = battleResultData.virtualHealthPointDamage;
         }
 
-        StartCoroutine( ShowPopUpDisplayInfo( gameCharacter, _damageTaken, battleResultData.stressValueDamage, battleResultData.statePointDamage ) );
+        //StartCoroutine( ShowPopUpDisplayInfo( gameCharacter, _damageTaken, battleResultData.stressValueDamage, battleResultData.statePointDamage ) );
+        gameCharacter.ShowPopUpDisplayInfoV2( healthPointDamage: _damageTaken, stressValueDamage: battleResultData.stressValueDamage, statePointDamage: battleResultData.statePointDamage );
     }
 
     private IEnumerator ShowPopUpDisplayInfo( GameCharacter gameCharacter,

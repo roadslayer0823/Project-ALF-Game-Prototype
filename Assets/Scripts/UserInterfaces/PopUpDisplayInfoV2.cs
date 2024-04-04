@@ -2,24 +2,25 @@ using UnityEngine;
 
 public class PopUpDisplayInfoV2 : MonoBehaviour
 {
-    [SerializeField] private DisplayInfoV2 actualHealthPointDamage = null;
-    [SerializeField] private DisplayInfoV2 maxStatePointUp = null;
-    [SerializeField] private DisplayInfoV2 statePointDamage = null;
-    [SerializeField] private DisplayInfoV2 stressValueDamage = null;
-    [SerializeField] private DisplayInfoV2 stressValueDown = null;
+    [SerializeField] private DisplayInfoV2 healthPointDamageDisplay = null;
+    [SerializeField] private DisplayInfoV2 maxStatePointUpDisplay = null;
+    [SerializeField] private DisplayInfoV2 statePointDamageDisplay = null;
+    [SerializeField] private DisplayInfoV2 stressValueDamageDisplay = null;
+    [SerializeField] private DisplayInfoV2 stressValueDownDisplay = null;
 
-    public static void SpawnPopUpDisplayInfoV2(PopUpDisplayInfoV2 popUpDisplayInfoV2, GameObject pivotPosition, bool isLeft,
-                                                float actualHealthPointDamage = 0, float statePointDamageUp = 0, float statePointDamageDown = 0, float stressPointDamageUp = 0, float stressPointDamageDown = 0)
+    public static void SpawnPopUpDisplayInfoV2(PopUpDisplayInfoV2 popUpDisplayInfoV2, Vector3 pivotPosition, bool isLeft,
+                                               float healthPointDamage = 0.0f, float maxStatePointUp = 0.0f, float statePointDamage = 0.0f,
+                                               float stressValueDamage = 0.0f, float stressValueDown = 0.0f)
     {
         GameObject _popUpDisplayInfoV2Obj = Instantiate(popUpDisplayInfoV2.gameObject);
-        _popUpDisplayInfoV2Obj.transform.position = pivotPosition.transform.position;
+        _popUpDisplayInfoV2Obj.transform.position = pivotPosition;
 
         PopUpDisplayInfoV2 _popUpDisplayInfoV2 = _popUpDisplayInfoV2Obj.GetComponent<PopUpDisplayInfoV2>();
-        _popUpDisplayInfoV2.actualHealthPointDamage.DisplayPopUpNumber(actualHealthPointDamage, isLeft);
-        _popUpDisplayInfoV2.maxStatePointUp.DisplayPopUpNumber(statePointDamageUp, isLeft);
-        _popUpDisplayInfoV2.statePointDamage.DisplayPopUpNumber(statePointDamageDown, isLeft);
-        _popUpDisplayInfoV2.stressValueDamage.DisplayPopUpNumber(stressPointDamageUp, isLeft);
-        _popUpDisplayInfoV2.stressValueDown.DisplayPopUpNumber(stressPointDamageDown, isLeft);
+        _popUpDisplayInfoV2.healthPointDamageDisplay.DisplayPopUpNumber( healthPointDamage );
+        _popUpDisplayInfoV2.maxStatePointUpDisplay.DisplayPopUpNumber( maxStatePointUp, isLeft );
+        _popUpDisplayInfoV2.statePointDamageDisplay.DisplayPopUpNumber( statePointDamage, isLeft );
+        _popUpDisplayInfoV2.stressValueDamageDisplay.DisplayPopUpNumber( stressValueDamage, isLeft );
+        _popUpDisplayInfoV2.stressValueDownDisplay.DisplayPopUpNumber( stressValueDown, isLeft );
     }
 
     public void OnEndAnimation()

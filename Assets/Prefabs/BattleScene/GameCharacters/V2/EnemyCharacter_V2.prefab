@@ -954,12 +954,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sortingGroup: {fileID: 1752166085130199784}
+  pivot: {fileID: 5916782224816579521}
   characterAnimator: {fileID: 8778027904609409994}
   skillEffectAnimator: {fileID: 0}
-  pivot: {fileID: 5916782224816579521}
   popUpDisplayInfoPrefab: {fileID: 4771544036075216567, guid: 6236c2078a895463e8a7655454c199f3, type: 3}
   characterEventHandler: {fileID: 0}
   skillEffectEventHandler: {fileID: 0}
+  popUpDisplayInfoPrefabV2: {fileID: 5369942473410301712, guid: 449f341d0d5364af9834d2f987b77752, type: 3}
 --- !u!210 &1752166085130199784
 SortingGroup:
   m_ObjectHideFlags: 0

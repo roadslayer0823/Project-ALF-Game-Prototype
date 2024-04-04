@@ -21,6 +21,9 @@ public class GameCharacter : MonoBehaviour
     [SerializeField] private UnityEventHandler characterEventHandler = null;
     [SerializeField] private UnityEventHandler skillEffectEventHandler = null;
 
+    [Header( "Version 2" )]
+    [SerializeField] private PopUpDisplayInfoV2 popUpDisplayInfoPrefabV2 = null;
+
     private string id = null;
     private string characterName = null;
     private bool isPlayer = false;
@@ -682,6 +685,12 @@ public class GameCharacter : MonoBehaviour
         _popUpDisplayInfo.Show( text, textColor, 5.0f, TMPro.FontStyles.Bold ).MoveUpAndFadeOut( 2.0f, 0.5f, 1.5f ).SetOnDestroyedCallback( OnPopUpDisplayInfoDestroyed );
 
         this.popUpDisplayInfoList.Add( _popUpDisplayInfo );
+    }
+
+    public void ShowPopUpDisplayInfoV2( float healthPointDamage = 0.0f, float maxStatePointUp = 0.0f, float statePointDamage = 0.0f,
+                                        float stressValueDamage = 0.0f, float stressValueDown = 0.0f )
+    {
+        PopUpDisplayInfoV2.SpawnPopUpDisplayInfoV2( popUpDisplayInfoPrefabV2, pivot.position, !isPlayer, healthPointDamage, maxStatePointUp, statePointDamage, stressValueDamage, stressValueDown );
     }
 
     private void OnPopUpDisplayInfoDestroyed( PopUpDisplayInfo popUpDisplayInfo )

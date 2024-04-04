@@ -336,7 +336,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         return LeanTween.value(textObject.gameObject, defaultOffset, targetOffset, glowDuration)
            .setOnUpdate((float val) =>
            {
-               textObject.fontSharedMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val);
+               textObject.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val);
            });
     }
 
@@ -345,7 +345,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         return LeanTween.value(textObject.gameObject, defaultOuter, targetOuter, glowDuration)
            .setOnUpdate((float val) =>
            {
-               textObject.fontSharedMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val);
+               textObject.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val);
            });
     }
 
