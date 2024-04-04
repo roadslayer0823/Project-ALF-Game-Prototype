@@ -78,7 +78,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 27.76, y: 14.4}
+  m_Size: {x: 25.606798, y: 18.83}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -498,7 +498,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 35, y: 35}
+  m_Size: {x: 25.6, y: 19.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -872,9 +872,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sortingGroup: {fileID: 6098698254648782925}
+  pivot: {fileID: 2153725635038805945}
   characterAnimator: {fileID: 3315974477501630972}
   skillEffectAnimator: {fileID: 0}
-  pivot: {fileID: 2153725635038805945}
   popUpDisplayInfoPrefab: {fileID: 4771544036075216567, guid: 6236c2078a895463e8a7655454c199f3, type: 3}
   characterEventHandler: {fileID: 0}
   skillEffectEventHandler: {fileID: 0}
