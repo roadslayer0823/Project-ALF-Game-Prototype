@@ -301,21 +301,21 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                         .setOnUpdate((float val) =>
                         {
                             this.stressValueGradientStatus.SetFloat("_Slide", val / 100);
-                            this.stressPercentageText.fontSharedMaterial.SetColor(ShaderUtilities.ID_GlowColor, new Color32(255, 0, 0, 255));
+                            this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, new Color32(255, 0, 0, 255));
                             this.startingStressValue = Mathf.RoundToInt(val);
                             this.stressPercentageText.SetText($"{startingStressValue}<size=40>%</size>");
                         });
 
                 //number outline animation
                 this.stressPercentageText.fontMaterial .SetColor(ShaderUtilities.ID_GlowColor, redColor);
-                LeanTween.value(gameObject, new Vector3(blueR, blueG, blueB), new Vector3(redR, redG, redB), 0.7f)
+                LeanTween.value(gameObject, new Vector3(blueR, blueG, blueB), new Vector3(redR, redG, redB), textAnimationDuration)
                     .setOnUpdate((Vector3 color) =>
                     {
                         Color32 currentColor = new Color32((byte)(color.x + 255), (byte)(color.y - 100), (byte)(color.z - 255), 255);
                         this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, currentColor);
                     }).setOnComplete(() =>
                     {
-                        LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), 0.7f)
+                        LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), textAnimationDuration)
                             .setOnUpdate((Vector3 color) =>
                             {
                                 Color32 currentColor = new Color32((byte)(color.x - 255), (byte)(color.y + 100), (byte)(color.z + 255), 255);
