@@ -109,12 +109,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 974533153196788832}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.726, y: -0.007, z: 0}
-  m_LocalScale: {x: 0.99710983, y: 1.0967742, z: 1}
+  m_LocalPosition: {x: -1.73, y: 0.02, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4548082592124908386}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5216906380906313750
 SpriteRenderer:
@@ -136,7 +136,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 30e3ce43f1888482da31e4be531ddde1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -161,10 +161,10 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 2
+  m_DrawMode: 0
   m_Size: {x: 3.46, y: 0.25}
   m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
+  m_SpriteTileMode: 1
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
@@ -365,8 +365,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1688212246089395283}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.73, y: 0.033, z: 0}
-  m_LocalScale: {x: 1.0144509, y: 0.7419355, z: 1}
+  m_LocalPosition: {x: -1.73, y: 0.017, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3867183898857073961}
@@ -392,7 +392,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: f59300e76d4204fc58b0305c82295b4c, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -417,7 +417,7 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 2
+  m_DrawMode: 0
   m_Size: {x: 3.41, y: 0.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
@@ -741,7 +741,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4548082592124908386}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3036062380418353381
 SpriteRenderer:
@@ -986,7 +986,7 @@ SpriteRenderer:
   m_SortingLayerID: 1910029227
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e867fbd4c9b504f10bbcb19007dfc1ca, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 5053a3feca25d4f70a93d8df1d43e8b1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1022,12 +1022,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6168950329479060270}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.72, y: -0.012, z: 0}
-  m_LocalScale: {x: 0.99710983, y: 1.0967742, z: 1}
+  m_LocalPosition: {x: -1.73, y: 0.02, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4548082592124908386}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6760847663883457054
 SpriteRenderer:
@@ -1049,7 +1049,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: e73e6269b1fa24c50bd0a67090abce42, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1074,10 +1074,10 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 2
+  m_DrawMode: 0
   m_Size: {x: 3.46, y: 0.25}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
+  m_AdaptiveModeThreshold: 1
+  m_SpriteTileMode: 1
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
@@ -1282,9 +1282,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4582361474736050376}
-  - {fileID: 2014527484191483408}
   - {fileID: 6388646030789004421}
   - {fileID: 8389938520541201752}
+  - {fileID: 2014527484191483408}
   m_Father: {fileID: 8780038478600197808}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1338,19 +1338,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d3d1d2116cbf4d3db2316c2f67a0895, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedCharacter: {fileID: 0}
   enemyNameText: {fileID: 3826082361797732770}
-  effectMarkerLabel: {fileID: 1072008193999139977}
   stressPercentageText: {fileID: 487361357480215158}
   stressBreakUI: {fileID: 2999244880511704835}
-  stateBreakUI: {fileID: 2156475482860570733}
-  effectMarker: {fileID: 7652685122358138148}
-  statePointBreak: {fileID: 21300000, guid: aaf3ea2c6e2a44479ae92a611bb4d1a6, type: 3}
-  statePointNoBreak: {fileID: 21300000, guid: 9eeb40d58f7ee40618850c11be28ee75, type: 3}
   stressPointBreak: {fileID: 21300000, guid: b5a7e577877764c7eaea2c50ed777ff0, type: 3}
   stressPointNoBreak: {fileID: 21300000, guid: e867fbd4c9b504f10bbcb19007dfc1ca, type: 3}
-  virtualHPBar: {fileID: 5216906380906313750}
-  statePointStatus: {fileID: 2317905903396278333}
   stressPointStatus: {fileID: 3287711830086285574}
+  effectMarkerLabel: {fileID: 1072008193999139977}
+  effectMarker: {fileID: 7652685122358138148}
+  statePointFillAmount: {fileID: 2100000, guid: f59300e76d4204fc58b0305c82295b4c, type: 2}
+  stateBreakUI: {fileID: 2156475482860570733}
+  statePointBreak: {fileID: 21300000, guid: aaf3ea2c6e2a44479ae92a611bb4d1a6, type: 3}
+  statePointNoBreak: {fileID: 21300000, guid: 9eeb40d58f7ee40618850c11be28ee75, type: 3}
+  statePointStatus: {fileID: 2317905903396278333}
+  healthPointFillAmount: {fileID: 2100000, guid: e73e6269b1fa24c50bd0a67090abce42, type: 2}
+  virtualPointFillAmount: {fileID: 2100000, guid: 30e3ce43f1888482da31e4be531ddde1, type: 2}
+  virtualHPBar: {fileID: 5216906380906313750}
   healthPointBar: {fileID: 6760847663883457054}
   statePointBar: {fileID: 434221249944723594}
 --- !u!1 &7652685122358138148
