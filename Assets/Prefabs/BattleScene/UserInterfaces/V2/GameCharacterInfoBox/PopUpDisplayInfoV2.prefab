@@ -495,10 +495,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   actualHealthPointDamage: {fileID: 5530169654043924398}
-  statePointDamageUp: {fileID: 5775995608810219982}
-  statePointDamageDown: {fileID: 6510294868393804106}
-  stressPointDamageUp: {fileID: 484591975659639765}
-  stressPointDamageDown: {fileID: 706461051506489847}
+  maxStatePointUp: {fileID: 5775995608810219982}
+  statePointDamage: {fileID: 6510294868393804106}
+  stressValueDamage: {fileID: 484591975659639765}
+  stressValueDown: {fileID: 706461051506489847}
 --- !u!1 &3436107586169648522
 GameObject:
   m_ObjectHideFlags: 0
@@ -855,7 +855,7 @@ GameObject:
   - component: {fileID: 8232531079083854601}
   - component: {fileID: 6510294868393804106}
   m_Layer: 0
-  m_Name: StatePointDamageDown
+  m_Name: StatePointDamage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1127,7 +1127,7 @@ GameObject:
   - component: {fileID: 6365992900833145393}
   - component: {fileID: 5775995608810219982}
   m_Layer: 0
-  m_Name: StatePointDamageUp
+  m_Name: MaxStatePointUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1227,7 +1227,7 @@ GameObject:
   - component: {fileID: 7831103182061778572}
   - component: {fileID: 484591975659639765}
   m_Layer: 0
-  m_Name: StressValueDamageUp
+  m_Name: StressValueDamage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1327,7 +1327,7 @@ GameObject:
   - component: {fileID: 3181744037675002048}
   - component: {fileID: 706461051506489847}
   m_Layer: 0
-  m_Name: StressValueDamageDown
+  m_Name: StressValueDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
