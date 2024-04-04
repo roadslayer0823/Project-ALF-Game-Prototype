@@ -50,25 +50,81 @@ SpriteAtlas:
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 15f9a60075d3f4c508b7aab56f1990e5, type: 3}
+  - {fileID: 21300000, guid: 1f7cec81888ee4fc6972381be847df08, type: 3}
+  - {fileID: 21300000, guid: a8b7a2a1e0a3249be96c56074a04fa0f, type: 3}
+  - {fileID: 21300000, guid: 808fa4d160ec44f7e837f0bc1ac08aae, type: 3}
+  - {fileID: 21300000, guid: 19a2f162a2e4d4d0492977989f755a6a, type: 3}
+  - {fileID: 21300000, guid: b03d0103622734913937897c54d2e462, type: 3}
+  - {fileID: 21300000, guid: 3deee8c3438294144853a7522cb114f7, type: 3}
+  - {fileID: 21300000, guid: 912049245aacc44ea95f0272133a078f, type: 3}
+  - {fileID: 21300000, guid: c4441784b86894c458be4c82b85d16e0, type: 3}
+  - {fileID: 21300000, guid: e4913e94924584d30aff463b1fbb6c23, type: 3}
+  - {fileID: 21300000, guid: 22957fe4fe0a444d9b09014e703427da, type: 3}
   - {fileID: 21300000, guid: caf42a76758b94c269178a5ea9aba398, type: 3}
+  - {fileID: 21300000, guid: b8d1fe07dd6a74b7591432f1f8885042, type: 3}
+  - {fileID: 21300000, guid: 4f9d8e37d07f64ea099675748ece324f, type: 3}
   - {fileID: 21300000, guid: ce21f657a50994a77afd0b8bd1a8f443, type: 3}
+  - {fileID: 21300000, guid: 71fdeb77f77bc4f04829857c15638338, type: 3}
+  - {fileID: 21300000, guid: e1ba41b7e22994cc5b9d595345db4fab, type: 3}
   - {fileID: 21300000, guid: 812937f7592e549bbb0998645858f74f, type: 3}
   - {fileID: 21300000, guid: 045896889525c4151a87df085935e9a3, type: 3}
+  - {fileID: 21300000, guid: e6cc49886afea4b2994dbbce409be4d3, type: 3}
+  - {fileID: 21300000, guid: 2afe44982a188479a9869f81aa7a1c62, type: 3}
+  - {fileID: 21300000, guid: 684e5998ed0d2406e8b07876d9e6bf10, type: 3}
   - {fileID: 21300000, guid: 951aead8b55ec46c9aa5cc49a3083659, type: 3}
   - {fileID: 21300000, guid: 7a1817e81b0574b39a90a6a1e0ce217c, type: 3}
   - {fileID: 21300000, guid: 840d41691fdab42e8be38bee63de45e1, type: 3}
+  - {fileID: 21300000, guid: 0cf33c999d509483e86d20fb158e47b2, type: 3}
+  - {fileID: 21300000, guid: 7726f74adc0d440ccb1d82e0e2fa9a5a, type: 3}
+  - {fileID: 21300000, guid: 6eaea65a5dbea47be809f41be6d97590, type: 3}
+  - {fileID: 21300000, guid: 582a9d6a0481d4c9cafc4461952f4bfa, type: 3}
+  - {fileID: 21300000, guid: 68676a9a901d947148f790862b3774fa, type: 3}
+  - {fileID: 21300000, guid: aaf8654b4841e4a289c8c0d12a7b095f, type: 3}
   - {fileID: 21300000, guid: da1cc05cb9b3b45d4b97167dfbecdd9c, type: 3}
   - {fileID: 21300000, guid: f2e573dd8e09b4926ae67190a7cf7469, type: 3}
+  - {fileID: 21300000, guid: 8de872ed7ce9848b0b2ba0e43bf777c6, type: 3}
+  - {fileID: 21300000, guid: 15068daea3084489a9bf1e9cbd30da84, type: 3}
+  - {fileID: 21300000, guid: fbf8d73fe53b241ceaaa7f6fecc0b9da, type: 3}
+  - {fileID: 21300000, guid: 64666baf19a3f42be89422325a476e0e, type: 3}
   m_PackedSpriteNamesToIndex:
+  - 39
+  - 33
+  - 27
+  - 05
+  - 16
+  - 01
+  - 34
+  - 43
+  - 32
+  - 25
+  - 41
   - 01
   - 02
+  - 17
+  - 02
+  - 37
+  - 35
   - 04
   - 02
+  - 45
+  - 29
+  - 03
   - 03
   - 02
   - 02
+  - 28
+  - 30
+  - 42
+  - 44
+  - 04
+  - 38
   - 03
   - ariku back
+  - 26
+  - 36
+  - 31
+  - 40
   m_RenderDataMap: {}
   m_Tag: Ariku
   m_IsVariant: 0
