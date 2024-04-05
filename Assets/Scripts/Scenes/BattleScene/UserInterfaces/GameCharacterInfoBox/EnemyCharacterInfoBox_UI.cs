@@ -1,37 +1,36 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
-public class EnemyCharacterInfoBox : MonoBehaviour
+public class EnemyCharacterInfoBox_UI : MonoBehaviour
 {
     [Header( "Settings" )]
     [SerializeField] private Material stressValueGradientStatus = null;
     [SerializeField] private GameCharacter selectedCharacter = null;
 
     [Header("Enemy Info")]
-    [SerializeField] private TextMeshPro enemyNameText = null;
+    [SerializeField] private TextMeshProUGUI enemyNameText = null;
 
     [Header("Stress Value UI")]
-    [SerializeField] private TextMeshPro stressPercentageText = null;
+    [SerializeField] private TextMeshProUGUI stressPercentageText = null;
     [SerializeField] private GameObject stressBreakUI = null;
-    [SerializeField] private SpriteRenderer stressPointStatus = null;
+    [SerializeField] private Image stressPointStatus = null;
 
     [Header("Effect Marker UI")]
-    [SerializeField] private TextMeshPro effectMarkerLabel = null;
+    [SerializeField] private TextMeshProUGUI effectMarkerLabel = null;
     [SerializeField] private GameObject effectMarker = null;
 
     [Header("State Point UI")]
-    [SerializeField] private Material statePointFillAmount = null;
     [SerializeField] private GameObject stateBreakUI = null;
     [SerializeField] private Sprite statePointBreak = null;
     [SerializeField] private Sprite statePointNoBreak = null;
-    [SerializeField] private SpriteRenderer statePointStatus = null;
+    [SerializeField] private Image statePointStatus = null;
+    [SerializeField] private Image statePointBar = null;
 
     [Header("Health Point UI")]
-    [SerializeField] private Material healthPointFillAmount = null;
-    [SerializeField] private Material virtualPointFillAmount = null;
-    [SerializeField] private SpriteRenderer virtualHPBar = null;
-    [SerializeField] private SpriteRenderer healthPointBar = null;
-    [SerializeField] private SpriteRenderer statePointBar = null;
+    [SerializeField] private Image virtualHPBar = null;
+    [SerializeField] private Image healthPointBar = null;
+   
 
     //starting value
     private float startingStatePoint = 0.0f;
@@ -110,7 +109,7 @@ public class EnemyCharacterInfoBox : MonoBehaviour
             {
                 this.startingHealthPoint = Mathf.RoundToInt(val);
                 float _healthPointFillAmount = startingHealthPoint / _maximumHealthPoint;
-                healthPointFillAmount.SetFloat("_FillAmount", _healthPointFillAmount);
+                healthPointBar.fillAmount = _healthPointFillAmount;
             });
         
         LeanTween.value(gameObject, this.startingVirtualPoint, _virtualHealthPoint, 0.3f)
@@ -118,7 +117,7 @@ public class EnemyCharacterInfoBox : MonoBehaviour
             {
                 this.startingVirtualPoint = Mathf.RoundToInt(val);
                 float _virtualPointFillAmount = startingVirtualPoint / _maximumHealthPoint;
-                virtualPointFillAmount.SetFloat("_FillAmount", _virtualPointFillAmount);
+                virtualHPBar.fillAmount = _virtualPointFillAmount;
             });
     }
 
@@ -199,6 +198,7 @@ public class EnemyCharacterInfoBox : MonoBehaviour
                 {
                     stressValueStatusAnimation(this.defaultGlowPercentage, stressValueStatusDuration, "_Color_A_Percentage");
                 });
+
             this.stressBreakUI.gameObject.SetActive(false);
         }
     }
@@ -220,7 +220,7 @@ public class EnemyCharacterInfoBox : MonoBehaviour
                 {
                     this.startingStatePoint = Mathf.RoundToInt(val);
                     float _statePointFillAmount = startingStatePoint / _maximumStatePoint;
-                    statePointFillAmount.SetFloat("_FillAmount", _statePointFillAmount);
+                    statePointBar.fillAmount = _statePointFillAmount;
                 });
 
             this.stateBreakUI.SetActive(false);
