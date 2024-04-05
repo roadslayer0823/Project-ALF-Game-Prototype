@@ -13,18 +13,15 @@ public class PopUpDisplayInfoV2 : MonoBehaviour
                                                float stressValueDamage = 0.0f, float stressValueDown = 0.0f)
     {
         GameObject _popUpDisplayInfoV2Obj = Instantiate(popUpDisplayInfoV2.gameObject);
-        _popUpDisplayInfoV2Obj.transform.position = pivotPosition;
+        _popUpDisplayInfoV2Obj.transform.position = pivotPosition + new Vector3(0,2,0);
 
         PopUpDisplayInfoV2 _popUpDisplayInfoV2 = _popUpDisplayInfoV2Obj.GetComponent<PopUpDisplayInfoV2>();
-        _popUpDisplayInfoV2.healthPointDamageDisplay.DisplayPopUpNumber( healthPointDamage );
+        _popUpDisplayInfoV2.healthPointDamageDisplay.DisplayPopUpNumber( healthPointDamage, false);
         _popUpDisplayInfoV2.maxStatePointUpDisplay.DisplayPopUpNumber( maxStatePointUp, isLeft );
         _popUpDisplayInfoV2.statePointDamageDisplay.DisplayPopUpNumber( statePointDamage, isLeft );
         _popUpDisplayInfoV2.stressValueDamageDisplay.DisplayPopUpNumber( stressValueDamage, isLeft );
         _popUpDisplayInfoV2.stressValueDownDisplay.DisplayPopUpNumber( stressValueDown, isLeft );
-    }
 
-    public void OnEndAnimation()
-    {
-        Destroy(this.gameObject);
+        Destroy(_popUpDisplayInfoV2Obj, 1.2f);
     }
 }

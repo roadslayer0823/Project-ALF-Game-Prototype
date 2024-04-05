@@ -5,18 +5,7 @@ public class DisplayInfoV2 : MonoBehaviour
 {
     [SerializeField] private TMP_Text displayNumber = null;
     [SerializeField] private Transform leftSpawnPosition = null;
-
-    public void DisplayPopUpNumber( float numberToDisplay )
-    {
-        if (CheckIfCanDisplayNumber( numberToDisplay ))
-        {
-            this.displayNumber.SetText( numberToDisplay.ToString() );
-        }
-        else
-        {
-            this.gameObject.SetActive( false );
-        }
-    }
+    [SerializeField] private Animator animator = null;
 
     public void DisplayPopUpNumber( float numberToDisplay, bool isLeft )
     {
@@ -27,6 +16,7 @@ public class DisplayInfoV2 : MonoBehaviour
                 this.gameObject.transform.position = leftSpawnPosition.position;
             }
             this.displayNumber.SetText( numberToDisplay.ToString() );
+            this.animator.SetTrigger("start");
         }
         else
         {
