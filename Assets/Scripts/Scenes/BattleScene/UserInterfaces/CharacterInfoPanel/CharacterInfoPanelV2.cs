@@ -16,6 +16,8 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
     [Header("State Point UI")]
     [SerializeField] private HorizontalLayoutGroup horizontalLayoutGroup;
+    [SerializeField] private RectTransform maxStatePointAnimStaringPoint = null;
+    [SerializeField] private RectTransform maxStatePointAnimEndingPoint = null;
     [SerializeField] private TextMeshProUGUI statePointValueText = null;
     [SerializeField] private TextMeshProUGUI maxStatePointValueText = null;
     [SerializeField] private TextMeshProUGUI maxStatePointValueFirstText = null;
@@ -25,6 +27,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     [SerializeField] private GameObject statePointBreakText = null;
     [SerializeField] private Sprite statePointBreak = null;
     [SerializeField] private Sprite statePointNoBreak = null;
+    [SerializeField] private Image maxStatePointIncreaseIcon = null;
     [SerializeField] private Image statePointStatus = null;
     [SerializeField] private Image statePointBar = null;
 
@@ -42,7 +45,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     private float startingStatePoint = 0.0f;
     private float startingHealthPoint = 0.0f;
     private float startingVirtualPoint = 0.0f;
-    private float startingStressValue = -1;
+    private float startingStressValue;
 
     //animation duration
     private float textAnimationDuration = 0.3f;
@@ -73,10 +76,13 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         float _startingStatePoint = this.selectedCharacter.GetMaximumStatePoint();
         float _startingHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
         float _startingVirtualPoint = this.selectedCharacter.GetMaximumHealthPoint();
+        float _startingStressValue = -1f;
 
         startingStatePoint = _startingStatePoint;
         startingHealthPoint = _startingHealthPoint;
         startingVirtualPoint = _startingVirtualPoint;
+        startingStressValue = _startingStressValue;
+        
     }
 
     public void SetSelectedCharacter(GameCharacter selectedCharacter)
@@ -146,9 +152,22 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             {
                 if (isSetupComplete == true)
                 {
-                    this.characterInfoPanelAnimation.Play(ANIMATION_ID_MAX_STATE_POINT_INCREASE, 1, 0f);
                     Vector2 currentScale = maxStatePointValueFirstText.rectTransform.localScale;
                     Vector2 newScale = new Vector3(currentScale.x / scaleMultiplier, currentScale.y / scaleMultiplier);
+                    Vector2 maxStatePointIconOriginalPosition = maxStatePointIncreaseIcon.gameObject.transform.position;
+                    float maxStatePointIncreaseOpacity = maxStatePointIncreaseIcon.color.a;
+
+                    //max state point increase animation
+                    maxStatePointIncreaseIcon.gameObject.SetActive(true);
+                    this.characterInfoPanelAnimation.Play(ANIMATION_ID_MAX_STATE_POINT_INCREASE, 1, 0f);
+                    LeanTween.move(maxStatePointIncreaseIcon.gameObject, maxStatePointAnimEndingPoint, 0.5f)
+                       .setOnComplete(() =>
+                        {
+                            LeanTween.alpha(maxStatePointIncreaseIcon.gameObject, 0, 0.3f);
+                            maxStatePointIncreaseIcon.gameObject.SetActive(false);
+                            maxStatePointIncreaseOpacity = 255;
+                            maxStatePointIncreaseIcon.gameObject.transform.position = maxStatePointIconOriginalPosition;
+                        });
 
                     //first text
                     maxStatePointScale(maxStatePointValueFirstText, newScale, maxStatePointScaleDuration);
@@ -261,7 +280,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             stressValueStatusAnimation(breakStatusColor, stressValueStatusDuration, "_Color1_B_Percentage");
         }
 
-        else if (startingStressValue != _currentStressValue)
+        if (startingStressValue != _currentStressValue)
         {
             this.stressPercentageText.SetText(_currentStressValue.ToString());
             if (isSetupComplete == true)
