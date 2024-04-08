@@ -6,6 +6,7 @@ using TMPro;
 public class ATLSlotV2 : MonoBehaviour
 {
     [SerializeField] private Image atlSlot;
+    [SerializeField] private Image atlSlotAnimation;
 
     [Header("ATL Status")]
     [SerializeField] private Sprite playerUnuseAtlSlot;
@@ -106,6 +107,7 @@ public class ATLSlotV2 : MonoBehaviour
         {
             int _atlNumber = this.battleFlowATL_V2.GetATLNumber();
             bool _isPlayer = ( _atlNumber % 2 == this.atlNumberForPlayer );
+            float atlSlotAlphaValue = atlSlotAnimation.color.a;
 
             if (aTLCurrentStatus == ATLCurrentStatus.Unused)
             {
@@ -113,11 +115,13 @@ public class ATLSlotV2 : MonoBehaviour
             }
             else if (aTLCurrentStatus == ATLCurrentStatus.Using)
             {
-                this.atlSlot.sprite = ( _isPlayer ) ? this.playerUsingAtlSlot : this.enemyUsingAtlSlot;
-            }
-            else if (aTLCurrentStatus == ATLCurrentStatus.Used)
-            {
-                this.atlSlot.sprite = ( _isPlayer ) ? this.playerUsedAtlSlot : this.enemyUsedAtlSlot;
+                this.atlSlotAnimation.sprite = ( _isPlayer ) ? this.playerUsingAtlSlot : this.enemyUsingAtlSlot;
+                LeanTween.alpha(atlSlotAnimation.rectTransform, 1f, 1f)
+                    .setOnComplete(() =>
+                    {
+                        LeanTween.alpha(atlSlotAnimation.rectTransform, 0, 1f);
+                        this.atlSlot.sprite = (_isPlayer) ? this.playerUsedAtlSlot : this.enemyUsedAtlSlot;
+                    });
             }
 
             this.startingPointX = this.PlayerStartPoint.position.x;
