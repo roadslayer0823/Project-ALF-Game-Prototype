@@ -136,7 +136,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 30e3ce43f1888482da31e4be531ddde1, type: 2}
+  - {fileID: 2100000, guid: e73e6269b1fa24c50bd0a67090abce42, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -392,7 +392,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f59300e76d4204fc58b0305c82295b4c, type: 2}
+  - {fileID: 2100000, guid: e73e6269b1fa24c50bd0a67090abce42, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1337,7 +1337,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d3d1d2116cbf4d3db2316c2f67a0895, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stressValueGradientStatus: {fileID: 2100000, guid: a87367fc9b3244740b1a41980de2453b, type: 2}
   selectedCharacter: {fileID: 0}
   enemyNameText: {fileID: 3826082361797732770}
   stressPercentageText: {fileID: 487361357480215158}
@@ -1345,13 +1344,10 @@ MonoBehaviour:
   stressPointStatus: {fileID: 3287711830086285574}
   effectMarkerLabel: {fileID: 1072008193999139977}
   effectMarker: {fileID: 7652685122358138148}
-  statePointFillAmount: {fileID: 2100000, guid: f59300e76d4204fc58b0305c82295b4c, type: 2}
   stateBreakUI: {fileID: 2156475482860570733}
   statePointBreak: {fileID: 21300000, guid: b6c1cd20c478a4e72bc39fa48188af0b, type: 3}
   statePointNoBreak: {fileID: 21300000, guid: 730e26885cfda4a55b95ff7a56489fd4, type: 3}
   statePointStatus: {fileID: 2317905903396278333}
-  healthPointFillAmount: {fileID: 2100000, guid: e73e6269b1fa24c50bd0a67090abce42, type: 2}
-  virtualPointFillAmount: {fileID: 2100000, guid: 30e3ce43f1888482da31e4be531ddde1, type: 2}
   virtualHPBar: {fileID: 5216906380906313750}
   healthPointBar: {fileID: 6760847663883457054}
   statePointBar: {fileID: 434221249944723594}

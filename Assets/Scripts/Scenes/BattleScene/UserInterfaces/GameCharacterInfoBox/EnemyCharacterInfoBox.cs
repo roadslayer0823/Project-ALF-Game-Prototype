@@ -4,7 +4,6 @@ using TMPro;
 public class EnemyCharacterInfoBox : MonoBehaviour
 {
     [Header( "Settings" )]
-    [SerializeField] private Material stressValueGradientStatus = null;
     [SerializeField] private GameCharacter selectedCharacter = null;
 
     [Header("Enemy Info")]
@@ -20,15 +19,12 @@ public class EnemyCharacterInfoBox : MonoBehaviour
     [SerializeField] private GameObject effectMarker = null;
 
     [Header("State Point UI")]
-    [SerializeField] private Material statePointFillAmount = null;
     [SerializeField] private GameObject stateBreakUI = null;
     [SerializeField] private Sprite statePointBreak = null;
     [SerializeField] private Sprite statePointNoBreak = null;
     [SerializeField] private SpriteRenderer statePointStatus = null;
 
     [Header("Health Point UI")]
-    [SerializeField] private Material healthPointFillAmount = null;
-    [SerializeField] private Material virtualPointFillAmount = null;
     [SerializeField] private SpriteRenderer virtualHPBar = null;
     [SerializeField] private SpriteRenderer healthPointBar = null;
     [SerializeField] private SpriteRenderer statePointBar = null;
@@ -110,7 +106,7 @@ public class EnemyCharacterInfoBox : MonoBehaviour
             {
                 this.startingHealthPoint = Mathf.RoundToInt(val);
                 float _healthPointFillAmount = startingHealthPoint / _maximumHealthPoint;
-                healthPointFillAmount.SetFloat("_FillAmount", _healthPointFillAmount);
+                healthPointBar.material.SetFloat("_FillAmount", _healthPointFillAmount);
             });
         
         LeanTween.value(gameObject, this.startingVirtualPoint, _virtualHealthPoint, 0.3f)
@@ -118,7 +114,7 @@ public class EnemyCharacterInfoBox : MonoBehaviour
             {
                 this.startingVirtualPoint = Mathf.RoundToInt(val);
                 float _virtualPointFillAmount = startingVirtualPoint / _maximumHealthPoint;
-                virtualPointFillAmount.SetFloat("_FillAmount", _virtualPointFillAmount);
+                virtualHPBar.material.SetFloat("_FillAmount", _virtualPointFillAmount);
             });
     }
 
@@ -170,7 +166,7 @@ public class EnemyCharacterInfoBox : MonoBehaviour
             LeanTween.value(gameObject, startingStressValue, _currentStressValue, textAnimationDuration)
                     .setOnUpdate((float val) =>
                     {
-                        this.stressValueGradientStatus.SetFloat("_Slide", val / 100);
+                        this.stressPointStatus.material.SetFloat("_Slide", val / 100);
                         this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, new Color32(255, 0, 0, 255));
                         this.startingStressValue = Mathf.RoundToInt(val);
                         this.stressPercentageText.SetText($"{startingStressValue}<size=2>%</size>");
@@ -220,7 +216,7 @@ public class EnemyCharacterInfoBox : MonoBehaviour
                 {
                     this.startingStatePoint = Mathf.RoundToInt(val);
                     float _statePointFillAmount = startingStatePoint / _maximumStatePoint;
-                    statePointFillAmount.SetFloat("_FillAmount", _statePointFillAmount);
+                    statePointBar.material.SetFloat("_FillAmount", _statePointFillAmount);
                 });
 
             this.stateBreakUI.SetActive(false);
@@ -230,10 +226,10 @@ public class EnemyCharacterInfoBox : MonoBehaviour
 
     public LTDescr stressValueStatusAnimation(float colorPercentage, float animationDuration, string targetColor)
     {
-        return LeanTween.value(gameObject, this.stressValueGradientStatus.GetFloat(targetColor), colorPercentage, animationDuration)
+        return LeanTween.value(gameObject, this.stressPointStatus.material.GetFloat(targetColor), colorPercentage, animationDuration)
                         .setOnUpdate((float val) =>
                         {
-                            this.stressValueGradientStatus.SetFloat(targetColor, val);
+                            this.stressPointStatus.material.SetFloat(targetColor, val);
                         });
     }
 }

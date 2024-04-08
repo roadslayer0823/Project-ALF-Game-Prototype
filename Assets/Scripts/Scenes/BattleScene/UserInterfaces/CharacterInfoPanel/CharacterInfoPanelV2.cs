@@ -5,7 +5,7 @@ using TMPro;
 public class CharacterInfoPanelV2 : MonoBehaviour
 {
     [Header("Stress Value UI")]
-    [SerializeField] private Material stressValueGradientStatus = null;
+    [SerializeField] private Image stressValueStatus = null;
     [SerializeField] private TextMeshProUGUI stressPercentageText = null;
 
     [Header("Health Point UI")]
@@ -269,7 +269,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         float _currentStressValue = this.selectedCharacter.GetCurrentStressValue();
         if (isSetupComplete == false)
         {
-            this.stressValueGradientStatus.SetFloat("_Slide", 0);
+            this.stressValueStatus.material.SetFloat("_Slide", 0);
         }
 
         if (this.selectedCharacter.GetIsBreakStatusCausedByStressValue())
@@ -319,14 +319,14 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                 LeanTween.value(gameObject, startingStressValue, _currentStressValue, textAnimationDuration)
                         .setOnUpdate((float val) =>
                         {
-                            this.stressValueGradientStatus.SetFloat("_Slide", val / 100);
+                            this.stressValueStatus.material.SetFloat("_Slide", val / 100);
                             this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, new Color32(255, 0, 0, 255));
                             this.startingStressValue = Mathf.RoundToInt(val);
                             this.stressPercentageText.SetText($"{startingStressValue}<size=40>%</size>");
                         });
 
                 //number outline animation
-                this.stressPercentageText.fontMaterial .SetColor(ShaderUtilities.ID_GlowColor, redColor);
+                this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, redColor);
                 LeanTween.value(gameObject, new Vector3(blueR, blueG, blueB), new Vector3(redR, redG, redB), textAnimationDuration)
                     .setOnUpdate((Vector3 color) =>
                     {
@@ -370,10 +370,10 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
     public LTDescr stressValueStatusAnimation(float colorPercentage, float animationDuration, string targetColor)
     {
-        return LeanTween.value(gameObject, this.stressValueGradientStatus.GetFloat(targetColor), colorPercentage, animationDuration)
+        return LeanTween.value(gameObject, this.stressValueStatus.material.GetFloat(targetColor), colorPercentage, animationDuration)
                         .setOnUpdate((float val) =>
                         {
-                            this.stressValueGradientStatus.SetFloat(targetColor, val);
+                            this.stressValueStatus.material.SetFloat(targetColor, val);
                         });
     }
 }
