@@ -124,15 +124,8 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
     public void StressValueInfo()
     {
         float _currentStressValue = this.selectedCharacter.GetCurrentStressValue();
-        if (this.selectedCharacter.GetIsBreakStatusCausedByStressValue())
-        {
-            this.stressPercentageText.gameObject.SetActive(false);
-            this.stressBreakUI.gameObject.SetActive(true);
-            stressValueStatusAnimation(this.breakStatusColor, stressValueStatusDuration, "_Color1_G_Percentage");
-            stressValueStatusAnimation(this.breakStatusColor, stressValueStatusDuration, "_Color2_G_Percentage");
-            stressValueStatusAnimation(this.breakStatusColor, stressValueStatusDuration, "_Color2_B_Percentage");
-        }
-        else if(startingStressValue != _currentStressValue)
+       
+        if(startingStressValue != _currentStressValue)
         {
             //glow color effect
             Color32 redColor = new Color32(255, 0, 0, 255);
@@ -150,7 +143,7 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
 
             this.stressPercentageText.gameObject.SetActive(true);
 
-            if (_currentStressValue == 0 || _currentStressValue >= 50)
+            if (_currentStressValue >= 0)
             {
                 stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color1_G_Percentage");
                 stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color2_G_Percentage");
@@ -200,6 +193,23 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
                 });
 
             this.stressBreakUI.gameObject.SetActive(false);
+        }
+
+        if (this.selectedCharacter.GetIsBreakStatusCausedByStressValue())
+        {
+            this.stressPercentageText.gameObject.SetActive(false);
+            this.stressBreakUI.gameObject.SetActive(true);
+            stressValueStatusAnimation(this.breakStatusColor, stressValueStatusDuration, "_Color1_G_Percentage");
+            stressValueStatusAnimation(this.breakStatusColor, stressValueStatusDuration, "_Color2_G_Percentage");
+            stressValueStatusAnimation(this.breakStatusColor, stressValueStatusDuration, "_Color2_B_Percentage");
+        }
+        else
+        {
+            this.stressPercentageText.gameObject.SetActive(true);
+            this.stressBreakUI.gameObject.SetActive(false);
+            stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color1_G_Percentage");
+            stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color2_G_Percentage");
+            stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color2_B_Percentage");
         }
     }
 
