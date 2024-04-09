@@ -19,7 +19,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     [SerializeField] private RectTransform maxStatePointAnimStaringPoint = null;
     [SerializeField] private RectTransform maxStatePointAnimEndingPoint = null;
     [SerializeField] private TextMeshProUGUI statePointValueText = null;
-    [SerializeField] private TextMeshProUGUI maxStatePointValueText = null;
+    [SerializeField] private TextMeshProUGUI[] maxStatePointText = new TextMeshProUGUI[0];
     [SerializeField] private TextMeshProUGUI maxStatePointValueFirstText = null;
     [SerializeField] private TextMeshProUGUI maxStatePointValueSecondText = null;
     [SerializeField] private TextMeshProUGUI maxStatePointValueThirdText = null;
@@ -110,8 +110,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         {
             this.maxStatePointValueThirdText.gameObject.SetActive(false);
             this.maxStatePointValueFourthText.gameObject.SetActive(false);
-            this.maxStatePointValueFirstText.text = maximumStatePointText[0].ToString();
-            this.maxStatePointValueSecondText.text = maximumStatePointText[1].ToString();
+            MaxStatePointTextList(maximumStatePointText);
             this.horizontalLayoutGroup.spacing = twoCharacterSpacing;
         }
 
@@ -119,9 +118,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         {
             this.maxStatePointValueThirdText.gameObject.SetActive(true);
             this.maxStatePointValueFourthText.gameObject.SetActive(false);
-            this.maxStatePointValueFirstText.text = maximumStatePointText[0].ToString();
-            this.maxStatePointValueSecondText.text = maximumStatePointText[1].ToString();
-            this.maxStatePointValueThirdText.text = maximumStatePointText[2].ToString();
+            MaxStatePointTextList(maximumStatePointText);
             this.horizontalLayoutGroup.spacing = threeCharacterSpacing;
         }
 
@@ -129,10 +126,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         {
             this.maxStatePointValueThirdText.gameObject.SetActive(true);
             this.maxStatePointValueFourthText.gameObject.SetActive(true);
-            this.maxStatePointValueThirdText.text = maximumStatePointText[0].ToString();
-            this.maxStatePointValueFirstText.text = maximumStatePointText[1].ToString();
-            this.maxStatePointValueSecondText.text = maximumStatePointText[2].ToString();
-            this.maxStatePointValueThirdText.text = maximumStatePointText[3].ToString();
+            MaxStatePointTextList(maximumStatePointText);
             this.horizontalLayoutGroup.spacing = fourCharacterSpacing;
         }
 
@@ -376,5 +370,13 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                         {
                             this.stressValueStatus.material.SetFloat(targetColor, val);
                         });
+    }
+
+    public void MaxStatePointTextList(string targetText)
+    {
+        for (int i = 0; i < targetText.Length; i++)
+        {
+            this.maxStatePointText[i].text = targetText[i].ToString();
+        }
     }
 }
