@@ -67,7 +67,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
     //gradient color percentage
     private float orangeColor = 0.5f;
-    private float redColor = 0.2f;
+    private float redColor = 0.0f;
     private float breakStatusColor = 0.0f;
     private float defaultColor = 1f;
 
@@ -82,7 +82,6 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         startingHealthPoint = _startingHealthPoint;
         startingVirtualPoint = _startingVirtualPoint;
         startingStressValue = _startingStressValue;
-        
     }
 
     public void SetSelectedCharacter(GameCharacter selectedCharacter)
@@ -130,9 +129,10 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         {
             this.maxStatePointValueThirdText.gameObject.SetActive(true);
             this.maxStatePointValueFourthText.gameObject.SetActive(true);
-            this.maxStatePointValueFirstText.text = maximumStatePointText[0].ToString();
-            this.maxStatePointValueSecondText.text = maximumStatePointText[1].ToString();
-            this.maxStatePointValueThirdText.text = maximumStatePointText[2].ToString();
+            this.maxStatePointValueThirdText.text = maximumStatePointText[0].ToString();
+            this.maxStatePointValueFirstText.text = maximumStatePointText[1].ToString();
+            this.maxStatePointValueSecondText.text = maximumStatePointText[2].ToString();
+            this.maxStatePointValueThirdText.text = maximumStatePointText[3].ToString();
             this.horizontalLayoutGroup.spacing = fourCharacterSpacing;
         }
 
@@ -279,8 +279,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             stressValueStatusAnimation(breakStatusColor, stressValueStatusDuration, "_Color2_G_Percentage");
             stressValueStatusAnimation(breakStatusColor, stressValueStatusDuration, "_Color1_B_Percentage");
         }
-
-        if (startingStressValue != _currentStressValue)
+        else if (startingStressValue != _currentStressValue)
         {
             this.stressPercentageText.SetText(_currentStressValue.ToString());
             if (isSetupComplete == true)
@@ -298,15 +297,17 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                 float blueG = blueColor.g;
                 float blueB = blueColor.b;
 
-                
+
                 this.characterInfoPanelAnimation.Play(ANIMATION_ID_STRESS_POINT_INCREASE, 0, 0f);
 
                 //stress value status animation
-                if (_currentStressValue == 0 || _currentStressValue >= 50)
+                if (_currentStressValue >= 0)
                 {
-                    stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color1_G_Percentage");
+                    stressValueStatusAnimation(defaultColor, stressValueStatusDuration, "_Color1_G_Percentage");
+                    stressValueStatusAnimation(defaultColor, stressValueStatusDuration, "_Color2_G_Percentage");
+                    stressValueStatusAnimation(defaultColor, stressValueStatusDuration, "_Color1_B_Percentage");
                 }
-                else if(_currentStressValue >= 70)
+                else if (_currentStressValue >= 70)
                 {
                     stressValueStatusAnimation(this.orangeColor, stressValueStatusDuration, "_Color1_G_Percentage");
                 }
