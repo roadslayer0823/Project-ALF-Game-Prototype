@@ -21,6 +21,8 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private BackendSkillSlotListPanel backendSkillSlotListPanel = null;
     [System.Obsolete][SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
     [SerializeField] private PlayerDashboard playerDashboard = null;
+    [SerializeField] private GameObject enemyCharacterInfoBoxUI = null;
+    [SerializeField] private GameObject enemyCharacterInfoBoxHUD = null;
 
     private BattleGameManager battleGameManager = null;
     private GameCharacter selectedGameCharacter = null;
@@ -598,5 +600,23 @@ public class BattleUiManager : MonoBehaviour
     public PlayerDashboard GetPlayerDashboard()
     {
         return this.playerDashboard;
+    }
+
+    public void ShowEnemyCharacterInfoBoxUI()
+    {
+        this.enemyCharacterInfoBoxUI.SetActive( true );
+        this.enemyCharacterInfoBoxHUD.SetActive( false );
+    }
+
+    public void ShowEnemyCharacterInfoBoxHUD()
+    {
+        this.enemyCharacterInfoBoxUI.SetActive( false );
+        this.enemyCharacterInfoBoxHUD.SetActive( true );
+    }
+
+    public void HideEnemyCharacterInfoBox()
+    {
+        this.enemyCharacterInfoBoxUI.SetActive( false );
+        this.enemyCharacterInfoBoxHUD.SetActive( false );
     }
 }

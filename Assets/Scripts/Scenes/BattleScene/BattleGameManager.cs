@@ -23,7 +23,7 @@ public class BattleGameManager : MonoBehaviour
 
     private List<PlayerCharacter> playerCharacterList = null;
     private List<EnemyCharacter> enemyCharacterList = null;
-    private bool hasBattleEnded = false;
+    private GamePhase currentGamePhase = GamePhase.None;
 
     private const string AUDIO_ID_VICTORY = "victory";
     private const string AUDIO_ID_DEFEAT = "defeat";
@@ -32,11 +32,21 @@ public class BattleGameManager : MonoBehaviour
     private const string AUDIO_ID_COMMAND_PHASE = "command_phase";
     private const string AUDIO_ID_LINE_BREAK = "line_break";
 
+    public enum GamePhase
+    {
+        None,
+        Preparation,
+        Execution,
+        Transition,
+        End
+    }
+
     void Awake()
     {
         AudioManager.Instance.SetUpAudioDatabase( this.audioDatabase );
 
         this.battleUiManager.SetAllActive( false );
+        this.battleUiManager.HideEnemyCharacterInfoBox();
         this.battleAnimationManager.ChangeToBackgroundPartB();
         this.playerCharacter.PlayCharacterAnimation( "Prepare" );
         this.enemyCharacter.PlayCharacterAnimation( "Idle" );
@@ -127,6 +137,8 @@ public class BattleGameManager : MonoBehaviour
 
     public void OnPreparationPhaseStarted()
     {
+        this.currentGamePhase = GamePhase.Preparation;
+
         this.battleUiManager.SetSelectedGameCharacter( this.playerCharacter );
         this.battleUiManager.HideATLSlotListPanel();
         this.battleUiManager.CheckWhetherToEnableExecuteButton();
@@ -141,6 +153,7 @@ public class BattleGameManager : MonoBehaviour
             this.battleUiManager.GetPreparationSection().Show();
         }
 
+        this.battleUiManager.ShowEnemyCharacterInfoBoxHUD();
         this.battleAnimationManager.ChangeToBackgroundPartB();
         this.playerContainer.SetActive( true );
         this.opponentContainer.SetActive( true );
@@ -151,6 +164,8 @@ public class BattleGameManager : MonoBehaviour
 
     public void OnExecutionPhaseStarted()
     {
+        this.currentGamePhase = GamePhase.Execution;
+
         if (this.battleUiManager.GetPreparationSection() == null)
         {
             this.battleUiManager.ShowBattleSection( this.playerCharacter );
@@ -162,6 +177,7 @@ public class BattleGameManager : MonoBehaviour
 
         this.battleUiManager.HideSkillSelectionPanel();
         this.battleUiManager.ShowSkillSlotListPanel();
+        this.battleUiManager.ShowEnemyCharacterInfoBoxUI();
 
         if (this.battleFlowManager_V2 == null)
         {
@@ -191,6 +207,8 @@ public class BattleGameManager : MonoBehaviour
 
     public void OnExecutionPhaseFinished()
     {
+        this.currentGamePhase = GamePhase.Transition;
+
         int _roundNumber = 0;
         if (this.battleFlowManager_V2 == null)
         {
@@ -325,7 +343,7 @@ public class BattleGameManager : MonoBehaviour
 
     private void OnBattleEnded( bool isVictory )
     {
-        this.hasBattleEnded = true;
+        this.currentGamePhase = GamePhase.End;
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 戰鬥結束 】</color>" );
 
@@ -398,8 +416,13 @@ public class BattleGameManager : MonoBehaviour
         return this.battleAnimationEventManager;
     }
 
-    public bool GetHasBattleEnded()
+    public GamePhase GetCurrentGamePhase()
     {
-        return this.hasBattleEnded;
+        return this.currentGamePhase;
+    }
+
+    public bool HasBattleEnded()
+    {
+        return ( currentGamePhase == GamePhase.End );
     }
 }

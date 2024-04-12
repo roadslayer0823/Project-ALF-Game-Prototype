@@ -87,7 +87,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     public void SetSelectedCharacter(GameCharacter selectedCharacter)
     {
         this.selectedCharacter = selectedCharacter;
-        this.selectedCharacter.SetOnCharacterInfoUpdated(UpdateDisplayInfo);
+        this.selectedCharacter.AddOnCharacterInfoUpdatedCallback( UpdateDisplayInfo );
         UpdateDisplayInfo();
     }
 

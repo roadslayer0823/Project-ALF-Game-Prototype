@@ -50,21 +50,10 @@ public class EnemyCharacterInfoBox : MonoBehaviour
     private float defaultGlowPercentage = 1f;
     private float targetGlowPercentage = 2f;
 
-    private void Start()
-    {
-        float _startingStatePoint = this.selectedCharacter.GetMaximumStatePoint();
-        float _startingHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
-        float _startingVirtualPoint = this.selectedCharacter.GetMaximumHealthPoint();
-
-        startingStatePoint = _startingStatePoint;
-        startingHealthPoint = _startingHealthPoint;
-        startingVirtualPoint = _startingVirtualPoint;
-    }
-
     void Awake()
     {
-        this.selectedCharacter.SetOnCharacterInfoUpdated(UpdateDisplayInfo);
-        this.enemyNameText.text = this.selectedCharacter.GetCharacterName();
+        this.selectedCharacter.AddOnInitializedCallback( Initialize );
+        this.selectedCharacter.AddOnCharacterInfoUpdatedCallback( UpdateDisplayInfo );
         UpdateDisplayInfo();
     }
 
@@ -72,6 +61,14 @@ public class EnemyCharacterInfoBox : MonoBehaviour
     {
         // TODO: Temporarily update this game object's position according to the selected character's pivot's position on every frame.
         this.transform.position = this.selectedCharacter.GetPivot().position + new Vector3( 0.0f, 2.0f, 0.0f );
+    }
+
+    private void Initialize()
+    {
+        this.enemyNameText.text = this.selectedCharacter.GetCharacterName();
+        this.startingStatePoint = this.selectedCharacter.GetMaximumStatePoint();
+        this.startingHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
+        this.startingVirtualPoint = this.selectedCharacter.GetMaximumHealthPoint();
     }
 
     public void UpdateDisplayInfo()

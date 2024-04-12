@@ -20,7 +20,7 @@ public class CharacterInfoPanel : MonoBehaviour
     public void SetSelectedCharacter( GameCharacter selectedCharacter )
     {
         this.selectedCharacter = selectedCharacter;
-        this.selectedCharacter.SetOnCharacterInfoUpdated( UpdateDisplayInfo );
+        this.selectedCharacter.AddOnCharacterInfoUpdatedCallback( UpdateDisplayInfo );
 
         this.playerNameText.SetText(this.selectedCharacter.GetCharacterName());
         UpdateDisplayInfo();

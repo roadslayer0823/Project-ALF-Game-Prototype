@@ -7,7 +7,6 @@ using Subskill = DatabaseManager.Subskill;
 using Character = DatabaseManager.Character;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
 using BattleResultData_GameCharacter = BattleResultData.BattleResultData_GameCharacter;
-using static BattleAnimationEventManager;
 
 public class GameCharacter : MonoBehaviour
 {
@@ -44,6 +43,7 @@ public class GameCharacter : MonoBehaviour
     private GameObject opponentContainer = null;
     private GameCharacterInfoBox gameCharacterInfoBox = null;
 
+    private Action onInitialized = null;
     private Action<AnimationEvent,GameCharacter> onEventTriggeredCallback = null;
     private Action<string> onCharacterAnimationTriggeredCallback = null;
     private Action<string> onSkillEffectAnimationTriggeredCallback = null;
@@ -151,6 +151,18 @@ public class GameCharacter : MonoBehaviour
             this.characterEventHandler.GetCallback().AddListener( OnCharacterAnimationTriggered );
             this.skillEffectEventHandler.GetCallback().AddListener( OnSkillEffectAnimationTriggered );
         }
+
+        this.onInitialized?.Invoke();
+    }
+
+    public void AddOnInitializedCallback( Action onInitialized )
+    {
+        this.onInitialized += onInitialized;
+    }
+
+    public void AddOnCharacterInfoUpdatedCallback( Action onCharacterInfoUpdated )
+    {
+        this.onCharacterInfoUpdated += onCharacterInfoUpdated;
     }
 
     public virtual void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
@@ -487,11 +499,6 @@ public class GameCharacter : MonoBehaviour
     public void SetGameCharacterInfoBox( GameCharacterInfoBox gameCharacterInfoBox )
     {
         this.gameCharacterInfoBox = gameCharacterInfoBox;
-    }
-
-    public void SetOnCharacterInfoUpdated( Action onCharacterInfoUpdated )
-    {
-        this.onCharacterInfoUpdated += onCharacterInfoUpdated;
     }
 
     public void ShowCharacterObject()
@@ -1058,7 +1065,7 @@ public class GameCharacter : MonoBehaviour
         this.battleAnimationEventManager = battleAnimationEventManager;
     }
 
-    public void OnAnimationEventTriggered(CharacterAnimationEventType animationEventType, string parameter = "")
+    public void OnAnimationEventTriggered(BattleAnimationEventManager.CharacterAnimationEventType animationEventType, string parameter = "")
     {
         this.battleAnimationEventManager.OnAnimationEventTriggered(animationEventType, parameter);
     }

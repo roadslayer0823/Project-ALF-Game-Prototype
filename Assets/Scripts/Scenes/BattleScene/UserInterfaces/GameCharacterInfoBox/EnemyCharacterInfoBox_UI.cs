@@ -5,8 +5,10 @@ using TMPro;
 public class EnemyCharacterInfoBox_UI : MonoBehaviour
 {
     [Header( "Settings" )]
-    [SerializeField] private Material stressValueGradientStatus = null;
     [SerializeField] private GameCharacter selectedCharacter = null;
+
+    [Header( "Materials" )]
+    [SerializeField] private Material gradientShaderMaterial = null;
 
     [Header("Enemy Info")]
     [SerializeField] private TextMeshProUGUI enemyNameText = null;
@@ -30,7 +32,8 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
     [Header("Health Point UI")]
     [SerializeField] private Image virtualHPBar = null;
     [SerializeField] private Image healthPointBar = null;
-   
+
+    private Material stressValueGradientStatus = null;
 
     //starting value
     private float startingStatePoint = 0.0f;
@@ -39,42 +42,35 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
     private float startingStressValue = -1;
 
     //animation duration
-    private float barAnimationDuration = 1f;
-    private float textAnimationDuration = 0.3f;
-    private float stressValueStatusDuration = 0.2f;
+    private readonly float barAnimationDuration = 1f;
+    private readonly float textAnimationDuration = 0.3f;
+    private readonly float stressValueStatusDuration = 0.2f;
 
     //gradient color percentage
-    private float orangeColor = 0.5f;
-    private float redColor = 0.2f;
-    private float breakStatusColor = 0.0f;
-    private float defaultColor = 1f;
+    private readonly float orangeColor = 0.5f;
+    private readonly float redColor = 0.2f;
+    private readonly float breakStatusColor = 0.0f;
+    private readonly float defaultColor = 1f;
 
     //glow percentage
-    private float defaultGlowPercentage = 1f;
-    private float targetGlowPercentage = 2f;
-
-    private void Start()
-    {
-        float _startingStatePoint = this.selectedCharacter.GetMaximumStatePoint();
-        float _startingHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
-        float _startingVirtualPoint = this.selectedCharacter.GetMaximumHealthPoint();
-
-        startingStatePoint = _startingStatePoint;
-        startingHealthPoint = _startingHealthPoint;
-        startingVirtualPoint = _startingVirtualPoint;
-    }
+    private readonly float defaultGlowPercentage = 1f;
+    private readonly float targetGlowPercentage = 2f;
 
     void Awake()
     {
-        this.selectedCharacter.SetOnCharacterInfoUpdated(UpdateDisplayInfo);
-        this.enemyNameText.text = this.selectedCharacter.GetCharacterName();
+        this.stressValueGradientStatus = new Material( this.gradientShaderMaterial );
+
+        this.selectedCharacter.AddOnInitializedCallback( Initialize );
+        this.selectedCharacter.AddOnCharacterInfoUpdatedCallback( UpdateDisplayInfo );
         UpdateDisplayInfo();
     }
 
-    void Update()
+    private void Initialize()
     {
-        // TODO: Temporarily update this game object's position according to the selected character's pivot's position on every frame.
-        this.transform.position = this.selectedCharacter.GetPivot().position + new Vector3( 0.0f, 2.0f, 0.0f );
+        this.enemyNameText.text = this.selectedCharacter.GetCharacterName();
+        this.startingStatePoint = this.selectedCharacter.GetMaximumStatePoint();
+        this.startingHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
+        this.startingVirtualPoint = this.selectedCharacter.GetMaximumHealthPoint();
     }
 
     public void UpdateDisplayInfo()
@@ -90,13 +86,17 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
         float _currentHealthPoint = this.selectedCharacter.GetCurrentHealthPoint();
         float _virtualHealthPoint = this.selectedCharacter.GetVirtualHealthPoint();
 
-        if (this.selectedCharacter.HasEnergyMarker())
+        // TODO: Temporarily put a null value checker here to the prevent a game breaking error from occurring.
+        if (this.effectMarkerLabel != null)
         {
-            this.effectMarkerLabel.gameObject.SetActive(true);
-        }
-        else
-        {
-            this.effectMarkerLabel.gameObject.SetActive(false);
+            if (this.selectedCharacter.HasEnergyMarker())
+            {
+                this.effectMarkerLabel.gameObject.SetActive( true );
+            }
+            else
+            {
+                this.effectMarkerLabel.gameObject.SetActive( false );
+            }
         }
 
         if (_currentHealthPoint < 0)
