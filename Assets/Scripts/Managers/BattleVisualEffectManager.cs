@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Camera))]
 public class BattleVisualEffectManager : MonoBehaviour
 {
     static int radius_blur_dataId = Shader.PropertyToID("_RadiusData"),

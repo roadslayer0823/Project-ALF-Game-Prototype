@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent( typeof( Camera ) )]
 public class CameraRadiusBlur : MonoBehaviour
 {
     [SerializeField] private Shader radiusBlurShader = null;

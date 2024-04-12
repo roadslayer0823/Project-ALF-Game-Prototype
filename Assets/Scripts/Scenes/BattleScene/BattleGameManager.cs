@@ -10,6 +10,7 @@ public class BattleGameManager : MonoBehaviour
     [SerializeField] private BattleFlowManager_V2 battleFlowManager_V2 = null;
     [SerializeField] private BattleAnimationManager battleAnimationManager = null;
     [SerializeField] private BattleAnimationEventManager battleAnimationEventManager = null;
+    [SerializeField] private BattleVisualEffectManager battleVisualEffectManager = null;
 
     [Header( "References" )]
     [SerializeField] private GameObject playerContainer = null;
@@ -66,6 +67,7 @@ public class BattleGameManager : MonoBehaviour
         }
 
         this.battleAnimationManager.Initialize( OnBattleEnded );
+        this.battleVisualEffectManager.SetUp();
 
         // -------------------- Set up the player's characters --------------------
 
@@ -414,6 +416,11 @@ public class BattleGameManager : MonoBehaviour
     public BattleAnimationEventManager GetBattleAnimationEventManager()
     {
         return this.battleAnimationEventManager;
+    }
+
+    public BattleVisualEffectManager GetBattleVisualEffectManager()
+    {
+        return this.battleVisualEffectManager;
     }
 
     public GamePhase GetCurrentGamePhase()

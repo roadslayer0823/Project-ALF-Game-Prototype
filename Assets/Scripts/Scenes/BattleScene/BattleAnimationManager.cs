@@ -976,6 +976,7 @@ public class BattleAnimationManager : MonoBehaviour
         _attackTarget.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackTargetBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackTargetBattleResultData.statePointCost*/ );
         this.currentCaster = _attackTarget;
 
+        battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtPartB();
         _attacker.TriggerEvent( AnimationEvent.OnPartB );
         _attackTarget.TriggerEvent( AnimationEvent.OnPartB );
 
@@ -1055,6 +1056,7 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
 
+                battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAnimationAtRepulse();
                 _attacker.ApplyBattleResultData( _attackerBattleResultData );
                 _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData );
 
