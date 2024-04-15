@@ -180,21 +180,35 @@ public class BattleLogicManagerV2
 
     public static BattleResultData DetermineResultForPartB( GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser )
     {
-        BattleResultData _battleResultData = new BattleResultData();
+        BattleResultData _battleResultData = new();
         winner = null;
         loser = null;
 
         CharacterSkill _leadCurrentSkill = lead.GetCurrentSkill();
+        RangeType _leadRangeType = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
+
+        // TODO: Temporarily hardcoded the player character's and enemy character's attacking skills' range types because of the attacking skill animations that they have.
+        if (lead.GetIsPlayer())
+        {
+            _leadRangeType = RangeType.ranged;
+        }
+        else
+        {
+            _leadRangeType = RangeType.melee;
+        }
+
         CharacterSkill _improviserCurrentSkill = improviser.GetCurrentSkill();
+        RangeType _improviserRangeType = RangeType.none;
 
         if (_improviserCurrentSkill != null)
         {
             ExecuteCasterSkillOnUse( ref _battleResultData, improviser, lead );
 
-            Skill _skillData = _improviserCurrentSkill.GetSkillData();
-            Subskill _subskillData = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData();
+            Skill _improviserSkillData = _improviserCurrentSkill.GetSkillData();
+            Subskill _improviserSubskillData = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData();
+            _improviserRangeType = _improviserSubskillData.Range;
 
-            if (_skillData.skillType == Skill.SkillType.repulse)
+            if (_improviserSkillData.skillType == Skill.SkillType.repulse)
             {
                 float _stressValueDamageMultiplierOnRepulseForLoser = GameConfiguration.Instance.GetBattleConfiguration().GetStressValueDamageMultiplierOnRepulseForLoser();
 
@@ -216,15 +230,6 @@ public class BattleLogicManagerV2
                 }
 
                 BattleLog.Instance.AddOnScreenBattleLog( _repulseResultLog );
-
-                RangeType _leadRangeType = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
-                RangeType _improviserRangeType = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
-
-                // TODO: Temporarily set the enemy's current skill's range type to the melee type because currently the enemy character has melee attack animations only.
-                if (!improviser.GetIsPlayer())
-                {
-                    _improviserRangeType = RangeType.melee;
-                }
 
                 if (_leadRangeType == RangeType.melee)
                 {
@@ -284,8 +289,8 @@ public class BattleLogicManagerV2
                         if (winner == lead)
                         {
                             // 先手遠程攻擊，後手近戰迎擊，先手攻擊勝利。
-                            improviser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Assaulter );
-                            lead.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Recipient );
+                            lead.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Assaulter );
+                            improviser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Recipient );
 
                             ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
                         }
@@ -305,16 +310,16 @@ public class BattleLogicManagerV2
                         if (winner == lead)
                         {
                             // 先手遠程攻擊，後手近戰迎擊，先手攻擊勝利。
-                            improviser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Assaulter );
-                            lead.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Recipient );
+                            lead.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Assaulter );
+                            improviser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Recipient );
 
                             ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true );
                         }
                         else if (winner == improviser)
                         {
                             // 先手遠程攻擊，後手近戰迎擊，後手迎擊勝利。
-                            lead.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Assaulter );
-                            improviser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Recipient );
+                            improviser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Assaulter );
+                            lead.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Recipient );
 
                             ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true );
                         }
@@ -325,14 +330,14 @@ public class BattleLogicManagerV2
                     }
                 }
             }
-            else if (_subskillData.IsDefendingSkill || _subskillData.IsEvadingSkill)
+            else if (_improviserSubskillData.IsDefendingSkill || _improviserSubskillData.IsEvadingSkill)
             {
-                if (_subskillData.IsDefendingSkill)
+                if (_improviserSubskillData.IsDefendingSkill)
                 {
                     // 判定防禦成敗。
                     CompareCharacterSkillAttributes( ActionType.Defend, lead, improviser, out winner, out loser );
                 }
-                else if (_subskillData.IsEvadingSkill)
+                else if (_improviserSubskillData.IsEvadingSkill)
                 {
                     // 判定迴避成敗。
                     CompareCharacterSkillAttributes( ActionType.Evade, lead, improviser, out winner, out loser );
@@ -356,10 +361,13 @@ public class BattleLogicManagerV2
         }
 
         // 判定輕重受擊方。
-        if (improviser.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.Recipient)
+        if (winner != null && loser != null)
         {
-            improviser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.HeavyRecipient );
-            lead.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.HeavyAssaulter );
+            if (winner.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.Assaulter)
+            {
+                winner.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.HeavyAssaulter );
+                loser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.HeavyRecipient );
+            }
         }
 
         return _battleResultData;

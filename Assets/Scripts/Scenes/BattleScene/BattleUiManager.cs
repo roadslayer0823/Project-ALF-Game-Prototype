@@ -12,6 +12,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private CharacterInfoPanel characterInfoPanel = null;
     [SerializeField] private BattleResultPanel battleResultPanel = null;
     [SerializeField] private TMP_Text instructionLabel = null;
+    [SerializeField] private TMP_Text messageLabel = null;
 
     [Header( "Version 2" )]
     [SerializeField] private PreparationSection preparationSection = null;
@@ -184,6 +185,18 @@ public class BattleUiManager : MonoBehaviour
         LeanTween.scale( this.instructionLabel.gameObject, Vector3.one, 0.9f ).setEaseOutCubic().setLoopPingPong( 1 ).setOnComplete( () =>
         {
             this.instructionLabel.gameObject.SetActive( false );
+        } );
+    }
+
+    public void ShowMessage( string message )
+    {
+        this.messageLabel.SetText( message );
+        this.messageLabel.transform.localScale = Vector3.zero;
+
+        this.messageLabel.gameObject.SetActive( true );
+        LeanTween.scale( this.messageLabel.gameObject, Vector3.one, 0.6f ).setEaseOutExpo().setLoopPingPong( 1 ).setOnComplete( () =>
+        {
+            this.messageLabel.gameObject.SetActive( false );
         } );
     }
 

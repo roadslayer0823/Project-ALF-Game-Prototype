@@ -879,6 +879,9 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (!_isAbleToUseSkill)
         {
+            battleGameManager.GetBattleUiManager().ShowMessage( "<color=#FF0000>無法使用技能</color>" );
+            yield return new WaitForSeconds( 1.2f );
+
             this.targetCamera.transform.position = cameraPosition;
             this.targetCamera.orthographicSize = cameraOrthographicSize;
 
@@ -959,6 +962,7 @@ public class BattleAnimationManager : MonoBehaviour
                 }
                 else
                 {
+                    battleGameManager.GetBattleUiManager().ShowMessage( "<color=#FF0000>無法使用技能</color>" );
                     _attackTargetSkillType = Skill.SkillType.none;
                     OnCasterBeingUnableToUseSkill( _attackTarget );
                 }
@@ -1003,8 +1007,8 @@ public class BattleAnimationManager : MonoBehaviour
                 _skillCountdownTime = GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
 
                 _attacker.SetSkillCountdownTime( _skillCountdownTime );
-                StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
-                StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
+                //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
+                //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
 
                 ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
                 ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
@@ -1047,7 +1051,7 @@ public class BattleAnimationManager : MonoBehaviour
                 }
 
                 _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
+                //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
 
                 ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
                 ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
@@ -1060,31 +1064,38 @@ public class BattleAnimationManager : MonoBehaviour
                 _attacker.ApplyBattleResultData( _attackerBattleResultData );
                 _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData );
 
-                if (_attacker.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.LightAssaulter
-                    || _attacker.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.HeavyAssaulter)
+                bool _hasAssault = false;
+                if (_winner != null)
                 {
-                    _skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                    _winner.SetSkillCountdownTime( _skillCountdownTime );
-                    StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnRepulseWin_Cutoff ) );
-
-                    this.cameraEffect.Shake();
-                    AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-
-                    string _animationName = GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_" + ( ( _attacker.GetIsPlayer() ) ? "Left" : "Right" );
-
-                    ShowPopUpDisplayInfo( _attacker, _attackerBattleResultData );
-                    ShowPopUpDisplayInfo( _attackTarget, _attackTargetBattleResultData );
-
-                    if (_winner == _attacker)
+                    if (_winner.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.LightAssaulter
+                        || _winner.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.HeavyAssaulter)
                     {
-                        yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, _animationName, _attackTargetBattleResultData ) );
-                    }
-                    else if (_winner == _attackTarget)
-                    {
-                        yield return StartCoroutine( PlayCharacterAnimation( _attacker, _animationName, _attackTargetBattleResultData ) );
+                        _hasAssault = true;
+
+                        _skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                        _winner.SetSkillCountdownTime( _skillCountdownTime );
+                        //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _winner, AnimationEvent.OnRepulseWin_Cutoff ) );
+
+                        this.cameraEffect.Shake();
+                        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
+
+                        string _animationName = GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_" + ( ( _attacker.GetIsPlayer() ) ? "Left" : "Right" );
+
+                        ShowPopUpDisplayInfo( _attacker, _attackerBattleResultData );
+                        ShowPopUpDisplayInfo( _attackTarget, _attackTargetBattleResultData );
+
+                        if (_winner == _attacker)
+                        {
+                            yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, _animationName, _attackTargetBattleResultData ) );
+                        }
+                        else if (_winner == _attackTarget)
+                        {
+                            yield return StartCoroutine( PlayCharacterAnimation( _attacker, _animationName, _attackTargetBattleResultData ) );
+                        }
                     }
                 }
-                else
+
+                if (!_hasAssault)
                 {
                     ShowPopUpDisplayInfo( _attacker, _attackerBattleResultData );
                     ShowPopUpDisplayInfo( _attackTarget, _attackTargetBattleResultData );
@@ -1100,7 +1111,7 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlayShowingSkillInformation( _attackTarget ) );
 
                 _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
+                //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
 
                 ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
                 ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
@@ -1137,7 +1148,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     _skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                     _attacker.SetSkillCountdownTime( _skillCountdownTime );
-                    StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
+                    //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
                     this.cameraEffect.Shake();
                     AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
@@ -1149,7 +1160,7 @@ public class BattleAnimationManager : MonoBehaviour
                 {
                     _skillCountdownTime = ( GetAttackAnimationLength( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBackendSkillAnimationSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                     _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
-                    StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefenseWin_Cutoff ) );
+                    //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefenseWin_Cutoff ) );
 
                     if (_attackTargetSubskillData.IsDefendingSkill)
                     {
@@ -1192,10 +1203,19 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (battleFlowRound.GetCurrentATL().GetATLNumber() == GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots())
         {
-            CharacterSkill _attackerCurrentSkill = _attacker.GetCurrentSkill();
-            if (_attackerCurrentSkill != null)
+            CharacterSkill _attackerAssignedSkill = _attacker.GetAssignedSkill();
+            if (_attackerAssignedSkill != null)
             {
-                if (_attackerCurrentSkill.GetSkillData().skillType == Skill.SkillType.derived)
+                if (_attackerAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived)
+                {
+                    battleFlowRound.AddExtraATL();
+                }
+            }
+
+            CharacterSkill _attackTargetAssignedSkill = _attackTarget.GetAssignedSkill();
+            if (_attackTargetAssignedSkill != null)
+            {
+                if (_attackTargetAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived)
                 {
                     battleFlowRound.AddExtraATL();
                 }
@@ -1497,7 +1517,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         CharacterSkill _casterSkill = caster.GetCurrentSkill();
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ caster.GetCharacterName() }</color>"
-                                                 + $"因<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.STATE_POINT }</color>"
+                                                 + $"因當前<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.STATE_POINT }</color>"
                                                  + $"為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ GameConfiguration.Instance.GetBattleConfiguration().GetMinimumCurrentStatePoint() }</color>"
                                                  + $"而無法使用<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _casterSkill.GetCharacterSubskillData().GetSubskillData().DisplayName }</color>"
                                                  + $"（{ TerminologyManager.GetSkillTypeText( _casterSkill.GetSkillData().skillType ) }）。" );

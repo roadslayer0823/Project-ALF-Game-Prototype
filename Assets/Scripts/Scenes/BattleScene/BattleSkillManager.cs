@@ -29,7 +29,7 @@ public class BattleSkillManager : MonoBehaviour
     {
         GameCharacter.CharacterIdentityType _characterIdentityType = gameCharacter.GetCurrentCharacterIdentityType();
         CharacterSkill _currentSkill = gameCharacter.GetCurrentSkill();
-        List<SkillType> _skillTypeList = new List<SkillType>();
+        List<SkillType> _skillTypeList = new();
 
         switch ( battlePhaseType )
         {
@@ -69,6 +69,7 @@ public class BattleSkillManager : MonoBehaviour
                         || _characterIdentityType == GameCharacter.CharacterIdentityType.Improviser
                         || _characterIdentityType == GameCharacter.CharacterIdentityType.LightRecipient
                         || _characterIdentityType == GameCharacter.CharacterIdentityType.HeavyAssaulter
+                        || _characterIdentityType == GameCharacter.CharacterIdentityType.HeavyRecipient
                         || _characterIdentityType == GameCharacter.CharacterIdentityType.Deuce)
                     {
                         _skillTypeList = new List<SkillType> { SkillType.Active, SkillType.Defend, SkillType.Evade };
@@ -84,8 +85,7 @@ public class BattleSkillManager : MonoBehaviour
                         || _characterIdentityType == GameCharacter.CharacterIdentityType.LightAssaulter
                         || _characterIdentityType == GameCharacter.CharacterIdentityType.Improviser
                         || _characterIdentityType == GameCharacter.CharacterIdentityType.LightRecipient
-                        || _characterIdentityType == GameCharacter.CharacterIdentityType.HeavyAssaulter
-                        || _characterIdentityType == GameCharacter.CharacterIdentityType.HeavyRecipient)
+                        || _characterIdentityType == GameCharacter.CharacterIdentityType.HeavyAssaulter)
                     {
                         _skillTypeList = new List<SkillType>();
                     }
