@@ -19,7 +19,7 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
     [SerializeField] private Image stressPointStatus = null;
 
     [Header("Effect Marker UI")]
-    [SerializeField] private TextMeshProUGUI effectMarkerLabel = null;
+    [SerializeField] private TextMeshProUGUI effectMarkerValue = null;
     [SerializeField] private GameObject effectMarker = null;
 
     [Header("State Point UI")]
@@ -86,16 +86,16 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
         float _currentHealthPoint = this.selectedCharacter.GetCurrentHealthPoint();
         float _virtualHealthPoint = this.selectedCharacter.GetVirtualHealthPoint();
 
-        // TODO: Temporarily put a null value checker here to the prevent a game breaking error from occurring.
-        if (this.effectMarkerLabel != null)
+        if (this.effectMarker != null)
         {
             if (this.selectedCharacter.HasEnergyMarker())
             {
-                this.effectMarkerLabel.gameObject.SetActive( true );
+                this.effectMarkerValue.SetText($"{ this.selectedCharacter.GetEnergyMarkerRemainingATLs() }");
+                this.effectMarker.gameObject.SetActive( true );
             }
             else
             {
-                this.effectMarkerLabel.gameObject.SetActive( false );
+                this.effectMarker.gameObject.SetActive( false );
             }
         }
 
@@ -146,8 +146,6 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
             if (_currentStressValue >= 0)
             {
                 stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color1_G_Percentage");
-                stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color2_G_Percentage");
-                stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color2_B_Percentage");
             }
             else if (_currentStressValue >= 70)
             {
@@ -165,7 +163,7 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
                         this.stressValueGradientStatus.SetFloat("_Slide", val / 100);
                         this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, new Color32(255, 0, 0, 255));
                         this.startingStressValue = Mathf.RoundToInt(val);
-                        this.stressPercentageText.SetText($"{startingStressValue}<size=2>%</size>");
+                        this.stressPercentageText.SetText($"{startingStressValue}<size=20>%</size>");
                     });
 
             //number outline animation

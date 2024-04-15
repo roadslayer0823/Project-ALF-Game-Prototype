@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 
@@ -7,6 +8,10 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     [Header("Stress Value UI")]
     [SerializeField] private Image stressValueStatus = null;
     [SerializeField] private TextMeshProUGUI stressPercentageText = null;
+
+    [Header("Effect Marker UI")]
+    [SerializeField] private TextMeshProUGUI effectMarkerValue = null;
+    [SerializeField] private GameObject effectMarker = null;
 
     [Header("Health Point UI")]
     [SerializeField] private TextMeshProUGUI healthPointValueText = null;
@@ -93,6 +98,19 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
     public void UpdateDisplayInfo()
     {
+        if (this.effectMarker != null)
+        {
+            if (this.selectedCharacter.HasEnergyMarker())
+            {
+                this.effectMarkerValue.SetText($"{ this.selectedCharacter.GetEnergyMarkerRemainingATLs() }");
+                this.effectMarker.SetActive(true);
+            }
+            else
+            {
+                this.effectMarker.SetActive(false);
+            }
+        }
+
         HealthPointInfo();
         StatePointInfo();
         StressValueInfo();
@@ -137,8 +155,6 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             {
                 if (isSetupComplete == true)
                 {
-                    Vector2 currentScale = maxStatePointValueFirstText.rectTransform.localScale;
-                    Vector2 newScale = new Vector3(currentScale.x / scaleMultiplier, currentScale.y / scaleMultiplier);
                     Vector2 maxStatePointIconOriginalPosition = maxStatePointIncreaseIcon.gameObject.transform.position;
                     float maxStatePointIncreaseOpacity = maxStatePointIncreaseIcon.color.a;
 
@@ -154,37 +170,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                             maxStatePointIncreaseIcon.gameObject.transform.position = maxStatePointIconOriginalPosition;
                         });
 
-                    //first text
-                    MaxStatePointFirstPartAnimation(maxStatePointValueFirstText, newScale, defaultTextOffset, targetTextOffset, maxStatePointScaleDuration, maxStatePointGlowDuration);
-                    maxStatePointOuter(maxStatePointValueFirstText, defaultTextOuter, targetTextOuter, maxStatePointGlowDuration)
-                        .setOnComplete(() =>
-                        {
-                            MaxStatePointSecondPartAnimation(maxStatePointValueFirstText, currentScale, defaultTextOffset, targetTextOffset, defaultTextOuter, targetTextOuter, maxStatePointScaleDuration, maxStatePointGlowDuration);
-
-                            //second text
-                            MaxStatePointFirstPartAnimation(maxStatePointValueSecondText, newScale, defaultTextOffset, targetTextOffset, maxStatePointScaleDuration, maxStatePointGlowDuration);
-                            maxStatePointOuter(maxStatePointValueSecondText, defaultTextOuter, targetTextOuter, maxStatePointGlowDuration)
-                                .setOnComplete(() =>
-                                {
-                                    MaxStatePointSecondPartAnimation(maxStatePointValueSecondText, currentScale, defaultTextOffset, targetTextOffset, defaultTextOuter, targetTextOuter, maxStatePointScaleDuration, maxStatePointGlowDuration);
-
-                                    //third text
-                                    MaxStatePointFirstPartAnimation(maxStatePointValueThirdText, newScale, defaultTextOffset, targetTextOffset, maxStatePointScaleDuration, maxStatePointGlowDuration);
-                                    maxStatePointOuter(maxStatePointValueThirdText, defaultTextOuter, targetTextOuter, maxStatePointGlowDuration)
-                                        .setOnComplete(() =>
-                                        {
-                                            MaxStatePointSecondPartAnimation(maxStatePointValueThirdText, currentScale, defaultTextOffset, targetTextOffset, defaultTextOuter, targetTextOuter, maxStatePointScaleDuration, maxStatePointGlowDuration);
-
-                                            //fourth text
-                                            MaxStatePointFirstPartAnimation(maxStatePointValueFourthText, newScale, defaultTextOffset, targetTextOffset, maxStatePointScaleDuration, maxStatePointGlowDuration);
-                                            maxStatePointOuter(maxStatePointValueThirdText, defaultTextOuter, targetTextOuter, maxStatePointGlowDuration)
-                                                .setOnComplete(() =>
-                                                {
-                                                    MaxStatePointSecondPartAnimation(maxStatePointValueFourthText, currentScale, defaultTextOffset, targetTextOffset, defaultTextOuter, targetTextOuter, maxStatePointScaleDuration, maxStatePointGlowDuration);
-                                                });
-                                        });
-                                });
-                        });
+                    StartCoroutine(PlayMaxStatePointAnimation());
                  }
             }
         }
@@ -359,24 +345,35 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         }
     }
 
-    public void MaxStatePointFirstPartAnimation(TextMeshProUGUI targetText, Vector3 targetScale, float defaultOffset, float targetOffset, float scaleDuration, float glowDuration)
-    {
-        maxStatePointScale(targetText, targetScale, scaleDuration);
-        maxStatePointOffset(targetText, defaultOffset, targetOffset, glowDuration);
-    }
-
-    public void MaxStatePointSecondPartAnimation(TextMeshProUGUI targetText, Vector3 targetScale, float defaultOffset, float targetOffset, float defaultOuter, float targetOuter, float scaleDuration, float glowDuration)
-    {
-        maxStatePointOffset(targetText, targetOffset, defaultOffset, glowDuration);
-        maxStatePointOuter(targetText, targetOuter, defaultOuter, glowDuration);
-        maxStatePointScale(targetText, targetScale, scaleDuration);
-    }
-
     public void MaxStatePointTextSpacing(bool isThirdText, bool isFourthText, string targetString, float spacing)
     {
         this.maxStatePointValueThirdText.gameObject.SetActive(isThirdText);
         this.maxStatePointValueFourthText.gameObject.SetActive(isFourthText);
         MaxStatePointTextList(targetString);
         this.horizontalLayoutGroup.spacing = spacing;
+    }
+
+    IEnumerator MaxStatePointAnimation(TextMeshProUGUI targetText, Vector3 targetScale, Vector3 currentScale, float defaultOffset, float targetOffset, float defaultOuter, float targetOuter, float scaleDuration, float glowDuration)
+    {
+        maxStatePointScale(targetText, targetScale, scaleDuration);
+        maxStatePointOffset(targetText, defaultOffset, targetOffset, glowDuration);
+        maxStatePointOuter(targetText, defaultOuter, targetOuter, glowDuration);
+
+        yield return new WaitForSeconds(glowDuration);
+
+        maxStatePointOffset(targetText, targetOffset, defaultOffset, glowDuration);
+        maxStatePointOuter(targetText, targetOuter, defaultOuter, glowDuration);
+        maxStatePointScale(targetText, currentScale, scaleDuration);
+    }
+
+    IEnumerator PlayMaxStatePointAnimation()
+    {
+        Vector2 currentScale = maxStatePointValueFirstText.rectTransform.localScale;
+        Vector2 newScale = new Vector3(currentScale.x / scaleMultiplier, currentScale.y / scaleMultiplier);
+        for (int i = 0; i < maxStatePointText.Length; i++)
+        {
+            var targetText = maxStatePointText[i];
+            yield return StartCoroutine(MaxStatePointAnimation(targetText, newScale, currentScale, defaultTextOffset, targetTextOffset, defaultTextOuter, targetTextOuter, maxStatePointScaleDuration, maxStatePointGlowDuration));
+        }
     }
 }

@@ -6,7 +6,9 @@ public class ATLSlotListPanelV3 : MonoBehaviour
     //progress bar animation testing
     [SerializeField] private ATLSlotV2[] theATLSlots = new ATLSlotV2[0];
     [SerializeField] private Image repulseAndDefendProgressBar;
+    [SerializeField] private Image repulseAndDefendPointer;
     [SerializeField] private Image activeSkillProgressBar;
+    [SerializeField] private Image activeSkillPointer;
     [SerializeField] private RectTransform yellowProgressBarStartPoint;
     [SerializeField] private RectTransform yellowProgressBarEndPoint;
     [SerializeField] private RectTransform blueProgressBarStartPoint;
@@ -146,6 +148,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
             })
             .setEase(LeanTweenType.easeOutQuad).setOnComplete(() =>
             {
+                this.repulseAndDefendPointer.gameObject.SetActive(false);
                 for (int i = 0; i < this.theATLSlots.Length; i++)
                 {
                     this.theATLSlots[i].Show(ATLSlotV2.ATLCurrentStatus.Used);
@@ -160,6 +163,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
             })
             .setEase(LeanTweenType.easeOutQuad).setOnComplete(() =>
             {
+                this.activeSkillPointer.gameObject.SetActive(false);
                 for (int i = 0; i < this.theATLSlots.Length; i++)
                 {
                     this.theATLSlots[i].Show(ATLSlotV2.ATLCurrentStatus.Used);
@@ -174,6 +178,8 @@ public class ATLSlotListPanelV3 : MonoBehaviour
 
         PlayBlueProgressBarAnimation(_atlSlotStartPoint, duration * 0.1f)
             .setEase(LeanTweenType.easeOutQuad).setOnComplete(() => PlayBlueProgressBarAnimation(_atlSlotMiddlePoint, duration * 0.9f));
+
+        repulseAndDefendPointer.gameObject.SetActive(true);
     }
 
     public void PlayYellowProgressBarAnimation(ATLSlotV2 atlSlot, float duration)
@@ -183,6 +189,8 @@ public class ATLSlotListPanelV3 : MonoBehaviour
 
         PlayYellowProgressBarAnimation( _atlSlotStartPoint, duration * 0.1f)
            .setEase(LeanTweenType.easeOutQuad).setOnComplete(() => PlayYellowProgressBarAnimation( _atlSlotMiddlePoint, duration * 0.9f));
+
+        activeSkillPointer.gameObject.SetActive(true);
     }
 
 
@@ -208,6 +216,11 @@ public class ATLSlotListPanelV3 : MonoBehaviour
     {
         float _distance = progress - this.blueProgressBarStartPointX;
         repulseAndDefendProgressBar.fillAmount = _distance / this.blueProgressBarLength;
+
+        Vector3 _pos = repulseAndDefendPointer.transform.position;
+        _pos.x = progress;
+        repulseAndDefendPointer.transform.position = _pos;
+
         this.blueProgressBarLastPosition = progress;
     }
 
@@ -215,6 +228,11 @@ public class ATLSlotListPanelV3 : MonoBehaviour
     {
         float _distance = progress - this.yellowProgressBarStartPointX;
         activeSkillProgressBar.fillAmount = _distance / this.yellowProgressBarLength;
+
+        Vector3 _pos = activeSkillPointer.transform.position;
+        _pos.x = progress - 9;
+        activeSkillPointer.transform.position = _pos;
+
         this.yellowProgressBarLastPosition = progress;
     }
 

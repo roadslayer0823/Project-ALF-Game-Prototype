@@ -180,7 +180,7 @@ GameObject:
   - component: {fileID: 3455295403989281314}
   - component: {fileID: 1072008193999139977}
   m_Layer: 0
-  m_Name: EffectMarkerTimer
+  m_Name: EffectMarkerValue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1342,7 +1342,7 @@ MonoBehaviour:
   stressPercentageText: {fileID: 487361357480215158}
   stressBreakUI: {fileID: 2999244880511704835}
   stressPointStatus: {fileID: 3287711830086285574}
-  effectMarkerLabel: {fileID: 1072008193999139977}
+  effectMarkerValue: {fileID: 1072008193999139977}
   effectMarker: {fileID: 7652685122358138148}
   stateBreakUI: {fileID: 2156475482860570733}
   statePointBreak: {fileID: 21300000, guid: b6c1cd20c478a4e72bc39fa48188af0b, type: 3}

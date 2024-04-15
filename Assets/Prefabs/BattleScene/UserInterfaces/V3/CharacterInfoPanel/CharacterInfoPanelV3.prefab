@@ -862,6 +862,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stressValueStatus: {fileID: 695553958050623265}
   stressPercentageText: {fileID: 1781519848854524465}
+  effectMarkerValue: {fileID: 6561150980078098854}
+  effectMarker: {fileID: 8935980775694063079}
   healthPointValueText: {fileID: 926054219053109801}
   virtualHPBar: {fileID: 571760975616423338}
   healthPointBar: {fileID: 755769591343926714}
@@ -870,7 +872,6 @@ MonoBehaviour:
   maxStatePointAnimStaringPoint: {fileID: 6265249344733602894}
   maxStatePointAnimEndingPoint: {fileID: 4438822928078271494}
   statePointValueText: {fileID: 3888626466887246436}
-  maxStatePointValueText: {fileID: 6422371833568979586}
   maxStatePointText:
   - {fileID: 734924286307009061}
   - {fileID: 1502706010914766349}
@@ -1295,7 +1296,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: fe0c252f2930348d89578404bb1f9a61, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e09c657b36a344850be6675a3e99767b, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1531,7 +1532,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &9203553583946037457
 Transform:
   m_ObjectHideFlags: 0
@@ -3752,7 +3753,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5817392489815032358
 Transform:
   m_ObjectHideFlags: 0
