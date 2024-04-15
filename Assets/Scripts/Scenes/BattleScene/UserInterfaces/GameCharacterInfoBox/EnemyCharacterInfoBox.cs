@@ -15,7 +15,7 @@ public class EnemyCharacterInfoBox : MonoBehaviour
     [SerializeField] private SpriteRenderer stressPointStatus = null;
 
     [Header("Effect Marker UI")]
-    [SerializeField] private TextMeshPro effectMarkerLabel = null;
+    [SerializeField] private TextMeshPro effectMarkerValue = null;
     [SerializeField] private GameObject effectMarker = null;
 
     [Header("State Point UI")]
@@ -86,11 +86,13 @@ public class EnemyCharacterInfoBox : MonoBehaviour
 
         if (this.selectedCharacter.HasEnergyMarker())
         {
-            this.effectMarkerLabel.gameObject.SetActive(true);
+            this.effectMarkerValue.SetText($"{ this.selectedCharacter.GetEnergyMarkerRemainingATLs() }");
+            this.effectMarker.gameObject.SetActive(true);
+
         }
         else
         {
-            this.effectMarkerLabel.gameObject.SetActive(false);
+            this.effectMarker.gameObject.SetActive(false);
         }
 
         if (_currentHealthPoint < 0)

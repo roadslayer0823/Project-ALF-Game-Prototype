@@ -372,6 +372,15 @@ public class SkillSlotV2 : MonoBehaviour
             this.bottomRowText.SetText(_subskillData.NamePartB);
         }
 
+        if (this.skillLevel > 1)
+        {
+            skillLevelGameObject.SetActive(true);
+        }
+        else
+        {
+            skillLevelGameObject.SetActive(false);
+        }
+
         UpdateCharacterSkillLevel(this.skillLevel);
         this.skillIcon.gameObject.SetActive(true);
         UpdateDisplay();
