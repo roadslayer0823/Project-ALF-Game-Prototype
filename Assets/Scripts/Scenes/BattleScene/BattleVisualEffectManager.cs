@@ -20,7 +20,7 @@ public class BattleVisualEffectManager : MonoBehaviour
         float _radiusOffset = 0.004f;
         Vector3 _radiusData = new Vector3(_centerX, _centerY, _radiusOffset);
 
-        cameraRadiusBlur.SetShaderValue(_radiusData, 30, 0);
+        cameraRadiusBlur.SetShaderValue(_radiusData, 5, 0);
     }
 
     public void ApplyBlurShaderAnimationAtRepulse()
