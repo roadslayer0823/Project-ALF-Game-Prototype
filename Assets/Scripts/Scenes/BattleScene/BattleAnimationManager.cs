@@ -1188,6 +1188,8 @@ public class BattleAnimationManager : MonoBehaviour
                 break;
         }
 
+        battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
+
         if (CheckHasBattleEnded( battleGameManager ))
         {
             yield break;
@@ -1616,6 +1618,7 @@ public class BattleAnimationManager : MonoBehaviour
 
     private IEnumerator WaitForPopUpDisplayInfoCompleted()
     {
+        /*
         yield return new WaitForSeconds( 0.5f );
 
         yield return new WaitWhile( () =>
@@ -1630,6 +1633,9 @@ public class BattleAnimationManager : MonoBehaviour
 
             return false;
         } );
+        */
+
+        yield return new WaitForSeconds( 1.2f );
     }
 
     private IEnumerator ZoomInCameraToTarget( GameCharacter target, float duration )

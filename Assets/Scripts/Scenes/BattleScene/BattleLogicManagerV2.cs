@@ -210,6 +210,12 @@ public class BattleLogicManagerV2
 
             if (_improviserSkillData.skillType == Skill.SkillType.repulse)
             {
+                // TODO: Temporarily hardcoded that the enemy characeter will always use melee repulse skills.
+                if (!improviser.GetIsPlayer())
+                {
+                    _improviserRangeType = RangeType.melee;
+                }
+
                 float _stressValueDamageMultiplierOnRepulseForLoser = GameConfiguration.Instance.GetBattleConfiguration().GetStressValueDamageMultiplierOnRepulseForLoser();
 
                 // 判定迎擊中途結果。
