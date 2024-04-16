@@ -66,7 +66,7 @@ public class BattleGameManager : MonoBehaviour
             this.battleFlowManager_V2.Initialize( this );
         }
 
-        this.battleAnimationManager.Initialize( OnBattleEnded );
+        this.battleAnimationManager.Initialize( this, OnBattleEnded );
         this.battleVisualEffectManager.SetUp();
 
         // -------------------- Set up the player's characters --------------------

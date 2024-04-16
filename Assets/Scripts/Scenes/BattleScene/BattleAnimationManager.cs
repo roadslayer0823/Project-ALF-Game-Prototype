@@ -29,6 +29,7 @@ public class BattleAnimationManager : MonoBehaviour
     [SerializeField] private SkillPromptPanelV2 skillPromptPanel = null;
     [SerializeField] private DebugBattleDialogMenu debugBattleDialogMenu = null;
 
+    private BattleGameManager battleGameManager = null;
     private bool isAnimationEventTriggered = false;
     private Action<bool> onBattleEndedCallback = null;
 
@@ -81,8 +82,9 @@ public class BattleAnimationManager : MonoBehaviour
         OnSkillBeingUsed
     }
 
-    public void Initialize( Action<bool> onBattleEndedCallback )
+    public void Initialize( BattleGameManager battleGameManager, Action<bool> onBattleEndedCallback )
     {
+        this.battleGameManager = battleGameManager;
         this.onBattleEndedCallback = onBattleEndedCallback;
 
         this.targetCameraObject = this.targetCamera.gameObject;
@@ -97,7 +99,7 @@ public class BattleAnimationManager : MonoBehaviour
         this.debugModeResultType = resultType;
     }
 
-    public IEnumerator RunBattleAnimation( BattleGameManager battleGameManager, BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )
+    public IEnumerator RunBattleAnimation( BattleFlowRound battleFlowRound, BattleFlowATL battleFlowATL )
     {
         GameCharacter _attacker = battleFlowATL.GetSelectedCharacter();
 
@@ -111,8 +113,8 @@ public class BattleAnimationManager : MonoBehaviour
         GameCharacter _attackTarget = battleFlowATL.GetAttackTarget();
         _attacker.SetCurrentSkill( battleFlowATL.GetSelectedSkill() );
 
-        //ATLSlotListPanelV2 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
-        ATLSlotListPanelV3 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV3();
+        //ATLSlotListPanelV2 _atlSlotListPanel = this.battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
+        ATLSlotListPanelV3 _atlSlotListPanel = this.battleGameManager.GetBattleUiManager().GetATLSlotListPanelV3();
         float _skillAnimationLength = 0.0f;
         float _skillCountdownTime = 0.0f;
         bool _hasCounterAttack = false;
@@ -315,7 +317,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     BattleLogicManager.OnCharacterAttackFinished( _attacker, _attackTarget );
 
-                    if (CheckHasBattleEnded( battleGameManager ))
+                    if (CheckHasBattleEnded())
                     {
                         yield break;
                     }
@@ -325,7 +327,7 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound, _atlSlotListPanel ) );
                     }
 
-                    if (CheckHasBattleEnded( battleGameManager ))
+                    if (CheckHasBattleEnded())
                     {
                         yield break;
                     }
@@ -481,7 +483,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                     if (_hasAttackDamage)
                     {
-                        if (CheckHasBattleEnded( battleGameManager ))
+                        if (CheckHasBattleEnded())
                         {
                             yield break;
                         }
@@ -497,7 +499,7 @@ public class BattleAnimationManager : MonoBehaviour
                             {
                                 yield return StartCoroutine( RunDerivedSkill( _winner, _loser, battleFlowRound, _atlSlotListPanel ) );
 
-                                if (CheckHasBattleEnded( battleGameManager ))
+                                if (CheckHasBattleEnded())
                                 {
                                     yield break;
                                 }
@@ -595,7 +597,7 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
                         BattleLogicManager.OnCharacterAttackFinished( _attacker, _attackTarget );
 
-                        if (CheckHasBattleEnded( battleGameManager ))
+                        if (CheckHasBattleEnded())
                         {
                             yield break;
                         }
@@ -605,7 +607,7 @@ public class BattleAnimationManager : MonoBehaviour
                             yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound, _atlSlotListPanel ) );
                         }
 
-                        if (CheckHasBattleEnded( battleGameManager ))
+                        if (CheckHasBattleEnded())
                         {
                             yield break;
                         }
@@ -691,19 +693,19 @@ public class BattleAnimationManager : MonoBehaviour
         while ( _hasCounterAttack );
     }
 
-    public IEnumerator RunBattleAnimationV2( BattleGameManager battleGameManager, BattleFlowRound_V2 battleFlowRound, BattleFlowATL_V2 battleFlowATL )
+    public IEnumerator RunBattleAnimationV2( BattleFlowRound_V2 battleFlowRound, BattleFlowATL_V2 battleFlowATL )
     {
-        //ATLSlotListPanelV2 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
-        ATLSlotListPanelV3 _atlSlotListPanel = battleGameManager.GetBattleUiManager().GetATLSlotListPanelV3();
+        //ATLSlotListPanelV2 _atlSlotListPanel = this.battleGameManager.GetBattleUiManager().GetATLSlotListPanelV2();
+        ATLSlotListPanelV3 _atlSlotListPanel = this.battleGameManager.GetBattleUiManager().GetATLSlotListPanelV3();
 
         BattleResultData _battleResultData = null;
         BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = null;
         BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = null;
 
-        PlayerCharacter _playerCharacter = battleGameManager.GetPlayerCharacter();
+        PlayerCharacter _playerCharacter = this.battleGameManager.GetPlayerCharacter();
         _playerCharacter.TriggerEvent( AnimationEvent.SetCharacter );
 
-        EnemyCharacter _enemyCharacter = battleGameManager.GetEnemyCharacter();
+        EnemyCharacter _enemyCharacter = this.battleGameManager.GetEnemyCharacter();
         _enemyCharacter.TriggerEvent( AnimationEvent.SetCharacter );
 
         if (BattleLogicManagerV2.ShouldCombatCommandTimeBeSkipped( _playerCharacter, _enemyCharacter ))
@@ -828,7 +830,7 @@ public class BattleAnimationManager : MonoBehaviour
 
                 yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound, _atlSlotListPanel, _battleResultData, _attackerBattleResultData, _attackTargetBattleResultData ) );
 
-                if (CheckHasBattleEnded( battleGameManager ))
+                if (CheckHasBattleEnded())
                 {
                     yield break;
                 }
@@ -879,7 +881,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (!_isAbleToUseSkill)
         {
-            battleGameManager.GetBattleUiManager().ShowMessage( "<color=#FF0000>無法使用技能</color>" );
+            this.battleGameManager.GetBattleUiManager().ShowMessage( "<color=#FF0000>無法使用技能</color>" );
             yield return new WaitForSeconds( 1.2f );
 
             this.targetCamera.transform.position = cameraPosition;
@@ -962,7 +964,7 @@ public class BattleAnimationManager : MonoBehaviour
                 }
                 else
                 {
-                    battleGameManager.GetBattleUiManager().ShowMessage( "<color=#FF0000>無法使用技能</color>" );
+                    this.battleGameManager.GetBattleUiManager().ShowMessage( "<color=#FF0000>無法使用技能</color>" );
                     _attackTargetSkillType = Skill.SkillType.none;
                     OnCasterBeingUnableToUseSkill( _attackTarget );
                 }
@@ -980,7 +982,7 @@ public class BattleAnimationManager : MonoBehaviour
         _attackTarget.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackTargetBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackTargetBattleResultData.statePointCost*/ );
         this.currentCaster = _attackTarget;
 
-        battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtPartB();
+        this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtPartB();
         _attacker.TriggerEvent( AnimationEvent.OnPartB );
         _attackTarget.TriggerEvent( AnimationEvent.OnPartB );
 
@@ -1060,7 +1062,6 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
 
-                battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAnimationAtRepulse();
                 _attacker.ApplyBattleResultData( _attackerBattleResultData );
                 _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData );
 
@@ -1188,9 +1189,9 @@ public class BattleAnimationManager : MonoBehaviour
                 break;
         }
 
-        battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
+        this.battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
 
-        if (CheckHasBattleEnded( battleGameManager ))
+        if (CheckHasBattleEnded())
         {
             yield break;
         }
@@ -1690,12 +1691,12 @@ public class BattleAnimationManager : MonoBehaviour
         this.darkLayer.color = _color;
     }
 
-    private bool CheckHasBattleEnded( BattleGameManager battleGameManager )
+    private bool CheckHasBattleEnded()
     {
         bool _hasPlayerCharacterSurvived = false;
         bool _hasEnemyCharacterSurvived = false;
-        List<PlayerCharacter> _playerCharacterList = battleGameManager.GetPlayerCharacterList();
-        List<EnemyCharacter> _enemyCharacterList = battleGameManager.GetEnemyCharacterList();
+        List<PlayerCharacter> _playerCharacterList = this.battleGameManager.GetPlayerCharacterList();
+        List<EnemyCharacter> _enemyCharacterList = this.battleGameManager.GetEnemyCharacterList();
 
         for (int i = 0; i < _playerCharacterList.Count; i++)
         {
@@ -1834,6 +1835,11 @@ public class BattleAnimationManager : MonoBehaviour
         else if (parameterValue == "hit")
         {
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
+            return;
+        }
+        else if (parameterValue == "blur")
+        {
+            this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAnimationAtRepulse();
             return;
         }
 

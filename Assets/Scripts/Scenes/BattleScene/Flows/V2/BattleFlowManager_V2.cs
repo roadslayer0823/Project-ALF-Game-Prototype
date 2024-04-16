@@ -42,7 +42,7 @@ public class BattleFlowManager_V2 : MonoBehaviour
 
     public IEnumerator RunBattleAnimation( BattleFlowRound_V2 battleFlowRound, BattleFlowATL_V2 battleFlowATL )
     {
-        yield return StartCoroutine( battleGameManager.GetBattleAnimationManager().RunBattleAnimationV2( this.battleGameManager, battleFlowRound, battleFlowATL ) );
+        yield return StartCoroutine( this.battleGameManager.GetBattleAnimationManager().RunBattleAnimationV2( battleFlowRound, battleFlowATL ) );
     }
 
     private void OnCurrentRoundPhaseChanged( BattleFlowRound_V2.PhaseType phaseType )
