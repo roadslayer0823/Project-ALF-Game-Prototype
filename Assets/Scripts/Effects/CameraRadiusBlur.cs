@@ -3,9 +3,9 @@ using UnityEngine;
 [RequireComponent( typeof( Camera ) )]
 public class CameraRadiusBlur : MonoBehaviour
 {
-    static int radiusBlurDataId = Shader.PropertyToID("_RadiusData");
-    static int radiusBlurIterationId = Shader.PropertyToID("_RadiusIterationData");
-    static int radiusBlurCenterRange = Shader.PropertyToID("_RadiusCenterRange");
+    private int radiusBlurDataId = Shader.PropertyToID("_RadiusData");
+    private int radiusBlurIterationId = Shader.PropertyToID("_RadiusIterationData");
+    private int radiusBlurCenterRange = Shader.PropertyToID("_RadiusCenterRange");
 
     const int RADIUS_BLUR_PASS = 0;
     [SerializeField] private Shader radiusBlurShader = null;
@@ -36,17 +36,17 @@ public class CameraRadiusBlur : MonoBehaviour
     {
         get
         {
-            if (radiusBlurMaterial != null)
+            if (this.radiusBlurMaterial != null)
             {
-                return radiusBlurMaterial.GetVector(radiusBlurDataId);
+                return this.radiusBlurMaterial.GetVector(this.radiusBlurDataId);
             }
             return new Vector3(0.5f, 0.5f, 0.01f);
         }
         set
         {
-            if (radiusBlurMaterial != null)
+            if (this.radiusBlurMaterial != null)
             {
-                radiusBlurMaterial.SetVector(radiusBlurDataId, value);
+                this.radiusBlurMaterial.SetVector(this.radiusBlurDataId, value);
             }
         }
     }
@@ -55,18 +55,18 @@ public class CameraRadiusBlur : MonoBehaviour
     {
         get
         {
-            if (radiusBlurMaterial != null)
+            if (this.radiusBlurMaterial != null)
             {
-                return (int)radiusBlurMaterial.GetVector(radiusBlurIterationId).x;
+                return (int)this.radiusBlurMaterial.GetVector(this.radiusBlurIterationId).x;
             }
             return 1;
         }
         set
         {
-            if (radiusBlurMaterial != null)
+            if (this.radiusBlurMaterial != null)
             {
                 float invIteration = 1.0f / value;
-                radiusBlurMaterial.SetVector(radiusBlurIterationId, new Vector4(value, invIteration, 0f, 0f));
+                this.radiusBlurMaterial.SetVector(this.radiusBlurIterationId, new Vector4(value, invIteration, 0f, 0f));
             }
         }
     }
@@ -75,25 +75,25 @@ public class CameraRadiusBlur : MonoBehaviour
     {
         get
         {
-            if (radiusBlurMaterial != null)
+            if (this.radiusBlurMaterial != null)
             {
-                return radiusBlurMaterial.GetFloat(radiusBlurCenterRange);
+                return this.radiusBlurMaterial.GetFloat(this.radiusBlurCenterRange);
             }
             return 0f;
         }
         set
         {
-            if (radiusBlurMaterial != null)
+            if (this.radiusBlurMaterial != null)
             {
                 if (value <= 0f)
                 {
-                    radiusBlurMaterial.DisableKeyword("_USE_CIRCLE_CENTER");
+                    this.radiusBlurMaterial.DisableKeyword("_USE_CIRCLE_CENTER");
                 }
                 else
                 {
-                    radiusBlurMaterial.EnableKeyword("_USE_CIRCLE_CENTER");
+                    this.radiusBlurMaterial.EnableKeyword("_USE_CIRCLE_CENTER");
                 }
-                radiusBlurMaterial.SetFloat(radiusBlurCenterRange, value);
+                this.radiusBlurMaterial.SetFloat(radiusBlurCenterRange, value);
             }
         }
     }
