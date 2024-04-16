@@ -116,10 +116,10 @@ public class ATLSlotV2 : MonoBehaviour
             else if (aTLCurrentStatus == ATLCurrentStatus.Using)
             {
                 this.atlSlotAnimation.sprite = ( _isPlayer ) ? this.playerUsingAtlSlot : this.enemyUsingAtlSlot;
-                LeanTween.alpha(atlSlotAnimation.rectTransform, 1f, 1f)
+                LeanTween.alpha(atlSlotAnimation.rectTransform, 1f, 0.5f)
                     .setOnComplete(() =>
                     {
-                        LeanTween.alpha(atlSlotAnimation.rectTransform, 0, 1f);
+                        LeanTween.alpha(atlSlotAnimation.rectTransform, 0, 0.5f);
                         this.atlSlot.sprite = (_isPlayer) ? this.playerUsedAtlSlot : this.enemyUsedAtlSlot;
                     });
             }

@@ -230,7 +230,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
         activeSkillProgressBar.fillAmount = _distance / this.yellowProgressBarLength;
 
         Vector3 _pos = activeSkillPointer.transform.position;
-        _pos.x = progress - 9;
+        _pos.x = progress;
         activeSkillPointer.transform.position = _pos;
 
         this.yellowProgressBarLastPosition = progress;
