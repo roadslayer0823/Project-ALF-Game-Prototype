@@ -169,9 +169,8 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                             maxStatePointIncreaseOpacity = 255;
                             maxStatePointIncreaseIcon.gameObject.transform.position = maxStatePointIconOriginalPosition;
                         });
-
-                    StartCoroutine(PlayMaxStatePointAnimation());
-                 }
+                    PlayMaxStatePointAnimation();
+                }
             }
         }
 
@@ -256,6 +255,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                 float blueG = blueColor.g;
                 float blueB = blueColor.b;
 
+                var _sequence = LeanTween.sequence();
 
                 this.characterInfoPanelAnimation.Play(ANIMATION_ID_STRESS_POINT_INCREASE, 0, 0f);
 
@@ -287,46 +287,24 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
                 //number outline animation
                 this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, redColor);
-                LeanTween.value(gameObject, new Vector3(blueR, blueG, blueB), new Vector3(redR, redG, redB), textAnimationDuration)
+
+                _sequence.append(LeanTween.value(gameObject, new Vector3(blueR, blueG, blueB), new Vector3(redR, redG, redB), textAnimationDuration)
                     .setOnUpdate((Vector3 color) =>
                     {
                         Color32 currentColor = new Color32((byte)(color.x + 255), (byte)(color.y - 100), (byte)(color.z - 255), 255);
                         this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, currentColor);
-                    }).setOnComplete(() =>
+                    }));
+
+                _sequence.append(LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), textAnimationDuration)
+                    .setOnUpdate((Vector3 color) =>
                     {
-                        LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), textAnimationDuration)
-                            .setOnUpdate((Vector3 color) =>
-                            {
-                                Color32 currentColor = new Color32((byte)(color.x - 255), (byte)(color.y + 100), (byte)(color.z + 255), 255);
-                                this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, currentColor);
-                            });
-                    });
+                        Color32 currentColor = new Color32((byte)(color.x - 255), (byte)(color.y + 100), (byte)(color.z + 255), 255);
+                        this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, currentColor);
+                    }));
             }
         }
     }
 
-    public LTDescr maxStatePointScale(TextMeshProUGUI textObject, Vector3 targetScale, float scaleDuration)
-    {
-        return LeanTween.scale(textObject.gameObject, targetScale, scaleDuration);
-    }
-
-    public LTDescr maxStatePointOffset(TextMeshProUGUI textObject, float defaultOffset, float targetOffset, float glowDuration)
-    {
-        return LeanTween.value(textObject.gameObject, defaultOffset, targetOffset, glowDuration)
-           .setOnUpdate((float val) =>
-           {
-               textObject.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val);
-           });
-    }
-
-    public LTDescr maxStatePointOuter(TextMeshProUGUI textObject, float defaultOuter, float targetOuter, float glowDuration)
-    {
-        return LeanTween.value(textObject.gameObject, defaultOuter, targetOuter, glowDuration)
-           .setOnUpdate((float val) =>
-           {
-               textObject.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val);
-           });
-    }
 
     public LTDescr stressValueStatusAnimation(float colorPercentage, float animationDuration, string targetColor)
     {
@@ -353,27 +331,38 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         this.horizontalLayoutGroup.spacing = spacing;
     }
 
-    IEnumerator MaxStatePointAnimation(TextMeshProUGUI targetText, Vector3 targetScale, Vector3 currentScale, float defaultOffset, float targetOffset, float defaultOuter, float targetOuter, float scaleDuration, float glowDuration)
-    {
-        maxStatePointScale(targetText, targetScale, scaleDuration);
-        maxStatePointOffset(targetText, defaultOffset, targetOffset, glowDuration);
-        maxStatePointOuter(targetText, defaultOuter, targetOuter, glowDuration);
-
-        yield return new WaitForSeconds(glowDuration);
-
-        maxStatePointOffset(targetText, targetOffset, defaultOffset, glowDuration);
-        maxStatePointOuter(targetText, targetOuter, defaultOuter, glowDuration);
-        maxStatePointScale(targetText, currentScale, scaleDuration);
-    }
-
-    IEnumerator PlayMaxStatePointAnimation()
+    public void PlayMaxStatePointAnimation()
     {
         Vector2 currentScale = maxStatePointValueFirstText.rectTransform.localScale;
         Vector2 newScale = new Vector3(currentScale.x / scaleMultiplier, currentScale.y / scaleMultiplier);
         for (int i = 0; i < maxStatePointText.Length; i++)
         {
             var targetText = maxStatePointText[i];
-            yield return StartCoroutine(MaxStatePointAnimation(targetText, newScale, currentScale, defaultTextOffset, targetTextOffset, defaultTextOuter, targetTextOuter, maxStatePointScaleDuration, maxStatePointGlowDuration));
+            StartCoroutine(MaxStatePointAnimation(targetText, newScale, currentScale, defaultTextOffset, targetTextOffset, defaultTextOuter, targetTextOuter, maxStatePointScaleDuration, maxStatePointGlowDuration));
         }
+    }
+
+
+    public IEnumerator MaxStatePointAnimation(TextMeshProUGUI targetText, Vector3 targetScale, Vector3 currentScale, float defaultOffset, float targetOffset, float defaultOuter, float targetOuter, float scaleDuration, float glowDuration)
+    {
+        var _sequence = LeanTween.sequence();
+
+        _sequence.append(LeanTween.scale(targetText.gameObject, targetScale, scaleDuration));
+
+        _sequence.insert(LeanTween.value(targetText.gameObject, defaultOffset, targetOffset, glowDuration)
+           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val); }));
+
+        _sequence.insert(LeanTween.value(targetText.gameObject, defaultOuter, targetOuter, glowDuration)
+           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val); }));
+
+        yield return new WaitForSeconds(glowDuration);
+
+        _sequence.append(LeanTween.value(targetText.gameObject, targetOffset, defaultOffset, glowDuration)
+           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val); }));
+
+        _sequence.insert(LeanTween.value(targetText.gameObject, targetOuter, defaultOuter, glowDuration)
+           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val); }));
+
+        _sequence.insert(LeanTween.scale(targetText.gameObject, currentScale, scaleDuration));
     }
 }
