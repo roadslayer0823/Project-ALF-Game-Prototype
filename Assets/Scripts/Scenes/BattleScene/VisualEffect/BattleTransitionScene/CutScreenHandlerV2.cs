@@ -12,8 +12,6 @@ public class CutScreenHandlerV2 : MonoBehaviour
     [SerializeField] private float arrowMoveForwardDuration = 0.2f;
 
     [Header("Outside References")]
-    [SerializeField] private Button verticalScreenshotBtn = null;
-    [SerializeField] private Button horizontalScreenshotBtn = null;
     [SerializeField] private ScreenshotHandler screenshotHandler = null;
 
     [Header("Inner References")]
@@ -109,7 +107,6 @@ public class CutScreenHandlerV2 : MonoBehaviour
         }
         else
         {
-            this.verticalScreenshotBtn.enabled = false;
 
             VerticalCutLineAnimation();
 
@@ -209,8 +206,6 @@ public class CutScreenHandlerV2 : MonoBehaviour
 
         this.isGrayscaleCompleted = false;
         this.isCuttingCompleted = false;
-
-        this.horizontalScreenshotBtn.enabled = true;
     }
 
 
@@ -240,12 +235,8 @@ public class CutScreenHandlerV2 : MonoBehaviour
         this.isGrayscaleCompleted = false;
         this.isCuttingCompleted = false;
 
-        this.verticalScreenshotBtn.enabled = true;
-
         this.verticalTopCutLine.gameObject.SetActive(false);
         this.verticalBottomCutLine.gameObject.SetActive(false);
-
-        this.verticalScreenshotBtn.enabled = true;
     }
 
     private void ArrowRotationCalculation(RectTransform defaultPoint, RectTransform targetPoint, Image targetCutLine)
