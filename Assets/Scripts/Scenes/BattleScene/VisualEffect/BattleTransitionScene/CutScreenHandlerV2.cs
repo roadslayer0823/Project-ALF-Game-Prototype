@@ -41,7 +41,7 @@ public class CutScreenHandlerV2 : MonoBehaviour
     private bool isGrayscaleCompleted = false;
     private bool isCuttingCompleted = false;
 
-    private void Initialize()
+    public void Initialize()
     {
         ResetHorizontalCutScreen();
         ResetVerticalCutScreen();
@@ -86,10 +86,12 @@ public class CutScreenHandlerV2 : MonoBehaviour
 
             yield return new WaitUntil(() => this.isCuttingCompleted && this.isGrayscaleCompleted);
 
+            onComplete?.Invoke();
+
             Vector3 _movingUpwardPosition = new Vector3(Screen.width * 0.5f, (Screen.height * 0.5f) + Screen.height, 0);
             Vector3 _movingDownwardPosition = new Vector3(Screen.width * 0.5f, (Screen.height * 0.5f) - Screen.height, 0);
-            LeanTween.move(this.firstPartGO, _movingUpwardPosition, this.cutScreenMoveDuration).setOnComplete(() => {ResetHorizontalCutScreen(); onComplete?.Invoke(); });
-            LeanTween.move(this.secondPartGO, _movingDownwardPosition, this.cutScreenMoveDuration).setOnComplete(() => { ResetHorizontalCutScreen(); onComplete.Invoke(); });
+            LeanTween.move( this.firstPartGO, _movingUpwardPosition, this.cutScreenMoveDuration ).setOnComplete( () => { ResetHorizontalCutScreen(); } );
+            LeanTween.move( this.secondPartGO, _movingDownwardPosition, this.cutScreenMoveDuration ).setOnComplete( () => { ResetHorizontalCutScreen(); } );
         }
     }
 
@@ -107,7 +109,6 @@ public class CutScreenHandlerV2 : MonoBehaviour
         }
         else
         {
-
             VerticalCutLineAnimation();
 
             this.rightPartGo.SetActive(true);
@@ -124,13 +125,15 @@ public class CutScreenHandlerV2 : MonoBehaviour
 
             yield return new WaitUntil(() => this.isCuttingCompleted && this.isGrayscaleCompleted);
 
+            onComplete?.Invoke();
+
             Vector3 _movingRightPosition = new Vector3((Screen.width * 0.5f) + Screen.width, Screen.height * 0.5f, 0);
             Vector3 _movingLeftPosition = new Vector3((Screen.width * 0.5f) - Screen.width, Screen.height * 0.5f, 0);
 
-            LeanTween.move(this.rightPartGo, _movingRightPosition, this.cutScreenMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); onComplete?.Invoke(); });
-            LeanTween.move(this.leftPartGo, _movingLeftPosition, this.cutScreenMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); onComplete?.Invoke(); });
-            LeanTween.move(this.verticalTopCutLine.gameObject, _movingRightPosition, this.arrowMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); onComplete?.Invoke(); });
-            LeanTween.move(this.verticalBottomCutLine.gameObject, _movingLeftPosition, this.arrowMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); onComplete?.Invoke(); });
+            LeanTween.move( this.rightPartGo, _movingRightPosition, this.cutScreenMoveDuration ).setOnComplete( () => { ResetVerticalCutScreen(); } );
+            LeanTween.move( this.leftPartGo, _movingLeftPosition, this.cutScreenMoveDuration ).setOnComplete( () => { ResetVerticalCutScreen(); } );
+            LeanTween.move( this.verticalTopCutLine.gameObject, _movingRightPosition, this.arrowMoveDuration ).setOnComplete( () => { ResetVerticalCutScreen(); } );
+            LeanTween.move( this.verticalBottomCutLine.gameObject, _movingLeftPosition, this.arrowMoveDuration ).setOnComplete( () => { ResetVerticalCutScreen(); } );
         }
     }
 

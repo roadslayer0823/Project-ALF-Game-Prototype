@@ -31,6 +31,7 @@ public class BattleAnimationManager : MonoBehaviour
 
     private BattleGameManager battleGameManager = null;
     private bool isAnimationEventTriggered = false;
+    private bool hasTransitionAnimationEnded = false;
     private Action<bool> onBattleEndedCallback = null;
 
     private GameObject targetCameraObject = null;
@@ -910,6 +911,10 @@ public class BattleAnimationManager : MonoBehaviour
             yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartA ) );
         }
 
+        this.hasTransitionAnimationEnded = false;
+        this.battleGameManager.GetBattleVisualEffectManager().TransitionToNextPart( () => { this.hasTransitionAnimationEnded = true; } );
+        yield return new WaitUntil( () => this.hasTransitionAnimationEnded );
+
         // Hide the attacker for Part B if the attacker's range type is ranged.
         if (_attackerRangeType == RangeType.ranged)
         {
@@ -1226,6 +1231,10 @@ public class BattleAnimationManager : MonoBehaviour
                 }
             }
         }
+
+        this.hasTransitionAnimationEnded = false;
+        this.battleGameManager.GetBattleVisualEffectManager().TransitionToNextATL( () => { this.hasTransitionAnimationEnded = true; } );
+        yield return new WaitUntil( () => this.hasTransitionAnimationEnded );
     }
 
     private void ShowCommandPhaseCountdownTimer( bool isActiveSkill, GameCharacter gameCharacter, float countdownTime )

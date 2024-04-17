@@ -372,12 +372,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a2293e00cc6347a0a23e9ea134c5e33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cutScreenMoveDuration: 1
-  grayscaleDuration: 0.75
-  arrowMoveDuration: 1.1
+  cutScreenMoveDuration: 0.5
+  grayscaleDuration: 0.3
+  arrowMoveDuration: 0.3
   arrowMoveForwardDuration: 0.2
-  verticalScreenshotBtn: {fileID: 0}
-  horizontalScreenshotBtn: {fileID: 0}
   screenshotHandler: {fileID: 0}
   firstPartGO: {fileID: 1135491668602156016}
   secondPartGO: {fileID: 7325512116749204036}

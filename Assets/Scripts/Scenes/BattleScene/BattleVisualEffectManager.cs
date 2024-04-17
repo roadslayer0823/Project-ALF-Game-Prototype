@@ -1,38 +1,48 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class BattleVisualEffectManager : MonoBehaviour
 {
     [SerializeField] private CameraRadiusBlur cameraRadiusBlur = null;
+    [SerializeField] private CutScreenHandlerV2 cutScreenHandler = null;
 
     public void SetUp()
     {
-        if(cameraRadiusBlur != null)
+        if (this.cameraRadiusBlur != null)
         {
-            cameraRadiusBlur.CreateNewShaderMaterial();
+            this.cameraRadiusBlur.CreateNewShaderMaterial();
+        }
+
+        if (this.cutScreenHandler != null)
+        {
+            this.cutScreenHandler.Initialize();
         }
     }
 
+#region Radius Blur
+
     public void ApplyBlurShaderAtPartB()
     {
-        cameraRadiusBlur.onShader = true;
+        this.cameraRadiusBlur.onShader = true;
+
         float _centerX = 0.5f;
         float _centerY = 0.5f;
         float _radiusOffset = 0.004f;
         Vector3 _radiusData = new Vector3(_centerX, _centerY, _radiusOffset);
 
-        cameraRadiusBlur.SetShaderValue(_radiusData, 5, 0);
+        this.cameraRadiusBlur.SetShaderValue(_radiusData, 5, 0);
     }
 
     public void ApplyBlurShaderAnimationAtRepulse()
     {
-        cameraRadiusBlur.onShader = true;
+        this.cameraRadiusBlur.onShader = true;
         StartCoroutine(SetBlurDelay());
     }
 
     IEnumerator SetBlurDelay()
     {
-        cameraRadiusBlur.Iteration = 20;
+        this.cameraRadiusBlur.Iteration = 20;
 
         yield return new WaitForSeconds(0.3f);
 
@@ -45,6 +55,22 @@ public class BattleVisualEffectManager : MonoBehaviour
 
     public void TurnOffBlurShader()
     {
-        cameraRadiusBlur.onShader = false;
+        this.cameraRadiusBlur.onShader = false;
     }
+
+#endregion
+
+#region Battle Transition Animation
+
+    public void TransitionToNextPart( Action onCompleteCallback = null )
+    {
+        this.cutScreenHandler.OnHorizontalScreenshot( onCompleteCallback );
+    }
+
+    public void TransitionToNextATL( Action onCompleteCallback = null )
+    {
+        this.cutScreenHandler.OnVerticalScreenshot( onCompleteCallback );
+    }
+
+#endregion
 }
