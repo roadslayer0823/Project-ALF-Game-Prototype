@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,6 +8,8 @@ public class CutScreenHandlerV2 : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private float cutScreenMoveDuration = 1.5f;
     [SerializeField] private float grayscaleDuration = 1.0f;
+    [SerializeField] private float arrowMoveDuration = 1.1f;
+    [SerializeField] private float arrowMoveForwardDuration = 0.2f;
 
     [Header("Outside References")]
     [SerializeField] private Button verticalScreenshotBtn = null;
@@ -33,41 +36,32 @@ public class CutScreenHandlerV2 : MonoBehaviour
     [SerializeField] private Image verticalTopCutLine = null;
     [SerializeField] private Image verticalBottomCutLine = null;
     [SerializeField] private RectTransform topTargetPoint = null;
-    [SerializeField] private RectTransform topDefaulttPoint = null;
+    [SerializeField] private RectTransform topDefaultPoint = null;
     [SerializeField] private RectTransform bottomTargetPoint = null;
     [SerializeField] private RectTransform bottomDefaultPoint = null;
 
     private bool isGrayscaleCompleted = false;
     private bool isCuttingCompleted = false;
 
-    private void Start()
+    private void Initialize()
     {
-        this.verticalScreenshotBtn.onClick.AddListener(OnVerticalScreenshotClick);
-        this.horizontalScreenshotBtn.onClick.AddListener(OnHorizontalScreenshotClick);
-
         ResetHorizontalCutScreen();
         ResetVerticalCutScreen();
     }
 
-    private void OnVerticalScreenshotClick()
+    public void OnVerticalScreenshot(Action onComplete = null)
     {
-        StartCoroutine(VerticalCutScreen());
-
-        Debug.Log("Screenshot button clicked.");
-        Debug.Log("Screen.width: " + Screen.width + "\n" + "Screen.height: " + Screen.height);
+        StartCoroutine(VerticalCutScreen(onComplete));
     }
 
-    private void OnHorizontalScreenshotClick()
+    public void OnHorizontalScreenshot(Action onComplete = null)
     {
-        StartCoroutine(HorizontalCutScreen());
-
-        
+        StartCoroutine(HorizontalCutScreen(onComplete));
     }
 
-    private IEnumerator HorizontalCutScreen()
+    private IEnumerator HorizontalCutScreen(Action onComplete = null)
     {
-        Debug.Log("Screenshot button clicked.");
-        Debug.Log("Screen.width: " + Screen.width + "\n" + "Screen.height: " + Screen.height); ResetHorizontalCutScreen();
+        ResetHorizontalCutScreen();
 
         this.screenshotHandler.TakeScreenshot();
 
@@ -79,7 +73,7 @@ public class CutScreenHandlerV2 : MonoBehaviour
         }
         else
         {
-            this.horizontalScreenshotBtn.enabled = false;
+            Debug.Log("Screenshot button clicked horizontal.");
 
             HorizontalCutLineAnimation();
 
@@ -96,12 +90,12 @@ public class CutScreenHandlerV2 : MonoBehaviour
 
             Vector3 _movingUpwardPosition = new Vector3(Screen.width * 0.5f, (Screen.height * 0.5f) + Screen.height, 0);
             Vector3 _movingDownwardPosition = new Vector3(Screen.width * 0.5f, (Screen.height * 0.5f) - Screen.height, 0);
-            LeanTween.move(this.firstPartGO, _movingUpwardPosition, this.cutScreenMoveDuration).setOnComplete(ResetHorizontalCutScreen);
-            LeanTween.move(this.secondPartGO, _movingDownwardPosition, this.cutScreenMoveDuration).setOnComplete(ResetHorizontalCutScreen);
+            LeanTween.move(this.firstPartGO, _movingUpwardPosition, this.cutScreenMoveDuration).setOnComplete(() => {ResetHorizontalCutScreen(); onComplete?.Invoke(); });
+            LeanTween.move(this.secondPartGO, _movingDownwardPosition, this.cutScreenMoveDuration).setOnComplete(() => { ResetHorizontalCutScreen(); onComplete.Invoke(); });
         }
     }
 
-    private IEnumerator VerticalCutScreen()
+    private IEnumerator VerticalCutScreen(Action onComplete = null)
     {
         ResetVerticalCutScreen();
 
@@ -136,10 +130,10 @@ public class CutScreenHandlerV2 : MonoBehaviour
             Vector3 _movingRightPosition = new Vector3((Screen.width * 0.5f) + Screen.width, Screen.height * 0.5f, 0);
             Vector3 _movingLeftPosition = new Vector3((Screen.width * 0.5f) - Screen.width, Screen.height * 0.5f, 0);
 
-            LeanTween.move(this.rightPartGo, _movingRightPosition, this.cutScreenMoveDuration).setOnComplete(ResetVerticalCutScreen);
-            LeanTween.move(this.leftPartGo, _movingLeftPosition, this.cutScreenMoveDuration).setOnComplete(ResetVerticalCutScreen);
-            LeanTween.move(this.verticalTopCutLine.gameObject, _movingRightPosition, this.cutScreenMoveDuration).setOnComplete(ResetVerticalCutScreen);
-            LeanTween.move(this.verticalBottomCutLine.gameObject, _movingLeftPosition, this.cutScreenMoveDuration).setOnComplete(ResetVerticalCutScreen);
+            LeanTween.move(this.rightPartGo, _movingRightPosition, this.cutScreenMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); onComplete?.Invoke(); });
+            LeanTween.move(this.leftPartGo, _movingLeftPosition, this.cutScreenMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); onComplete?.Invoke(); });
+            LeanTween.move(this.verticalTopCutLine.gameObject, _movingRightPosition, this.arrowMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); onComplete?.Invoke(); });
+            LeanTween.move(this.verticalBottomCutLine.gameObject, _movingLeftPosition, this.arrowMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); onComplete?.Invoke(); });
         }
     }
 
@@ -162,7 +156,8 @@ public class CutScreenHandlerV2 : MonoBehaviour
 
     private void HorizontalCutLineAnimation()
     {
-        LeanTween.move(horizontalCutLine.gameObject, targetPoint, 0.5f)
+        ArrowRotationCalculation(defaultPoint, targetPoint, horizontalCutLine);
+        LeanTween.move(horizontalCutLine.gameObject, targetPoint, this.arrowMoveForwardDuration)
             .setOnComplete(() =>
             {
                 this.isCuttingCompleted = true;
@@ -171,15 +166,19 @@ public class CutScreenHandlerV2 : MonoBehaviour
 
     private void VerticalCutLineAnimation()
     {
-        LeanTween.move(verticalTopCutLine.gameObject, topTargetPoint, 0.5f);
-        LeanTween.value(verticalTopCutLine.gameObject, verticalTopCutLine.fillAmount, 1, 0.5f)
+
+        ArrowRotationCalculation(this.topDefaultPoint, topTargetPoint, verticalTopCutLine);
+        ArrowRotationCalculation(this.bottomDefaultPoint, bottomTargetPoint, verticalBottomCutLine);
+
+        LeanTween.move(verticalTopCutLine.gameObject, topTargetPoint, this.arrowMoveForwardDuration);
+        LeanTween.value(verticalTopCutLine.gameObject, verticalTopCutLine.fillAmount, 1, this.arrowMoveForwardDuration)
             .setOnUpdate((float val) =>
             {
                 verticalTopCutLine.fillAmount = val;
             });
 
-        LeanTween.move(verticalBottomCutLine.gameObject, bottomTargetPoint, 0.5f);
-        LeanTween.value(verticalBottomCutLine.gameObject, verticalBottomCutLine.fillAmount, 1, 0.5f)
+        LeanTween.move(verticalBottomCutLine.gameObject, bottomTargetPoint, this.arrowMoveForwardDuration);
+        LeanTween.value(verticalBottomCutLine.gameObject, verticalBottomCutLine.fillAmount, 1, this.arrowMoveForwardDuration)
             .setOnUpdate((float val) =>
             {
                 verticalBottomCutLine.fillAmount = val;
@@ -224,7 +223,7 @@ public class CutScreenHandlerV2 : MonoBehaviour
         this.leftPartGo.SetActive(false);
 
         this.verticalBottomCutLine.transform.position = this.bottomDefaultPoint.transform.position;
-        this.verticalTopCutLine.transform.position = this.topDefaulttPoint.transform.position;
+        this.verticalTopCutLine.transform.position = this.topDefaultPoint.transform.position;
 
         verticalTopCutLine.fillAmount = 0.4f;
         verticalBottomCutLine.fillAmount = 0.4f;
@@ -247,5 +246,13 @@ public class CutScreenHandlerV2 : MonoBehaviour
         this.verticalBottomCutLine.gameObject.SetActive(false);
 
         this.verticalScreenshotBtn.enabled = true;
+    }
+
+    private void ArrowRotationCalculation(RectTransform defaultPoint, RectTransform targetPoint, Image targetCutLine)
+    {
+        Vector2 startingPoint = new Vector2(defaultPoint.position.x, defaultPoint.position.y);
+        Vector2 endingPoint = new Vector2(targetPoint.position.x, targetPoint.position.y);
+        float angle = Mathf.Atan2(startingPoint.y - endingPoint.y, startingPoint.x - endingPoint.x) * Mathf.Rad2Deg;
+        targetCutLine.transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 }
