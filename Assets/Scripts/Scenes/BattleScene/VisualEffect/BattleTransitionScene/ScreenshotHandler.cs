@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
 
 public class ScreenshotHandler : MonoBehaviour {
 
@@ -29,7 +30,7 @@ public class ScreenshotHandler : MonoBehaviour {
                 System.IO.File.WriteAllBytes(Application.dataPath + "/CameraScreenshot.png", _byteArray);
                 Debug.Log("Saved CameraScreenshot.png");
             }
-            
+
             Sprite _capturedImage = Sprite.Create(_screenshotTexture, _rect, new Vector2(0.5f, 0.5f));
             this.imageToCut = _capturedImage;
 
@@ -38,7 +39,6 @@ public class ScreenshotHandler : MonoBehaviour {
     }
 
     public void TakeScreenshot() {
-        Debug.Log("xxxxxxxxxxx");
         this.takeScreenshotOnNextFrame = true;
     }
 
