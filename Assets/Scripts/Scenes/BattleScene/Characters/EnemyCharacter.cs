@@ -168,36 +168,45 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnCombatCommandTimeStarted:
 
-                if (Random.value < 0.8f)
+                if (!base.GetIsInBreakStatus())
                 {
-                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_Before, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    if (Random.value < 0.8f)
+                    {
+                        _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_Before, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    }
                 }
 
                 break;
 
             case AnimationEvent.OnPartA:
 
-                if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
+                if (!base.GetIsInBreakStatus())
                 {
-                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
-                }
-                else if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
-                {
-                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
+                    {
+                        _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    }
+                    else if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
+                    {
+                        _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    }
                 }
 
                 break;
 
             case AnimationEvent.OnPartB:
 
-                if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulDefender
-                    || _enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulEvader)
+                if (!base.GetIsInBreakStatus())
                 {
-                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CounterAttackCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
-                }
-                else
-                {
-                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_After, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulDefender
+                        || _enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulEvader)
+                    {
+                        _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CounterAttackCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    }
+                    else
+                    {
+                        _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_After, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    }
                 }
 
                 break;

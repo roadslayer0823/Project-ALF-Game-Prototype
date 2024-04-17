@@ -529,24 +529,25 @@ public class BattleUiManager : MonoBehaviour
 
 #region Battle Skill Manager
 
-    public void UpdateSkillButtons( List<SkillType> skillTypeList )
+    public void UpdateSkillButtons( List<SkillType> skillTypeList = null )
     {
+        List<SkillType> _skillTypeList = skillTypeList ?? new List<SkillType>();
         bool _isAbleToRepulse = false;
 
         Debug.Log( "UpdateSkillButtons" );
-        if (skillTypeList.Contains( SkillType.Repulse ))
+        if (_skillTypeList.Contains( SkillType.Repulse ))
         {
             _isAbleToRepulse = true;
 
             Debug.Log( "SkillType.Repulse" );
             this.activeSkillSlotListPanelV2.ChangeToRepulseMode( this.selectedGameCharacter );
         }
-        else if (skillTypeList.Contains( SkillType.Derive ))
+        else if (_skillTypeList.Contains( SkillType.Derive ))
         {
             Debug.Log( "SkillType.Derive" );
             this.activeSkillSlotListPanelV2.ChangeToDerivedMode( this.selectedGameCharacter );
 
-            if (skillTypeList.Contains( SkillType.Active ))
+            if (_skillTypeList.Contains( SkillType.Active ))
             {
                 this.activeSkillSlotListPanelV2.EnableInteraction();
             }
@@ -558,15 +559,15 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             Debug.Log( "Default" );
-            this.activeSkillSlotListPanelV2.ChangeToDefaultMode( this.selectedGameCharacter, ( skillTypeList.Contains( SkillType.Active ) ) ? SkillSlotV2.StateType.Enabled : SkillSlotV2.StateType.Disabled );
+            this.activeSkillSlotListPanelV2.ChangeToDefaultMode( this.selectedGameCharacter, ( _skillTypeList.Contains( SkillType.Active ) ) ? SkillSlotV2.StateType.Enabled : SkillSlotV2.StateType.Disabled );
         }
 
         if (this.backendSkillSlotListPanel == null)
         {
             this.playerActionPanel.ShowSkillActionButtons( this.selectedGameCharacter.GetSelectedBackendSkillList().ToArray() );
-            this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Defense, skillTypeList.Contains( SkillType.Defend ) );
-            this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Evasion, skillTypeList.Contains( SkillType.Evade ) );
-            this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Observation, skillTypeList.Contains( SkillType.Observe ) );
+            this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Defense, _skillTypeList.Contains( SkillType.Defend ) );
+            this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Evasion, _skillTypeList.Contains( SkillType.Evade ) );
+            this.playerActionPanel.UpdateSkillActionButtons( PlayerActionPanel.SkillActionButtonType.Observation, _skillTypeList.Contains( SkillType.Observe ) );
         }
         else
         {
@@ -575,7 +576,7 @@ public class BattleUiManager : MonoBehaviour
                 this.playerActionPanel.gameObject.SetActive( false );
             }
 
-            this.backendSkillSlotListPanel.UpdateBackendSkillSlots( this.selectedGameCharacter, skillTypeList );
+            this.backendSkillSlotListPanel.UpdateBackendSkillSlots( this.selectedGameCharacter, _skillTypeList );
         }
 
         if (_isAbleToRepulse)

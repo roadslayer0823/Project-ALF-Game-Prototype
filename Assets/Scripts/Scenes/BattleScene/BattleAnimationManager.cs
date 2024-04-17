@@ -704,9 +704,11 @@ public class BattleAnimationManager : MonoBehaviour
 
         PlayerCharacter _playerCharacter = this.battleGameManager.GetPlayerCharacter();
         _playerCharacter.TriggerEvent( AnimationEvent.SetCharacter );
+        _playerCharacter.MinusBreakStatusRemainingATLs();
 
         EnemyCharacter _enemyCharacter = this.battleGameManager.GetEnemyCharacter();
         _enemyCharacter.TriggerEvent( AnimationEvent.SetCharacter );
+        _enemyCharacter.MinusBreakStatusRemainingATLs();
 
         if (BattleLogicManagerV2.ShouldCombatCommandTimeBeSkipped( _playerCharacter, _enemyCharacter ))
         {

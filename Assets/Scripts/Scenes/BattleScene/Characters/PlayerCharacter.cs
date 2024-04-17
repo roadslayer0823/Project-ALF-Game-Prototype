@@ -89,33 +89,54 @@ public class PlayerCharacter : GameCharacter
 
             case AnimationEvent.OnCombatCommandTimeStarted:
 
-                _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_Before, _currentATLNumber, base.GetCurrentAttacker() ) );
+                if (base.GetIsInBreakStatus())
+                {
+                    _battleUiManager.UpdateSkillButtons();
+                }
+                else
+                {
+                    _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_Before, _currentATLNumber, base.GetCurrentAttacker() ) );
+                }
 
                 break;
 
             case AnimationEvent.OnPartA:
 
-                if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
+                if (base.GetIsInBreakStatus())
                 {
-                    _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    _battleUiManager.UpdateSkillButtons();
                 }
-                else if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
+                else
                 {
-                    _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
+                    {
+                        _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    }
+                    else if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
+                    {
+                        _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    }
                 }
 
                 break;
 
             case AnimationEvent.OnPartB:
 
-                if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulDefender
-                    || _playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulEvader)
+                if (base.GetIsInBreakStatus())
                 {
-                    _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CounterAttackCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    _battleUiManager.UpdateSkillButtons();
                 }
                 else
                 {
-                    _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_After, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulDefender
+                       || _playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulEvader)
+                    {
+                        _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CounterAttackCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    }
+                    else
+                    {
+                        _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_After, _currentATLNumber, base.GetCurrentAttacker() ) );
+                    }
                 }
 
                 break;

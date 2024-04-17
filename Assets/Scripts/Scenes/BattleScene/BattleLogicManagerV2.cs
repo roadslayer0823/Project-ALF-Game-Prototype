@@ -35,7 +35,19 @@ public class BattleLogicManagerV2
 
     public static bool ShouldCombatCommandTimeBeSkipped( GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
     {
-        return ( IsAttackingSkill( gameCharacterOne.GetAssignedSkill() ) || IsAttackingSkill( gameCharacterTwo.GetAssignedSkill() ) );
+        CharacterSkill _gameCharacterOne_Skill = gameCharacterOne.GetAssignedSkill();
+        CharacterSkill _gameCharacterTwo_Skill = gameCharacterTwo.GetAssignedSkill();
+
+        if (_gameCharacterOne_Skill != null && _gameCharacterOne_Skill.GetSkillData().skillType == SkillType.derived)
+        {
+            _gameCharacterOne_Skill = gameCharacterTwo.ResetAssignedSkill();
+        }
+        else if (_gameCharacterTwo_Skill != null && _gameCharacterTwo_Skill.GetSkillData().skillType == SkillType.derived)
+        {
+            _gameCharacterTwo_Skill = gameCharacterOne.ResetAssignedSkill();
+        }
+
+        return ( IsAttackingSkill( _gameCharacterOne_Skill ) || IsAttackingSkill( _gameCharacterTwo_Skill ) );
     }
 
     public static ( GameCharacter lead, GameCharacter improviser ) DetermineLeadAndImproviser( GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )

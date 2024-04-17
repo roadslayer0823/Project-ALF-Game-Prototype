@@ -833,9 +833,10 @@ public class GameCharacter : MonoBehaviour
         }
     }
 
-    public void ResetAssignedSkill()
+    public CharacterSkill ResetAssignedSkill()
     {
         this.assignedSkill = null;
+        return this.assignedSkill;
     }
 
     public CharacterSkill GetAssignedSkill()
@@ -845,6 +846,11 @@ public class GameCharacter : MonoBehaviour
 
     public void ApplyAssignedSkillAsCurrentSkill()
     {
+        if (GetIsInBreakStatus())
+        {
+            return;
+        }
+
         if (this.assignedSkill != null)
         {
             SetCurrentSkill( this.assignedSkill );
@@ -1053,6 +1059,16 @@ public class GameCharacter : MonoBehaviour
             this.currentStatePoint = battleResultData.currentStatePoint;
             this.maximumStressValue = battleResultData.maximumStressValue;
             this.currentStressValue = battleResultData.currentStressValue;
+            this.isBreakStatusCausedByStatePoint = battleResultData.isBreakStatusCausedByStatePoint;
+            this.isBreakStatusCausedByStressValue = battleResultData.isBreakStatusCausedByStressValue;
+
+            if (!GetIsInBreakStatus())
+            {
+                if (battleResultData.isEnteringIntoBreakStatus)
+                {
+                    EnterIntoBreakStatus( battleResultData.breakStatusAtlNumber );
+                }
+            }
 
             this.onCharacterInfoUpdated?.Invoke();
         }
