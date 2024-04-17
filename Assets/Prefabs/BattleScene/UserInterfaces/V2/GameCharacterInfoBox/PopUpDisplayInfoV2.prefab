@@ -247,7 +247,7 @@ GameObject:
   - component: {fileID: 4052040275127775498}
   - component: {fileID: 7958116260160800707}
   - component: {fileID: 8257032558277915844}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: StressValueDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -588,7 +588,7 @@ GameObject:
   - component: {fileID: 1844024813538903623}
   - component: {fileID: 623138160897518408}
   - component: {fileID: 3660306814785651265}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: StressValueDamage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -728,7 +728,7 @@ GameObject:
   - component: {fileID: 2129967900781810756}
   - component: {fileID: 979128241436052339}
   - component: {fileID: 5253034995604299155}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: StatePointDamage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -968,7 +968,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6669098951662323163}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1499,7 +1499,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 726241804828694587}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
