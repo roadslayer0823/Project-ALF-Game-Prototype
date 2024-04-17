@@ -25,15 +25,21 @@ public class BattleVisualEffectManager : MonoBehaviour
 
     public void ApplyBlurShaderAnimationAtRepulse()
     {
-        cameraRadiusBlur.onShader = true;
-        float _from = 30f;
-        float _to = 5f;
-        float _time = 1f;
+        var _sequence = LeanTween.sequence();
 
-        LeanTween.value(_from, _to, _time).setOnUpdate((float val) =>
-        {
-            cameraRadiusBlur.Iteration = (int)val;
-        });
+        cameraRadiusBlur.onShader = true;
+
+        float _from = 20f;
+        float _to = 20f;
+        float _time = 0.2f;
+
+        _sequence.append(LeanTween.value(_from, _to, _time).setOnUpdate((float val) => { cameraRadiusBlur.Iteration = (int)val; }));
+
+        _from = 30f;
+        _to = 5f;
+        _time = 0.5f;
+
+        _sequence.append(LeanTween.value(_from, _to, _time).setOnUpdate((float val) => { cameraRadiusBlur.Iteration = (int)val; }));
     }
 
     public void TurnOffBlurShader()
