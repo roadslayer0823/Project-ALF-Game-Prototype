@@ -253,6 +253,7 @@ public class EnemyCharacter : GameCharacter
         bool _isAbleToDefend = skillTypeList.Contains( BattleSkillManager.SkillType.Defend );
         bool _isAbleToEvade = skillTypeList.Contains( BattleSkillManager.SkillType.Evade );
         bool _isAbleToObserve = skillTypeList.Contains( BattleSkillManager.SkillType.Observe );
+        bool _isAbleToCounter = skillTypeList.Contains( BattleSkillManager.SkillType.Counter );
 
         for (int i = 0; i < _backendSkillList.Count; i++)
         {
@@ -268,6 +269,11 @@ public class EnemyCharacter : GameCharacter
             {
                 _availableObservingSkillList.Add( _backendSkill );
             }
+        }
+
+        if (_isAbleToCounter)
+        {
+            _availableSkillList.Add( base.GetCurrentSkill().GetCharacterSubskillData().GetSelectedCounterSkill() );
         }
 
         if (BattleLogicManagerV2.IsAbleToUseAttackingAndDefendingSkills( this ) && _availableSkillList.Count > 0)

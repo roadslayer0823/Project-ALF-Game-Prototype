@@ -391,6 +391,19 @@ public class BattleLogicManagerV2
                     lead.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Assaulter );
                     improviser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Recipient );
                 }
+                else if (winner == improviser)
+                {
+                    lead.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Deuce );
+
+                    if (_improviserSubskillData.IsDefendingSkill)
+                    {
+                        improviser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.SuccessfulDefender );
+                    }
+                    else if (_improviserSubskillData.IsEvadingSkill)
+                    {
+                        improviser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.SuccessfulEvader );
+                    }
+                }
             }
         }
         else

@@ -26,6 +26,8 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         {
             this.backendSkillSlot[i].InitializeBackendSkillSlot(this);
         }
+
+        this.qteSkillSlot.InitializeBackendSkillSlot( this );
     }
 
     public void Show()
@@ -61,6 +63,8 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
             _backendSkillSlot.SetSelectedSkill(null);
         }
+
+        HideQTEButton();
 
         this.selectedGameCharacter = gameCharacter;
         this.selectedSkills = new List<CharacterSkill>( gameCharacter.GetSelectedBackendSkillList() );
@@ -130,17 +134,20 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         bool _isAbleToDefend = skillTypeList.Contains( SkillType.Defend );
         bool _isAbleToEvade = skillTypeList.Contains( SkillType.Evade );
         bool _isAbleToObserve = skillTypeList.Contains( SkillType.Observe );
+        bool _isAbleToCounter = skillTypeList.Contains( SkillType.Counter );
 
         if (!BattleLogicManagerV2.IsAbleToUseAnySkill( this.selectedGameCharacter ))
         {
             _isAbleToDefend = false;
             _isAbleToEvade = false;
             _isAbleToObserve = false;
+            _isAbleToCounter = false;
         }
         else if (!BattleLogicManagerV2.IsAbleToUseAttackingAndDefendingSkills( this.selectedGameCharacter ))
         {
             _isAbleToDefend = false;
             _isAbleToEvade = false;
+            _isAbleToCounter = false;
         }
 
         for (int i = 0; i < this.backendSkillSlot.Length; i++)
@@ -175,12 +182,17 @@ public class BackendSkillSlotListPanel : MonoBehaviour
                 backendSkillSlot[i].UpdateCurrentSkillDisplayTextUI(false);
             }
         }
+
+        if (_isAbleToCounter)
+        {
+            SetQTEActionButton( this.selectedGameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSelectedCounterSkill() );
+            this.qteSkillSlot.SetCurrentStateType( StateType.Enabled );
+            ShowQTEButton();
+        }
     }
 
-    public void ShowQteSkillSlot(GameCharacter gameCharacter)
+    public void ShowQteSkillSlot()
     {
-        this.selectedGameCharacter = gameCharacter;
-
         CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
         for (int i = 0; i < this.selectedSkills.Count; i++)
         {
