@@ -122,6 +122,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         {
             if (_middleSkillSlotSelectedSkill == this.selectedSkills[ i ])
             {
+
                 return i;
             }
         }
@@ -161,7 +162,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 }
             }
         }
-        else if (this.selectedSkills.Count == 1)
+        if (this.selectedSkills.Count == 1)
         {
             LockSkillSlot();
         }

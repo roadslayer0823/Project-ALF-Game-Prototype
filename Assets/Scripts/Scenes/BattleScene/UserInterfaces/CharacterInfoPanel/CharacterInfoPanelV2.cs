@@ -8,6 +8,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     [Header("Stress Value UI")]
     [SerializeField] private Image stressValueStatus = null;
     [SerializeField] private TextMeshProUGUI stressPercentageText = null;
+    [SerializeField] private TextMeshProUGUI stressValueBreak = null;
 
     [Header("Effect Marker UI")]
     [SerializeField] private TextMeshProUGUI effectMarkerValue = null;
@@ -29,7 +30,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     [SerializeField] private TextMeshProUGUI maxStatePointValueSecondText = null;
     [SerializeField] private TextMeshProUGUI maxStatePointValueThirdText = null;
     [SerializeField] private TextMeshProUGUI maxStatePointValueFourthText = null;
-    [SerializeField] private GameObject statePointBreakText = null;
+    [SerializeField] private TextMeshProUGUI statePointBreakText = null;
     [SerializeField] private Sprite statePointBreak = null;
     [SerializeField] private Sprite statePointNoBreak = null;
     [SerializeField] private Image maxStatePointIncreaseIcon = null;
@@ -176,13 +177,13 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
         if (this.selectedCharacter.GetIsBreakStatusCausedByStatePoint())
         {
-            this.statePointBreakText.SetActive(true);
+            this.statePointBreakText.gameObject.SetActive(true);
             this.statePointValueText.gameObject.SetActive(false);
             this.statePointStatus.sprite = this.statePointBreak;
         }
         else
         {
-            this.statePointBreakText.SetActive(false);
+            this.statePointBreakText.gameObject.SetActive(false);
             this.statePointValueText.gameObject.SetActive(true);
             this.statePointStatus.sprite = this.statePointNoBreak;
         }
@@ -232,7 +233,8 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
         if (this.selectedCharacter.GetIsBreakStatusCausedByStressValue())
         {
-            this.stressPercentageText.SetText("BREAK");
+            this.stressValueBreak.gameObject.SetActive(true);
+            this.stressPercentageText.gameObject.SetActive(false);
             stressValueStatusAnimation(breakStatusColor, stressValueStatusDuration, "_Color1_G_Percentage");
             stressValueStatusAnimation(breakStatusColor, stressValueStatusDuration, "_Color2_G_Percentage");
             stressValueStatusAnimation(breakStatusColor, stressValueStatusDuration, "_Color1_B_Percentage");
@@ -240,6 +242,8 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         else if (startingStressValue != _currentStressValue)
         {
             this.stressPercentageText.SetText(_currentStressValue.ToString());
+            this.stressPercentageText.gameObject.SetActive(true);
+            this.stressValueBreak.gameObject.SetActive(false);
             if (isSetupComplete == true)
             {
                 Color32 redColor = new Color32(255, 0, 0, 255);
