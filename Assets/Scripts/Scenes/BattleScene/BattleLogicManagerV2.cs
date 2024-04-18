@@ -40,11 +40,11 @@ public class BattleLogicManagerV2
 
         if (_gameCharacterOne_Skill != null && _gameCharacterOne_Skill.GetSkillData().skillType == SkillType.derived)
         {
-            _gameCharacterOne_Skill = gameCharacterTwo.ResetAssignedSkill();
+            _gameCharacterTwo_Skill = gameCharacterTwo.ResetAssignedSkill();
         }
         else if (_gameCharacterTwo_Skill != null && _gameCharacterTwo_Skill.GetSkillData().skillType == SkillType.derived)
         {
-            _gameCharacterTwo_Skill = gameCharacterOne.ResetAssignedSkill();
+            _gameCharacterOne_Skill = gameCharacterOne.ResetAssignedSkill();
         }
 
         return ( IsAttackingSkill( _gameCharacterOne_Skill ) || IsAttackingSkill( _gameCharacterTwo_Skill ) );

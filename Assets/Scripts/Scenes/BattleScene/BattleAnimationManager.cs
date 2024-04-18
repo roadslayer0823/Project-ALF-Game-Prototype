@@ -819,32 +819,27 @@ public class BattleAnimationManager : MonoBehaviour
             _attackTarget.SetCurrentAttacker( _attacker );
             this.currentCaster = _attacker;
 
-            _attacker.TriggerEvent( AnimationEvent.OnPartA );
-            _attackTarget.TriggerEvent( AnimationEvent.OnPartA );
+            Skill.SkillType _attackerSkillType = _attacker.GetCurrentSkill().GetSkillData().skillType;
+
+            // 在當前的 ATL 裡，如果“先手方”發動的技能不是派生技能，才會有 Part A 的階段，否則將直接進入 Part B 的階段。
+            if (_attackerSkillType != Skill.SkillType.derived)
+            {
+                _attacker.TriggerEvent( AnimationEvent.OnPartA );
+                _attackTarget.TriggerEvent( AnimationEvent.OnPartA );
+            }
 
             yield return StartCoroutine( PlayShowingSkillInformation( _attacker ) );
 
-            Skill.SkillType _attackerSkillType = _attacker.GetCurrentSkill().GetSkillData().skillType;
             if (_attackerSkillType == Skill.SkillType.derived)
             {
-                _battleResultData = BattleLogicManagerV2.DetermineResultForPartB( _attacker, _attackTarget, out _, out _ );
-                _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
-                _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _attackTarget );
+                StartPartB( out _battleResultData, out _attackerBattleResultData, out _attackTargetBattleResultData, _attacker, _attackTarget, out GameCharacter _, out GameCharacter _ );
 
                 yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound, _atlSlotListPanel, _battleResultData, _attackerBattleResultData, _attackTargetBattleResultData ) );
 
-                if (CheckHasBattleEnded())
+                if (EndPartB( _attacker, _attackTarget ))
                 {
                     yield break;
                 }
-
-                _attacker.GetOwnContainer().SetActive( false );
-                _attacker.ShowCharacterObject();
-                _attacker.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
-                _attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
-
-                _attacker.Reset();
-                _attackTarget.Reset();
 
                 yield break;
             }
@@ -978,20 +973,7 @@ public class BattleAnimationManager : MonoBehaviour
             }
         }
 
-        // 判定 Part B 結果及結算。
-        _battleResultData = BattleLogicManagerV2.DetermineResultForPartB( _attacker, _attackTarget, out GameCharacter _winner, out GameCharacter _loser );
-        _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
-        _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _attackTarget );
-
-        // 結算“後手方”已按下的技能的以太值和最大以太值提升。
-        _attackTarget.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
-        //StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
-        _attackTarget.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackTargetBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackTargetBattleResultData.statePointCost*/ );
-        this.currentCaster = _attackTarget;
-
-        this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtPartB();
-        _attacker.TriggerEvent( AnimationEvent.OnPartB );
-        _attackTarget.TriggerEvent( AnimationEvent.OnPartB );
+        StartPartB( out _battleResultData, out _attackerBattleResultData, out _attackTargetBattleResultData, _attacker, _attackTarget, out GameCharacter _winner, out GameCharacter _loser );
 
         this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, _attacker.GetIsPlayer() );
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
@@ -1196,20 +1178,10 @@ public class BattleAnimationManager : MonoBehaviour
                 break;
         }
 
-        this.battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
-
-        if (CheckHasBattleEnded())
+        if (EndPartB( _attacker, _attackTarget ))
         {
             yield break;
         }
-
-        _attacker.GetOwnContainer().SetActive( false );
-        _attacker.ShowCharacterObject();
-        _attacker.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
-        _attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
-
-        _attacker.Reset();
-        _attackTarget.Reset();
 
         if (battleFlowRound.GetCurrentATL().GetATLNumber() == GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots())
         {
@@ -1235,6 +1207,46 @@ public class BattleAnimationManager : MonoBehaviour
         this.hasTransitionAnimationEnded = false;
         this.battleGameManager.GetBattleVisualEffectManager().TransitionToNextATL( () => { this.hasTransitionAnimationEnded = true; } );
         yield return new WaitUntil( () => this.hasTransitionAnimationEnded );
+    }
+
+    private void StartPartB( out BattleResultData battleResultData,
+                             out BattleResultData.BattleResultData_GameCharacter attackerBattleResultData, out BattleResultData.BattleResultData_GameCharacter attackTargetBattleResultData,
+                             GameCharacter attacker, GameCharacter attackTarget, out GameCharacter winner, out GameCharacter loser )
+    {
+        // 判定 Part B 結果及結算。
+        battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser );
+        attackerBattleResultData = battleResultData.GetGameCharacterResultData( attacker );
+        attackTargetBattleResultData = battleResultData.GetGameCharacterResultData( attackTarget );
+
+        // 結算“後手方”已按下的技能的以太值和最大以太值提升。
+        attackTarget.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
+        //StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
+        attackTarget.ShowPopUpDisplayInfoV2( maxStatePointUp: attackTargetBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackTargetBattleResultData.statePointCost*/ );
+        this.currentCaster = attackTarget;
+
+        this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtPartB();
+        attacker.TriggerEvent( AnimationEvent.OnPartB );
+        attackTarget.TriggerEvent( AnimationEvent.OnPartB );
+    }
+
+    private bool EndPartB( GameCharacter attacker, GameCharacter attackTarget )
+    {
+        this.battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
+
+        if (CheckHasBattleEnded())
+        {
+            return true;
+        }
+
+        attacker.GetOwnContainer().SetActive( false );
+        attacker.ShowCharacterObject();
+        attacker.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
+        attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
+
+        attacker.Reset();
+        attackTarget.Reset();
+
+        return false;
     }
 
     private void ShowCommandPhaseCountdownTimer( bool isActiveSkill, GameCharacter gameCharacter, float countdownTime )
