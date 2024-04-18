@@ -131,6 +131,18 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         bool _isAbleToEvade = skillTypeList.Contains( SkillType.Evade );
         bool _isAbleToObserve = skillTypeList.Contains( SkillType.Observe );
 
+        if (!BattleLogicManagerV2.IsAbleToUseAnySkill( this.selectedGameCharacter ))
+        {
+            _isAbleToDefend = false;
+            _isAbleToEvade = false;
+            _isAbleToObserve = false;
+        }
+        else if (!BattleLogicManagerV2.IsAbleToUseAttackingAndDefendingSkills( this.selectedGameCharacter ))
+        {
+            _isAbleToDefend = false;
+            _isAbleToEvade = false;
+        }
+
         for (int i = 0; i < this.backendSkillSlot.Length; i++)
         {
             SkillSlotV2 _backendSkillSlot = backendSkillSlot[ i ];

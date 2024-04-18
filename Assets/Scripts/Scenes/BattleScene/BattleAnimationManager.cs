@@ -755,7 +755,6 @@ public class BattleAnimationManager : MonoBehaviour
 
         float _skillAnimationLength = 0.0f;
         float _skillCountdownTime = 0.0f;
-        bool _isAbleToUseSkill = false;
         string _log = "";
 
         this.gameCharacterList = new List<GameCharacter>()
@@ -801,95 +800,70 @@ public class BattleAnimationManager : MonoBehaviour
 
         yield return new WaitForSeconds( 0.1f );
 
-        _isAbleToUseSkill = BattleLogicManager.IsAbleToUseSkill( _attacker );
+        _attacker.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
 
-        if (_isAbleToUseSkill)
+        _battleResultData = new BattleResultData();
+        BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, _attacker, _attackTarget );
+
+        _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
+        _attacker.ApplyBattleResultData( _attackerBattleResultData );
+
+        //StartCoroutine( ShowPopUpDisplayInfo( _attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
+        _attacker.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
+
+        _attackTarget.SetCurrentAttacker( _attacker );
+        this.currentCaster = _attacker;
+
+        Skill.SkillType _attackerSkillType = _attacker.GetCurrentSkill().GetSkillData().skillType;
+
+        // 在當前的 ATL 裡，如果“先手方”發動的技能不是派生技能，才會有 Part A 的階段，否則將直接進入 Part B 的階段。
+        if (_attackerSkillType != Skill.SkillType.derived)
         {
-            _attacker.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
+            _attacker.TriggerEvent( AnimationEvent.OnPartA );
+            _attackTarget.TriggerEvent( AnimationEvent.OnPartA );
+        }
 
-            _battleResultData = new BattleResultData();
-            BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, _attacker, _attackTarget );
+        yield return StartCoroutine( PlayShowingSkillInformation( _attacker ) );
 
-            _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
-            _attacker.ApplyBattleResultData( _attackerBattleResultData );
+        if (_attackerSkillType == Skill.SkillType.derived)
+        {
+            yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound, _atlSlotListPanel ) );
 
-            //StartCoroutine( ShowPopUpDisplayInfo( _attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
-            _attacker.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
-
-            _attackTarget.SetCurrentAttacker( _attacker );
-            this.currentCaster = _attacker;
-
-            Skill.SkillType _attackerSkillType = _attacker.GetCurrentSkill().GetSkillData().skillType;
-
-            // 在當前的 ATL 裡，如果“先手方”發動的技能不是派生技能，才會有 Part A 的階段，否則將直接進入 Part B 的階段。
-            if (_attackerSkillType != Skill.SkillType.derived)
+            if (EndPartB( _attacker, _attackTarget ))
             {
-                _attacker.TriggerEvent( AnimationEvent.OnPartA );
-                _attackTarget.TriggerEvent( AnimationEvent.OnPartA );
-            }
-
-            yield return StartCoroutine( PlayShowingSkillInformation( _attacker ) );
-
-            if (_attackerSkillType == Skill.SkillType.derived)
-            {
-                StartPartB( out _battleResultData, out _attackerBattleResultData, out _attackTargetBattleResultData, _attacker, _attackTarget, out GameCharacter _, out GameCharacter _ );
-
-                yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound, _atlSlotListPanel, _battleResultData, _attackerBattleResultData, _attackTargetBattleResultData ) );
-
-                if (EndPartB( _attacker, _attackTarget ))
-                {
-                    yield break;
-                }
-
                 yield break;
             }
-            else if (_attackerSkillType == Skill.SkillType.counter)
-            {
-                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
 
-                if (_attacker.GetIsPlayer())
-                {
-                    yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, "Player_Ariku_Counterattack" ) );
-                }
-                else
-                {
-                    yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, "Enemy_Enemy_Counterattack" ) );
-                }
+            yield break;
+        }
+        else if (_attackerSkillType == Skill.SkillType.counter)
+        {
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
+
+            if (_attacker.GetIsPlayer())
+            {
+                yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, "Player_Ariku_Counterattack" ) );
             }
             else
             {
-                _attackTarget.SetIsInRepulseCommandTime( true );
-
-                _skillAnimationLength = GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f;
-                _skillCountdownTime = _skillAnimationLength * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
-                StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
-
-                this.skillPromptPanel.ShowCommandPhase( TerminologyManager.REPULSE_COMMAND_TIME, _attackTarget.GetIsPlayer(), _skillCountdownTime );
-                ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
-                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.REPULSE_COMMAND_TIME } 】</color>。" );
+                yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, "Enemy_Enemy_Counterattack" ) );
             }
         }
         else
         {
-            OnCasterBeingUnableToUseSkill( _attacker );
+            _attackTarget.SetIsInRepulseCommandTime( true );
+
+            _skillAnimationLength = GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f;
+            _skillCountdownTime = _skillAnimationLength * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+            _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
+            StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
+
+            this.skillPromptPanel.ShowCommandPhase( TerminologyManager.REPULSE_COMMAND_TIME, _attackTarget.GetIsPlayer(), _skillCountdownTime );
+            ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.REPULSE_COMMAND_TIME } 】</color>。" );
         }
 
         yield return StartCoroutine( ZoomInCameraToTarget( _attacker, 1.0f ) );
-
-        if (!_isAbleToUseSkill)
-        {
-            this.battleGameManager.GetBattleUiManager().ShowMessage( "<color=#FF0000>無法使用技能</color>" );
-            yield return new WaitForSeconds( 1.2f );
-
-            this.targetCamera.transform.position = cameraPosition;
-            this.targetCamera.orthographicSize = cameraOrthographicSize;
-
-            _attacker.Reset();
-            _attackTarget.Reset();
-
-            yield break;
-        }
 
         if (_attackerCharacterPartA != NO_ANIMATION)
         {
@@ -952,28 +926,18 @@ public class BattleAnimationManager : MonoBehaviour
             _attackTargetSkillType = _attackTarget.GetCurrentSkill().GetSkillData().skillType;
             _attackTargetSubskillData = _attackTarget.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
 
-            if (_attackTargetSkillType != Skill.SkillType.none)
+            if (_attackTargetSkillType == Skill.SkillType.backend)
             {
-                if (BattleLogicManager.IsAbleToUseSkill( _attackTarget ))
+                if (!_attackTargetSubskillData.IsDefendingSkill && !_attackTargetSubskillData.IsEvadingSkill)
                 {
-                    if (_attackTargetSkillType == Skill.SkillType.backend)
-                    {
-                        if (!_attackTargetSubskillData.IsDefendingSkill && !_attackTargetSubskillData.IsEvadingSkill)
-                        {
-                            _attackTargetSkillType = Skill.SkillType.none;
-                        }
-                    }
-                }
-                else
-                {
-                    this.battleGameManager.GetBattleUiManager().ShowMessage( "<color=#FF0000>無法使用技能</color>" );
                     _attackTargetSkillType = Skill.SkillType.none;
-                    OnCasterBeingUnableToUseSkill( _attackTarget );
                 }
             }
         }
 
         StartPartB( out _battleResultData, out _attackerBattleResultData, out _attackTargetBattleResultData, _attacker, _attackTarget, out GameCharacter _winner, out GameCharacter _loser );
+        _attacker.ApplyBattleResultData( _attackerBattleResultData, false );
+        _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, false );
 
         this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, _attacker.GetIsPlayer() );
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
@@ -1015,8 +979,8 @@ public class BattleAnimationManager : MonoBehaviour
                     yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
                 }
 
-                _attacker.ApplyBattleResultData( _attackerBattleResultData );
-                _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData );
+                _attacker.InvokeOnCharacterInfoUpdatedCallback();
+                _attackTarget.InvokeOnCharacterInfoUpdatedCallback();
 
                 this.cameraEffect.Shake();
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
@@ -1051,8 +1015,8 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
 
-                _attacker.ApplyBattleResultData( _attackerBattleResultData );
-                _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData );
+                _attacker.InvokeOnCharacterInfoUpdatedCallback();
+                _attackTarget.InvokeOnCharacterInfoUpdatedCallback();
 
                 bool _hasAssault = false;
                 if (_winner != null)
@@ -1126,8 +1090,8 @@ public class BattleAnimationManager : MonoBehaviour
                 string _attackTargetBackendSkillAnimationCharacterPartA = _attackTargetBackendSkillAnimation.CharacterPartA;
                 string _attackTargetBackendSkillAnimationSkillEffectPartA = _attackTargetBackendSkillAnimation.SkillEffectPartA;
 
-                _attacker.ApplyBattleResultData( _attackerBattleResultData );
-                _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData );
+                _attacker.InvokeOnCharacterInfoUpdatedCallback();
+                _attackTarget.InvokeOnCharacterInfoUpdatedCallback();
 
                 if (_winner == _attacker)
                 {
@@ -1304,30 +1268,24 @@ public class BattleAnimationManager : MonoBehaviour
     }
 
     //private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound_V2 battleFlowRound, ATLSlotListPanelV2 atlSlotListPanel,
-    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound_V2 battleFlowRound, ATLSlotListPanelV3 atlSlotListPanel,
-                                         BattleResultData battleResultData, BattleResultData.BattleResultData_GameCharacter attackerBattleResultData, BattleResultData.BattleResultData_GameCharacter attackTargetBattleResultData )
+    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound_V2 battleFlowRound, ATLSlotListPanelV3 atlSlotListPanel )
     {
         attackTarget.Reset();
         attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
 
-        bool _isAbleToUseSkill = BattleLogicManager.IsAbleToUseSkill( attacker );
+        BattleResultData _battleResultData = new();
+        BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, attacker, attackTarget );
 
-        if (_isAbleToUseSkill)
-        {
-            BattleResultData _battleResultData = new BattleResultData();
-            BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, attacker, attackTarget );
+        BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( attacker );
+        attacker.ApplyBattleResultData( _attackerBattleResultData );
 
-            BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( attacker );
-            attacker.ApplyBattleResultData( _attackerBattleResultData );
+        //StartCoroutine( ShowPopUpDisplayInfo( attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
+        attacker.ShowPopUpDisplayInfoV2(/* statePointDamage: _attackerBattleResultData.statePointCost,*/ maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease );
 
-            //StartCoroutine( ShowPopUpDisplayInfo( attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
-            attacker.ShowPopUpDisplayInfoV2(/* statePointDamage: _attackerBattleResultData.statePointCost,*/ maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease );
+        ShowSkillInfo( attacker, attackTarget );
+        this.currentCaster = attacker;
 
-            ShowSkillInfo( attacker, attackTarget );
-            this.currentCaster = attacker;
-        }
-
-        yield return StartCoroutine( RunDerivedSkill( attacker, attackTarget, atlSlotListPanel, battleFlowRound.GetCurrentATL().GetATLNumber(), battleResultData, attackerBattleResultData, attackTargetBattleResultData ) );
+        yield return StartCoroutine( RunDerivedSkill( attacker, attackTarget, atlSlotListPanel, battleFlowRound.GetCurrentATL().GetATLNumber() ) );
     }
 
     //private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber, bool isAbleToUseSkill )
@@ -1397,9 +1355,16 @@ public class BattleAnimationManager : MonoBehaviour
     }
 
     //private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber,
-    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV3 atlSlotListPanel, int atlNumber,
-                                         BattleResultData battleResultData, BattleResultData.BattleResultData_GameCharacter attackerBattleResultData, BattleResultData.BattleResultData_GameCharacter attackTargetBattleResultData )
+    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV3 atlSlotListPanel, int atlNumber )
     {
+        StartPartB( out BattleResultData _battleResultData,
+                    out BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData,
+                    out BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData,
+                    attacker, attackTarget, out GameCharacter _, out GameCharacter _ );
+
+        attacker.ApplyBattleResultData( _attackerBattleResultData, false );
+        attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, false );
+
         attacker.GetSortingGroup().sortingOrder = 3;
         attackTarget.GetSortingGroup().sortingOrder = 1;
 
@@ -1414,16 +1379,16 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (_attackerRangeType == RangeType.melee)
         {
-            if (battleResultData != null)
+            if (_battleResultData != null)
             {
                 yield return StartCoroutine( RunMeleeDerivedSkillAnimation( attacker, _attackerSkill, DatabaseManager.Instance.GetSkillAnimation( _attackerSubskillData.Id ), atlSlotListPanel, atlNumber ) );
 
-                attacker.ApplyBattleResultData( attackerBattleResultData );
-                attackTarget.ApplyBattleResultData( attackTargetBattleResultData );
+                attacker.InvokeOnCharacterInfoUpdatedCallback();
+                attackTarget.InvokeOnCharacterInfoUpdatedCallback();
 
                 this.cameraEffect.Shake();
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                yield return StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME, attackTargetBattleResultData ) );
+                yield return StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
             }
         }
         else
@@ -1432,22 +1397,22 @@ public class BattleAnimationManager : MonoBehaviour
             ChangeToBackgroundPartA();
             attacker.GetOpponentContainer().SetActive( false );
 
-            if (battleResultData != null)
+            if (_battleResultData != null)
             {
                 yield return StartCoroutine( RunRangedDerivedSkillAnimation( attacker, _attackerSkill, attackTarget, atlSlotListPanel, atlNumber ) );
 
-                attacker.ApplyBattleResultData( attackerBattleResultData );
-                attackTarget.ApplyBattleResultData( attackTargetBattleResultData );
+                attacker.InvokeOnCharacterInfoUpdatedCallback();
+                attackTarget.InvokeOnCharacterInfoUpdatedCallback();
 
                 this.cameraEffect.Shake();
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                 yield return null;
-                ShowPopUpDisplayInfo( attackTarget, attackTargetBattleResultData );
+                ShowPopUpDisplayInfo( attackTarget, _attackTargetBattleResultData );
                 yield return new WaitForSeconds( 0.7f );
             }
         }
 
-        if (battleResultData != null)
+        if (_battleResultData != null)
         {
             yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
         }

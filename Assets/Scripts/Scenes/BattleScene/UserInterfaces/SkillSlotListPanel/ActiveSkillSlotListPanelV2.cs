@@ -176,9 +176,16 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
             this.skillSlots[i].SetSelectedSkill(this.selectedSkills[i]);
         }
 
+        SkillSlotV2.StateType _stateType = stateType;
+
+        if (!BattleLogicManagerV2.IsAbleToUseAttackingAndDefendingSkills( this.selectedGameCharacter ))
+        {
+            _stateType = SkillSlotV2.StateType.Disabled;
+        }
+
         for (int i = 0; i < this.skillSlots.Length; i++)
         {
-            this.skillSlots[i].SetCurrentStateType(stateType);
+            this.skillSlots[ i ].SetCurrentStateType( _stateType );
         }
     }
 

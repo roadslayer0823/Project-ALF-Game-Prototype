@@ -33,6 +33,29 @@ public class BattleLogicManagerV2
         return false;
     }
 
+    public static bool IsAbleToUseAnySkill( GameCharacter gameCharacter )
+    {
+        if (gameCharacter.GetIsInBreakStatus())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    public static bool IsAbleToUseAttackingAndDefendingSkills( GameCharacter gameCharacter )
+    {
+        if (IsAbleToUseAnySkill( gameCharacter ))
+        {
+            if (gameCharacter.GetCurrentStatePoint() > GameConfiguration.Instance.GetBattleConfiguration().GetMinimumCurrentStatePoint())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static bool ShouldCombatCommandTimeBeSkipped( GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
     {
         CharacterSkill _gameCharacterOne_Skill = gameCharacterOne.GetAssignedSkill();

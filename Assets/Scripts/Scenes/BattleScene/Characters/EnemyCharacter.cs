@@ -270,12 +270,12 @@ public class EnemyCharacter : GameCharacter
             }
         }
 
-        if (_availableSkillList.Count > 0)
+        if (BattleLogicManagerV2.IsAbleToUseAttackingAndDefendingSkills( this ) && _availableSkillList.Count > 0)
         {
             base.SetAssignedSkill( _availableSkillList[ new System.Random().Next( _availableSkillList.Count ) ] );
         }
 
-        if (_availableObservingSkillList.Count > 0)
+        if (BattleLogicManagerV2.IsAbleToUseAnySkill( this ) && _availableObservingSkillList.Count > 0)
         {
             base.SetCurrentObservingSkill( _availableObservingSkillList[ new System.Random().Next( _availableObservingSkillList.Count ) ] );
         }

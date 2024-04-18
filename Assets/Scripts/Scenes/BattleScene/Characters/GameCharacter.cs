@@ -1046,7 +1046,7 @@ public class GameCharacter : MonoBehaviour
         SetCurrentAttacker( null );
     }
 
-    public void ApplyBattleResultData( BattleResultData_GameCharacter battleResultData )
+    public void ApplyBattleResultData( BattleResultData_GameCharacter battleResultData, bool needToUpdateDisplay = true )
     {
         if (battleResultData != null)
         {
@@ -1070,8 +1070,16 @@ public class GameCharacter : MonoBehaviour
                 }
             }
 
-            this.onCharacterInfoUpdated?.Invoke();
+            if (needToUpdateDisplay)
+            {
+                InvokeOnCharacterInfoUpdatedCallback();
+            }
         }
+    }
+
+    public void InvokeOnCharacterInfoUpdatedCallback()
+    {
+        this.onCharacterInfoUpdated?.Invoke();
     }
 
 #region Battle Animation Event Manager
