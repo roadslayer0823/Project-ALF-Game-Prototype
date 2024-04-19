@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Ariku
+  m_Name: All_GameCharacters
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -39,35 +39,48 @@ SpriteAtlas:
       blockOffset: 1
       allowAlphaSplitting: 0
       enableRotation: 1
-      enableTightPacking: 1
+      enableTightPacking: 0
       enableAlphaDilation: 0
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
-    - {fileID: 102900000, guid: 253650c3beb7e475b8c1d14467061277, type: 3}
+    - {fileID: 102900000, guid: f9df8662e67964c54ae9c5c1737a0673, type: 3}
+    - {fileID: 102900000, guid: 30bc3a91fb66646da85a0606cf47dcc6, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 15f9a60075d3f4c508b7aab56f1990e5, type: 3}
+  - {fileID: 21300000, guid: 7cc86720997be43e9a9205205e4fe3a6, type: 3}
+  - {fileID: 21300000, guid: 6bb730e04b9704352b40de9fd2ad09f3, type: 3}
   - {fileID: 21300000, guid: 1f7cec81888ee4fc6972381be847df08, type: 3}
   - {fileID: 21300000, guid: a8b7a2a1e0a3249be96c56074a04fa0f, type: 3}
   - {fileID: 21300000, guid: 808fa4d160ec44f7e837f0bc1ac08aae, type: 3}
+  - {fileID: 21300000, guid: 58d0a0625497646909d5b54437e65a37, type: 3}
   - {fileID: 21300000, guid: 19a2f162a2e4d4d0492977989f755a6a, type: 3}
+  - {fileID: 21300000, guid: a088f26267752457e92f87bd6b1f03b3, type: 3}
   - {fileID: 21300000, guid: b03d0103622734913937897c54d2e462, type: 3}
   - {fileID: 21300000, guid: 3deee8c3438294144853a7522cb114f7, type: 3}
+  - {fileID: 21300000, guid: 03c9f9f3a1e7b4906918c8db061434ba, type: 3}
+  - {fileID: 21300000, guid: e0297ef3d018b434e945bc78cef7cc0b, type: 3}
   - {fileID: 21300000, guid: 912049245aacc44ea95f0272133a078f, type: 3}
+  - {fileID: 21300000, guid: 9b89c234c783741baaa0201c4c40921c, type: 3}
   - {fileID: 21300000, guid: c4441784b86894c458be4c82b85d16e0, type: 3}
   - {fileID: 21300000, guid: e4913e94924584d30aff463b1fbb6c23, type: 3}
   - {fileID: 21300000, guid: 22957fe4fe0a444d9b09014e703427da, type: 3}
   - {fileID: 21300000, guid: caf42a76758b94c269178a5ea9aba398, type: 3}
+  - {fileID: 21300000, guid: 112e31b6f9e7b44e48567adac725a7d4, type: 3}
   - {fileID: 21300000, guid: b8d1fe07dd6a74b7591432f1f8885042, type: 3}
+  - {fileID: 21300000, guid: 3defb21757223470f8688d826eda41f8, type: 3}
   - {fileID: 21300000, guid: 4f9d8e37d07f64ea099675748ece324f, type: 3}
   - {fileID: 21300000, guid: ce21f657a50994a77afd0b8bd1a8f443, type: 3}
   - {fileID: 21300000, guid: 71fdeb77f77bc4f04829857c15638338, type: 3}
+  - {fileID: 21300000, guid: 790fea97d844d417a9ead7ed7bb0bd53, type: 3}
   - {fileID: 21300000, guid: e1ba41b7e22994cc5b9d595345db4fab, type: 3}
+  - {fileID: 21300000, guid: a5e3a2d7f6de641b6b05712b83357c58, type: 3}
   - {fileID: 21300000, guid: 812937f7592e549bbb0998645858f74f, type: 3}
+  - {fileID: 21300000, guid: 1013a518dc5144e6e8d5ae3b36fe9e07, type: 3}
   - {fileID: 21300000, guid: 045896889525c4151a87df085935e9a3, type: 3}
   - {fileID: 21300000, guid: e6cc49886afea4b2994dbbce409be4d3, type: 3}
   - {fileID: 21300000, guid: 2afe44982a188479a9869f81aa7a1c62, type: 3}
@@ -76,36 +89,54 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 7a1817e81b0574b39a90a6a1e0ce217c, type: 3}
   - {fileID: 21300000, guid: 840d41691fdab42e8be38bee63de45e1, type: 3}
   - {fileID: 21300000, guid: 0cf33c999d509483e86d20fb158e47b2, type: 3}
+  - {fileID: 21300000, guid: de841a2af8be947adb7b9ca632608e81, type: 3}
   - {fileID: 21300000, guid: 7726f74adc0d440ccb1d82e0e2fa9a5a, type: 3}
   - {fileID: 21300000, guid: 6eaea65a5dbea47be809f41be6d97590, type: 3}
   - {fileID: 21300000, guid: 582a9d6a0481d4c9cafc4461952f4bfa, type: 3}
   - {fileID: 21300000, guid: 68676a9a901d947148f790862b3774fa, type: 3}
   - {fileID: 21300000, guid: aaf8654b4841e4a289c8c0d12a7b095f, type: 3}
   - {fileID: 21300000, guid: da1cc05cb9b3b45d4b97167dfbecdd9c, type: 3}
+  - {fileID: 21300000, guid: e13430cd8bf2a441889552529823059e, type: 3}
   - {fileID: 21300000, guid: f2e573dd8e09b4926ae67190a7cf7469, type: 3}
+  - {fileID: 21300000, guid: 88be76dd0eccc493e99d613f5650b91b, type: 3}
   - {fileID: 21300000, guid: 8de872ed7ce9848b0b2ba0e43bf777c6, type: 3}
+  - {fileID: 21300000, guid: 601c7f6ef20514264847143d1c32b449, type: 3}
   - {fileID: 21300000, guid: 15068daea3084489a9bf1e9cbd30da84, type: 3}
   - {fileID: 21300000, guid: fbf8d73fe53b241ceaaa7f6fecc0b9da, type: 3}
+  - {fileID: 21300000, guid: fffc625f408074ed4a139a07f7d37a84, type: 3}
+  - {fileID: 21300000, guid: f87efd7f290a1425fb104fa7558a4fed, type: 3}
   - {fileID: 21300000, guid: 64666baf19a3f42be89422325a476e0e, type: 3}
   m_PackedSpriteNamesToIndex:
   - 39
+  - 03
+  - 04
   - 33
   - 27
   - 05
+  - 04
   - 16
+  - 02
   - 01
   - 34
+  - 03
+  - 05
   - 43
+  - 05
   - 32
   - 25
   - 41
   - 01
   - 02
+  - 02
+  - 07
   - 17
   - 02
   - 37
+  - 01
   - 35
   - 04
+  - 04
+  - 03
   - 02
   - 45
   - 29
@@ -114,17 +145,23 @@ SpriteAtlas:
   - 02
   - 02
   - 28
+  - 06
   - 30
   - 42
   - 44
   - 04
   - 38
   - 03
+  - 01
   - ariku back
+  - 02
   - 26
+  - 06
   - 36
   - 31
+  - 04
+  - 02
   - 40
   m_RenderDataMap: {}
-  m_Tag: Ariku
+  m_Tag: All_GameCharacters
   m_IsVariant: 0
