@@ -80,6 +80,7 @@ public class BattleAnimationManager : MonoBehaviour
         OnCombatCommandTimeStarted,
         OnPartA,
         OnPartB,
+        OnAtlEnded,
         OnSkillBeingUsed
     }
 
@@ -827,7 +828,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (_attackerSkillType == Skill.SkillType.derived)
         {
-            yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, battleFlowRound, _atlSlotListPanel ) );
+            yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, _atlSlotListPanel, battleFlowRound.GetCurrentATL().GetATLNumber() ) );
 
             if (EndPartB( _attacker, _attackTarget ))
             {
@@ -1195,6 +1196,9 @@ public class BattleAnimationManager : MonoBehaviour
 
     private bool EndPartB( GameCharacter attacker, GameCharacter attackTarget )
     {
+        attacker.TriggerEvent( AnimationEvent.OnAtlEnded );
+        attackTarget.TriggerEvent( AnimationEvent.OnAtlEnded );
+
         this.battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
 
         if (CheckHasBattleEnded())

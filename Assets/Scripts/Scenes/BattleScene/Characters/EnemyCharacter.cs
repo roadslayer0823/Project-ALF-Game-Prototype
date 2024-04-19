@@ -168,47 +168,44 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnCombatCommandTimeStarted:
 
-                if (!base.GetIsInBreakStatus())
+                if (Random.value < 0.8f)
                 {
-                    if (Random.value < 0.8f)
-                    {
-                        _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_Before, _currentATLNumber, base.GetCurrentAttacker() ) );
-                    }
+                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_Before, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
 
                 break;
 
             case AnimationEvent.OnPartA:
 
-                if (!base.GetIsInBreakStatus())
+                if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
                 {
-                    if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
-                    {
-                        _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
-                    }
-                    else if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
-                    {
-                        _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
-                    }
+                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
+                }
+                else if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
+                {
+                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
 
                 break;
 
             case AnimationEvent.OnPartB:
 
-                if (!base.GetIsInBreakStatus())
+                if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulDefender
+                    || _enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulEvader)
                 {
-                    if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulDefender
-                        || _enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulEvader)
-                    {
-                        _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CounterAttackCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
-                    }
-                    else
-                    {
-                        _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_After, _currentATLNumber, base.GetCurrentAttacker() ) );
-                    }
+                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CounterAttackCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
+                }
+                else
+                {
+                    _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_After, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
 
+                break;
+
+            case AnimationEvent.OnAtlEnded:
+                break;
+
+            case AnimationEvent.OnSkillBeingUsed:
                 break;
         }
     }

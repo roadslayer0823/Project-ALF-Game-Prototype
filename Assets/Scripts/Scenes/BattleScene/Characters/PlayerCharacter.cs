@@ -89,55 +89,40 @@ public class PlayerCharacter : GameCharacter
 
             case AnimationEvent.OnCombatCommandTimeStarted:
 
-                if (base.GetIsInBreakStatus())
-                {
-                    _battleUiManager.UpdateSkillButtons();
-                }
-                else
-                {
-                    _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_Before, _currentATLNumber, base.GetCurrentAttacker() ) );
-                }
+                _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_Before, _currentATLNumber, base.GetCurrentAttacker() ) );
 
                 break;
 
             case AnimationEvent.OnPartA:
 
-                if (base.GetIsInBreakStatus())
+                if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
                 {
-                    _battleUiManager.UpdateSkillButtons();
+                    _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
-                else
+                else if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
                 {
-                    if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
-                    {
-                        _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
-                    }
-                    else if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
-                    {
-                        _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
-                    }
+                    _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
 
                 break;
 
             case AnimationEvent.OnPartB:
 
-                if (base.GetIsInBreakStatus())
+                if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulDefender
+                   || _playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulEvader)
                 {
-                    _battleUiManager.UpdateSkillButtons();
+                    _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CounterAttackCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
                 else
                 {
-                    if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulDefender
-                       || _playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulEvader)
-                    {
-                        _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CounterAttackCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
-                    }
-                    else
-                    {
-                        _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_After, _currentATLNumber, base.GetCurrentAttacker() ) );
-                    }
+                    _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CombatCommandTime_After, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
+
+                break;
+
+            case AnimationEvent.OnAtlEnded:
+
+                _battleUiManager.UpdateSkillButtons();
 
                 break;
 
