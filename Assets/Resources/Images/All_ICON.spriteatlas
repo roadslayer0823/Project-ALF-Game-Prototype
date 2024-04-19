@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: All_ICON
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 1024
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 1
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 2d10be9d8e35444cbb4c1f7f98398f92, type: 3}
+    - {fileID: 102900000, guid: e113e57f62a084ecb947e274abf7326b, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: e1b0d330be7e449bc92e56414eea56de, type: 3}
+  - {fileID: 21300000, guid: 9e09966002a4045dd969b08a66c4bcba, type: 3}
+  - {fileID: 21300000, guid: d83925c0ca1cd41a1a7dbc92b1b439a6, type: 3}
+  - {fileID: 21300000, guid: e73004018b15243afb0f761636a1c37b, type: 3}
+  - {fileID: 21300000, guid: 53d5992154d734015b28947799739e40, type: 3}
+  - {fileID: 21300000, guid: f7287fa1192374d1eaffded741b45652, type: 3}
+  - {fileID: 21300000, guid: 740bac42784e64847bb2423eb12cb3db, type: 3}
+  - {fileID: 21300000, guid: e1ecf494e7d43406498018f54908522e, type: 3}
+  - {fileID: 21300000, guid: 110297a460967409e932b75660da5c08, type: 3}
+  - {fileID: 21300000, guid: e1c415e483d7a493fbda2c21a1cbf3eb, type: 3}
+  - {fileID: 21300000, guid: f1773335759bb49c888125a720234b2d, type: 3}
+  - {fileID: 21300000, guid: 5eaa56a59cda0488395eaabf9ed0485f, type: 3}
+  - {fileID: 21300000, guid: ce552626b323145f39ecfc8563236f2d, type: 3}
+  - {fileID: 21300000, guid: 4142c196d21a542d4bc0a94e8775091b, type: 3}
+  - {fileID: 21300000, guid: a5759df61733e45a3840c62228b8e3c8, type: 3}
+  - {fileID: 21300000, guid: 70bbc6678809b4e1e98b68280a77254e, type: 3}
+  - {fileID: 21300000, guid: c73cb03aff8f74191aacbd2d78036a98, type: 3}
+  - {fileID: 21300000, guid: c37eb36a8b67e476aa9535a3be4ad31c, type: 3}
+  - {fileID: 21300000, guid: 88cf8c6b53d114f5c95ce25734714c9f, type: 3}
+  - {fileID: 21300000, guid: 52fad58c273934b3e946100b1df49fb6, type: 3}
+  - {fileID: 21300000, guid: 064a84ec92fb54876b66283bd4d461e3, type: 3}
+  - {fileID: 21300000, guid: ad48432d9dd0340e3bb5abf5a484c600, type: 3}
+  - {fileID: 21300000, guid: 778cee2df3a534c6280fab831b4dff4f, type: 3}
+  - {fileID: 21300000, guid: 7315183d9c0da42c0b931b41667af530, type: 3}
+  - {fileID: 21300000, guid: dff5047d6bc67421cb6cd5d44fc121e6, type: 3}
+  - {fileID: 21300000, guid: e9e0d0cd9ab804e1ba49d1892ddf0153, type: 3}
+  - {fileID: 21300000, guid: fd5a4b9eb5cbd4756b6eed51f630ae53, type: 3}
+  - {fileID: 21300000, guid: e1aed39f824104317a7a1d323d0826cd, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - "\u96FB\u78C1\u58BB_on"
+  - "\u96F7\u4E4B\u66F8\u7206\u7834\u9583\u5149_on"
+  - "\u96F7\u5149\u70AE_on"
+  - "\u58D3\u7E2E\u706B\u7130\u6C23\u529F\u5F48_on"
+  - "\u96F7\u5149\u70AE_off"
+  - "\u8853\u66F8\u9023\u5F48_on"
+  - "\u706B\u7130\u6C23\u529F\u5F48_off"
+  - "\u96C6\u675F\u96F7\u5149\u70AE_on"
+  - "\u57AB\u6B65_on"
+  - "\u96F7\u5149\u7A81\u8972_off"
+  - "\u96F7\u52A8\xB7\u8D64\u7130\u7A7A\u7259_off"
+  - "\u96F7\u52A8\xB7\u8D64\u7130\u7A7A\u7259_on"
+  - "\u96F7\u4E4B\u66F8\u7206\u7834\u9583\u5149_off"
+  - "\u706B\u7130\u6C23\u529F\u5F48_on"
+  - "\u8853\u66F8\u9023\u5F48_off"
+  - "\u770B\u7834_off"
+  - "\u96F7\u5149\u7A81\u8972_on"
+  - "\u770B\u7834_on"
+  - "\u57AB\u6B65_off"
+  - "\u708E\u9663\u7206\u7834\u9583\u5149_on"
+  - "\u9023\u767C\u706B\u7130\u6C23\u529F\u5F48_on"
+  - "\u8D64\u7130\u7A7A\u7259_on"
+  - "\u58D3\u7E2E\u706B\u7130\u6C23\u529F\u5F48_off"
+  - "\u708E\u9663\u7206\u7834\u9583\u5149_off"
+  - "\u96FB\u78C1\u58BB_off"
+  - "\u96C6\u675F\u96F7\u5149\u70AE_off"
+  - "\u9023\u767C\u706B\u7130\u6C23\u529F\u5F48_off"
+  - "\u8D64\u7130\u7A7A\u7259_off"
+  m_RenderDataMap: {}
+  m_Tag: All_ICON
+  m_IsVariant: 0
