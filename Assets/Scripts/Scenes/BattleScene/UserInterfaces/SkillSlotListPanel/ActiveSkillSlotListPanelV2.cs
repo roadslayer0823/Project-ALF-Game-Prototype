@@ -18,6 +18,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
     private const string AUDIO_ID_WHEEL = "wheel";
     private SkillSlotV2 middleSkillSlot = null;
+    public bool isAnimationRunning = true;
 
     private Action<SkillSlotV2> onSkillSlotSelectedCallback = null;
 
@@ -122,7 +123,6 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         {
             if (_middleSkillSlotSelectedSkill == this.selectedSkills[ i ])
             {
-
                 return i;
             }
         }
@@ -164,11 +164,11 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         }
         if (this.selectedSkills.Count == 1)
         {
-            LockSkillSlot();
+            DisableInteraction();
         }
         else
         {
-            UnlockSkillSlot();
+            EnableInteraction();
         }
 
         for (int i = 0; i < this.selectedSkills.Count; i++)
@@ -223,33 +223,29 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 
     public void ClickBottom()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_WHEEL);
-        MoveSlot(-1);
+        if(isAnimationRunning == true)
+        {
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_WHEEL);
+            MoveSlot(-1);
+            isAnimationRunning = false;
+        }
     }
 
     public void ClickTop()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_WHEEL);
-        MoveSlot(1);
-    }
-
-    public void LockSkillSlot()
-    {
-        this.clickAreaTop.SetActive(false);
-        this.clickAreaBottom.SetActive(false);
-    }
-
-    public void UnlockSkillSlot()
-    {
-        this.clickAreaBottom.SetActive(true);
-        this.clickAreaTop.SetActive(true);
+        if(isAnimationRunning == true)
+        {
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_WHEEL);
+            MoveSlot(1);
+            isAnimationRunning = false;
+        }
     }
 
     private void MoveSlot(int direction)
     {
         if (this.selectedSkills.Count == 2)
         {
-            for (int i = 0; i < this.skillSlots.Length; i++)
+            for (int i = 0; i < skillSlots.Length; i++)
             {
                 if (this.skillSlots[i] == middleSkillSlot)
                 {
@@ -262,7 +258,6 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                     {
                         _index = this.skillSlots.Length - 1;
                     }
-
                     SkillSlotV2 _slot = this.skillSlots[_index];
                     _slot.SetSelectedSkill(middleSkillSlot.GetSelectedSkill());
                     break;
@@ -270,33 +265,36 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < skillSlotList.Count; i++)
+        if(isAnimationRunning == true)
         {
-            int newIndex = (i + direction + skillSlotList.Count) % skillSlotList.Count; // Calculate the new index
-
-            GameObject slotToMove = skillSlotList[i];
-            SkillSlotV2 currentSlot = skillSlots[i];
-            Vector3 targetPosition = fixedSlotPosition[newIndex].position;
-
-            // Use LeanTween to move the slot to the new position
-            LeanTween.move(slotToMove, targetPosition, 0.5f)
-                .setEase(LeanTweenType.easeInOutQuad);
-
-            if (newIndex == 1)
+            for (int i = 0; i < skillSlotList.Count; i++)
             {
-                LeanTween.scale(slotToMove, initialScale * 1f, 0.1f)
-                .setEase(LeanTweenType.easeInOutQuad);
-                skillSlotsButton[i].interactable = true;
-                SetActiveRecursively(skillInformation[i].transform, true);
-                currentSlot.UpdateCharacterSkillLevel(currentSlot.skillLevel);
-                middleSkillSlot = skillSlotList[i].GetComponent<SkillSlotV2>();
-            }
-            else
-            {
-                LeanTween.scale(slotToMove, initialScale * 0.5f, 0.1f)
-                .setEase(LeanTweenType.easeInOutQuad);
-                skillSlotsButton[i].interactable = false;
-                SetActiveRecursively(skillInformation[i].transform, false);
+                int newIndex = (i + direction + skillSlotList.Count) % skillSlotList.Count; // Calculate the new index
+
+                GameObject slotToMove = skillSlotList[i];
+                SkillSlotV2 currentSlot = skillSlots[i];
+                Vector3 targetPosition = fixedSlotPosition[newIndex].position;
+
+                if (newIndex == 1)
+                {
+                    LeanTween.scale(slotToMove, initialScale * 1f, 0.1f).setEase(LeanTweenType.easeInOutQuad);
+                    skillSlotsButton[i].interactable = true;
+                    SetActiveRecursively(skillInformation[i].transform, true);
+                    currentSlot.UpdateCharacterSkillLevel(currentSlot.skillLevel);
+                    middleSkillSlot = skillSlotList[i].GetComponent<SkillSlotV2>();
+                }
+                else
+                {
+                    LeanTween.scale(slotToMove, initialScale * 0.5f, 0.1f).setEase(LeanTweenType.easeInOutQuad);
+                    skillSlotsButton[i].interactable = false;
+                    SetActiveRecursively(skillInformation[i].transform, false);
+                }
+
+                // Use LeanTween to move the slot to the new position
+                LeanTween.move(slotToMove, targetPosition, 0.5f).setOnComplete(() =>
+                {
+                    isAnimationRunning = true;
+                }).setEase(LeanTweenType.easeInOutQuad);
             }
         }
         ArrangeSkillSlot(direction);
@@ -336,7 +334,6 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 skillInformation[i] = skillInformation[i + 1];
                 i++;
             }
-
             skillSlotList[skillSlotList.Count - 1] = tempSlot;
             skillSlotsButton[skillSlotsButton.Count - 1] = tempButton;
             skillInformation[skillInformation.Count - 1] = tempSkillInformation;
