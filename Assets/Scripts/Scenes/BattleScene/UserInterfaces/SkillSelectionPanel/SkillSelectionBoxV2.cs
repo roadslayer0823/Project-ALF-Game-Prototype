@@ -84,6 +84,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
+    // when pointer down
     public void OnPointerDown(PointerEventData eventData)
     {
         if (this.skillBoxFrame.gameObject.activeSelf)
@@ -104,6 +105,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
+    // when pointer up
     public void OnPointerUp(PointerEventData eventData)
     {
         if (this.skillBoxFrame.gameObject.activeSelf)
@@ -183,6 +185,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
+    // display the highlight image
     public void ShowSelectionHighlight()
     {
         if (!this.isSelected && this.skillType == Skill.SkillType.active)
@@ -196,6 +199,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_HIGHLIGHT);
     }
 
+    // hide the highlight image
     private void HideSelectionHighlight()
     {
         if (this.skillType == Skill.SkillType.active)
@@ -225,6 +229,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         this.skillNameGO.SetActive(true);
     }
 
+    // select the skill box
     IEnumerator SelectSkillBox()
     {
         this.isWaitingSecondClick = true;
@@ -244,6 +249,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
+    // the selected skill box is active skill
     private void SelectActiveSkill()
     {
         this.isWaitingSecondClick = false;
@@ -266,7 +272,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
                 && this.skillSelectionPanel.GetSelectedActiveSkillList().Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills()
                 && !this.isSelected)
             {
-                this.skillSelectionPanel.AddSelectedSkilBox(this);
+                this.skillSelectionPanel.AddSelectedSkillBox(this);
 
                 this.isSelected = true;
 
@@ -291,6 +297,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
+    // the selected skill box is backend skill
     private void SelectBackendSkill()
     {
         this.isWaitingSecondClick = false;
@@ -307,7 +314,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             && this.skillSelectionPanel.GetSelectedBackendSkillList().Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills()
             && !this.isSelected)
         {
-            this.skillSelectionPanel.AddSelectedSkilBox(this);
+            this.skillSelectionPanel.AddSelectedSkillBox(this);
         }
 
         ShowSelectionHighlight();
@@ -315,6 +322,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         this.skillSelectionPanel.SetLastSelectedBackendSkillSelectionBox(this);
     }
 
+    // deselect the selected skill box
     private void DeselectSkill()
     {
         if (!this.isSelected)
@@ -332,13 +340,14 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             this.currentSkillSelectionSequence.gameObject.SetActive(false);
         }
         
-        this.skillSelectionPanel.RemoveSelectedSkilBox(this);
+        this.skillSelectionPanel.RemoveSelectedSkillBox(this);
         
         this.isSelected = false;
 
         UpdateSkillIcon(false);
     }
 
+    // check if any second click, if not then deselect the selected skill box
     IEnumerator DeselectSkillCountDownTimer(float seconds)
     {
         yield return new WaitForSeconds(seconds);
@@ -375,7 +384,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         ModifySkillLevelAnimation(this.minusLevelImage, this.minusLevelBackground, this.minusLevelOriginalPosition, this.minusLevelTargetPosition);
     }
 
-    //Level up
+    // Level up
     public void IncreaseSkillLevel()
     {
         int _minimumSkillLevel = this.characterSkill.GetMinumumSkillLevel();
@@ -399,6 +408,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         ModifySkillLevelAnimation(this.plusLevelImage, this.plusLevelBackground, this.plusLevelOriginalPosition, this.plusLevelTargetPosition);
     }
 
+    // update the character skill level
     private void UpdateCharacterSkillLevel()
     {
         this.characterSkill.SetSelectedSkillLevel(this.skillLevel);
@@ -506,11 +516,13 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             });
     }
 
+    // get the character skill
     public CharacterSkill GetCharacterSkill()
     {
         return this.characterSkill;
     }
 
+    // set the character skill
     public void SetIsSelected(bool isSelected)
     {
         this.isSelected = isSelected;
@@ -605,6 +617,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
+    // update the skill icon
     public void UpdateSkillIcon(bool isOn)
     {
         this.skillIcon.gameObject.SetActive(true);
@@ -614,6 +627,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         this.skillIcon.SetNativeSize();
     }
 
+    // get the skill selection panel
     public SkillSelectionPanelV2 GetSkillSelectionPanel()
     {
         return this.skillSelectionPanel;
