@@ -5,15 +5,15 @@ public class EnemyDebugMenuPanel : MonoBehaviour
 {
     [Header("PassiveSkill")]
     [SerializeField] private Toggle allPasiveSkillToggle;
-    [SerializeField] private Toggle healthPointToggle;
-    [SerializeField] private Toggle stressPointToggle;
-    [SerializeField] private Toggle statePointToggle;
+    [SerializeField] private Toggle healthPassiveSkillToggle;
+    [SerializeField] private Toggle stressPassiveSkillToggle;
+    [SerializeField] private Toggle statePassiveSkillToggle;
 
     [Header("ActiveSkill")]
     [SerializeField] private Toggle allActiveSkillToggle;
-    [SerializeField] private Toggle rangeSkillToggle;
+    [SerializeField] private Toggle rangedSkillToggle;
     [SerializeField] private Toggle meleeSkillToggle;
-    [SerializeField] private Toggle rangeMeleeSkillToggle;
+    [SerializeField] private Toggle rangedMeleeSkillToggle;
 
     [Header("BackendSkill")]
     [SerializeField] private Toggle allBackendSkillToggle;
@@ -30,15 +30,15 @@ public class EnemyDebugMenuPanel : MonoBehaviour
     {
         if (this.allPasiveSkillToggle.isOn)
         {
-            this.healthPointToggle.isOn = true;
-            this.stressPointToggle.isOn = true;
-            this.statePointToggle.isOn = true;
+            this.healthPassiveSkillToggle.isOn = true;
+            this.stressPassiveSkillToggle.isOn = true;
+            this.statePassiveSkillToggle.isOn = true;
         }
         else
         {
-            this.healthPointToggle.isOn = false;
-            this.stressPointToggle.isOn = false;
-            this.statePointToggle.isOn = false;
+            this.healthPassiveSkillToggle.isOn = false;
+            this.stressPassiveSkillToggle.isOn = false;
+            this.statePassiveSkillToggle.isOn = false;
         }
     }
 
@@ -46,15 +46,15 @@ public class EnemyDebugMenuPanel : MonoBehaviour
     {
         if (this.allActiveSkillToggle.isOn)
         {
-            this.rangeSkillToggle.isOn = true;
+            this.rangedSkillToggle.isOn = true;
             this.meleeSkillToggle.isOn = true;
-            this.rangeMeleeSkillToggle.isOn = true;
+            this.rangedMeleeSkillToggle.isOn = true;
         }
         else
         {
-            this.rangeSkillToggle.isOn = false;
+            this.rangedSkillToggle.isOn = false;
             this.meleeSkillToggle.isOn = false;
-            this.rangeMeleeSkillToggle.isOn = false;
+            this.rangedMeleeSkillToggle.isOn = false;
         }
     }
 
@@ -75,65 +75,65 @@ public class EnemyDebugMenuPanel : MonoBehaviour
     }
 
     // Passive Skills
-    public bool IsHealthPassiveSkillEnabled()
+    public bool IsHealthPassiveSkillToggleOn()
     {
-        return this.healthPointToggle.isOn;
+        return this.healthPassiveSkillToggle.isOn;
     }
 
-    public bool IsStressPassiveSkillEnabled()
+    public bool IsStressPassiveSkillToggleOn()
     {
-        return this.stressPointToggle.isOn;
+        return this.stressPassiveSkillToggle.isOn;
     }
 
-    public bool IsStatePassiveSkillEnabled()
+    public bool IsStatePassiveSkillToggleOn()
     {
-        return this.statePointToggle.isOn;
+        return this.statePassiveSkillToggle.isOn;
     }
 
     // Active Skills
-    public bool IsRangeSkillEnabled()
+    public bool IsRangedSkillToggleOn()
     {
-        return this.rangeSkillToggle.isOn;
+        return this.rangedSkillToggle.isOn;
     }
 
-    public bool IsMeleeSkillEnabled()
+    public bool IsMeleeSkillToggleOn()
     {
         return this.meleeSkillToggle.isOn;
     }
 
-    public bool IsRangeMeleeSkillEnabled()
+    public bool IsRangedMeleeSkillToggleOn()
     {
-        return this.rangeMeleeSkillToggle.isOn;
+        return this.rangedMeleeSkillToggle.isOn;
     }
 
     // Backend Skills
-    public bool IsDefendingSkillEnabled()
+    public bool IsDefendingSkillToggleOn()
     {
         return this.defendingToggle.isOn;
     }
 
-    public bool IsEvadingSkillEnabled()
+    public bool IsEvadingSkillToggleOn()
     {
         return this.evadingToggle.isOn;
     }
 
-    public bool IsObservingSkillEnabled()
+    public bool IsObservingSkillToggleOn()
     {
         return this.observingToggle.isOn;
     }
 
     // Skills Level
-    public bool IsSkillLevel1Enabled()
+    public bool IsSkillLevel1ToggleOn()
     {
         return this.skillLevel1.isOn;
     }
 
-    public bool IsSkillLevel2Enabled()
+    public bool IsSkillLevel2ToggleOn()
     {
         return this.skillLevel2.isOn;
     }
 
-    public bool IsSkillLevel3Enabled()
+    public bool IsSkillLevel3ToggleOn()
     {
         return this.skillLevel3.isOn;
     }
