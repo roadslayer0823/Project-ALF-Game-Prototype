@@ -129,12 +129,16 @@ public class BattleSkillManager : MonoBehaviour
 
         if (attacker != null)
         {
-            Skill.SkillType _skillType = attacker.GetCurrentSkill().GetSkillData().skillType;
+            CharacterSkill _attackerCurrentSkill = attacker.GetCurrentSkill();
+            Skill.SkillType _skillType = _attackerCurrentSkill.GetSkillData().skillType;
             if (_skillType == Skill.SkillType.active
                 || _skillType == Skill.SkillType.repulse
                 || _skillType == Skill.SkillType.counter)
             {
-                _skillTypeList.Add( SkillType.Observe );
+                if (gameCharacter.GetCurrentObservedSkill() != _attackerCurrentSkill)
+                {
+                    _skillTypeList.Add( SkillType.Observe );
+                }
             }
         }
 

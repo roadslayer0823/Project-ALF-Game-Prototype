@@ -205,7 +205,10 @@ public class EnemyCharacter : GameCharacter
             case AnimationEvent.OnAtlEnded:
                 break;
 
-            case AnimationEvent.OnSkillBeingUsed:
+            case AnimationEvent.OnNormalSkillBeingUsed:
+                break;
+
+            case AnimationEvent.OnObservingSkillBeingUsed:
                 break;
         }
     }

@@ -1435,6 +1435,7 @@ MonoBehaviour:
   backendSkillSlotListPanel: {fileID: 1269230629}
   atlSlotListPanelV2: {fileID: 962829249}
   playerDashboard: {fileID: 382977991}
+  skillPromptPanel: {fileID: 880286386}
   enemyCharacterInfoBoxUI: {fileID: 1862054395}
   enemyCharacterInfoBoxHUD: {fileID: 794300706}
 --- !u!4 &528806170
@@ -4742,7 +4743,6 @@ MonoBehaviour:
   targetCamera: {fileID: 794048806}
   cameraEffect: {fileID: 794048808}
   darkLayer: {fileID: 2065764080}
-  skillPromptPanel: {fileID: 880286386}
   debugBattleDialogMenu: {fileID: 295793604}
 --- !u!1001 &2033466327
 PrefabInstance:

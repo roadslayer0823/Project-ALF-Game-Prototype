@@ -333,7 +333,11 @@ public class BattleGameManager : MonoBehaviour
                 else
                 {
                     GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
-                    _currentObservingSkill.SetObservedSkill( _currentAttacker, _currentAttacker.GetCurrentSkill() );
+                    CharacterSkill _currentAttackerSkill = _currentAttacker.GetCurrentSkill();
+                    _currentObservingSkill.SetObservedSkill( _currentAttacker, _currentAttackerSkill );
+                    gameCharacter.SetCurrentObservedSkill( _currentAttackerSkill );
+
+                    this.battleUiManager.GetSkillPromptPanel().ShowSkillTag( gameCharacter.GetCurrentObservingSkill(), gameCharacter.GetIsPlayer() );
                 }
 
                 break;

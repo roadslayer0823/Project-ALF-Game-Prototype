@@ -26,10 +26,10 @@ public class BattleAnimationManager : MonoBehaviour
     [SerializeField] private CameraEffects cameraEffect = null;
     [SerializeField] private SpriteRenderer darkLayer = null;
 
-    [SerializeField] private SkillPromptPanelV2 skillPromptPanel = null;
     [SerializeField] private DebugBattleDialogMenu debugBattleDialogMenu = null;
 
     private BattleGameManager battleGameManager = null;
+    private SkillPromptPanelV2 skillPromptPanel = null;
     private bool isAnimationEventTriggered = false;
     private bool hasTransitionAnimationEnded = false;
     private Action<bool> onBattleEndedCallback = null;
@@ -81,7 +81,8 @@ public class BattleAnimationManager : MonoBehaviour
         OnPartA,
         OnPartB,
         OnAtlEnded,
-        OnSkillBeingUsed
+        OnNormalSkillBeingUsed,
+        OnObservingSkillBeingUsed
     }
 
     public void Initialize( BattleGameManager battleGameManager, Action<bool> onBattleEndedCallback )
@@ -93,6 +94,7 @@ public class BattleAnimationManager : MonoBehaviour
         this.cameraPosition = this.targetCamera.transform.position;
         this.cameraOrthographicSize = this.targetCamera.orthographicSize;
 
+        this.skillPromptPanel = this.battleGameManager.GetBattleUiManager().GetSkillPromptPanel();
         this.debugBattleDialogMenu.Initialize( OnDebugBattleDialogMenuResult );
     }
 
@@ -802,7 +804,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         yield return new WaitForSeconds( 0.1f );
 
-        _attacker.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
+        _attacker.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
 
         _battleResultData = new BattleResultData();
         BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, _attacker, _attackTarget );
@@ -1185,7 +1187,7 @@ public class BattleAnimationManager : MonoBehaviour
         attackTargetBattleResultData = battleResultData.GetGameCharacterResultData( attackTarget );
 
         // 結算“後手方”已按下的技能的以太值和最大以太值提升。
-        attackTarget.TriggerEvent( AnimationEvent.OnSkillBeingUsed );
+        attackTarget.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
         //StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
         attackTarget.ShowPopUpDisplayInfoV2( maxStatePointUp: attackTargetBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackTargetBattleResultData.statePointCost*/ );
         this.currentCaster = attackTarget;
