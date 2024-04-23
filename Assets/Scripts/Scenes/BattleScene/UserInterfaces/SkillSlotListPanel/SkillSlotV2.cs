@@ -208,6 +208,10 @@ public class SkillSlotV2 : MonoBehaviour
                 return;
             }
 
+            float swipeableAreaHeight = this.swipeableArea.rect.height;
+            float minY = this.swipeableArea.position.y - (swipeableAreaHeight / 2);
+            float maxY = this.swipeableArea.position.y + (swipeableAreaHeight / 2);
+
             //create vector from the two point
             this.currentSwipe = new Vector2(this.mouseReleasePosition.x - this.mousePressPosition.x, this.mouseReleasePosition.y - this.mousePressPosition.y);
 
@@ -215,13 +219,13 @@ public class SkillSlotV2 : MonoBehaviour
             this.currentSwipe.Normalize();
 
             //swipe up
-            if (this.currentSwipe.y > 0)
+            if (this.currentSwipe.y > 0 && Input.mousePosition.y >= minY && Input.mousePosition.y <= maxY)
             {
                 IncreaseSkillLevel();
             }
 
             //swipe down
-            if (this.currentSwipe.y < 0)
+            if (this.currentSwipe.y < 0 && Input.mousePosition.y >= minY && Input.mousePosition.y <= maxY)
             {
                 DecreaseSkillLevel();
             }
@@ -244,7 +248,7 @@ public class SkillSlotV2 : MonoBehaviour
             isSkillLevelReachedMaximum = false;
         }
 
-        this.skillLevel = Math.Clamp( skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
+        this.skillLevel = Math.Clamp(skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
 
         while (!this.selectedSkill.IsSkillLevelAvailable(this.skillLevel))
         {
@@ -252,7 +256,7 @@ public class SkillSlotV2 : MonoBehaviour
         }
         UpdateCharacterSkillLevel(this.skillLevel);
         SetSelectedSkill(this.selectedSkill);
-        if(isSkillLevelReachedMaximum == false)
+        if (isSkillLevelReachedMaximum == false)
         {
             ModifySkillLevelAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
         }
@@ -577,7 +581,6 @@ public class SkillSlotV2 : MonoBehaviour
         this.skillIcon.sprite = Resources.Load<Sprite>( ( isOn ) ? _subskillData.IconFilePathOn : _subskillData.IconFilePathOff );
         this.skillIcon.SetNativeSize();
     }
-
     private void SpiltTextFunction(string text)
     {
        if(text.Length > 6)
