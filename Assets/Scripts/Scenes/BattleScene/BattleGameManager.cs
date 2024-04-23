@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Subskill = DatabaseManager.Subskill;
@@ -137,6 +138,15 @@ public class BattleGameManager : MonoBehaviour
         }
     }
 
+    public void ShowPreparationView()
+    {
+        this.battleAnimationManager.ChangeToBackgroundPartB();
+        this.playerContainer.SetActive( true );
+        this.opponentContainer.SetActive( true );
+        this.playerCharacter.PlayCharacterAnimation( "Prepare" );
+        this.enemyCharacter.PlayCharacterAnimation( "Idle" );
+    }
+
     public void OnPreparationPhaseStarted()
     {
         this.currentGamePhase = GamePhase.Preparation;
@@ -155,13 +165,17 @@ public class BattleGameManager : MonoBehaviour
             this.battleUiManager.GetPreparationSection().Show();
         }
 
-        this.battleUiManager.ShowEnemyCharacterInfoBoxHUD();
-        this.battleAnimationManager.ChangeToBackgroundPartB();
-        this.playerContainer.SetActive( true );
-        this.opponentContainer.SetActive( true );
-        this.playerCharacter.PlayCharacterAnimation( "Prepare" );
-        this.enemyCharacter.PlayCharacterAnimation( "Idle" );
+        ShowPreparationView();
         this.enemyCharacter.InitializeSelectedSkills();
+
+        StartCoroutine( RunStartingPreparationPhase() );
+    }
+
+    private IEnumerator RunStartingPreparationPhase()
+    {
+        yield return null;
+        yield return null;
+        this.battleUiManager.ShowEnemyCharacterInfoBoxHUD();
     }
 
     public void OnExecutionPhaseStarted()

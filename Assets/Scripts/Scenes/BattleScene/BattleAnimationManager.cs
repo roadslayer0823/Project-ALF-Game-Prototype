@@ -722,6 +722,7 @@ public class BattleAnimationManager : MonoBehaviour
             this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, false );
             BattleLog.Instance.AddOnScreenBattleLog( $"雙方進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
 
+            battleGameManager.ShowPreparationView();
             _playerCharacter.TriggerEvent( AnimationEvent.OnCombatCommandTimeStarted );
             _enemyCharacter.TriggerEvent( AnimationEvent.OnCombatCommandTimeStarted );
 

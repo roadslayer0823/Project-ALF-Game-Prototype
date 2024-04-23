@@ -1070,6 +1070,15 @@ public class GameCharacter : MonoBehaviour
                 }
             }
 
+            if (battleResultData.hasEnergyMarker)
+            {
+                SetEnergyMarkerRemainingATLs( battleResultData.energyMarkerRemainingATLs );
+            }
+            else
+            {
+                RemoveEnergyMarker();
+            }
+
             if (needToUpdateDisplay)
             {
                 InvokeOnCharacterInfoUpdatedCallback();
