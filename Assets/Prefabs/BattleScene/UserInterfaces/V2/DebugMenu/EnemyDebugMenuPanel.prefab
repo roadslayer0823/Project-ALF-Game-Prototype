@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 71, y: -79}
-  m_SizeDelta: {x: 812.833, y: 368.396}
+  m_SizeDelta: {x: 813, y: 369}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8083790267802102148
 CanvasRenderer:
@@ -244,10 +244,10 @@ RectTransform:
   m_Father: {fileID: 5530734240017367698}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 2667.0918, y: 1342.0001}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5530734238430593522
 GameObject:
@@ -284,7 +284,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -213}
+  m_AnchoredPosition: {x: 0, y: 161}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5530734238430593527
@@ -419,8 +419,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.000015258789, y: -0.000015258789}
-  m_SizeDelta: {x: 1841.826, y: 983.119}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1842, y: 985}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5530734239402852310
 CanvasRenderer:
@@ -536,10 +536,10 @@ RectTransform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5530734240017367701
 MonoBehaviour:
@@ -554,11 +554,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allPasiveSkillToggle: {fileID: 5530734239428341921}
-  healthPointToggle: {fileID: 5530734238150628953}
-  stressPointToggle: {fileID: 5530734238639165570}
-  statePointToggle: {fileID: 5530734238377321758}
+  healthPassiveSkillToggle: {fileID: 5530734238150628953}
+  stressPassiveSkilloggle: {fileID: 5530734238639165570}
+  statePassiveSkillToggle: {fileID: 5530734238377321758}
   allActiveSkillToggle: {fileID: 7554991160270409108}
-  rangeSkillToggle: {fileID: 7554991161544944492}
+  rangedSkillToggle: {fileID: 0}
   meleeSkillToggle: {fileID: 7554991161060404663}
   rangeMeleeSkillToggle: {fileID: 7554991161333979179}
   allBackendSkillToggle: {fileID: 1928656712154496346}
@@ -1280,17 +1280,6 @@ RectTransform:
 --- !u!114 &7554991161333979179 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
-  m_PrefabInstance: {fileID: 6801210457646448213}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &7554991161544944492 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
   m_PrefabInstance: {fileID: 6801210457646448213}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
