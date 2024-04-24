@@ -170,7 +170,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                             maxStatePointIncreaseOpacity = 255;
                             maxStatePointIncreaseIcon.gameObject.transform.position = maxStatePointIconOriginalPosition;
                         });
-                    PlayMaxStatePointAnimation();
+                    StartCoroutine(PlayMaxStatePointAnimation());
                 }
             }
         }
@@ -335,14 +335,14 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         this.horizontalLayoutGroup.spacing = spacing;
     }
 
-    public void PlayMaxStatePointAnimation()
+    public IEnumerator PlayMaxStatePointAnimation()
     {
         Vector2 currentScale = maxStatePointValueFirstText.rectTransform.localScale;
         Vector2 newScale = new Vector3(currentScale.x / scaleMultiplier, currentScale.y / scaleMultiplier);
         for (int i = 0; i < maxStatePointText.Length; i++)
         {
             var targetText = maxStatePointText[i];
-            StartCoroutine(MaxStatePointAnimation(targetText, newScale, currentScale, defaultTextOffset, targetTextOffset, defaultTextOuter, targetTextOuter, maxStatePointScaleDuration, maxStatePointGlowDuration));
+            yield return StartCoroutine(MaxStatePointAnimation(targetText, newScale, currentScale, defaultTextOffset, targetTextOffset, defaultTextOuter, targetTextOuter, maxStatePointScaleDuration, maxStatePointGlowDuration));
         }
     }
 

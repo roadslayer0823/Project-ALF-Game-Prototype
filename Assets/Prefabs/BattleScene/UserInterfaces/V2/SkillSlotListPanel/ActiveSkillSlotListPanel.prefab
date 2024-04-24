@@ -223,6 +223,7 @@ MonoBehaviour:
   - {fileID: 1938573160723595033}
   - {fileID: 1456189994962866121}
   - {fileID: 4067448536525339153}
+  isAnimationRunning: 1
 --- !u!1 &2697270279507287778
 GameObject:
   m_ObjectHideFlags: 0

@@ -61,6 +61,16 @@ public class ObservedSkillData
         return this.subskillData.FeatureId;
     }
 
+    public string GetNamePartA()
+    {
+        return this.subskillData.NamePartA;
+    }
+
+    public string GetNamePartB()
+    {
+        return this.subskillData.NamePartB;
+    }
+
     public string GetSkillName()
     {
         return this.subskillData.DisplayName;
