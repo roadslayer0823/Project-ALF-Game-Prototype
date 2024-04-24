@@ -52,6 +52,7 @@ public class GameCharacter : MonoBehaviour
     private CharacterIdentityType currentCharacterIdentityType = CharacterIdentityType.None;
     private CharacterSkill currentSkill = null;
     private CharacterSkill currentObservingSkill = null;
+    private CharacterSkill currentObservedSkill = null;
     private int currentSkillStatIncrement = 0;
     private GameCharacter currentAttacker = null;
     private float skillCountdownTime = 0.0f;
@@ -909,6 +910,16 @@ public class GameCharacter : MonoBehaviour
         return this.currentObservingSkill;
     }
 
+    public void SetCurrentObservedSkill( CharacterSkill currentObservedSkill )
+    {
+        this.currentObservedSkill = currentObservedSkill;
+    }
+
+    public CharacterSkill GetCurrentObservedSkill()
+    {
+        return this.currentObservedSkill;
+    }
+
     public void SetCurrentSkillStatIncrement( int currentSkillStatIncrement )
     {
         this.currentSkillStatIncrement = currentSkillStatIncrement;
@@ -1043,6 +1054,8 @@ public class GameCharacter : MonoBehaviour
     {
         this.currentCharacterIdentityType = CharacterIdentityType.None;
         SetCurrentSkill( null );
+        SetCurrentObservingSkill( null );
+        SetCurrentObservedSkill( null );
         SetCurrentAttacker( null );
     }
 
@@ -1068,6 +1081,15 @@ public class GameCharacter : MonoBehaviour
                 {
                     EnterIntoBreakStatus( battleResultData.breakStatusAtlNumber );
                 }
+            }
+
+            if (battleResultData.hasEnergyMarker)
+            {
+                SetEnergyMarkerRemainingATLs( battleResultData.energyMarkerRemainingATLs );
+            }
+            else
+            {
+                RemoveEnergyMarker();
             }
 
             if (needToUpdateDisplay)

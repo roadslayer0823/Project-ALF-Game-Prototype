@@ -126,9 +126,15 @@ public class PlayerCharacter : GameCharacter
 
                 break;
 
-            case AnimationEvent.OnSkillBeingUsed:
+            case AnimationEvent.OnNormalSkillBeingUsed:
 
-                _battleUiManager.OnSkillBeingUsed();
+                _battleUiManager.OnSkillBeingUsed( base.GetCurrentSkill() );
+
+                break;
+
+            case AnimationEvent.OnObservingSkillBeingUsed:
+
+                _battleUiManager.OnSkillBeingUsed( base.GetCurrentObservingSkill() );
 
                 break;
         }

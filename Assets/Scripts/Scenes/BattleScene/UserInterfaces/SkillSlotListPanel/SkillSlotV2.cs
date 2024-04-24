@@ -156,6 +156,7 @@ public class SkillSlotV2 : MonoBehaviour
         if (this.currentStateType == StateType.Enabled)
         {
             GameCharacter _selectedGameCharacter = null;
+            bool _isObservingSkill = this.selectedSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill;
 
             if (this.activeSkillSlotListPanelV2 != null)
             {
@@ -165,11 +166,24 @@ public class SkillSlotV2 : MonoBehaviour
             else if (this.backendSkillSlotListPanel != null)
             {
                 _selectedGameCharacter = this.backendSkillSlotListPanel.GetSelectedGameCharacter();
-                this.backendSkillSlotListPanel.OnSkillSlotSelected( this );
+
+                if (!_isObservingSkill)
+                {
+                    this.backendSkillSlotListPanel.OnSkillSlotSelected( this );
+                }
             }
 
-            _selectedGameCharacter.SetAssignedSkill( this.selectedSkill );
-            SetCurrentStateType( StateType.Selected );
+            if (_isObservingSkill)
+            {
+                _selectedGameCharacter.SetCurrentObservingSkill( this.selectedSkill );
+                SetCurrentStateType( StateType.Activated );
+            }
+            else
+            {
+                _selectedGameCharacter.SetAssignedSkill( this.selectedSkill );
+                SetCurrentStateType( StateType.Selected );
+            }
+
             PlaySkillOutlineAnimation();
         }
     }
