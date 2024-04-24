@@ -116,6 +116,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
                         {
                             _backendSkillSlot.SetSelectedSkill(_selectedSkill);
                             _observationSlotCharacterSkill = _selectedSkill;
+                            SetObservedSkillData(_observationSlotCharacterSkill);
                         }
                         else if (_subskillData.IsDefendingSkill && _defenceSlotCharacterSkill != null && _defenceSlotCharacterSkill != _selectedSkill)
                         {
@@ -212,6 +213,18 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         if (qteSkill != null)
         {
             qteSkillSlot.SetSelectedSkill(qteSkill);
+        }
+    }
+
+    public void SetObservedSkillData(CharacterSkill observedSkill)
+    {
+        if(observedSkill.GetObservedSkillDataList().Count != 0)
+        {
+            for (int i = 0; i < observedSkill.GetObservedSkillDataList().Count; i++)
+            {
+                ObservedSkillData _observedSkillData = observedSkill.GetObservedSkillDataList()[i];
+                backendSkillSlot[2].InitializeObserveSkillSlot(_observedSkillData);
+            }
         }
     }
 

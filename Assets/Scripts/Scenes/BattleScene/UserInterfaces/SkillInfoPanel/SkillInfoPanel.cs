@@ -78,10 +78,10 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private GameObject observedSkillListBox = null;
 
     [Header("ObservedSkillInfo")]
-    [SerializeField] private SpecialSkillInfoPanel observedSkillBoxPrefab = null;
+    [SerializeField] private SpecialSkillInfoBox observedSkillBoxPrefab = null;
     [SerializeField] private RectTransform observedSkillListContent = null;
 
-    private List<SpecialSkillInfoPanel> observedSkillBoxList = new List<SpecialSkillInfoPanel>();
+    private List<SpecialSkillInfoBox> observedSkillBoxList = new List<SpecialSkillInfoBox>();
     private CharacterSkill selectedSkill;
     private SkillInfoTabButton skillInfoTabButton = SkillInfoTabButton.none;
     private SkillSelectionBoxV2 skillSelectionBox = null;
@@ -354,19 +354,8 @@ public class SkillInfoPanel : MonoBehaviour
         }
         else
         {
-            Debug.Log("none observe skill");
+            observedSkillBoxPrefab.Initialize(null);
         }
-    }
-
-    private void ClearObservedSkillList()
-    {
-        for (int i = 0; i < this.observedSkillBoxList.Count; i++)
-        {
-            SpecialSkillInfoPanel _observedSkillBox = this.observedSkillBoxList[i];
-            Destroy(_observedSkillBox.gameObject);
-        }
-
-        this.observedSkillBoxList.Clear();
     }
 
     public void ShowActiveSkillInfoPanel()
