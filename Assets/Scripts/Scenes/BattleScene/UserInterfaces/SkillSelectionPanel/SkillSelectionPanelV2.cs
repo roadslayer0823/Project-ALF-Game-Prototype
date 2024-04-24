@@ -89,6 +89,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         this.returnButton.onClick.AddListener( OnReturnButtonClick );
     }
 
+    // show the skill selection panel
     public void Show( GameCharacter gameCharacter, SkillType skillType )
     {
         this.gameCharacter = gameCharacter;
@@ -188,6 +189,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         ShowSkillSelectionPanel( skillType );
     }
 
+    // when click the active skill list box button
     private void OnActiveSkillListBoxButtonClick()
     {
         if (this.activeSkillSelectionListGO.activeSelf)
@@ -205,6 +207,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
     }
 
+    // when click the backend skill list box button
     private void OnBackendSkillListBoxButtonClick()
     {
         if (this.backendSkillSelectionListGO.activeSelf)
@@ -222,11 +225,13 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
     }
 
+    // when click the return button
     private void OnReturnButtonClick()
     {
         this.onReturnedCallback?.Invoke();
     }
 
+    // initialize active skill list
     private void InitializeActiveSkillList()
     {
         for (int i = 0; i < this.activeSkillBoxPositions.Length; i++)
@@ -250,6 +255,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         }
     }
 
+    // initialize backend skill list
     private void InitializeBackendSkillList()
     {
         for (int i = 0; i < this.backendSkillBoxPositions.Length; i++)
@@ -450,6 +456,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         }
     }
 
+    // update backend skill list box
     private void UpdateBackendSkillListBox()
     {
         this.backendDefenceBoxIcon.gameObject.SetActive(false);
@@ -529,7 +536,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         }
     }
 
-    public void AddSelectedSkilBox(SkillSelectionBoxV2 skillSelectionBox)
+    // add selected skill box
+    public void AddSelectedSkillBox(SkillSelectionBoxV2 skillSelectionBox)
     {
         if (skillSelectionBox.GetCharacterSkillType() == Skill.SkillType.active)
         {
@@ -579,7 +587,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_SKILL_ON);
     }
 
-    public void RemoveSelectedSkilBox(SkillSelectionBoxV2 skillSelectionBox)
+    // remove selected skill box
+    public void RemoveSelectedSkillBox(SkillSelectionBoxV2 skillSelectionBox)
     {
         if (skillSelectionBox.GetCharacterSkillType() == Skill.SkillType.active)
         {
@@ -609,6 +618,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_SKILL_OFF);
     }
 
+    // swap the selected active skill box
     public void SwapSelectedActiveSkill(SkillSelectionBoxV2 targetToSwap)
     {
         if (GetSelectedActiveSkillList().Count == 0)
@@ -633,6 +643,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         UpdateActiveSkillListBox();
     }
 
+    // replace the selected active skill
     public void ReplaceSelectedActiveSkill(SkillSelectionBoxV2 targetToSwap)
     {
         if (GetSelectedActiveSkillList().Count == 0)
@@ -656,6 +667,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         UpdateActiveSkillListBox();
     }
 
+    // move the selected active skill to first
     public void MoveSelectedSkillToFirst(SkillSelectionBoxV2 targetToMove, List<SkillSelectionBoxV2> selectedSkillSelectionList)
     {
         if (!selectedSkillSelectionList.Contains(targetToMove))
@@ -675,6 +687,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         UpdateActiveSkillListBox();
     }
 
+    // show the skill selection panel
     public void ShowSkillSelectionPanel( SkillType skillType )
     {
         this.gameObject.SetActive( true );
@@ -682,16 +695,19 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         ShowBackendSkillSelectionList( skillType == SkillType.Backend );
     }
 
+    // hide the skill selection panel
     public void HideSkillSelectionPanel()
     {
         this.gameObject.SetActive(false);
     }
 
+    // show the skill info panel
     public void ShowSkillInfoPanel(SkillSelectionBoxV2 skillSelectionBox)
     {
         this.skillInfoPanel.Show(skillSelectionBox);
     }
 
+    // hide the skill info panel
     public void HideSkillInfoPanel()
     {
         this.skillInfoPanel.Hide();
