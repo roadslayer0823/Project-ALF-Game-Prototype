@@ -555,12 +555,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allPasiveSkillToggle: {fileID: 5530734239428341921}
   healthPassiveSkillToggle: {fileID: 5530734238150628953}
-  stressPassiveSkilloggle: {fileID: 5530734238639165570}
+  stressPassiveSkillToggle: {fileID: 5530734238639165570}
   statePassiveSkillToggle: {fileID: 5530734238377321758}
   allActiveSkillToggle: {fileID: 7554991160270409108}
-  rangedSkillToggle: {fileID: 0}
+  rangedSkillToggle: {fileID: 7554991161544944492}
   meleeSkillToggle: {fileID: 7554991161060404663}
-  rangeMeleeSkillToggle: {fileID: 7554991161333979179}
+  rangedMeleeSkillToggle: {fileID: 7554991161333979179}
   allBackendSkillToggle: {fileID: 1928656712154496346}
   defendingToggle: {fileID: 1928656713429048226}
   evadingToggle: {fileID: 1928656712944770425}
@@ -1280,6 +1280,17 @@ RectTransform:
 --- !u!114 &7554991161333979179 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+  m_PrefabInstance: {fileID: 6801210457646448213}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &7554991161544944492 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
   m_PrefabInstance: {fileID: 6801210457646448213}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
