@@ -238,7 +238,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
     }
 
-    public void ShowSkillTag(CharacterSkill characterSkill, bool isPlayer)
+    private void ShowSkillTag(CharacterSkill characterSkill, bool isPlayer)
     {
         if (isPlayer && characterSkill != null && !LeanTween.isTweening(this.playerSkillInfoGO))
         {
@@ -279,11 +279,6 @@ public class SkillPromptPanelV2 : MonoBehaviour
                     {
                         this.playerSkillTagGO.SetActive(true);
                         this.playerSkillTagText.SetText("对廣角");
-                    }
-                    else if (_playerCharacterSubskill.GetSubskillData().IsObservingSkill)
-                    {
-                        this.playerSkillTagGO.SetActive( true );
-                        this.playerSkillTagText.SetText( _playerCharacterSubskill.GetSubskillData().DisplayName );
                     }
                     else
                     {
@@ -334,11 +329,6 @@ public class SkillPromptPanelV2 : MonoBehaviour
                     {
                         this.enemySkillTagGO.SetActive(true);
                         this.enemySkillTagText.SetText("对廣角");
-                    }
-                    else if (_enemyCharacterSubskill.GetSubskillData().IsObservingSkill)
-                    {
-                        this.playerSkillTagGO.SetActive( true );
-                        this.playerSkillTagText.SetText( _enemyCharacterSubskill.GetSubskillData().DisplayName );
                     }
                     else
                     {

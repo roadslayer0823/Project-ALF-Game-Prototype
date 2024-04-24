@@ -215,8 +215,8 @@ public class EnemyCharacter : GameCharacter
 
     public void SetRandomAvailableSkillAsCurrentSkill( List<BattleSkillManager.SkillType> skillTypeList )
     {
-        List<CharacterSkill> _availableSkillList = new List<CharacterSkill>();
-        List<CharacterSkill> _availableObservingSkillList = new List<CharacterSkill>();
+        List<CharacterSkill> _availableSkillList = new();
+        List<CharacterSkill> _availableObservingSkillList = new();
 
         List<CharacterSkill> _activeSkillList = base.GetSelectedActiveSkillList();
         if (skillTypeList.Contains( BattleSkillManager.SkillType.Repulse ))
@@ -265,7 +265,8 @@ public class EnemyCharacter : GameCharacter
             {
                 _availableSkillList.Add( _backendSkill );
             }
-            else if (_isAbleToObserve && _backendSubskillData.IsObservingSkill)
+
+            if (_isAbleToObserve && _backendSubskillData.IsObservingSkill)
             {
                 _availableObservingSkillList.Add( _backendSkill );
             }
