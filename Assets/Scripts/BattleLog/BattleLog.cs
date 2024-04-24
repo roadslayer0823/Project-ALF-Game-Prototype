@@ -59,6 +59,7 @@ public class BattleLog : Singleton<BattleLog>
         Canvas.ForceUpdateCanvases();
     }
 
+    // when the clear all button click
     private void OnClearAllButtonClick()
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );

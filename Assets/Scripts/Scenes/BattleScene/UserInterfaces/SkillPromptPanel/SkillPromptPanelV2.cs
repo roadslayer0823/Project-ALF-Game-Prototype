@@ -74,6 +74,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerPassiveSkillTextSlot3 = null;
     [SerializeField] private TextMeshProUGUI playerPassiveSkillTextSlot4 = null;
 
+    // hide the skill prompt panel
     private void Hide()
     {
         this.skillNameGO.SetActive(false);
@@ -81,6 +82,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         this.playerPassiveSkillName.SetActive(false);
     }
 
+    // set the command phase progress bar's percentage
     public void SetCommandPhaseProgressBar(float fillAmount, bool isActiveSkill, bool isPlayer)
     {
         if (isPlayer)
@@ -127,6 +129,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
     }
 
+    // setup and show the command phase progress bar
     public void ShowCasterCurrentSkillInfo(GameCharacter caster)
     {
         CharacterSkill _characterSkill = caster.GetCurrentSkill();
@@ -188,6 +191,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
     }
 
+    // show the command phase
     public void ShowCommandPhase(string phaseName, bool isPlayer, float duration = 0)
     {
         if (isPlayer)
@@ -218,6 +222,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
     }
 
+    // hide the command phase
     public void HideCommandPhase(bool isPlayer)
     {
         if (isPlayer)
@@ -238,7 +243,8 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
     }
 
-    public void ShowSkillTag(CharacterSkill characterSkill, bool isPlayer)
+    // show the skill tag
+    private void ShowSkillTag(CharacterSkill characterSkill, bool isPlayer)
     {
         if (isPlayer && characterSkill != null && !LeanTween.isTweening(this.playerSkillInfoGO))
         {
@@ -279,11 +285,6 @@ public class SkillPromptPanelV2 : MonoBehaviour
                     {
                         this.playerSkillTagGO.SetActive(true);
                         this.playerSkillTagText.SetText("对廣角");
-                    }
-                    else if (_playerCharacterSubskill.GetSubskillData().IsObservingSkill)
-                    {
-                        this.playerSkillTagGO.SetActive( true );
-                        this.playerSkillTagText.SetText( _playerCharacterSubskill.GetSubskillData().DisplayName );
                     }
                     else
                     {
@@ -335,11 +336,6 @@ public class SkillPromptPanelV2 : MonoBehaviour
                         this.enemySkillTagGO.SetActive(true);
                         this.enemySkillTagText.SetText("对廣角");
                     }
-                    else if (_enemyCharacterSubskill.GetSubskillData().IsObservingSkill)
-                    {
-                        this.playerSkillTagGO.SetActive( true );
-                        this.playerSkillTagText.SetText( _enemyCharacterSubskill.GetSubskillData().DisplayName );
-                    }
                     else
                     {
                         this.enemySkillTagGO.SetActive(false);
@@ -352,12 +348,14 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
     }
 
+    // hide when the specific game object finish tweened
     private void OnCompleteTweenGameObject(object gameObject)
     {
         GameObject _gameObject = (GameObject)gameObject;
         _gameObject.SetActive(false);
     }
 
+    // show passive skill effect tag
     public void ShowPassiveSkillEffectTag(string tagName, bool isPlayer)
     {
         HideNotTweeningPassiveSkillSlot();
@@ -430,6 +428,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
     }
 
+    // hide the passive Skill Slot that not tweening
     private void HideNotTweeningPassiveSkillSlot()
     {
         if (!LeanTween.isTweening(this.playerPassiveSkillSlot1))
@@ -473,6 +472,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
     }
 
+    // set the transparency
     private void SetAlphaToMax(Image backgroundImage, TextMeshProUGUI text)
     {
         text.alpha = 1.0f;
@@ -482,6 +482,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         backgroundImage.color = _backgroundImageColor;
     }
 
+    // show the passive skill slot
     private void PopPassiveSkillSlot(GameObject slotToPop, Image slotBackground, TextMeshProUGUI slotText, string tagName, bool isPlayer)
     {
         slotToPop.SetActive(true);
@@ -493,6 +494,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
             .setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(slotToPop);
     }
 
+    // push further the passive skill slot
     private void PushFurtherPassiveSkillSlot(GameObject slotToPush, Image slotBackground, TextMeshProUGUI slotText, bool isPlayer)
     {
         LeanTween.cancel(slotToPush);
