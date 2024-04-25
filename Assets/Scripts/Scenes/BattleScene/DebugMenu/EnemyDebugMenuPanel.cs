@@ -44,50 +44,44 @@ public class EnemyDebugMenuPanel : MonoBehaviour
 
     public void TickAllPasiveSkill()
     {
-        if (this.allPasiveSkillToggle.isOn)
-        {
-            this.healthPassiveSkillToggle.isOn = true;
-            this.stressPassiveSkillToggle.isOn = true;
-            this.statePassiveSkillToggle.isOn = true;
-        }
-        else
-        {
-            this.healthPassiveSkillToggle.isOn = false;
-            this.stressPassiveSkillToggle.isOn = false;
-            this.statePassiveSkillToggle.isOn = false;
-        }
+        bool isToggleOn = this.allPasiveSkillToggle.isOn;
+
+        this.healthPassiveSkillToggle.SetIsOnWithoutNotify(isToggleOn);
+        this.stressPassiveSkillToggle.SetIsOnWithoutNotify(isToggleOn);
+        this.statePassiveSkillToggle.SetIsOnWithoutNotify(isToggleOn);
+    }
+
+    public void TickPassiveSkillParent()
+    {
+        this.allPasiveSkillToggle.SetIsOnWithoutNotify(this.healthPassiveSkillToggle.isOn && this.stressPassiveSkillToggle.isOn && this.statePassiveSkillToggle.isOn);
     }
 
     public void TickAllActiveSkill()
     {
-        if (this.allActiveSkillToggle.isOn)
-        {
-            this.rangedSkillToggle.isOn = true;
-            this.meleeSkillToggle.isOn = true;
-            this.rangedMeleeSkillToggle.isOn = true;
-        }
-        else
-        {
-            this.rangedSkillToggle.isOn = false;
-            this.meleeSkillToggle.isOn = false;
-            this.rangedMeleeSkillToggle.isOn = false;
-        }
+        bool isToggleOn = this.allActiveSkillToggle.isOn;
+
+        this.rangedSkillToggle.SetIsOnWithoutNotify(isToggleOn);
+        this.meleeSkillToggle.SetIsOnWithoutNotify(isToggleOn);
+        this.rangedMeleeSkillToggle.SetIsOnWithoutNotify(isToggleOn);
+    }
+
+    public void TickActiveSkillParent()
+    {
+        this.allActiveSkillToggle.SetIsOnWithoutNotify(this.rangedSkillToggle.isOn && this.meleeSkillToggle.isOn && this.rangedMeleeSkillToggle.isOn);
     }
 
     public void TickAllBackendSkill()
     {
-        if (this.allBackendSkillToggle.isOn)
-        {
-            this.defendingToggle.isOn = true;
-            this.evadingToggle.isOn = true;
-            this.observingToggle.isOn = true;
-        }
-        else
-        {
-            this.defendingToggle.isOn = false;
-            this.evadingToggle.isOn = false;
-            this.observingToggle.isOn = false;
-        }
+        bool isToggleOn = this.allBackendSkillToggle.isOn;
+
+        this.defendingToggle.SetIsOnWithoutNotify(isToggleOn);
+        this.evadingToggle.SetIsOnWithoutNotify(isToggleOn);
+        this.observingToggle.SetIsOnWithoutNotify(isToggleOn);
+    }
+
+    public void TickBackendSkillParent()
+    {
+        this.allBackendSkillToggle.SetIsOnWithoutNotify(this.defendingToggle.isOn && this.evadingToggle.isOn && this.observingToggle.isOn);
     }
 
     // Passive Skills
