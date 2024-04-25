@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public class EnemyDebugMenuPanel : MonoBehaviour
 {
+    [SerializeField] private GameObject container = null;
+
     [Header("PassiveSkill")]
     [SerializeField] private Toggle allPasiveSkillToggle;
     [SerializeField] private Toggle healthPassiveSkillToggle;
@@ -25,6 +27,20 @@ public class EnemyDebugMenuPanel : MonoBehaviour
     [SerializeField] private Toggle skillLevel1;
     [SerializeField] private Toggle skillLevel2;
     [SerializeField] private Toggle skillLevel3;
+
+    private const string AUDIO_ID_CLICK = "click";
+
+    public void ClickToShow()
+    {
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+        this.container.SetActive( true );
+    }
+
+    public void ClickToHide()
+    {
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+        this.container.SetActive( false );
+    }
 
     public void TickAllPasiveSkill()
     {

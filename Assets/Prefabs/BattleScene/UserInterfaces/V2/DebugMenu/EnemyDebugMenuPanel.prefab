@@ -553,6 +553,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dccda795f4cc14980b615b0fb11114b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  container: {fileID: 5530734238343077318}
   allPasiveSkillToggle: {fileID: 5530734239428341921}
   healthPassiveSkillToggle: {fileID: 5530734238150628953}
   stressPassiveSkillToggle: {fileID: 5530734238639165570}
@@ -730,10 +731,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5530734238343077318}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
+      - m_Target: {fileID: 5530734240017367701}
+        m_TargetAssemblyTypeName: EnemyDebugMenuPanel, Assembly-CSharp
+        m_MethodName: ClickToHide
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

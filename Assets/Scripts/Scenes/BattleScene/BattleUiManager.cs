@@ -26,6 +26,9 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private GameObject enemyCharacterInfoBoxUI = null;
     [SerializeField] private GameObject enemyCharacterInfoBoxHUD = null;
 
+    [Header( "Debug" )]
+    [SerializeField] private EnemyDebugMenuPanel enemyDebugMenuPanel = null;
+
     private BattleGameManager battleGameManager = null;
     private GameCharacter selectedGameCharacter = null;
     private SkillSlotV2 selectedSkillSlot = null;
@@ -637,5 +640,10 @@ public class BattleUiManager : MonoBehaviour
     {
         this.enemyCharacterInfoBoxUI.SetActive( false );
         this.enemyCharacterInfoBoxHUD.SetActive( false );
+    }
+
+    public EnemyDebugMenuPanel GetEnemyDebugMenuPanel()
+    {
+        return this.enemyDebugMenuPanel;
     }
 }
