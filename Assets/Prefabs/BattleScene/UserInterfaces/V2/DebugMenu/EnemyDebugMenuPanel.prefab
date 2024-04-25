@@ -513,6 +513,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5530734240017367698}
   - component: {fileID: 5530734240017367701}
+  - component: {fileID: 4431226911175073940}
+  - component: {fileID: 714693879546757563}
   m_Layer: 5
   m_Name: EnemyDebugMenuPanel
   m_TagString: Untagged
@@ -569,6 +571,44 @@ MonoBehaviour:
   skillLevel1: {fileID: 5530734239806775834}
   skillLevel2: {fileID: 2123644323926884580}
   skillLevel3: {fileID: 6732482721398344706}
+--- !u!223 &4431226911175073940
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5530734240017367699}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 6
+  m_TargetDisplay: 0
+--- !u!114 &714693879546757563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5530734240017367699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &5530734240073585321
 GameObject:
   m_ObjectHideFlags: 0

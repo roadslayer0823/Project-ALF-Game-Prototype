@@ -57,14 +57,16 @@ public class BattleFlowATL_V2
         skillPromptPanel.SetCommandPhaseProgressBar( 1.0f, true, true );
         skillPromptPanel.SetCommandPhaseProgressBar( 1.0f, true, false );
 
-        float _attackOpportunityStartTime = Time.realtimeSinceStartup;
+        //float _attackOpportunityStartTime = Time.realtimeSinceStartup;
+        float _attackOpportunityStartTime = Time.time;
         float _remainingTime = 0.0f;
 
         do
         {
             yield return null;
 
-            _remainingTime = this.attackOpportunityDuration - ( Time.realtimeSinceStartup - _attackOpportunityStartTime );
+            //_remainingTime = this.attackOpportunityDuration - ( Time.realtimeSinceStartup - _attackOpportunityStartTime );
+            _remainingTime = this.attackOpportunityDuration - ( Time.time - _attackOpportunityStartTime );
 
             float _remainingTimePercentage = _remainingTime / this.attackOpportunityDuration;
             skillPromptPanel.SetCommandPhaseProgressBar( _remainingTimePercentage, true, true );

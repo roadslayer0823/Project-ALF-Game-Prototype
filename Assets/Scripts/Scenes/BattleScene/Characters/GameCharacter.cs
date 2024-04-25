@@ -58,7 +58,7 @@ public class GameCharacter : MonoBehaviour
     private float skillCountdownTime = 0.0f;
     private int counterAttacks = 0;
     private bool isAbleToUseSkill = false;
-    private List<PopUpDisplayInfo> popUpDisplayInfoList = new List<PopUpDisplayInfo>();
+    private List<PopUpDisplayInfo> popUpDisplayInfoList = new();
 
     // Version 2
     private CharacterSkill assignedSkill = null;
@@ -127,23 +127,43 @@ public class GameCharacter : MonoBehaviour
         this.currentStatePoint = this.maximumStatePoint;
         this.maximumStressValue = characterData.MaximumStressValue;
         this.currentStressValue = 0.0f;
+        this.selectedActiveSkillList = new List<CharacterSkill>();
+        this.selectedBackendSkillList = new List<CharacterSkill>();
 
-        List<CharacterSkill> _skillList = new List<CharacterSkill>();
+        List<CharacterSkill> _skillList = new();
         string[] _skillIdArray = characterData.SkillIdArray;
         for (int i = 0; i < _skillIdArray.Length; i++)
         {
             _skillList.Add(new CharacterSkill(DatabaseManager.Instance.GetSkillDataById(_skillIdArray[i]), this));
         }
 
+        bool _hasDefendingSkill = false;
+        bool _hasEvadingSkill = false;
+
         this.skills = _skillList.ToArray();
         for (int i = 0; i < this.skills.Length; i++)
         {
             CharacterSkill _characterSkill = this.skills[i];
             _characterSkill.SetupCharacterSubskillList();
-        }
 
-        this.selectedActiveSkillList = new List<CharacterSkill>();
-        this.selectedBackendSkillList = new List<CharacterSkill>();
+            if (!_hasDefendingSkill)
+            {
+                if (_characterSkill.GetCharacterSubskillData().GetSubskillData().IsDefendingSkill)
+                {
+                    AddSelectedSkill( _characterSkill );
+                    _hasDefendingSkill = true;
+                }
+            }
+
+            if (!_hasEvadingSkill)
+            {
+                if (_characterSkill.GetCharacterSubskillData().GetSubskillData().IsEvadingSkill)
+                {
+                    AddSelectedSkill( _characterSkill );
+                    _hasEvadingSkill = true;
+                }
+            }
+        }
 
         this.onCharacterInfoUpdated?.Invoke();
 
@@ -467,6 +487,11 @@ public class GameCharacter : MonoBehaviour
         {
             this.selectedBackendSkillList.Remove(characterSkill);
         }
+    }
+
+    public void ClearSelectedBackendSkillList()
+    {
+        this.selectedBackendSkillList.Clear();
     }
 
     public void PlayCharacterAnimation( string animationName, Action<string> onAnimationTriggeredCallback = null )

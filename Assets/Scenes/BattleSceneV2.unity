@@ -1588,7 +1588,7 @@ MonoBehaviour:
   skillPromptPanel: {fileID: 880286386}
   enemyCharacterInfoBoxUI: {fileID: 1862054395}
   enemyCharacterInfoBoxHUD: {fileID: 794300706}
-  enemyDebugMenuPanel: {fileID: 0}
+  enemyDebugMenuPanel: {fileID: 1941073823}
 --- !u!4 &528806170
 Transform:
   m_ObjectHideFlags: 0

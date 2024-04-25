@@ -33,12 +33,16 @@ public class EnemyDebugMenuPanel : MonoBehaviour
     public void ClickToShow()
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+
+        Time.timeScale = 0.0f;
         this.container.SetActive( true );
     }
 
     public void ClickToHide()
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+
+        Time.timeScale = 1.0f;
         this.container.SetActive( false );
     }
 

@@ -1231,14 +1231,16 @@ public class BattleAnimationManager : MonoBehaviour
 
         this.skillPromptPanel.SetCommandPhaseProgressBar( 1.0f, isActiveSkill, _isPlayer );
 
-        float _startTime = Time.realtimeSinceStartup;
+        //float _startTime = Time.realtimeSinceStartup;
+        float _startTime = Time.time;
         float _remainingTime = 0.0f;
 
         do
         {
             yield return null;
 
-            _remainingTime = countdownTime - ( Time.realtimeSinceStartup - _startTime );
+            //_remainingTime = countdownTime - ( Time.realtimeSinceStartup - _startTime );
+            _remainingTime = countdownTime - ( Time.time - _startTime );
 
             float _remainingTimePercentage = _remainingTime / countdownTime;
             skillPromptPanel.SetCommandPhaseProgressBar( _remainingTimePercentage, isActiveSkill, _isPlayer );

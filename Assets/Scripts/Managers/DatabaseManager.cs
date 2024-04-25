@@ -739,6 +739,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [HideInInspector] public string IsInterceptableString { get; private set; }
         public bool IsInterceptable;
 
+        [JsonProperty( "use_active_skill_to_counter" )]
+        [HideInInspector] public string UseActiveSkillToCounterString { get; private set; }
+        public bool UseActiveSkillToCounter;
+
         [JsonProperty( "energy_marker_atl" )]
         public int EnergyMarkerATL { get; private set; }
 
