@@ -22,8 +22,12 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private BackendSkillSlotListPanel backendSkillSlotListPanel = null;
     [System.Obsolete][SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
     [SerializeField] private PlayerDashboard playerDashboard = null;
+    [SerializeField] private SkillPromptPanelV2 skillPromptPanel = null;
     [SerializeField] private GameObject enemyCharacterInfoBoxUI = null;
     [SerializeField] private GameObject enemyCharacterInfoBoxHUD = null;
+
+    [Header( "Debug" )]
+    [SerializeField] private EnemyDebugMenuPanel enemyDebugMenuPanel = null;
 
     private BattleGameManager battleGameManager = null;
     private GameCharacter selectedGameCharacter = null;
@@ -593,14 +597,13 @@ public class BattleUiManager : MonoBehaviour
         }
     }
 
-    public void OnSkillBeingUsed()
+    public void OnSkillBeingUsed( CharacterSkill skill )
     {
-        CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
-        SkillSlotV2 _skillSlot = this.activeSkillSlotListPanelV2.GetSkillSlot( _currentSkill );
+        SkillSlotV2 _skillSlot = this.activeSkillSlotListPanelV2.GetSkillSlot( skill );
 
         if (_skillSlot == null)
         {
-            _skillSlot = this.backendSkillSlotListPanel.GetSkillSlot( _currentSkill );
+            _skillSlot = this.backendSkillSlotListPanel.GetSkillSlot( skill );
         }
 
         if (_skillSlot != null)
@@ -614,6 +617,11 @@ public class BattleUiManager : MonoBehaviour
     public PlayerDashboard GetPlayerDashboard()
     {
         return this.playerDashboard;
+    }
+
+    public SkillPromptPanelV2 GetSkillPromptPanel()
+    {
+        return this.skillPromptPanel;
     }
 
     public void ShowEnemyCharacterInfoBoxUI()
@@ -632,5 +640,10 @@ public class BattleUiManager : MonoBehaviour
     {
         this.enemyCharacterInfoBoxUI.SetActive( false );
         this.enemyCharacterInfoBoxHUD.SetActive( false );
+    }
+
+    public EnemyDebugMenuPanel GetEnemyDebugMenuPanel()
+    {
+        return this.enemyDebugMenuPanel;
     }
 }

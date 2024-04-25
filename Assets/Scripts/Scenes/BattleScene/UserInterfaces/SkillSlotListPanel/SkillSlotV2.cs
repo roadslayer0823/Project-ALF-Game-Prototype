@@ -2,10 +2,11 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
-public class SkillSlotV2 : MonoBehaviour
+public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [Header( "Settings" )]
     [SerializeField] private SkillType skillType = SkillType.None;
@@ -18,12 +19,15 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private Image skillIcon;
     [SerializeField] private Sprite blankActiveSkillFrame;
     [SerializeField] private Sprite blankBackendSkillFrame;
+    [SerializeField] private Sprite blankObservedSkillFrame;
+    [SerializeField] private Sprite observedSkillFrame;
     [SerializeField] private Sprite activeSkillFrame;
     [SerializeField] private Sprite backendSkillFrame;
     [SerializeField] private Sprite repulseSkillFrame;
     [SerializeField] private Sprite derivedSkillFrame;
     [SerializeField] private Sprite counterSkillFrame;
     [SerializeField] private GameObject selectedSkillEffect;
+    [SerializeField] private TextMeshProUGUI currentObsevedPercentage;
 
     [Header("Activate Skill UI Frame")]
     [SerializeField] private Sprite activateActiveSkillFrame;
@@ -31,6 +35,7 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private Sprite activeteDerivedSkillFrame;
     [SerializeField] private Sprite activeteBackendSkillFrame;
     [SerializeField] private Sprite activeteCounterSkillFrame;
+    [SerializeField] private Sprite activateObservedSkillFrame;
 
     [Header("Skill Display Text Background")]
     [SerializeField] private Image skillNameBackground;
@@ -50,7 +55,6 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private TextMeshProUGUI bottomRowText;
     [SerializeField] private TextMeshProUGUI skillLevelText;
     [SerializeField] private TextMeshProUGUI skillLevelAnimationText;
-    [SerializeField] private RectTransform swipeableArea = null;
     [SerializeField] private GameObject skillLevelGameObject;
     [SerializeField] private GameObject skillTextAnimation;
     [SerializeField] private Button skillSelectionButton;
@@ -58,6 +62,7 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private Transform plusLevelOriginalPosition;
     [SerializeField] private Transform minusLevelTargetPosition;
     [SerializeField] private Transform minusLevelOriginalPosition;
+    [SerializeField] private GameObject swipeableArea = null;
     [SerializeField] private Image plusLevelImage;
     [SerializeField] private Image plusLevelBackground;
     [SerializeField] private Image minusLevelImage;
@@ -69,16 +74,16 @@ public class SkillSlotV2 : MonoBehaviour
     private CharacterSkill selectedSkill = null;
     private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
     private BackendSkillSlotListPanel backendSkillSlotListPanel = null;
+    private ObservedSkillData observedSkillData;
     private Vector2 mousePressPosition = new Vector2();
     private Vector2 mouseReleasePosition = new Vector2();
     private Vector2 currentSwipe = new Vector2();
 
     public int skillLevel = 1;
-    public bool isSkillLevelReachedMaximum = false;
-    public bool isSkillLevelReachedMinimum = false;
     private bool isSkillLevelChanged = false;
     private char[] splitSymbols = { '[', ']', '‧' };
     private StateType currentStateType = StateType.None;
+    private bool isSwipeable = false;
 
     //audio and animation clip id
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
@@ -92,7 +97,8 @@ public class SkillSlotV2 : MonoBehaviour
     {
         None,
         ActiveSkill,
-        BackendSkill
+        BackendSkill,
+        ObservedSkill
     }
 
     public enum BackendSkillType
@@ -109,17 +115,20 @@ public class SkillSlotV2 : MonoBehaviour
         Enabled,
         Disabled,
         Selected,
-        Activated
+        Activated,
+    }
+
+    public enum PhaseType
+    {
+        None,
+        PartA,
+        PartB,
+        AfterPartB
     }
 
     private void Start()
     {
         this.skillFrame.alphaHitTestMinimumThreshold = alphaThreshold;
-    }
-
-    void Update()
-    {
-        Swipe();
     }
 
     public void Initialize(ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2)
@@ -136,19 +145,19 @@ public class SkillSlotV2 : MonoBehaviour
         this.skillIcon.transform.localScale = new Vector3(this.skillIconScale, this.skillIconScale, 1.0f);
     }
 
+    public void InitializeObserveSkillSlot(ObservedSkillData observedSkillData)
+    {
+        this.observedSkillData = observedSkillData;
+    }
+
     public void Clear()
     {
         this.selectedSkill = null;
-        this.SetBlankFrame( this.skillType );
+        this.SetBlankFrame(this.skillType);
         this.skillIcon.gameObject.SetActive(false);
         this.currentStateType = StateType.Disabled;
         this.topRowText.SetText("");
         this.bottomRowText.SetText("");
-    }
-
-    public void ClickToSelectSkill()
-    {
-        SelectSkill();
     }
 
     public void SelectSkill()
@@ -156,6 +165,7 @@ public class SkillSlotV2 : MonoBehaviour
         if (this.currentStateType == StateType.Enabled)
         {
             GameCharacter _selectedGameCharacter = null;
+            bool _isObservingSkill = this.selectedSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill;
 
             if (this.activeSkillSlotListPanelV2 != null)
             {
@@ -165,11 +175,24 @@ public class SkillSlotV2 : MonoBehaviour
             else if (this.backendSkillSlotListPanel != null)
             {
                 _selectedGameCharacter = this.backendSkillSlotListPanel.GetSelectedGameCharacter();
-                this.backendSkillSlotListPanel.OnSkillSlotSelected( this );
+
+                if (!_isObservingSkill)
+                {
+                    this.backendSkillSlotListPanel.OnSkillSlotSelected( this );
+                }
             }
 
-            _selectedGameCharacter.SetAssignedSkill( this.selectedSkill );
-            SetCurrentStateType( StateType.Selected );
+            if (_isObservingSkill)
+            {
+                _selectedGameCharacter.SetCurrentObservingSkill( this.selectedSkill );
+                SetCurrentStateType( StateType.Activated );
+            }
+            else
+            {
+                _selectedGameCharacter.SetAssignedSkill( this.selectedSkill );
+                SetCurrentStateType( StateType.Selected );
+            }
+
             PlaySkillOutlineAnimation();
         }
     }
@@ -184,47 +207,41 @@ public class SkillSlotV2 : MonoBehaviour
         this.skillSelectionButton.interactable = false;
     }
 
-    //changing skill level mechanics
-    public void Swipe()
+    public void OnPointerDown(PointerEventData eventData)
     {
-        if (Input.GetMouseButtonDown(0))
+        this.mousePressPosition = Input.mousePosition;
+    }
+
+    //changing skill level mechanics
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        //save ended touch 2D point
+        this.mouseReleasePosition = Input.mousePosition;
+
+        //create vector from the two point
+        this.currentSwipe = this.mouseReleasePosition - this.mousePressPosition;
+
+        //swipe up
+        if (this.currentSwipe.y > 30 && this.currentSwipe.x > -30 && this.currentSwipe.x < 30)
         {
-            //save starting touch 2D point 
-            this.mousePressPosition = Input.mousePosition;
+            isSwipeable = true;
+            IncreaseSkillLevel();
         }
 
-        if (!RectTransformUtility.RectangleContainsScreenPoint(this.swipeableArea, this.mousePressPosition))
+        //swipe down
+        if (this.currentSwipe.y < -30 && this.currentSwipe.x > -30 && this.currentSwipe.x < 30)
         {
-            return;
+            isSwipeable = true;
+            DecreaseSkillLevel();
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (!isSwipeable)
         {
-            //save ended touch 2D point
-            this.mouseReleasePosition = Input.mousePosition;
-
-            if (!this.swipeableArea.gameObject.activeInHierarchy)
-            {
-                return;
-            }
-
-            //create vector from the two point
-            this.currentSwipe = new Vector2(this.mouseReleasePosition.x - this.mousePressPosition.x, this.mouseReleasePosition.y - this.mousePressPosition.y);
-
-            //normalize the 2D vector
-            this.currentSwipe.Normalize();
-
-            //swipe up
-            if (this.currentSwipe.y > 0)
-            {
-                IncreaseSkillLevel();
-            }
-
-            //swipe down
-            if (this.currentSwipe.y < 0)
-            {
-                DecreaseSkillLevel();
-            }
+            SelectSkill();
+        }
+        else
+        {
+            isSwipeable = false;
         }
     }
 
@@ -235,16 +252,7 @@ public class SkillSlotV2 : MonoBehaviour
         int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
 
-        if (this.skillLevel == _maximumSkillLevel)
-        {
-            isSkillLevelReachedMaximum = true;
-        }
-        else
-        {
-            isSkillLevelReachedMaximum = false;
-        }
-
-        this.skillLevel = Math.Clamp( skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
+        this.skillLevel = Math.Clamp(skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
 
         while (!this.selectedSkill.IsSkillLevelAvailable(this.skillLevel))
         {
@@ -252,10 +260,7 @@ public class SkillSlotV2 : MonoBehaviour
         }
         UpdateCharacterSkillLevel(this.skillLevel);
         SetSelectedSkill(this.selectedSkill);
-        if(isSkillLevelReachedMaximum == false)
-        {
-            ModifySkillLevelAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
-        }
+        ModifySkillLevelAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
     }
 
     public void DecreaseSkillLevel()
@@ -265,15 +270,6 @@ public class SkillSlotV2 : MonoBehaviour
         int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
 
-        if (this.skillLevel == _minimumSkillLevel)
-        {
-            isSkillLevelReachedMinimum = true;
-        }
-        else
-        {
-            isSkillLevelReachedMinimum = false;
-        }
-
         this.skillLevel = Math.Clamp(skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
 
         while (!this.selectedSkill.IsSkillLevelAvailable(this.skillLevel))
@@ -282,10 +278,7 @@ public class SkillSlotV2 : MonoBehaviour
         }
         UpdateCharacterSkillLevel(this.skillLevel);
         SetSelectedSkill(this.selectedSkill);
-        if (isSkillLevelReachedMaximum == false)
-        {
-            ModifySkillLevelAnimation(minusLevelImage, minusLevelBackground, minusLevelOriginalPosition, minusLevelTargetPosition);
-        }
+        ModifySkillLevelAnimation(minusLevelImage, minusLevelBackground, minusLevelOriginalPosition, minusLevelTargetPosition);
     }
 
     public void UpdateCharacterSkillLevel(int skillLevel)
@@ -396,7 +389,16 @@ public class SkillSlotV2 : MonoBehaviour
                 break;
 
             case Skill.SkillType.backend:
-                this.skillFrame.sprite = this.backendSkillFrame;
+                if (selectedSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+                {
+                    this.skillFrame.sprite = this.observedSkillFrame;
+                    this.currentObsevedPercentage.gameObject.SetActive(true);
+                }
+                else
+                {
+                    this.skillFrame.sprite = this.backendSkillFrame;
+                    this.currentObsevedPercentage.gameObject.SetActive(false);
+                }
                 break;
 
             case Skill.SkillType.repulse:
@@ -425,7 +427,16 @@ public class SkillSlotV2 : MonoBehaviour
                 break;
 
             case Skill.SkillType.backend:
-                this.skillFrame.sprite = this.activeteBackendSkillFrame;
+                if (selectedSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+                {
+                    this.skillFrame.sprite = this.activateObservedSkillFrame;
+                    this.currentObsevedPercentage.gameObject.SetActive(true);
+                }
+                else
+                {
+                    this.skillFrame.sprite = this.activeteBackendSkillFrame;
+                    this.currentObsevedPercentage.gameObject.SetActive(false);
+                }
                 break;
 
             case Skill.SkillType.repulse:
@@ -470,11 +481,19 @@ public class SkillSlotV2 : MonoBehaviour
         if (frameType == SkillType.ActiveSkill)
         {
             this.skillFrame.sprite = this.blankActiveSkillFrame;
+            this.currentObsevedPercentage.gameObject.SetActive(false);
             this.skillFrame.SetNativeSize();
         }
         else if (frameType == SkillType.BackendSkill)
         {
             this.skillFrame.sprite = this.blankBackendSkillFrame;
+            this.currentObsevedPercentage.gameObject.SetActive(false);
+            this.skillFrame.SetNativeSize();
+        }
+        else if(frameType == SkillType.ObservedSkill)
+        {
+            this.skillFrame.sprite = this.blankObservedSkillFrame;
+            this.currentObsevedPercentage.gameObject.SetActive(true);
             this.skillFrame.SetNativeSize();
         }
         this.skillNameBackground.sprite = blankSkillNameBackground;
@@ -568,6 +587,27 @@ public class SkillSlotV2 : MonoBehaviour
         else if(isEnable == false)
         {
             this.skillDisplayTextUI.SetActive(false);
+        }
+    }
+
+    public void UpdateCurrentObservedStatus(PhaseType currentPhase)
+    {
+        if(this.observedSkillData.GetCurrentObservedRate() > 0)
+        {
+            this.currentObsevedPercentage.gameObject.SetActive(true);
+            if (currentPhase == PhaseType.PartB)
+            {
+                this.currentObsevedPercentage.text = "---";
+            }
+            else if (currentPhase == PhaseType.AfterPartB)
+            {
+                float _observationRate = this.observedSkillData.GetCurrentObservedRate();
+                this.currentObsevedPercentage.SetText(_observationRate * 100 + "%");
+            }
+        }
+        else
+        {
+            this.currentObsevedPercentage.text = "---";
         }
     }
 
