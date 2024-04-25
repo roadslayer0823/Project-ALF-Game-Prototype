@@ -830,6 +830,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: DefendingToggle
       objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TickBackendSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3943596977560951861, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
       propertyPath: m_text
       value: "\u5F8C\u53F0\u6280\u80FD"
@@ -838,6 +866,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: ObservingToggle
       objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TickBackendSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3943596977887570348, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
       propertyPath: m_text
       value: "\u56DE\u907F"
@@ -845,6 +901,34 @@ PrefabInstance:
     - target: {fileID: 3943596977925166048, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
       propertyPath: m_Name
       value: EvadingToggle
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TickBackendSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3943596977930065010, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
       propertyPath: m_Pivot.x
@@ -1129,6 +1213,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangeToggle
       objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TickActiveSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3943596977560951861, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
       propertyPath: m_text
       value: "\u4E3B\u52D5\u6280\u80FD"
@@ -1137,6 +1249,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: RangeMeleeToggle
       objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TickActiveSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3943596977887570348, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
       propertyPath: m_text
       value: "\u8FD1\u6230"
@@ -1144,6 +1284,34 @@ PrefabInstance:
     - target: {fileID: 3943596977925166048, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
       propertyPath: m_Name
       value: MeleeToggle
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TickActiveSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 3943596977930065010, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
       propertyPath: m_Pivot.x
@@ -1420,6 +1588,186 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 5530734239693581115}
     m_Modifications:
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TickPassiveSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: UntickPassiveSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977340159289, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TickPassiveSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: UntickPassiveSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977651394174, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: m_Group
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 5530734240017367701}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: TickPassiveSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: UntickPassiveSkillParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: EnemyDebugMenuPanel, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgument
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3943596977925166050, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
+      propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
     - target: {fileID: 3943596977930065010, guid: 005ca55fb3fb34fa3b7e7d9eb4eec7ff, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
