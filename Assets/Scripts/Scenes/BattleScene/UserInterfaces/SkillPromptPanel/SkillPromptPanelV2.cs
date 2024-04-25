@@ -472,7 +472,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         }
     }
 
-    // set the transparency
+    // set the alpha back to max after after being pushed away
     private void SetAlphaToMax(Image backgroundImage, TextMeshProUGUI text)
     {
         text.alpha = 1.0f;
@@ -500,6 +500,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         LeanTween.cancel(slotToPush);
         LeanTween.moveLocalX(slotToPush, isPlayer? -250.0f : 250.0f, this.skillInfoPopSpeed);
 
+        // gradually decrease the alpha to zero
         LeanTween.value(slotText.gameObject, 1f, 0f, this.passiveSkillSlotFadeSpeed).setOnUpdate((float value) =>
         {
             slotText.alpha = value;

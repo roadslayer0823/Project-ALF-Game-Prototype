@@ -57,12 +57,14 @@ public class CutScreenHandlerV2 : MonoBehaviour
         StartCoroutine(HorizontalCutScreen(onComplete));
     }
 
+    // horizontally cut the screen
     private IEnumerator HorizontalCutScreen(Action onComplete = null)
     {
         ResetHorizontalCutScreen();
 
         this.screenshotHandler.TakeScreenshot();
 
+        // wait for the screenshot completed
         yield return new WaitUntil(() => screenshotHandler.GetIsReadyToCut());
 
         if (screenshotHandler.GetImageToCut() == null)
@@ -84,10 +86,12 @@ public class CutScreenHandlerV2 : MonoBehaviour
             StartCoroutine(GrayscaleCoroutine(this.firstPartImage, this.grayscaleDuration, true));
             StartCoroutine(GrayscaleCoroutine(this.secondPartImage, this.grayscaleDuration, true));
 
+            // wait for the cutting line and grayscale completed
             yield return new WaitUntil(() => this.isCuttingCompleted && this.isGrayscaleCompleted);
 
             onComplete?.Invoke();
 
+            // separate the cut screen
             Vector3 _movingUpwardPosition = new Vector3(Screen.width * 0.5f, (Screen.height * 0.5f) + Screen.height, 0);
             Vector3 _movingDownwardPosition = new Vector3(Screen.width * 0.5f, (Screen.height * 0.5f) - Screen.height, 0);
             LeanTween.move( this.firstPartGO, _movingUpwardPosition, this.cutScreenMoveDuration ).setOnComplete( () => { ResetHorizontalCutScreen(); } );
@@ -95,12 +99,14 @@ public class CutScreenHandlerV2 : MonoBehaviour
         }
     }
 
+    // vertically cut the screen
     private IEnumerator VerticalCutScreen(Action onComplete = null)
     {
         ResetVerticalCutScreen();
 
         this.screenshotHandler.TakeScreenshot();
 
+        // wait for the screenshot completed
         yield return new WaitUntil(() => screenshotHandler.GetIsReadyToCut());
 
         if (screenshotHandler.GetImageToCut() == null)
@@ -123,10 +129,12 @@ public class CutScreenHandlerV2 : MonoBehaviour
             StartCoroutine(GrayscaleCoroutine(this.rightPartImage, this.grayscaleDuration, true));
             StartCoroutine(GrayscaleCoroutine(this.leftPartImage, this.grayscaleDuration, true));
 
+            // wait for the cutting line and grayscale completed
             yield return new WaitUntil(() => this.isCuttingCompleted && this.isGrayscaleCompleted);
 
             onComplete?.Invoke();
 
+            // separate the cut screen
             Vector3 _movingRightPosition = new Vector3((Screen.width * 0.5f) + Screen.width, Screen.height * 0.5f, 0);
             Vector3 _movingLeftPosition = new Vector3((Screen.width * 0.5f) - Screen.width, Screen.height * 0.5f, 0);
 
@@ -137,6 +145,7 @@ public class CutScreenHandlerV2 : MonoBehaviour
         }
     }
 
+    // gradually gray the captured image based on the given duration
     private IEnumerator GrayscaleCoroutine(Image spriteRenderer, float duration, bool isGrayscale)
     {
         float _time = 0.0f;
@@ -154,6 +163,7 @@ public class CutScreenHandlerV2 : MonoBehaviour
         this.isGrayscaleCompleted = true;
     }
 
+    // line animation for horizontal cut
     private void HorizontalCutLineAnimation()
     {
         ArrowRotationCalculation(defaultPoint, targetPoint, horizontalCutLine);
@@ -164,9 +174,9 @@ public class CutScreenHandlerV2 : MonoBehaviour
             });
     }
 
+    // line animation for vertical cut
     private void VerticalCutLineAnimation()
     {
-
         ArrowRotationCalculation(this.topDefaultPoint, topTargetPoint, verticalTopCutLine);
         ArrowRotationCalculation(this.bottomDefaultPoint, bottomTargetPoint, verticalBottomCutLine);
 
@@ -188,6 +198,7 @@ public class CutScreenHandlerV2 : MonoBehaviour
             });
     }
 
+    // reset the horizontal cut screen related ui to it initial position and status
     private void ResetHorizontalCutScreen()
     {
         LeanTween.cancel(this.firstPartGO);
@@ -211,7 +222,7 @@ public class CutScreenHandlerV2 : MonoBehaviour
         this.isCuttingCompleted = false;
     }
 
-
+    // reset the vertical cut screen related ui to it initial position and status
     private void ResetVerticalCutScreen()
     {
         LeanTween.cancel(this.rightPartGo);
@@ -242,6 +253,7 @@ public class CutScreenHandlerV2 : MonoBehaviour
         this.verticalBottomCutLine.gameObject.SetActive(false);
     }
 
+    // calculate the cutting slope angle for the cutting line
     private void ArrowRotationCalculation(RectTransform defaultPoint, RectTransform targetPoint, Image targetCutLine)
     {
         Vector2 startingPoint = new Vector2(defaultPoint.position.x, defaultPoint.position.y);
