@@ -643,7 +643,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         UpdateActiveSkillListBox();
     }
 
-    // replace the selected active skill
+    // replace the selected active skill with unselected active skill
     public void ReplaceSelectedActiveSkill(SkillSelectionBoxV2 targetToSwap)
     {
         if (GetSelectedActiveSkillList().Count == 0)
