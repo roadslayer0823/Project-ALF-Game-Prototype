@@ -62,7 +62,6 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     [SerializeField] private Transform plusLevelOriginalPosition;
     [SerializeField] private Transform minusLevelTargetPosition;
     [SerializeField] private Transform minusLevelOriginalPosition;
-    [SerializeField] private GameObject swipeableArea = null;
     [SerializeField] private Image plusLevelImage;
     [SerializeField] private Image plusLevelBackground;
     [SerializeField] private Image minusLevelImage;
@@ -128,7 +127,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     private void Start()
     {
-        this.skillFrame.alphaHitTestMinimumThreshold = alphaThreshold;
+        this.skillFrame.alphaHitTestMinimumThreshold = this.alphaThreshold;
     }
 
     public void Initialize(ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2)
@@ -247,10 +246,15 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void IncreaseSkillLevel()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_UP);
-
         int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
+
+        if (this.skillLevel == _maximumSkillLevel)
+        {
+            return;
+        }
+
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_UP);
 
         this.skillLevel = Math.Clamp(skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
 
@@ -260,15 +264,20 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
         UpdateCharacterSkillLevel(this.skillLevel);
         SetSelectedSkill(this.selectedSkill);
-        ModifySkillLevelAnimation(plusLevelImage, plusLevelBackground, plusLevelOriginalPosition, plusLevelTargetPosition);
+        ModifySkillLevelAnimation(this.plusLevelImage, this.plusLevelBackground, this.plusLevelOriginalPosition, this.plusLevelTargetPosition);
     }
 
     public void DecreaseSkillLevel()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_DOWN);
-
         int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
+
+        if (this.skillLevel == _minimumSkillLevel)
+        {
+            return;
+        }
+
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_DOWN);
 
         this.skillLevel = Math.Clamp(skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
 
@@ -278,7 +287,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
         UpdateCharacterSkillLevel(this.skillLevel);
         SetSelectedSkill(this.selectedSkill);
-        ModifySkillLevelAnimation(minusLevelImage, minusLevelBackground, minusLevelOriginalPosition, minusLevelTargetPosition);
+        ModifySkillLevelAnimation(this.minusLevelImage, this.minusLevelBackground, this.minusLevelOriginalPosition, this.minusLevelTargetPosition);
     }
 
     public void UpdateCharacterSkillLevel(int skillLevel)
@@ -300,19 +309,20 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         if (this.skillLevel > 1)
         {
-            skillLevelGameObject.SetActive(true);
-            skillTextAnimation.gameObject.SetActive(true);
-            levelModifierImage.gameObject.SetActive(true);
-            background.gameObject.SetActive(true);
+            this.skillLevelGameObject.SetActive(true);
         }
         else
         {
-            skillLevelGameObject.SetActive(false);
+            this.skillLevelGameObject.SetActive(false);
         }
+
+        this.skillTextAnimation.gameObject.SetActive(true);
+        levelModifierImage.gameObject.SetActive(true);
+        background.gameObject.SetActive(true);
 
         float duration = 0.1f;
         float targetScale = 3f;
-        Vector3 skillTextScale = skillLevelGameObject.transform.localScale;
+        Vector3 skillTextScale = this.skillLevelGameObject.transform.localScale;
         levelModifierImage.color = new Color(levelModifierImage.color.r, levelModifierImage.color.g, levelModifierImage.color.b, 0f);
         background.color = new Color(background.color.r, background.color.g, background.color.b, 0f);
 
@@ -320,10 +330,10 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         LeanTween.move(levelModifierImage.gameObject, targetPosition, duration);
         LeanTween.alpha(levelModifierImage.rectTransform, 1f, duration);
         LeanTween.alpha(background.rectTransform, 1f, duration);
-        LeanTween.scale(skillTextAnimation, skillTextScale * targetScale, duration);
-        LeanTween.value(skillLevelAnimationText.gameObject, 1f, 0f, duration).setOnUpdate((float value) =>
+        LeanTween.scale(this.skillTextAnimation, skillTextScale * targetScale, duration);
+        LeanTween.value(this.skillLevelAnimationText.gameObject, 1f, 0f, duration).setOnUpdate((float value) =>
         {
-            skillLevelAnimationText.alpha = value;
+            this.skillLevelAnimationText.alpha = value;
         })
             .setOnComplete(() => {
                 LeanTween.alpha(background.rectTransform, 0f, 0.3f)
@@ -333,9 +343,9 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 LeanTween.alpha(levelModifierImage.rectTransform, 0f, duration);
                 levelModifierImage.gameObject.SetActive(false);
                 background.gameObject.SetActive(false);
-                skillTextAnimation.gameObject.SetActive(false);
+                this.skillTextAnimation.gameObject.SetActive(false);
                 levelModifierImage.transform.position = originalPosition.transform.position;
-                skillTextAnimation.transform.localScale = skillTextScale;
+                this.skillTextAnimation.transform.localScale = skillTextScale;
             });
        });
     }
@@ -367,11 +377,11 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
         if (this.skillLevel > 1)
         {
-            skillLevelGameObject.SetActive(true);
+            this.skillLevelGameObject.SetActive(true);
         }
         else
         {
-            skillLevelGameObject.SetActive(false);
+            this.skillLevelGameObject.SetActive(false);
         }
 
         UpdateCharacterSkillLevel(this.skillLevel);
@@ -637,22 +647,22 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 string firstPart = text.Substring(0, splitIndex + 1);
                 string secondPart = text.Substring(splitIndex + 1).TrimStart();
 
-                if(topRowText != null)
+                if(this.topRowText != null)
                 {
-                    topRowText.text = firstPart;
+                    this.topRowText.text = firstPart;
                 }
 
-                if(bottomRowText != null)
+                if(this.bottomRowText != null)
                 {
-                    bottomRowText.text = secondPart;
+                    this.bottomRowText.text = secondPart;
                 }
             }
        }
        else
        {
-           if(bottomRowText != null)
+           if(this.bottomRowText != null)
            {
-               bottomRowText.text = text;
+               this.bottomRowText.text = text;
            }
        }
     }

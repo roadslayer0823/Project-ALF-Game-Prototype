@@ -120,11 +120,11 @@ public class SkillInfoPanel : MonoBehaviour
         if (this.skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
         {
             ShowActiveSkillInfoPanel();
-            if(skillType == SubSkillType.repulse)
+            if(this.skillType == SubSkillType.repulse)
             {
                 ShowRepulseSkillPanelUI();
             }
-            else if(skillType == SubSkillType.derived)
+            else if(this.skillType == SubSkillType.derived)
             {
                 if(this.skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSelectedDerivedSkill() == null)
                 {
@@ -157,7 +157,7 @@ public class SkillInfoPanel : MonoBehaviour
                 this.counterSkillSelectionTabButton.SetActive(false);
                 
             }
-            else if (skillType == SubSkillType.counter)
+            else if (this.skillType == SubSkillType.counter)
             {
                 ShowCounterSkillPanelUI();
             }
@@ -173,7 +173,7 @@ public class SkillInfoPanel : MonoBehaviour
     {
         CharacterSubskill _characterSubskill = characterSkill.GetCharacterSubskillData();
 
-        if (skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+        if (this.skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
         {
             SetupObservedSkill(characterSkill);
             this.skillInfomation.SetActive(false);
@@ -198,8 +198,8 @@ public class SkillInfoPanel : MonoBehaviour
         }
 
         string skillNameText = _subskillData.DisplayName; // display name
-        integratedText = skillTypeText + " " + skillNameText;
-        displayName.SetText(integratedText);
+        this.integratedText = skillTypeText + " " + skillNameText;
+        this.displayName.SetText(integratedText);
 
         this.levelText.SetText(activeSkill.GetCharacterSubskillData().GetSubskillData().Level.ToString()); // Level Text
 
@@ -320,8 +320,8 @@ public class SkillInfoPanel : MonoBehaviour
                 rangeTagText = "【遠程】";
             }
             string tagEffectTypeText = $"【{ TerminologyManager.GetWideEffectTypeText(characterSkill.GetSkillData()) }】";
-            integratedText = rangeTagText + "" + tagEffectTypeText;
-            this.tagArea.text = integratedText;
+            this.integratedText = rangeTagText + "" + tagEffectTypeText;
+            this.tagArea.text = this.integratedText;
             this.tagArea.gameObject.SetActive(true);
         }
 
@@ -349,12 +349,12 @@ public class SkillInfoPanel : MonoBehaviour
             for (int i = 0; i < characterSkill.GetObservedSkillDataList().Count; i++)
             {
                 ObservedSkillData _observedSkillData = characterSkill.GetObservedSkillDataList()[i];
-                observedSkillBoxPrefab.Initialize(_observedSkillData);
+                this.observedSkillBoxPrefab.Initialize(_observedSkillData);
             }
         }
         else
         {
-            observedSkillBoxPrefab.Initialize(null);
+            this.observedSkillBoxPrefab.Initialize(null);
         }
     }
 
@@ -393,7 +393,7 @@ public class SkillInfoPanel : MonoBehaviour
     {
         skillType = SubSkillType.none;
         UpdateSkillInfoPanel(this.selectedSkill);
-        SetSkillPanelUI(activeSkillInfoBackground, yellowLevelBackground, yellowSkillNameBackground);
+        SetSkillPanelUI(this.activeSkillInfoBackground, this.yellowLevelBackground, this.yellowSkillNameBackground);
         this.derivedSkillSelectionTabButton.gameObject.SetActive(true);
 
         if (this.selectedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
@@ -415,10 +415,10 @@ public class SkillInfoPanel : MonoBehaviour
         {
             return;
         }
-        skillType = SubSkillType.repulse;
+        this.skillType = SubSkillType.repulse;
         this.derivedSkillSelectionTabButton.gameObject.SetActive(true);
         UpdateSkillInfoPanel(this.selectedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill());
-        SetSkillPanelUI(repulseSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
+        SetSkillPanelUI(this.repulseSkillInfoBackground, this.blueLevelBackground, this.blueSkillNameBackground);
 
         if (this.skillSelectionBox.GetIsSelected())
         {
@@ -433,10 +433,10 @@ public class SkillInfoPanel : MonoBehaviour
             return;
         }
 
-        skillType = SubSkillType.derived;
+        this.skillType = SubSkillType.derived;
         this.derivedSkillSelectionTabButton.gameObject.SetActive(false);
         UpdateSkillInfoPanel(this.selectedSkill.GetCharacterSubskillData().GetSelectedDerivedSkill());
-        SetSkillPanelUI(derivedSkillInfoBackground, derivedSkillLevelBackground, derivedSkillNameBackground);
+        SetSkillPanelUI(this.derivedSkillInfoBackground, this.derivedSkillLevelBackground, this.derivedSkillNameBackground);
 
         if (this.skillSelectionBox.GetIsSelected())
         {
@@ -448,7 +448,7 @@ public class SkillInfoPanel : MonoBehaviour
     {
         UpdateSkillInfoPanel(this.selectedSkill);
         ShowBackendSkillTabButton(false, false);
-        SetSkillPanelUI(backendSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
+        SetSkillPanelUI(this.backendSkillInfoBackground, this.blueLevelBackground, this.blueSkillNameBackground);
 
         if (this.skillSelectionBox.GetIsSelected())
         {
@@ -460,7 +460,7 @@ public class SkillInfoPanel : MonoBehaviour
     {
         UpdateSkillInfoPanel(this.selectedSkill);
         ShowBackendSkillTabButton(false, false);
-        SetSkillPanelUI(evasionSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
+        SetSkillPanelUI(this.evasionSkillInfoBackground, this.blueLevelBackground, this.blueSkillNameBackground);
 
         if (this.skillSelectionBox.GetIsSelected())
         {
@@ -470,9 +470,9 @@ public class SkillInfoPanel : MonoBehaviour
 
     public void ShowCounterSkillPanelUI()
     {
-        skillType = SubSkillType.counter;
+        this.skillType = SubSkillType.counter;
         UpdateSkillInfoPanel(this.selectedSkill.GetCharacterSubskillData().GetSelectedCounterSkill());
-        SetSkillPanelUI(counterSkillInfoBackground, yellowLevelBackground, yellowSkillNameBackground);
+        SetSkillPanelUI(this.counterSkillInfoBackground, this.yellowLevelBackground, this.yellowSkillNameBackground);
 
         if (this.selectedSkill.GetCharacterSubskillData().GetSubskillData().IsDefendingSkill)
         {
@@ -497,7 +497,7 @@ public class SkillInfoPanel : MonoBehaviour
     {
         UpdateSkillInfoPanel(this.selectedSkill);
         ShowBackendSkillTabButton(false, false);
-        SetSkillPanelUI(observeSkillInfoBackground, blueLevelBackground, blueSkillNameBackground);
+        SetSkillPanelUI(this.observeSkillInfoBackground, this.blueLevelBackground, this.blueSkillNameBackground);
     }
 
     public void IncreaseSkillInfoLevel()

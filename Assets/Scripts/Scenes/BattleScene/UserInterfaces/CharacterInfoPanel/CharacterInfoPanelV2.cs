@@ -84,10 +84,10 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         float _startingVirtualPoint = this.selectedCharacter.GetMaximumHealthPoint();
         float _startingStressValue = -1f;
 
-        startingStatePoint = _startingStatePoint;
-        startingHealthPoint = _startingHealthPoint;
-        startingVirtualPoint = _startingVirtualPoint;
-        startingStressValue = _startingStressValue;
+        this.startingStatePoint = _startingStatePoint;
+        this.startingHealthPoint = _startingHealthPoint;
+        this.startingVirtualPoint = _startingVirtualPoint;
+        this.startingStressValue = _startingStressValue;
     }
 
     public void SetSelectedCharacter(GameCharacter selectedCharacter)
@@ -115,7 +115,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         HealthPointInfo();
         StatePointInfo();
         StressValueInfo();
-        isSetupComplete = true;
+        this.isSetupComplete = true;
     }
 
     private void StatePointInfo()
@@ -127,46 +127,46 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
         if (maximumStatePointText.Length == 2)
         {
-            MaxStatePointTextSpacing(false, false, maximumStatePointText, twoCharacterSpacing);
+            MaxStatePointTextSpacing(false, false, maximumStatePointText, this.twoCharacterSpacing);
         }
 
         else if (maximumStatePointText.Length == 3)
         {
-            MaxStatePointTextSpacing(true, false, maximumStatePointText, threeCharacterSpacing);
+            MaxStatePointTextSpacing(true, false, maximumStatePointText, this.threeCharacterSpacing);
         }
 
         else if (maximumStatePointText.Length == 4)
         {
-            MaxStatePointTextSpacing(true, true, maximumStatePointText, fourCharacterSpacing);
+            MaxStatePointTextSpacing(true, true, maximumStatePointText, this.fourCharacterSpacing);
         }
 
         if (this.startingStatePoint != _currentStatePoint)
         {
             //curret state point animation
-            LeanTween.value(gameObject, this.startingStatePoint, _currentStatePoint, textAnimationDuration)
+            LeanTween.value(gameObject, this.startingStatePoint, _currentStatePoint, this.textAnimationDuration)
                 .setOnUpdate((float val) =>
                 {
                     this.startingStatePoint = Mathf.RoundToInt(val);
-                    this.statePointValueText.SetText(startingStatePoint.ToString());
-                    this.statePointBar.fillAmount = startingStatePoint / _maximumStatePoint;
+                    this.statePointValueText.SetText(this.startingStatePoint.ToString());
+                    this.statePointBar.fillAmount = this.startingStatePoint / _maximumStatePoint;
                 });
 
             //max state point increase animation
             if (this.startingStatePoint != _maximumStatePoint)
             {
-                if (isSetupComplete == true)
+                if (this.isSetupComplete == true)
                 {
-                    Vector2 maxStatePointIconOriginalPosition = maxStatePointIncreaseIcon.gameObject.transform.position;
-                    float maxStatePointIncreaseOpacity = maxStatePointIncreaseIcon.color.a;
+                    Vector2 maxStatePointIconOriginalPosition = this.maxStatePointIncreaseIcon.gameObject.transform.position;
+                    float maxStatePointIncreaseOpacity = this.maxStatePointIncreaseIcon.color.a;
 
                     //max state point increase animation
-                    maxStatePointIncreaseIcon.gameObject.SetActive(true);
+                    this.maxStatePointIncreaseIcon.gameObject.SetActive(true);
                     this.characterInfoPanelAnimation.Play(ANIMATION_ID_MAX_STATE_POINT_INCREASE, 1, 0f);
-                    LeanTween.move(maxStatePointIncreaseIcon.gameObject, maxStatePointAnimEndingPoint, 0.5f)
+                    LeanTween.move(this.maxStatePointIncreaseIcon.gameObject, this.maxStatePointAnimEndingPoint, 0.5f)
                        .setOnComplete(() =>
                         {
-                            LeanTween.alpha(maxStatePointIncreaseIcon.gameObject, 0, 0.3f);
-                            maxStatePointIncreaseIcon.gameObject.SetActive(false);
+                            LeanTween.alpha(this.maxStatePointIncreaseIcon.gameObject, 0, 0.3f);
+                            this.maxStatePointIncreaseIcon.gameObject.SetActive(false);
                             maxStatePointIncreaseOpacity = 255;
                             maxStatePointIncreaseIcon.gameObject.transform.position = maxStatePointIconOriginalPosition;
                         });
@@ -226,7 +226,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     private void StressValueInfo()
     {
         float _currentStressValue = this.selectedCharacter.GetCurrentStressValue();
-        if (isSetupComplete == false)
+        if (this.isSetupComplete == false)
         {
             this.stressValueStatus.material.SetFloat("_Slide", 0);
         }
@@ -235,16 +235,16 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         {
             this.stressValueBreak.gameObject.SetActive(true);
             this.stressPercentageText.gameObject.SetActive(false);
-            stressValueStatusAnimation(breakStatusColor, stressValueStatusDuration, "_Color1_G_Percentage");
-            stressValueStatusAnimation(breakStatusColor, stressValueStatusDuration, "_Color2_G_Percentage");
-            stressValueStatusAnimation(breakStatusColor, stressValueStatusDuration, "_Color1_B_Percentage");
+            stressValueStatusAnimation(breakStatusColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
+            stressValueStatusAnimation(breakStatusColor, this.stressValueStatusDuration, "_Color2_G_Percentage");
+            stressValueStatusAnimation(breakStatusColor, this.stressValueStatusDuration, "_Color1_B_Percentage");
         }
-        else if (startingStressValue != _currentStressValue)
+        else if (this.startingStressValue != _currentStressValue)
         {
             this.stressPercentageText.SetText(_currentStressValue.ToString());
             this.stressPercentageText.gameObject.SetActive(true);
             this.stressValueBreak.gameObject.SetActive(false);
-            if (isSetupComplete == true)
+            if (this.isSetupComplete == true)
             {
                 Color32 redColor = new Color32(255, 0, 0, 255);
                 Color32 blueColor = new Color32(0, 100, 255, 255);
@@ -266,40 +266,40 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                 //stress value status animation
                 if (_currentStressValue >= 0)
                 {
-                    stressValueStatusAnimation(defaultColor, stressValueStatusDuration, "_Color1_G_Percentage");
-                    stressValueStatusAnimation(defaultColor, stressValueStatusDuration, "_Color2_G_Percentage");
-                    stressValueStatusAnimation(defaultColor, stressValueStatusDuration, "_Color1_B_Percentage");
+                    stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
+                    stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color2_G_Percentage");
+                    stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color1_B_Percentage");
                 }
                 else if (_currentStressValue >= 70)
                 {
-                    stressValueStatusAnimation(this.orangeColor, stressValueStatusDuration, "_Color1_G_Percentage");
+                    stressValueStatusAnimation(this.orangeColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
                 }
                 else if (_currentStressValue >= 80)
                 {
-                    stressValueStatusAnimation(this.redColor, stressValueStatusDuration, "_Color1_G_Percentage");
+                    stressValueStatusAnimation(this.redColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
                 }
 
                 //number changing animation
-                LeanTween.value(gameObject, startingStressValue, _currentStressValue, textAnimationDuration)
+                LeanTween.value(gameObject, this.startingStressValue, _currentStressValue, textAnimationDuration)
                         .setOnUpdate((float val) =>
                         {
                             this.stressValueStatus.material.SetFloat("_Slide", val / 100);
                             this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, new Color32(255, 0, 0, 255));
                             this.startingStressValue = Mathf.RoundToInt(val);
-                            this.stressPercentageText.SetText($"{startingStressValue}<size=40>%</size>");
+                            this.stressPercentageText.SetText($"{this.startingStressValue}<size=40>%</size>");
                         });
 
                 //number outline animation
                 this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, redColor);
 
-                _sequence.append(LeanTween.value(gameObject, new Vector3(blueR, blueG, blueB), new Vector3(redR, redG, redB), textAnimationDuration)
+                _sequence.append(LeanTween.value(gameObject, new Vector3(blueR, blueG, blueB), new Vector3(redR, redG, redB), this.textAnimationDuration)
                     .setOnUpdate((Vector3 color) =>
                     {
                         Color32 currentColor = new Color32((byte)(color.x + 255), (byte)(color.y - 100), (byte)(color.z - 255), 255);
                         this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, currentColor);
                     }));
 
-                _sequence.append(LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), textAnimationDuration)
+                _sequence.append(LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), this.textAnimationDuration)
                     .setOnUpdate((Vector3 color) =>
                     {
                         Color32 currentColor = new Color32((byte)(color.x - 255), (byte)(color.y + 100), (byte)(color.z + 255), 255);
@@ -337,12 +337,12 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
     public IEnumerator PlayMaxStatePointAnimation()
     {
-        Vector2 currentScale = maxStatePointValueFirstText.rectTransform.localScale;
-        Vector2 newScale = new Vector3(currentScale.x / scaleMultiplier, currentScale.y / scaleMultiplier);
-        for (int i = 0; i < maxStatePointText.Length; i++)
+        Vector2 currentScale = this.maxStatePointValueFirstText.rectTransform.localScale;
+        Vector2 newScale = new Vector3(currentScale.x / this.scaleMultiplier, currentScale.y / this.scaleMultiplier);
+        for (int i = 0; i < this.maxStatePointText.Length; i++)
         {
-            var targetText = maxStatePointText[i];
-            yield return StartCoroutine(MaxStatePointAnimation(targetText, newScale, currentScale, defaultTextOffset, targetTextOffset, defaultTextOuter, targetTextOuter, maxStatePointScaleDuration, maxStatePointGlowDuration));
+            var targetText = this.maxStatePointText[i];
+            yield return StartCoroutine(MaxStatePointAnimation(targetText, newScale, currentScale, this.defaultTextOffset, this.targetTextOffset, this.defaultTextOuter, this.targetTextOuter, this.maxStatePointScaleDuration, this.maxStatePointGlowDuration));
         }
     }
 
@@ -361,7 +361,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
         yield return new WaitForSeconds(glowDuration);
 
-        _sequence.append(LeanTween.value(targetText.gameObject, targetOffset, defaultOffset, glowDuration)
+        _sequence.insert(LeanTween.value(targetText.gameObject, targetOffset, defaultOffset, glowDuration)
            .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val); }));
 
         _sequence.insert(LeanTween.value(targetText.gameObject, targetOuter, defaultOuter, glowDuration)

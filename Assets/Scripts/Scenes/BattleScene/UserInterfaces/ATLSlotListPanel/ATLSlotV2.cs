@@ -107,7 +107,7 @@ public class ATLSlotV2 : MonoBehaviour
         {
             int _atlNumber = this.battleFlowATL_V2.GetATLNumber();
             bool _isPlayer = ( _atlNumber % 2 == this.atlNumberForPlayer );
-            float atlSlotAlphaValue = atlSlotAnimation.color.a;
+            float atlSlotAlphaValue = this.atlSlotAnimation.color.a;
 
             if (aTLCurrentStatus == ATLCurrentStatus.Unused)
             {
@@ -116,10 +116,10 @@ public class ATLSlotV2 : MonoBehaviour
             else if (aTLCurrentStatus == ATLCurrentStatus.Using)
             {
                 this.atlSlotAnimation.sprite = ( _isPlayer ) ? this.playerUsingAtlSlot : this.enemyUsingAtlSlot;
-                LeanTween.alpha(atlSlotAnimation.rectTransform, 1f, 0.5f)
+                LeanTween.alpha(this.atlSlotAnimation.rectTransform, 1f, 0.5f)
                     .setOnComplete(() =>
                     {
-                        LeanTween.alpha(atlSlotAnimation.rectTransform, 0, 0.5f);
+                        LeanTween.alpha(this.atlSlotAnimation.rectTransform, 0, 0.5f);
                         this.atlSlot.sprite = (_isPlayer) ? this.playerUsedAtlSlot : this.enemyUsedAtlSlot;
                     });
             }

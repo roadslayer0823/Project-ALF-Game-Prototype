@@ -153,13 +153,13 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
         for (int i = 0; i < this.backendSkillSlot.Length; i++)
         {
-            SkillSlotV2 _backendSkillSlot = backendSkillSlot[ i ];
+            SkillSlotV2 _backendSkillSlot = this.backendSkillSlot[ i ];
             CharacterSkill _backendSkill = _backendSkillSlot.GetSelectedSkill();
 
             if (_backendSkill != null)
             {
                 Subskill _subskillData = _backendSkill.GetCharacterSubskillData().GetSubskillData();
-                backendSkillSlot[i].UpdateCurrentSkillDisplayTextUI(true);
+                this.backendSkillSlot[i].UpdateCurrentSkillDisplayTextUI(true);
 
                 if (( _isAbleToDefend && _subskillData.IsDefendingSkill )
                    || ( _isAbleToEvade && _subskillData.IsEvadingSkill )
@@ -180,7 +180,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             }
             else
             {
-                backendSkillSlot[i].UpdateCurrentSkillDisplayTextUI(false);
+                this.backendSkillSlot[i].UpdateCurrentSkillDisplayTextUI(false);
             }
         }
 
@@ -212,7 +212,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
         if (qteSkill != null)
         {
-            qteSkillSlot.SetSelectedSkill(qteSkill);
+            this.qteSkillSlot.SetSelectedSkill(qteSkill);
         }
     }
 
@@ -223,7 +223,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             for (int i = 0; i < observedSkill.GetObservedSkillDataList().Count; i++)
             {
                 ObservedSkillData _observedSkillData = observedSkill.GetObservedSkillDataList()[i];
-                backendSkillSlot[2].InitializeObserveSkillSlot(_observedSkillData);
+                this.backendSkillSlot[2].InitializeObserveSkillSlot(_observedSkillData);
             }
         }
     }
