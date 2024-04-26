@@ -87,7 +87,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
             }
         }
 
-        currentAtlSlot = null;
+        this.currentAtlSlot = null;
         for (int i = 0; i < this.theATLSlots.Length; i++)
         {
             ATLSlotV2 _atlSlot = this.theATLSlots[i];
@@ -101,7 +101,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
             else if (i <= _atlIndex)
             {
                 _currentStatus = ATLSlotV2.ATLCurrentStatus.Using;
-                currentAtlSlot = _atlSlot;
+                this.currentAtlSlot = _atlSlot;
             }
 
             else
@@ -112,8 +112,8 @@ public class ATLSlotListPanelV3 : MonoBehaviour
             _atlSlot.Show(_currentStatus);
         }
 
-        PlayBlueProgressBarAnimation(currentAtlSlot, animationDuration);
-        PlayYellowProgressBarAnimation(currentAtlSlot, animationDuration);
+        PlayBlueProgressBarAnimation(this.currentAtlSlot, animationDuration);
+        PlayYellowProgressBarAnimation(this.currentAtlSlot, animationDuration);
 
         this.lastAtlNumber = atlNumber;
     }
@@ -122,7 +122,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
     {
         LeanTween.cancel(this.gameObject);
 
-        float _atlSlotMiddlePoint = currentAtlSlot.GetMiddlePointX();
+        float _atlSlotMiddlePoint = this.currentAtlSlot.GetMiddlePointX();
         PlayBlueProgressBarAnimation(_atlSlotMiddlePoint, animationDuration);
         PlayYellowProgressBarAnimation(_atlSlotMiddlePoint, animationDuration);
     }
@@ -131,7 +131,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
     {
         LeanTween.cancel(this.gameObject);
 
-        float _atlSlotEndingPoint = currentAtlSlot.GetEndingPointX();
+        float _atlSlotEndingPoint = this.currentAtlSlot.GetEndingPointX();
         PlayBlueProgressBarAnimation(_atlSlotEndingPoint, animationDuration);
         PlayYellowProgressBarAnimation( _atlSlotEndingPoint, animationDuration);
     }
@@ -179,7 +179,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
         PlayBlueProgressBarAnimation(_atlSlotStartPoint, duration * 0.1f)
             .setEase(LeanTweenType.easeOutQuad).setOnComplete(() => PlayBlueProgressBarAnimation(_atlSlotMiddlePoint, duration * 0.9f));
 
-        repulseAndDefendPointer.gameObject.SetActive(true);
+        this.repulseAndDefendPointer.gameObject.SetActive(true);
     }
 
     public void PlayYellowProgressBarAnimation(ATLSlotV2 atlSlot, float duration)
@@ -190,7 +190,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
         PlayYellowProgressBarAnimation( _atlSlotStartPoint, duration * 0.1f)
            .setEase(LeanTweenType.easeOutQuad).setOnComplete(() => PlayYellowProgressBarAnimation( _atlSlotMiddlePoint, duration * 0.9f));
 
-        activeSkillPointer.gameObject.SetActive(true);
+        this.activeSkillPointer.gameObject.SetActive(true);
     }
 
 
@@ -215,11 +215,11 @@ public class ATLSlotListPanelV3 : MonoBehaviour
     private void UpdateBlueProgress(float progress)
     {
         float _distance = progress - this.blueProgressBarStartPointX;
-        repulseAndDefendProgressBar.fillAmount = _distance / this.blueProgressBarLength;
+        this.repulseAndDefendProgressBar.fillAmount = _distance / this.blueProgressBarLength;
 
-        Vector3 _pos = repulseAndDefendPointer.transform.position;
+        Vector3 _pos = this.repulseAndDefendPointer.transform.position;
         _pos.x = progress;
-        repulseAndDefendPointer.transform.position = _pos;
+        this.repulseAndDefendPointer.transform.position = _pos;
 
         this.blueProgressBarLastPosition = progress;
     }
@@ -227,11 +227,11 @@ public class ATLSlotListPanelV3 : MonoBehaviour
     private void UpdateYellowProgress(float progress)
     {
         float _distance = progress - this.yellowProgressBarStartPointX;
-        activeSkillProgressBar.fillAmount = _distance / this.yellowProgressBarLength;
+        this.activeSkillProgressBar.fillAmount = _distance / this.yellowProgressBarLength;
 
-        Vector3 _pos = activeSkillPointer.transform.position;
+        Vector3 _pos = this.activeSkillPointer.transform.position;
         _pos.x = progress;
-        activeSkillPointer.transform.position = _pos;
+        this.activeSkillPointer.transform.position = _pos;
 
         this.yellowProgressBarLastPosition = progress;
     }

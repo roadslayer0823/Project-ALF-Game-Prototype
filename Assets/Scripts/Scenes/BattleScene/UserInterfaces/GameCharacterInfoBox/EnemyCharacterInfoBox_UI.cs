@@ -104,20 +104,20 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
             _currentHealthPoint = 0;
         }
 
-        LeanTween.value(gameObject, this.startingHealthPoint, _currentHealthPoint, barAnimationDuration)
+        LeanTween.value(gameObject, this.startingHealthPoint, _currentHealthPoint, this.barAnimationDuration)
             .setOnUpdate((float val) =>
             {
                 this.startingHealthPoint = Mathf.RoundToInt(val);
                 float _healthPointFillAmount = startingHealthPoint / _maximumHealthPoint;
-                healthPointBar.fillAmount = _healthPointFillAmount;
+                this.healthPointBar.fillAmount = _healthPointFillAmount;
             });
         
         LeanTween.value(gameObject, this.startingVirtualPoint, _virtualHealthPoint, 0.3f)
             .setOnUpdate((float val) =>
             {
                 this.startingVirtualPoint = Mathf.RoundToInt(val);
-                float _virtualPointFillAmount = startingVirtualPoint / _maximumHealthPoint;
-                virtualHPBar.fillAmount = _virtualPointFillAmount;
+                float _virtualPointFillAmount = this.startingVirtualPoint / _maximumHealthPoint;
+                this.virtualHPBar.fillAmount = _virtualPointFillAmount;
             });
     }
 
@@ -125,7 +125,7 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
     {
         float _currentStressValue = this.selectedCharacter.GetCurrentStressValue();
        
-        if(startingStressValue != _currentStressValue)
+        if(this.startingStressValue != _currentStressValue)
         {
             //glow color effect
             Color32 redColor = new Color32(255, 0, 0, 255);
@@ -145,25 +145,25 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
 
             if (_currentStressValue >= 0)
             {
-                stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color1_G_Percentage");
+                stressValueStatusAnimation(this.defaultColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
             }
             else if (_currentStressValue >= 70)
             {
-                stressValueStatusAnimation(this.orangeColor, stressValueStatusDuration, "_Color1_G_Percentage");
+                stressValueStatusAnimation(this.orangeColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
             }
             else if (_currentStressValue >= 80)
             {
-                stressValueStatusAnimation(this.redColor, stressValueStatusDuration, "_Color1_G_Percentage");
+                stressValueStatusAnimation(this.redColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
             }
 
             //number changing animation
-            LeanTween.value(gameObject, startingStressValue, _currentStressValue, textAnimationDuration)
+            LeanTween.value(gameObject, this.startingStressValue, _currentStressValue, this.textAnimationDuration)
                     .setOnUpdate((float val) =>
                     {
                         this.stressValueGradientStatus.SetFloat("_Slide", val / 100);
                         this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, new Color32(255, 0, 0, 255));
                         this.startingStressValue = Mathf.RoundToInt(val);
-                        this.stressPercentageText.SetText($"{startingStressValue}<size=20>%</size>");
+                        this.stressPercentageText.SetText($"{this.startingStressValue}<size=20>%</size>");
                     });
 
             //number outline animation
@@ -184,10 +184,10 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
                 });
 
             //glowing effect
-            stressValueStatusAnimation(this.targetGlowPercentage, stressValueStatusDuration, "_Color_A_Percentage")
+            stressValueStatusAnimation(this.targetGlowPercentage, this.stressValueStatusDuration, "_Color_A_Percentage")
                 .setOnComplete(() =>
                 {
-                    stressValueStatusAnimation(this.defaultGlowPercentage, stressValueStatusDuration, "_Color_A_Percentage");
+                    stressValueStatusAnimation(this.defaultGlowPercentage, this.stressValueStatusDuration, "_Color_A_Percentage");
                 });
 
             this.stressBreakUI.gameObject.SetActive(false);
@@ -197,17 +197,17 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
         {
             this.stressPercentageText.gameObject.SetActive(false);
             this.stressBreakUI.gameObject.SetActive(true);
-            stressValueStatusAnimation(this.breakStatusColor, stressValueStatusDuration, "_Color1_G_Percentage");
-            stressValueStatusAnimation(this.breakStatusColor, stressValueStatusDuration, "_Color2_G_Percentage");
-            stressValueStatusAnimation(this.breakStatusColor, stressValueStatusDuration, "_Color2_B_Percentage");
+            stressValueStatusAnimation(this.breakStatusColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
+            stressValueStatusAnimation(this.breakStatusColor, this.stressValueStatusDuration, "_Color2_G_Percentage");
+            stressValueStatusAnimation(this.breakStatusColor, this.stressValueStatusDuration, "_Color2_B_Percentage");
         }
         else
         {
             this.stressPercentageText.gameObject.SetActive(true);
             this.stressBreakUI.gameObject.SetActive(false);
-            stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color1_G_Percentage");
-            stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color2_G_Percentage");
-            stressValueStatusAnimation(this.defaultColor, stressValueStatusDuration, "_Color2_B_Percentage");
+            stressValueStatusAnimation(this.defaultColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
+            stressValueStatusAnimation(this.defaultColor, this.stressValueStatusDuration, "_Color2_G_Percentage");
+            stressValueStatusAnimation(this.defaultColor, this.stressValueStatusDuration, "_Color2_B_Percentage");
         }
     }
 
@@ -223,12 +223,12 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
         }
         else
         {
-            LeanTween.value(gameObject, this.startingStatePoint, _currentStatePoint, barAnimationDuration)
+            LeanTween.value(gameObject, this.startingStatePoint, _currentStatePoint, this.barAnimationDuration)
                 .setOnUpdate((float val) =>
                 {
                     this.startingStatePoint = Mathf.RoundToInt(val);
-                    float _statePointFillAmount = startingStatePoint / _maximumStatePoint;
-                    statePointBar.fillAmount = _statePointFillAmount;
+                    float _statePointFillAmount = this.startingStatePoint / _maximumStatePoint;
+                    this.statePointBar.fillAmount = _statePointFillAmount;
                 });
 
             this.stateBreakUI.SetActive(false);
