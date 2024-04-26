@@ -247,10 +247,15 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void IncreaseSkillLevel()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_UP);
-
         int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
+
+        if (this.skillLevel == _maximumSkillLevel)
+        {
+            return;
+        }
+
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_UP);
 
         this.skillLevel = Math.Clamp(skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
 
@@ -265,10 +270,15 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void DecreaseSkillLevel()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_DOWN);
-
         int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
+
+        if (this.skillLevel == _minimumSkillLevel)
+        {
+            return;
+        }
+
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_DOWN);
 
         this.skillLevel = Math.Clamp(skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
 
@@ -301,14 +311,15 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if (this.skillLevel > 1)
         {
             skillLevelGameObject.SetActive(true);
-            skillTextAnimation.gameObject.SetActive(true);
-            levelModifierImage.gameObject.SetActive(true);
-            background.gameObject.SetActive(true);
         }
         else
         {
             skillLevelGameObject.SetActive(false);
         }
+
+        skillTextAnimation.gameObject.SetActive(true);
+        levelModifierImage.gameObject.SetActive(true);
+        background.gameObject.SetActive(true);
 
         float duration = 0.1f;
         float targetScale = 3f;
