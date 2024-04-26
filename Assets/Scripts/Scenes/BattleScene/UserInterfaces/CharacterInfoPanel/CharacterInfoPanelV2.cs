@@ -361,7 +361,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
         yield return new WaitForSeconds(glowDuration);
 
-        _sequence.append(LeanTween.value(targetText.gameObject, targetOffset, defaultOffset, glowDuration)
+        _sequence.insert(LeanTween.value(targetText.gameObject, targetOffset, defaultOffset, glowDuration)
            .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val); }));
 
         _sequence.insert(LeanTween.value(targetText.gameObject, targetOuter, defaultOuter, glowDuration)
