@@ -338,7 +338,11 @@ public class BattleGameManager : MonoBehaviour
                     gameCharacter.SetCurrentObservedSkill( _currentAttackerSkill );
 
                     this.battleUiManager.GetSkillPromptPanel().ShowPassiveSkillEffectTag( _currentObservingSkill.GetCharacterSubskillData().GetSubskillData().DisplayName, gameCharacter.GetIsPlayer() );
-                    this.battleUiManager.GetBackendSkillSlotListPanel().GetSkillSlot( _currentObservingSkill ).UpdateCurrentObservedStatus( true );
+
+                    if (gameCharacter.GetIsPlayer())
+                    {
+                        this.battleUiManager.GetBackendSkillSlotListPanel().GetSkillSlot( _currentObservingSkill ).UpdateCurrentObservedStatus( true );
+                    }
                 }
 
                 break;
