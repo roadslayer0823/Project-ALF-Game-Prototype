@@ -52,6 +52,9 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     private List<SkillSelectionBoxV2> selectedBackendSkillBoxList = new List<SkillSelectionBoxV2>();
     private List<CharacterSkill> characterBackendSkillList = new List<CharacterSkill>();
     private SkillSelectionBoxV2 lastSelectedBackendSkillSelectionBox = null;
+    private SkillSelectionBoxV2 defaultDefendSkillSelectionBox = null;
+    private SkillSelectionBoxV2 defaultEvadeSkillSelectionBox = null;
+    private SkillSelectionBoxV2 genericSkillSelectionBox = null;
 
     [Header("")]
     [SerializeField] private Button returnButton = null;
@@ -155,36 +158,30 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         {
             InitializeBackendSkillList();
         }
-        else
+
+        this.selectedBackendSkillBoxList.Clear();
+
+        for (int i = 0; i < this.backendSkillBoxList.Count; i++)
         {
-            if (this.selectedBackendSkillBoxList.Count != 0)
+            SkillSelectionBoxV2 _backendSkillSelectionBox = this.backendSkillBoxList[i];
+
+            if (_backendSkillSelectionBox.GetCharacterSkill() == null)
             {
-                this.selectedBackendSkillBoxList.Clear();
+                continue;
+            }
 
-                for (int i = 0; i < this.backendSkillBoxList.Count; i++)
+            for (int j = 0; j < this.gameCharacter.GetSelectedBackendSkillList().Count; j++)
+            {
+                CharacterSkill _selectedCharacterSkill = this.gameCharacter.GetSelectedBackendSkillList()[j];
+
+                if (_selectedCharacterSkill.GetSkillData().Id == _backendSkillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().SkillId)
                 {
-                    SkillSelectionBoxV2 _backendSkillSelectionBox = this.backendSkillBoxList[i];
-
-                    if (_backendSkillSelectionBox.GetCharacterSkill() == null)
-                    {
-                        continue;
-                    }
-
-                    for (int j = 0; j < this.gameCharacter.GetSelectedBackendSkillList().Count; j++)
-                    {
-                        CharacterSkill _selectedCharacterSkill = this.gameCharacter.GetSelectedBackendSkillList()[j];
-
-                        if (_selectedCharacterSkill.GetSkillData().Id == _backendSkillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().SkillId)
-                        {
-                            this.selectedBackendSkillBoxList.Add(_backendSkillSelectionBox);
-                            break;
-                        }
-                    }
+                    this.selectedBackendSkillBoxList.Add(_backendSkillSelectionBox);
+                    break;
                 }
-
-                UpdateBackendSkillListBox();
             }
         }
+        UpdateBackendSkillListBox();
 
         ShowSkillSelectionPanel( skillType );
     }
@@ -281,6 +278,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
                         if (j == 1)
                         {
                             _backendSkillSelectionBox.Initialize(this, _characterSkill);
+                            SetDefaultDefendSkillSelectionBox(_backendSkillSelectionBox);
                         }
                         else if (j == 4 && this.backendSkillBoxList[j - 3].GetCharacterSkill() != _characterSkill)
                         {
@@ -295,6 +293,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
                             this.backendSkillBoxList[j].ShowSelectionHighlight();
                             this.lastSelectedBackendSkillSelectionBox = this.backendSkillBoxList[j];
+                            SetDefaultEvadeSkillSelectionBox(_backendSkillSelectionBox);
                         }
                         else if (j == 3 && this.backendSkillBoxList[j - 3].GetCharacterSkill() != _characterSkill)
                         {
@@ -456,7 +455,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         }
     }
 
-    // update backend skill list box
+    // update backend skill list box UI
     private void UpdateBackendSkillListBox()
     {
         this.backendDefenceBoxIcon.gameObject.SetActive(false);
@@ -494,6 +493,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
                     this.backendDefenceBoxIcon.sprite = this.backendDefenceBoxImage;
                     this.backendDefenceBoxIcon.gameObject.SetActive(true);
+
                 }
                 else if (_defenceSlotBackendSkill != null && _defenceSlotBackendSkill != _characterBackendSkill && _genericSlotBackendSkill == null)
                 {
@@ -580,6 +580,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             this.onSkillSelectedCallback(skillSelectionBox);
             skillSelectionBox.UpdateSkillIcon(true);
             skillSelectionBox.SetIsSelected(true);
+            SetGenericSkillSelectionBox(skillSelectionBox);
 
             UpdateBackendSkillListBox();
         }
@@ -667,6 +668,44 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         UpdateActiveSkillListBox();
     }
 
+    public void ReplaceSelectedBackendSkill(SkillSelectionBoxV2 skillSelectionBox)
+    {
+        CharacterSkill _characterBackendSkill = skillSelectionBox.GetCharacterSkill();
+        Subskill _subskillData = _characterBackendSkill.GetCharacterSubskillData().GetSubskillData();
+
+        this.selectedBackendSkillBoxList.Add(skillSelectionBox);
+        this.onSkillSelectedCallback(skillSelectionBox);
+        skillSelectionBox.UpdateSkillIcon(true);
+        skillSelectionBox.SetIsSelected(true);
+
+        if (_subskillData.IsDefendingSkill && this.backendDefenceBoxIcon.gameObject.activeInHierarchy && this.backendGenericBoxIcon.gameObject.activeInHierarchy)
+        {
+            this.selectedBackendSkillBoxList.Remove(this.defaultDefendSkillSelectionBox);
+            this.defaultDefendSkillSelectionBox.UpdateSkillIcon(false);
+            this.defaultDefendSkillSelectionBox.SetIsSelected(false);
+            SetDefaultDefendSkillSelectionBox(skillSelectionBox);
+            Debug.Log("set defend");
+        }
+        else if (_subskillData.IsEvadingSkill && this.backendEvasionBoxIcon.gameObject.activeInHierarchy && this.backendGenericBoxIcon.gameObject.activeInHierarchy)
+        {
+            this.selectedBackendSkillBoxList.Remove(this.defaultEvadeSkillSelectionBox);
+            this.defaultEvadeSkillSelectionBox.UpdateSkillIcon(false);
+            this.defaultEvadeSkillSelectionBox.SetIsSelected(false);
+            SetDefaultEvadeSkillSelectionBox(skillSelectionBox);
+            Debug.Log("set evade");
+        }
+        else
+        {
+            this.selectedBackendSkillBoxList.Remove(this.genericSkillSelectionBox);
+            this.genericSkillSelectionBox.UpdateSkillIcon(false);
+            this.genericSkillSelectionBox.SetIsSelected(false);
+            SetGenericSkillSelectionBox(skillSelectionBox);
+            Debug.Log("set generic");
+        }
+
+        UpdateBackendSkillListBox();
+    }
+
     // move the selected active skill to first
     public void MoveSelectedSkillToFirst(SkillSelectionBoxV2 targetToMove, List<SkillSelectionBoxV2> selectedSkillSelectionList)
     {
@@ -732,6 +771,37 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     {
         this.lastSelectedBackendSkillSelectionBox = skillSelectionBox;
     }
+
+    public SkillSelectionBoxV2 GetDefaultDefendSkillSelectionBox()
+    {
+        return this.defaultDefendSkillSelectionBox;
+    }
+
+    public void SetDefaultDefendSkillSelectionBox(SkillSelectionBoxV2 skillSelection)
+    {
+        this.defaultDefendSkillSelectionBox = skillSelection;
+    }
+
+    public SkillSelectionBoxV2 GetDefaultEvadeSkillSelectionBox()
+    {
+        return this.defaultEvadeSkillSelectionBox;
+    }
+
+    public void SetDefaultEvadeSkillSelectionBox(SkillSelectionBoxV2 skillSelection)
+    {
+        this.defaultEvadeSkillSelectionBox = skillSelection;
+    }
+
+    public SkillSelectionBoxV2 GetGenericSkillSelectionBox()
+    {
+        return this.genericSkillSelectionBox;
+    }
+
+    public void SetGenericSkillSelectionBox(SkillSelectionBoxV2 skillSelection)
+    {
+        this.genericSkillSelectionBox = skillSelection;
+    }
+
 
     public List<SkillSelectionBoxV2> GetSelectedActiveSkillList()
     {
