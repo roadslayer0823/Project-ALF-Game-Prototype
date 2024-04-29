@@ -137,31 +137,15 @@ public class GameCharacter : MonoBehaviour
             _skillList.Add(new CharacterSkill(DatabaseManager.Instance.GetSkillDataById(_skillIdArray[i]), this));
         }
 
-        bool _hasDefendingSkill = false;
-        bool _hasEvadingSkill = false;
-
         this.skills = _skillList.ToArray();
         for (int i = 0; i < this.skills.Length; i++)
         {
             CharacterSkill _characterSkill = this.skills[i];
             _characterSkill.SetupCharacterSubskillList();
 
-            if (!_hasDefendingSkill)
+            if (_characterSkill.GetCharacterSubskillData().GetSubskillData().IsDefault)
             {
-                if (_characterSkill.GetCharacterSubskillData().GetSubskillData().IsDefendingSkill)
-                {
-                    AddSelectedSkill( _characterSkill );
-                    _hasDefendingSkill = true;
-                }
-            }
-
-            if (!_hasEvadingSkill)
-            {
-                if (_characterSkill.GetCharacterSubskillData().GetSubskillData().IsEvadingSkill)
-                {
-                    AddSelectedSkill( _characterSkill );
-                    _hasEvadingSkill = true;
-                }
+                AddSelectedSkill( _characterSkill );
             }
         }
 

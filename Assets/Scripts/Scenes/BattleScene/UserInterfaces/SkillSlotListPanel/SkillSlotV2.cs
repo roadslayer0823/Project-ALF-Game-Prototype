@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -83,6 +84,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private bool isSkillLevelChanged = false;
     private char[] splitSymbols = { '[', ']', '‧' };
     private StateType currentStateType = StateType.None;
+    private bool isObserving = false;
    
     //audio and animation clip id
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
@@ -381,6 +383,11 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         UpdateCharacterSkillLevel(this.skillLevel);
         this.skillIcon.gameObject.SetActive(true);
         UpdateDisplay();
+
+        if (_subskillData.IsObservingSkill && !isObserving)
+        {
+            UpdateCurrentObservedStatus( false );
+        }
     }
 
     public void ShowSkillFrame(CharacterSkill selectedSkill)
@@ -594,23 +601,34 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
-    public void UpdateCurrentObservedStatus(bool isLoading)
+    public void UpdateCurrentObservedStatus( bool isObserving )
     {
-        if (isLoading == true)
+        this.isObserving = isObserving;
+
+        if (this.isObserving == true)
         {
-            if (this.observedSkillData.GetCurrentObservedRate() > 0)
-            {
-                float _observationRate = this.observedSkillData.GetCurrentObservedRate();
-                this.currentObsevedPercentage.SetText(_observationRate * 100 + "%");
-            }
-            else
-            {
-                this.currentObsevedPercentage.text = "...";
-            }
+            this.currentObsevedPercentage.text = "...";
         }
         else
         {
-            this.currentObsevedPercentage.text = "---";
+            List<ObservedSkillData> _observedSkillDataList = this.selectedSkill.GetObservedSkillDataList();
+            bool _hasObservationRate = false;
+
+            if (_observedSkillDataList.Count > 0)
+            {
+                ObservedSkillData _observedSkillData = _observedSkillDataList[ 0 ];
+                if (_observedSkillData.GetCurrentObservedRate() > 0)
+                {
+                    float _observationRate = _observedSkillData.GetCurrentObservedRate();
+                    this.currentObsevedPercentage.SetText( Mathf.RoundToInt( _observationRate * 100 ) + "%" );
+                    _hasObservationRate = true;
+                }
+            }
+
+            if (!_hasObservationRate)
+            {
+                this.currentObsevedPercentage.text = "---";
+            }
         }
     }
 

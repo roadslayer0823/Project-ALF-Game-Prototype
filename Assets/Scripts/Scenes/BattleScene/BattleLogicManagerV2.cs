@@ -707,4 +707,16 @@ public class BattleLogicManagerV2
             loser = lead;
         }
     }
+
+    public static void OnTheEndOfPartB( GameCharacter gameCharacter )
+    {
+        gameCharacter.ResetCurrentSkillStatIncrement();
+
+        if (gameCharacter.GetCurrentObservingSkill() != null)
+        {
+            gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnSkillBeingObserved );
+            gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnAtlEnded );
+            gameCharacter.SetCurrentObservingSkill( null );
+        }
+    }
 }

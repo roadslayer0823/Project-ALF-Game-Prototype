@@ -991,8 +991,6 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
                 yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
 
-                BattleLogicManager.OnCharacterAttackFinished( _attacker, _attackTarget );
-
                 break;
 
             case Skill.SkillType.repulse:
@@ -1060,7 +1058,6 @@ public class BattleAnimationManager : MonoBehaviour
                 }
 
                 yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
-                BattleLogicManager.OnCharacterAttackFinished( _attacker, _attackTarget );
 
                 break;
 
@@ -1112,7 +1109,6 @@ public class BattleAnimationManager : MonoBehaviour
                     AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                     yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressValueDamage, _statePointDamage ) );
                     yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
-                    BattleLogicManager.OnCharacterAttackFinished( _attacker, _attackTarget );
                 }
                 else if (_winner == _attackTarget)
                 {
@@ -1140,7 +1136,6 @@ public class BattleAnimationManager : MonoBehaviour
                     }
 
                     yield return new WaitForSeconds( 1.0f );
-                    BattleLogicManager.OnCharacterAttackFinished( _attacker, _attackTarget );
                 }
 
                 break;
@@ -1199,8 +1194,8 @@ public class BattleAnimationManager : MonoBehaviour
 
     private bool EndPartB( GameCharacter attacker, GameCharacter attackTarget )
     {
-        attacker.TriggerEvent( AnimationEvent.OnAtlEnded );
-        attackTarget.TriggerEvent( AnimationEvent.OnAtlEnded );
+        BattleLogicManagerV2.OnTheEndOfPartB( attacker );
+        BattleLogicManagerV2.OnTheEndOfPartB( attackTarget );
 
         this.battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
 

@@ -124,6 +124,12 @@ public class PlayerCharacter : GameCharacter
 
                 _battleUiManager.UpdateSkillButtons();
 
+                CharacterSkill _currentObservingSkill = base.GetCurrentObservingSkill();
+                if (_currentObservingSkill != null)
+                {
+                    _battleUiManager.GetBackendSkillSlotListPanel().GetSkillSlot( _currentObservingSkill ).UpdateCurrentObservedStatus( false );
+                }
+
                 break;
 
             case AnimationEvent.OnNormalSkillBeingUsed:
