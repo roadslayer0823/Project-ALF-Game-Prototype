@@ -79,11 +79,11 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private Vector2 currentSwipe = new Vector2();
 
     public int skillLevel = 1;
+    private bool isSwipeable = false;
     private bool isSkillLevelChanged = false;
     private char[] splitSymbols = { '[', ']', '‧' };
     private StateType currentStateType = StateType.None;
-    private bool isSwipeable = false;
-
+   
     //audio and animation clip id
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
@@ -115,14 +115,6 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         Disabled,
         Selected,
         Activated,
-    }
-
-    public enum PhaseType
-    {
-        None,
-        PartA,
-        PartB,
-        AfterPartB
     }
 
     private void Start()
@@ -364,6 +356,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
         this.skillLevel = _subskillData.Level;
 
+        //setup skill name
         if (_subskillData.NamePartB == "-")
         {
             this.bottomRowText.SetText(_subskillData.NamePartA);
@@ -375,6 +368,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             this.bottomRowText.SetText(_subskillData.NamePartB);
         }
 
+        //checking current skill level to whether to show modify skill level animation
         if (this.skillLevel > 1)
         {
             this.skillLevelGameObject.SetActive(true);
@@ -600,19 +594,18 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
     }
 
-    public void UpdateCurrentObservedStatus(PhaseType currentPhase)
+    public void UpdateCurrentObservedStatus(bool isLoading)
     {
-        if(this.observedSkillData.GetCurrentObservedRate() > 0)
+        if (isLoading == true)
         {
-            this.currentObsevedPercentage.gameObject.SetActive(true);
-            if (currentPhase == PhaseType.PartB)
-            {
-                this.currentObsevedPercentage.text = "---";
-            }
-            else if (currentPhase == PhaseType.AfterPartB)
+            if (this.observedSkillData.GetCurrentObservedRate() > 0)
             {
                 float _observationRate = this.observedSkillData.GetCurrentObservedRate();
                 this.currentObsevedPercentage.SetText(_observationRate * 100 + "%");
+            }
+            else
+            {
+                this.currentObsevedPercentage.text = "...";
             }
         }
         else
