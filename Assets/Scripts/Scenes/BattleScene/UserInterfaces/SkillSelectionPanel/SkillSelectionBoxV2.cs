@@ -310,11 +310,16 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             _lastSelectedSkillSelectionBox.HideSelectionHighlight();
         }
 
-        if (_lastSelectedSkillSelectionBox == this && this.selectionHighlight.gameObject.activeSelf
-            && this.skillSelectionPanel.GetSelectedBackendSkillList().Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills()
-            && !this.isSelected)
+        if (_lastSelectedSkillSelectionBox == this && this.selectionHighlight.gameObject.activeSelf && !this.isSelected)
         {
-            this.skillSelectionPanel.AddSelectedSkillBox(this);
+            if(this.skillSelectionPanel.GetSelectedBackendSkillList().Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills())
+            {
+                this.skillSelectionPanel.AddSelectedSkillBox(this);
+            }
+            else
+            {
+                this.skillSelectionPanel.ReplaceSelectedBackendSkill(this);
+            }
         }
 
         ShowSelectionHighlight();
