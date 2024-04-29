@@ -172,6 +172,7 @@ public class SkillInfoPanel : MonoBehaviour
     private void SetupSkillInfomation(CharacterSkill characterSkill, CharacterSkill activeSkill)
     {
         CharacterSubskill _characterSubskill = characterSkill.GetCharacterSubskillData();
+        Subskill _subskillData = _characterSubskill.GetSubskillData();
 
         if (this.skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
         {
@@ -184,8 +185,6 @@ public class SkillInfoPanel : MonoBehaviour
             this.skillInfomation.SetActive(true);
             this.observedSkillListBox.SetActive(false);
         }
-
-        Subskill _subskillData = _characterSubskill.GetSubskillData();
 
         string skillTypeText = "";
         if (_subskillData.Prefix.ToString() == "-") // Prefix
@@ -318,6 +317,10 @@ public class SkillInfoPanel : MonoBehaviour
             else if (_subskillData.Range == Subskill.RangeType.ranged)
             {
                 rangeTagText = "【遠程】";
+            }
+            else if(_subskillData.Range == Subskill.RangeType.melee_or_ranged)
+            {
+                rangeTagText = "【近/遠】";
             }
             string tagEffectTypeText = $"【{ TerminologyManager.GetWideEffectTypeText(characterSkill.GetSkillData()) }】";
             this.integratedText = rangeTagText + "" + tagEffectTypeText;

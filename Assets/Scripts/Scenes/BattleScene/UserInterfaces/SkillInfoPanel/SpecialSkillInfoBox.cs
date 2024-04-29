@@ -36,7 +36,7 @@ public class SpecialSkillInfoBox : MonoBehaviour
             this.observeSkillSlot.SetActive(true);
             this.observeSkillUI.SetActive(false);
             this.observationPercentageText.SetText("---");
-            this.observationPercentageFrame.sprite = percentageWhite;
+            this.observationPercentageFrame.sprite = this.percentageWhite;
             this.observationPercentageFrame.SetNativeSize();
         }
         else
@@ -45,7 +45,7 @@ public class SpecialSkillInfoBox : MonoBehaviour
             this.observationPercentageText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, 0.2f);
             this.observationTitle.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, 0.2f);
             this.observationPercentageBar.gameObject.SetActive(true);
-            this.observationPercentageFrame.sprite = percentageYellow;
+            this.observationPercentageFrame.sprite = this.percentageYellow;
             this.observationPercentageFrame.SetNativeSize();
             this.observeSkillSlot.SetActive(false);
             this.observeSkillUI.SetActive(true);
