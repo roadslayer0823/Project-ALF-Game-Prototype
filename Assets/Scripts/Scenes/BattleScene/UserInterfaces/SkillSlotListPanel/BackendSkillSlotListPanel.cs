@@ -91,7 +91,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
                 {
                     case BackendSkillType.Defense:
 
-                        if (_subskillData.IsDefendingSkill)
+                        if (_subskillData.IsDefendingSkill && _defenceSlotCharacterSkill == null)
                         {
                             _backendSkillSlot.SetSelectedSkill(_selectedSkill);
                             _defenceSlotCharacterSkill = _selectedSkill;
@@ -101,7 +101,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
                     case BackendSkillType.Evasion:
 
-                        if (_subskillData.IsEvadingSkill)
+                        if (_subskillData.IsEvadingSkill && _evasionSlotCharacterSkill == null)
                         {
                             _backendSkillSlot.SetSelectedSkill(_selectedSkill);
                             _evasionSlotCharacterSkill = _selectedSkill;
