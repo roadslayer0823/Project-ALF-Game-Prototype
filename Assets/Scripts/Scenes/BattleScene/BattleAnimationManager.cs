@@ -757,6 +757,9 @@ public class BattleAnimationManager : MonoBehaviour
         _attacker.PlayCharacterAnimation( "Idle" );
         _attackTarget.PlayCharacterAnimation( "Idle" );
 
+        // 進入 Part A 前的結果。
+        BattleLogicManagerV2.DetermineResultForPartA( _attacker, _attackTarget );
+
         float _skillAnimationLength = 0.0f;
         float _skillCountdownTime = 0.0f;
         string _log = "";
@@ -769,7 +772,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         Subskill _attackerSubskillData = _attacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
         SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackerSubskillData.Id );
-        RangeType _attackerRangeType = _attackerSubskillData.Range;
+        RangeType _attackerRangeType = _attacker.GetCurrentSkillRangeType();
 
         string _attackerCharacterPartA = _skillAnimation.CharacterPartA;
         string _attackerCharacterPartB = _skillAnimation.CharacterPartB;
@@ -781,19 +784,39 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (_attacker.GetIsPlayer())
         {
-            // TODO: Currently, the player character has ranged attack animations only.
-            // TODO: Added a temporary fix here to handle the situation that the skill's range type is melee-or-ranged.
-            _attackerRangeType = RangeType.ranged;
+            if (_attackerRangeType == RangeType.melee)
+            {
+                _attackerCharacterPartA = "MeleeAttack_Part_A";
+                _attackerCharacterPartB = "MeleeAttack_Part_B";
+                _attackerSkillEffectPartA = "MeleeAttack_Part_A";
+                _attackerSkillEffectPartB = "MeleeAttack_Part_B";
+            }
+            else if (_attackerRangeType == RangeType.ranged)
+            {
+                _attackerCharacterPartA = "Attack";
+                _attackerCharacterPartB = "-";
+                _attackerSkillEffectPartA = "Fireball_Part_A";
+                _attackerSkillEffectPartB = "Fireball_Part_B";
+            }
+
             ChangeToBackgroundPartA();
         }
         else
         {
-            // TODO: Currently, the enemy character has melee attack animations only.
-            _attackerRangeType = RangeType.melee;
-            _attackerCharacterPartA = "Attack_Part_A";
-            _attackerCharacterPartB = "Attack_Part_B";
-            _attackerSkillEffectPartA = "-";
-            _attackerSkillEffectPartB = "HittingEffect";
+            if (_attackerRangeType == RangeType.melee)
+            {
+                _attackerCharacterPartA = "Attack_Part_A";
+                _attackerCharacterPartB = "Attack_Part_B";
+                _attackerSkillEffectPartA = "-";
+                _attackerSkillEffectPartB = "HittingEffect";
+            }
+            else if (_attackerRangeType == RangeType.ranged)
+            {
+                _attackerCharacterPartA = "RangedAttack";
+                _attackerCharacterPartB = "-";
+                _attackerSkillEffectPartA = "Fireball_Part_A";
+                _attackerSkillEffectPartB = "Fireball_Part_B";
+            }
 
             ChangeToBackgroundPartB();
         }

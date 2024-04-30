@@ -213,6 +213,20 @@ public class BattleLogicManagerV2
         return ( lead: null, improviser: null );
     }
 
+    public static void DetermineResultForPartA( GameCharacter lead, GameCharacter improviser )
+    {
+        CharacterSkill _leadCurrentSkill = lead.GetCurrentSkill();
+        RangeType _leadCurrentSkillRangeType = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
+
+        // TODO: Temporarily determine that the lead's current skill's range type is melee if it is melee-or-ranged.
+        if (_leadCurrentSkillRangeType == RangeType.melee_or_ranged)
+        {
+            _leadCurrentSkillRangeType = RangeType.melee;
+        }
+
+        lead.SetCurrentSkillRangeType( _leadCurrentSkillRangeType );
+    }
+
     public static BattleResultData DetermineResultForPartB( GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser )
     {
         BattleResultData _battleResultData = new();
@@ -221,16 +235,6 @@ public class BattleLogicManagerV2
 
         CharacterSkill _leadCurrentSkill = lead.GetCurrentSkill();
         RangeType _leadRangeType = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
-
-        // TODO: Temporarily hardcoded the player character's and enemy character's attacking skills' range types because of the attacking skill animations that they have.
-        if (lead.GetIsPlayer())
-        {
-            _leadRangeType = RangeType.ranged;
-        }
-        else
-        {
-            _leadRangeType = RangeType.melee;
-        }
 
         CharacterSkill _improviserCurrentSkill = improviser.GetCurrentSkill();
         RangeType _improviserRangeType = RangeType.none;
@@ -245,12 +249,6 @@ public class BattleLogicManagerV2
 
             if (_improviserSkillData.skillType == Skill.SkillType.repulse)
             {
-                // TODO: Temporarily hardcoded that the enemy characeter will always use melee repulse skills.
-                if (!improviser.GetIsPlayer())
-                {
-                    _improviserRangeType = RangeType.melee;
-                }
-
                 float _stressValueDamageMultiplierOnRepulseForLoser = GameConfiguration.Instance.GetBattleConfiguration().GetStressValueDamageMultiplierOnRepulseForLoser();
 
                 // 判定迎擊中途結果。
@@ -417,6 +415,7 @@ public class BattleLogicManagerV2
         // 判定輕重受擊方。
         if (winner != null && loser != null)
         {
+            // TODO: Temporarily determine that the assaulter is a heavy assaulter.
             if (winner.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.Assaulter)
             {
                 winner.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.HeavyAssaulter );

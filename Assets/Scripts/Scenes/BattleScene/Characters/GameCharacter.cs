@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
+using RangeType = DatabaseManager.Subskill.RangeType;
 using Character = DatabaseManager.Character;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
 using BattleResultData_GameCharacter = BattleResultData.BattleResultData_GameCharacter;
@@ -51,6 +52,7 @@ public class GameCharacter : MonoBehaviour
 
     private CharacterIdentityType currentCharacterIdentityType = CharacterIdentityType.None;
     private CharacterSkill currentSkill = null;
+    private RangeType currentSkillRangeType = RangeType.none;
     private CharacterSkill currentObservingSkill = null;
     private CharacterSkill currentObservedSkill = null;
     private int currentSkillStatIncrement = 0;
@@ -904,6 +906,16 @@ public class GameCharacter : MonoBehaviour
         return this.currentSkill;
     }
 
+    public void SetCurrentSkillRangeType( RangeType currentSkillRangeType )
+    {
+        this.currentSkillRangeType = currentSkillRangeType;
+    }
+
+    public RangeType GetCurrentSkillRangeType()
+    {
+        return this.currentSkillRangeType;
+    }
+
     public void SetCurrentObservingSkill( CharacterSkill observingSkill )
     {
         this.currentObservingSkill = observingSkill;
@@ -1061,8 +1073,9 @@ public class GameCharacter : MonoBehaviour
 
     public void Reset()
     {
-        this.currentCharacterIdentityType = CharacterIdentityType.None;
+        SetCurrentCharacterIdentityType( CharacterIdentityType.None );
         SetCurrentSkill( null );
+        SetCurrentSkillRangeType( RangeType.none );
         SetCurrentObservingSkill( null );
         SetCurrentObservedSkill( null );
         SetCurrentAttacker( null );
