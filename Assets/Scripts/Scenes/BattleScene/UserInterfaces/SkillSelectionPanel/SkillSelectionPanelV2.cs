@@ -157,32 +157,34 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         if (this.backendSkillBoxList.Count == 0)
         {
             InitializeBackendSkillList();
-        }
+            this.selectedBackendSkillBoxList.Clear();
 
-        this.selectedBackendSkillBoxList.Clear();
-
-        for (int i = 0; i < this.backendSkillBoxList.Count; i++)
-        {
-            SkillSelectionBoxV2 _backendSkillSelectionBox = this.backendSkillBoxList[i];
-
-            if (_backendSkillSelectionBox.GetCharacterSkill() == null)
+            for (int i = 0; i < this.backendSkillBoxList.Count; i++)
             {
-                continue;
-            }
+                SkillSelectionBoxV2 _backendSkillSelectionBox = this.backendSkillBoxList[i];
 
-            for (int j = 0; j < this.gameCharacter.GetSelectedBackendSkillList().Count; j++)
-            {
-                CharacterSkill _selectedCharacterSkill = this.gameCharacter.GetSelectedBackendSkillList()[j];
-
-                if (_selectedCharacterSkill.GetSkillData().Id == _backendSkillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().SkillId)
+                if (_backendSkillSelectionBox.GetCharacterSkill() == null)
                 {
-                    this.selectedBackendSkillBoxList.Add(_backendSkillSelectionBox);
-                    break;
+                    continue;
+                }
+
+                for (int j = 0; j < this.gameCharacter.GetSelectedBackendSkillList().Count; j++)
+                {
+                    CharacterSkill _selectedCharacterSkill = this.gameCharacter.GetSelectedBackendSkillList()[j];
+
+                    if (_selectedCharacterSkill.GetSkillData().Id == _backendSkillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().SkillId)
+                    {
+                        this.selectedBackendSkillBoxList.Add(_backendSkillSelectionBox);
+                        break;
+                    }
                 }
             }
+            UpdateBackendSkillListBox();
         }
-        UpdateBackendSkillListBox();
-
+        else
+        {
+            UpdateBackendSkillListBox();
+        }
         ShowSkillSelectionPanel( skillType );
     }
 
@@ -684,7 +686,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             this.defaultDefendSkillSelectionBox.UpdateSkillIcon(false);
             this.defaultDefendSkillSelectionBox.SetIsSelected(false);
             SetDefaultDefendSkillSelectionBox(skillSelectionBox);
-            Debug.Log("set defend");
         }
         else if (_subskillData.IsEvadingSkill && this.backendEvasionBoxIcon.gameObject.activeInHierarchy && this.backendGenericBoxIcon.gameObject.activeInHierarchy)
         {
@@ -692,7 +693,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             this.defaultEvadeSkillSelectionBox.UpdateSkillIcon(false);
             this.defaultEvadeSkillSelectionBox.SetIsSelected(false);
             SetDefaultEvadeSkillSelectionBox(skillSelectionBox);
-            Debug.Log("set evade");
         }
         else
         {
@@ -700,7 +700,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             this.genericSkillSelectionBox.UpdateSkillIcon(false);
             this.genericSkillSelectionBox.SetIsSelected(false);
             SetGenericSkillSelectionBox(skillSelectionBox);
-            Debug.Log("set generic");
         }
 
         UpdateBackendSkillListBox();
