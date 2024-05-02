@@ -62,11 +62,6 @@ public class GameCharacter : MonoBehaviour
     private bool isAbleToUseSkill = false;
     private List<PopUpDisplayInfo> popUpDisplayInfoList = new();
 
-    // Version 2
-    private CharacterSkill assignedSkill = null;
-    private bool isInRepulseCommandTime = false;
-    private bool isCounterAttacking = false;
-
     // Break Status
     private int breakStatusRemainingATLs = 0;
     private bool isBreakStatusCausedByStatePoint = false;
@@ -82,6 +77,12 @@ public class GameCharacter : MonoBehaviour
     // Animation Event
     private BattleAnimationEventManager battleAnimationEventManager = null;
 
+    // Version 2
+    private CharacterSkill assignedSkill = null;    // 已按下的技能，該技能等待被發動。
+    private bool isInRepulseCommandTime = false;    // 是否在“迎戰指令時間”裡？
+    private bool isCounterAttacking = false;        // 是否正在進行反擊？
+    private int stateBreakStatusRemainingATLs = 0;  // 以太崩潰維持值 (ATL)
+    private int stressBreakStatusRemainingATLs = 0; // 負荷崩潰維持值 (ATL)
 
     public enum CharacterIdentityType
     {
@@ -174,36 +175,6 @@ public class GameCharacter : MonoBehaviour
 
     public virtual void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
     {
-    }
-
-    public void SetCurrentCharacterIdentityType( CharacterIdentityType currentCharacterIdentityType )
-    {
-        this.currentCharacterIdentityType = currentCharacterIdentityType;
-    }
-
-    public CharacterIdentityType GetCurrentCharacterIdentityType()
-    {
-        return this.currentCharacterIdentityType;
-    }
-
-    public void SetIsInRepulseCommandTime( bool isInRepulseCommandTime )
-    {
-        this.isInRepulseCommandTime = isInRepulseCommandTime;
-    }
-
-    public bool GetIsInRepulseCommandTime()
-    {
-        return this.isInRepulseCommandTime;
-    }
-
-    public void SetIsCounterAttacking( bool isCounterAttacking )
-    {
-        this.isCounterAttacking = isCounterAttacking;
-    }
-
-    public bool GetIsCounterAttacking()
-    {
-        return this.isCounterAttacking;
     }
 
     public float AddCurrentHealthPoint( float amount )
@@ -533,6 +504,11 @@ public class GameCharacter : MonoBehaviour
         }
     }
 
+    public bool IsCharacterObjectActive()
+    {
+        return ( this.characterAnimator.gameObject.activeInHierarchy );
+    }
+
     public void TriggerEvent( AnimationEvent animationEvent )
     {
         this.onEventTriggeredCallback?.Invoke( animationEvent, this );
@@ -835,41 +811,6 @@ public class GameCharacter : MonoBehaviour
         return this.skillEffectAnimator;
     }
 
-    public void SetAssignedSkill( CharacterSkill assignedSkill )
-    {
-        this.assignedSkill = assignedSkill;
-
-        if (this.isInRepulseCommandTime)
-        {
-            this.assignedSkill?.SetHasSkillUpdateIndicator( true );
-        }
-    }
-
-    public CharacterSkill ResetAssignedSkill()
-    {
-        this.assignedSkill = null;
-        return this.assignedSkill;
-    }
-
-    public CharacterSkill GetAssignedSkill()
-    {
-        return this.assignedSkill;
-    }
-
-    public void ApplyAssignedSkillAsCurrentSkill()
-    {
-        if (GetIsInBreakStatus())
-        {
-            return;
-        }
-
-        if (this.assignedSkill != null)
-        {
-            SetCurrentSkill( this.assignedSkill );
-            this.assignedSkill = null;
-        }
-    }
-
     public void SetCurrentSkill( CharacterSkill currentSkill )
     {
         this.currentSkill = currentSkill;
@@ -1081,6 +1022,8 @@ public class GameCharacter : MonoBehaviour
         SetCurrentAttacker( null );
     }
 
+#region Version 2
+
     public void ApplyBattleResultData( BattleResultData_GameCharacter battleResultData, bool needToUpdateDisplay = true )
     {
         if (battleResultData != null)
@@ -1094,25 +1037,13 @@ public class GameCharacter : MonoBehaviour
             this.currentStatePoint = battleResultData.currentStatePoint;
             this.maximumStressValue = battleResultData.maximumStressValue;
             this.currentStressValue = battleResultData.currentStressValue;
-            this.isBreakStatusCausedByStatePoint = battleResultData.isBreakStatusCausedByStatePoint;
-            this.isBreakStatusCausedByStressValue = battleResultData.isBreakStatusCausedByStressValue;
 
-            if (!GetIsInBreakStatus())
-            {
-                if (battleResultData.isEnteringIntoBreakStatus)
-                {
-                    EnterIntoBreakStatus( battleResultData.breakStatusAtlNumber );
-                }
-            }
+            // 崩潰狀態
+            this.stateBreakStatusRemainingATLs = battleResultData.stateBreakStatusRemainingATLs;
+            this.stressBreakStatusRemainingATLs = battleResultData.stressBreakStatusRemainingATLs;
 
-            if (battleResultData.hasEnergyMarker)
-            {
-                SetEnergyMarkerRemainingATLs( battleResultData.energyMarkerRemainingATLs );
-            }
-            else
-            {
-                RemoveEnergyMarker();
-            }
+            // 能量殘響
+            this.energyMarkerRemainingATLs = battleResultData.energyMarkerRemainingATLs;
 
             if (needToUpdateDisplay)
             {
@@ -1121,10 +1052,97 @@ public class GameCharacter : MonoBehaviour
         }
     }
 
+    public void SetCurrentCharacterIdentityType( CharacterIdentityType currentCharacterIdentityType )
+    {
+        this.currentCharacterIdentityType = currentCharacterIdentityType;
+    }
+
+    public CharacterIdentityType GetCurrentCharacterIdentityType()
+    {
+        return this.currentCharacterIdentityType;
+    }
+
+    public void SetAssignedSkill( CharacterSkill assignedSkill )
+    {
+        this.assignedSkill = assignedSkill;
+
+        if (this.isInRepulseCommandTime)
+        {
+            this.assignedSkill?.SetHasSkillUpdateIndicator( true );
+        }
+    }
+
+    public CharacterSkill ResetAssignedSkill()
+    {
+        this.assignedSkill = null;
+        return this.assignedSkill;
+    }
+
+    public CharacterSkill GetAssignedSkill()
+    {
+        return this.assignedSkill;
+    }
+
+    public void ApplyAssignedSkillAsCurrentSkill()
+    {
+        if (GetIsInBreakStatus())
+        {
+            return;
+        }
+
+        if (this.assignedSkill != null)
+        {
+            SetCurrentSkill( this.assignedSkill );
+            this.assignedSkill = null;
+        }
+    }
+
+    public void SetIsInRepulseCommandTime( bool isInRepulseCommandTime )
+    {
+        this.isInRepulseCommandTime = isInRepulseCommandTime;
+    }
+
+    public bool GetIsInRepulseCommandTime()
+    {
+        return this.isInRepulseCommandTime;
+    }
+
+    public void SetIsCounterAttacking( bool isCounterAttacking )
+    {
+        this.isCounterAttacking = isCounterAttacking;
+    }
+
+    public bool GetIsCounterAttacking()
+    {
+        return this.isCounterAttacking;
+    }
+
+    public int GetStateBreakStatusRemainingATLs()
+    {
+        return this.stateBreakStatusRemainingATLs;
+    }
+
+    public bool IsInStateBreakStatus()
+    {
+        return ( this.stateBreakStatusRemainingATLs > 0 );
+    }
+
+    public int GetStressBreakStatusRemainingATLs()
+    {
+        return this.stressBreakStatusRemainingATLs;
+    }
+
+    public bool IsInStressBreakStatus()
+    {
+        return ( this.stressBreakStatusRemainingATLs > 0 );
+    }
+
     public void InvokeOnCharacterInfoUpdatedCallback()
     {
         this.onCharacterInfoUpdated?.Invoke();
     }
+
+#endregion
 
 #region Battle Animation Event Manager
 

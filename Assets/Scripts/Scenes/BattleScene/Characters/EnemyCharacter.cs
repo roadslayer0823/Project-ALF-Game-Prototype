@@ -258,8 +258,9 @@ public class EnemyCharacter : GameCharacter
             _skillTypeList.Remove( BattleSkillManager.SkillType.Observe );
         }
 
-        List<CharacterSkill> _availableSkillList = new();
-        List<CharacterSkill> _availableObservingSkillList = new();
+        List<CharacterSkill> _activeSkillList = new();
+        List<CharacterSkill> _backendSkillList = new();
+        List<CharacterSkill> _observingSkillList = new();
 
         List<CharacterSkill> _selectedActiveSkillList = base.GetSelectedActiveSkillList();
         List<CharacterSkill> _availableActiveSkillList = new();
@@ -282,76 +283,101 @@ public class EnemyCharacter : GameCharacter
             }
         }
 
+        if (_skillTypeList.Contains( BattleSkillManager.SkillType.Active ))
+        {
+            for (int i = 0; i < _availableActiveSkillList.Count; i++)
+            {
+                _activeSkillList.Add( _availableActiveSkillList[ i ] );
+            }
+        }
+
         if (_skillTypeList.Contains( BattleSkillManager.SkillType.Repulse ))
         {
             for (int i = 0; i < _availableActiveSkillList.Count; i++)
             {
-                _availableSkillList.Add( _availableActiveSkillList[ i ].GetCharacterSubskillData().GetSelectedRepulseSkill() );
+                _activeSkillList.Add( _availableActiveSkillList[ i ].GetCharacterSubskillData().GetSelectedRepulseSkill() );
             }
         }
-        else if (_skillTypeList.Contains( BattleSkillManager.SkillType.Derive ))
+
+        if (_skillTypeList.Contains( BattleSkillManager.SkillType.Derive ))
         {
             for (int i = 0; i < _availableActiveSkillList.Count; i++)
             {
                 CharacterSkill _activeSkill = _availableActiveSkillList[ i ];
                 if (_activeSkill == base.GetCurrentSkill())
                 {
-                    _availableSkillList.Add( _activeSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() );
+                    _activeSkillList.Add( _activeSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() );
                 }
                 else
                 {
-                    _availableSkillList.Add( _activeSkill );
+                    _activeSkillList.Add( _activeSkill );
                 }
             }
         }
-        else if (_skillTypeList.Contains( BattleSkillManager.SkillType.Active ))
-        {
-            for (int i = 0; i < _availableActiveSkillList.Count; i++)
-            {
-                _availableSkillList.Add( _availableActiveSkillList[ i ] );
-            }
-        }
 
-        List<CharacterSkill> _backendSkillList = base.GetSelectedBackendSkillList();
+        List<CharacterSkill> _availableBackendSkillList = base.GetSelectedBackendSkillList();
         bool _isAbleToDefend = _skillTypeList.Contains( BattleSkillManager.SkillType.Defend );
         bool _isAbleToEvade = _skillTypeList.Contains( BattleSkillManager.SkillType.Evade );
         bool _isAbleToObserve = _skillTypeList.Contains( BattleSkillManager.SkillType.Observe );
         bool _isAbleToCounter = _skillTypeList.Contains( BattleSkillManager.SkillType.Counter );
 
-        for (int i = 0; i < _backendSkillList.Count; i++)
+        for (int i = 0; i < _availableBackendSkillList.Count; i++)
         {
-            CharacterSkill _backendSkill = _backendSkillList[ i ];
+            CharacterSkill _backendSkill = _availableBackendSkillList[ i ];
             Subskill _backendSubskillData = _backendSkill.GetCharacterSubskillData().GetSubskillData();
 
             if (( _isAbleToDefend && _backendSubskillData.IsDefendingSkill )
                 || ( _isAbleToEvade && _backendSubskillData.IsEvadingSkill ))
             {
-                _availableSkillList.Add( _backendSkill );
+                _backendSkillList.Add( _backendSkill );
             }
 
             if (_isAbleToObserve && _backendSubskillData.IsObservingSkill)
             {
-                _availableObservingSkillList.Add( _backendSkill );
+                _observingSkillList.Add( _backendSkill );
             }
         }
 
         if (_isAbleToCounter)
         {
-            _availableSkillList.Add( base.GetCurrentSkill().GetCharacterSubskillData().GetSelectedCounterSkill() );
+            _activeSkillList.Add( base.GetCurrentSkill().GetCharacterSubskillData().GetSelectedCounterSkill() );
         }
 
-        if (BattleLogicManagerV2.IsAbleToUseAttackingAndDefendingSkills( this ) && _availableSkillList.Count > 0)
+        if (BattleLogicManagerV2.IsAbleToUseAttackingAndDefendingSkills( this ))
         {
-            CharacterSkill _randomSkill = GetRandomSkill( _availableSkillList, _enemyDebugMenuPanel );
-            if (_randomSkill != null)
+            List<CharacterSkill> _availableSkillList = null;
+
+            if (base.GetCurrentCharacterIdentityType() == CharacterIdentityType.None)
             {
-                base.SetAssignedSkill( _randomSkill );
+                if (_activeSkillList.Count > 0 && ( _backendSkillList.Count <= 0 || Random.value < 0.8f ))
+                {
+                    _availableSkillList = _activeSkillList;
+                }
+                else if (_backendSkillList.Count > 0)
+                {
+                    _availableSkillList = _backendSkillList;
+                }
+            }
+            else
+            {
+                _availableSkillList = new List<CharacterSkill>();
+                _availableSkillList.AddRange( _activeSkillList );
+                _availableSkillList.AddRange( _backendSkillList );
+            }
+
+            if (_availableSkillList?.Count > 0)
+            {
+                CharacterSkill _randomSkill = GetRandomSkill( _availableSkillList, _enemyDebugMenuPanel );
+                if (_randomSkill != null)
+                {
+                    base.SetAssignedSkill( _randomSkill );
+                }
             }
         }
 
-        if (BattleLogicManagerV2.IsAbleToUseAnySkill( this ) && _availableObservingSkillList.Count > 0)
+        if (BattleLogicManagerV2.IsAbleToUseAnySkill( this ) && _observingSkillList.Count > 0)
         {
-            CharacterSkill _randomSkill = GetRandomSkill( _availableObservingSkillList, _enemyDebugMenuPanel );
+            CharacterSkill _randomSkill = GetRandomSkill( _observingSkillList, _enemyDebugMenuPanel );
             if (_randomSkill != null)
             {
                 base.SetCurrentObservingSkill( _randomSkill );

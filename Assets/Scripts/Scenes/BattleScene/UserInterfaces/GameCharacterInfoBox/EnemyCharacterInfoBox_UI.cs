@@ -193,7 +193,7 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
             this.stressBreakUI.gameObject.SetActive(false);
         }
 
-        if (this.selectedCharacter.GetIsBreakStatusCausedByStressValue())
+        if (this.selectedCharacter.IsInStressBreakStatus())
         {
             this.stressPercentageText.gameObject.SetActive(false);
             this.stressBreakUI.gameObject.SetActive(true);
@@ -216,7 +216,7 @@ public class EnemyCharacterInfoBox_UI : MonoBehaviour
         float _maximumStatePoint = this.selectedCharacter.GetMaximumStatePoint();
         float _currentStatePoint = this.selectedCharacter.GetCurrentStatePoint();
 
-        if (this.selectedCharacter.GetIsBreakStatusCausedByStatePoint())
+        if (this.selectedCharacter.IsInStateBreakStatus())
         {
             this.statePointStatus.sprite = this.statePointBreak;
             this.stateBreakUI.SetActive(true);

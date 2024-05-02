@@ -175,7 +175,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             }
         }
 
-        if (this.selectedCharacter.GetIsBreakStatusCausedByStatePoint())
+        if (this.selectedCharacter.IsInStateBreakStatus())
         {
             this.statePointBreakText.gameObject.SetActive(true);
             this.statePointValueText.gameObject.SetActive(false);
@@ -231,7 +231,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             this.stressValueStatus.material.SetFloat("_Slide", 0);
         }
 
-        if (this.selectedCharacter.GetIsBreakStatusCausedByStressValue())
+        if (this.selectedCharacter.IsInStressBreakStatus())
         {
             this.stressValueBreak.gameObject.SetActive(true);
             this.stressPercentageText.gameObject.SetActive(false);

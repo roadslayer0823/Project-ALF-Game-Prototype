@@ -17,20 +17,7 @@ public class BattleLogicManagerV2
 
     private static bool IsAttackingSkill( CharacterSkill skill )
     {
-        if (skill != null)
-        {
-            Skill _skillData = skill.GetSkillData();
-            SkillType _skillType = _skillData.skillType;
-
-            if (_skillType == SkillType.active
-                || _skillType == SkillType.derived
-                || _skillType == SkillType.counter)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return ( skill?.GetSkillData().skillType is SkillType.active or SkillType.derived or SkillType.counter );
     }
 
     public static bool IsAbleToUseAnySkill( GameCharacter gameCharacter )
@@ -61,11 +48,11 @@ public class BattleLogicManagerV2
         CharacterSkill _gameCharacterOne_Skill = gameCharacterOne.GetAssignedSkill();
         CharacterSkill _gameCharacterTwo_Skill = gameCharacterTwo.GetAssignedSkill();
 
-        if (_gameCharacterOne_Skill != null && _gameCharacterOne_Skill.GetSkillData().skillType == SkillType.derived)
+        if (_gameCharacterOne_Skill?.GetSkillData().skillType == SkillType.derived)
         {
             _gameCharacterTwo_Skill = gameCharacterTwo.ResetAssignedSkill();
         }
-        else if (_gameCharacterTwo_Skill != null && _gameCharacterTwo_Skill.GetSkillData().skillType == SkillType.derived)
+        else if (_gameCharacterTwo_Skill?.GetSkillData().skillType == SkillType.derived)
         {
             _gameCharacterOne_Skill = gameCharacterOne.ResetAssignedSkill();
         }
@@ -527,7 +514,7 @@ public class BattleLogicManagerV2
         if (_energyMarkerAtl > 0)
         {
             // 更新“能量殘響”。
-            battleResultData.AddGameCharacterResultData( target, hasEnergyMarker: true, energyMarkerRemainingATLs: _energyMarkerAtl );
+            battleResultData.AddGameCharacterResultData( target, renewedEnergyMarkerATLs: _energyMarkerAtl );
         }
 
         if (hasHealthPointDamage)
@@ -541,15 +528,10 @@ public class BattleLogicManagerV2
                 // and Defending skill, the target will take the actual damage.
                 if (_targetSkill != null)
                 {
-                    if (_targetSkill.GetSkillData().skillType != Skill.SkillType.repulse)
+                    if (_targetSkill.GetSkillData().skillType != Skill.SkillType.repulse
+                        && _targetSubskillData?.IsDefendingSkill == false)
                     {
-                        if (_targetSubskillData != null)
-                        {
-                            if (!_targetSubskillData.IsDefendingSkill)
-                            {
-                                _isActualDamage = true;
-                            }
-                        }
+                        _isActualDamage = true;
                     }
                 }
                 else
@@ -580,39 +562,34 @@ public class BattleLogicManagerV2
             battleResultData.AddGameCharacterResultData( gameCharacter: target, stressValueDamage: _stressValueDamage, isBreakStatusAvailable: isBreakStatusAvailable );
         }
 
+        // 在發生迎擊時，如果攻擊或迎擊技能是近戰，而對方的迎擊或攻擊技能是遠程，就會得到額外的最大以太值提升。
+        // 近戰攻擊 VS 遠程迎擊：近戰攻擊得到額外的最大以太值提升。
+        // 近戰迎擊 VS 遠程攻擊：近戰迎擊得到額外的最大以太值提升。
         if (_targetSkill != null)
         {
             if (_casterSkill.GetSkillData().skillType == Skill.SkillType.repulse
                 || _targetSkill.GetSkillData().skillType == Skill.SkillType.repulse)
             {
-                if (_casterSubskillData.Range == Subskill.RangeType.melee)
+                if (_casterSubskillData.Range == Subskill.RangeType.melee
+                    && _targetSubskillData?.Range == Subskill.RangeType.ranged)
                 {
-                    if (_targetSubskillData != null)
-                    {
-                        if (_targetSubskillData.Range == Subskill.RangeType.ranged)
-                        {
-                            float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
-                            battleResultData.AddGameCharacterResultData( gameCharacter: caster, maximumStatePointIncrease: _maxStatePointUp );
-                        }
-                    }
+                    float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
+                    battleResultData.AddGameCharacterResultData( gameCharacter: caster, maximumStatePointIncrease: _maxStatePointUp );
                 }
             }
         }
 
         BattleResultData_GameCharacter _targetResultData = battleResultData.GetGameCharacterResultData( target );
-        if (target.GetIsInBreakStatus() || _targetResultData.isEnteringIntoBreakStatus)
+        if (_targetResultData.IsInBreakStatus() && hasHealthPointDamage)
         {
-            if (hasHealthPointDamage)
-            {
-                // 尚未回復的虛傷部分全數轉化為實傷。
-                _targetResultData.virtualHealthPoint = _targetResultData.currentHealthPoint;
-            }
+            // 尚未回復的虛傷部分全數轉化為實傷。
+            _targetResultData.virtualHealthPoint = _targetResultData.currentHealthPoint;
         }
 
         if (_casterSubskillData.WillRemoveEnergyMarker)
         {
             // 消去“能量殘響”。
-            battleResultData.AddGameCharacterResultData( gameCharacter: target, hasEnergyMarker: false );
+            battleResultData.AddGameCharacterResultData( gameCharacter: target, willRemoveEnergyMarker: true );
         }
     }
 
@@ -705,6 +682,47 @@ public class BattleLogicManagerV2
         {
             loser = lead;
         }
+    }
+
+    public static void OnTheStartOfATL( GameCharacter gameCharacter )
+    {
+        gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.SetCharacter );
+
+        // 以太崩潰狀態
+        int _stateBreakStatusRemainingATLs = gameCharacter.GetStateBreakStatusRemainingATLs();
+        float _maximumStatePoint = gameCharacter.GetMaximumStatePoint();
+        float _currentStatePoint = gameCharacter.GetCurrentStatePoint();
+        if (_stateBreakStatusRemainingATLs > 0)
+        {
+            _stateBreakStatusRemainingATLs--;
+
+            if (_stateBreakStatusRemainingATLs <= 0)
+            {
+                _maximumStatePoint = gameCharacter.GetOriginalStatePoint();
+                _currentStatePoint = _maximumStatePoint;
+            }
+        }
+
+        // 負荷崩潰狀態
+        int _stressBreakStatusRemainingATLs = gameCharacter.GetStressBreakStatusRemainingATLs();
+        float _currentStressValue = gameCharacter.GetCurrentStressValue();
+        if (_stressBreakStatusRemainingATLs > 0)
+        {
+            _stressBreakStatusRemainingATLs--;
+
+            if (_stressBreakStatusRemainingATLs <= 0)
+            {
+                _currentStressValue = 0.0f;
+            }
+        }
+
+        BattleResultData _battleResultData = new();
+
+        _battleResultData.AddGameCharacterResultData( gameCharacter,
+            stateBreakStatusRemainingATLs: _stateBreakStatusRemainingATLs, maximumStatePoint: _maximumStatePoint, currentStatePoint: _currentStatePoint,
+            stressBreakStatusRemainingATLs: _stressBreakStatusRemainingATLs, currentStressValue: _currentStressValue );
+
+        gameCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( gameCharacter ), true );
     }
 
     public static void OnTheEndOfPartB( GameCharacter gameCharacter )

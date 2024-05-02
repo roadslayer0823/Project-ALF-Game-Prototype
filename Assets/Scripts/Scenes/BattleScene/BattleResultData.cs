@@ -31,22 +31,24 @@ public class BattleResultData
         public float stressValueDamage = 0.0f;
 
         // 崩潰狀態
-        public bool isEnteringIntoBreakStatus = false;
-        public bool isBreakStatusCausedByStatePoint = false;
-        public bool isBreakStatusCausedByStressValue = false;
-        public int breakStatusAtlNumber = 0;
+        public int stateBreakStatusRemainingATLs = 0;  // 以太崩潰維持值 (ATL)
+        public int stressBreakStatusRemainingATLs = 0; // 負荷崩潰維持值 (ATL)
 
         // 能量殘響
-        public bool hasEnergyMarker = false;
         public int energyMarkerRemainingATLs = 0;
 
         public bool isDead = false;
+
+        public bool IsInBreakStatus()
+        {
+            return ( stateBreakStatusRemainingATLs > 0 || stressBreakStatusRemainingATLs > 0 );
+        }
     }
 
     public void AddGameCharacterResultData( GameCharacter gameCharacter,
                                             float statePointCost = 0.0f, float maximumStatePointIncrease = 0.0f,
                                             float actualHealthPointDamage = 0.0f, float virtualHealthPointDamage = 0.0f, float statePointDamage = 0.0f, float stressValueDamage = 0.0f,
-                                            bool isBreakStatusAvailable = false, bool hasEnergyMarker = false, int energyMarkerRemainingATLs = 0 )
+                                            bool isBreakStatusAvailable = false, int renewedEnergyMarkerATLs = 0, bool willRemoveEnergyMarker = false )
     {
         BattleResultData_GameCharacter _gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         float _minimumStatePoint = gameCharacter.GetMinimumStatePoint();
@@ -86,14 +88,12 @@ public class BattleResultData
             _gameCharacterResultData.statePointDamage += statePointDamage;
             _gameCharacterResultData.currentStatePoint -= statePointDamage;
 
-            if (isBreakStatusAvailable)
+            if (_gameCharacterResultData.currentStatePoint < 0)
             {
-                if (_gameCharacterResultData.currentStatePoint < 0)
+                if (isBreakStatusAvailable)
                 {
-                    // 以太崩潰
-                    _gameCharacterResultData.isEnteringIntoBreakStatus = true;
-                    _gameCharacterResultData.isBreakStatusCausedByStatePoint = true;
-                    _gameCharacterResultData.breakStatusAtlNumber = 1;
+                    // 陷入以太崩潰狀態。
+                    _gameCharacterResultData.stateBreakStatusRemainingATLs = 1;
                 }
             }
         }
@@ -104,14 +104,19 @@ public class BattleResultData
             _gameCharacterResultData.stressValueDamage += stressValueDamage;
             _gameCharacterResultData.currentStressValue += stressValueDamage;
 
-            if (isBreakStatusAvailable)
+            if (_gameCharacterResultData.currentStressValue >= _gameCharacterResultData.maximumStressValue)
             {
-                if (_gameCharacterResultData.currentStressValue >= _gameCharacterResultData.maximumStressValue)
+                if (isBreakStatusAvailable)
                 {
-                    // 負荷崩潰
-                    _gameCharacterResultData.isEnteringIntoBreakStatus = true;
-                    _gameCharacterResultData.isBreakStatusCausedByStressValue = true;
-                    _gameCharacterResultData.breakStatusAtlNumber = 1;
+                    // 陷入負荷崩潰狀態。
+                    _gameCharacterResultData.stressBreakStatusRemainingATLs = 1;
+                }
+                else
+                {
+                    // 由於不會陷入崩潰狀態，該角色的負荷值只能達到最高 99% 而已。
+                    float _stressValueReduction = _gameCharacterResultData.currentStressValue - ( _gameCharacterResultData.maximumStressValue - 1 );
+                    _gameCharacterResultData.stressValueDamage -= _stressValueReduction;
+                    _gameCharacterResultData.currentStressValue -= _stressValueReduction;
                 }
             }
         }
@@ -132,12 +137,38 @@ public class BattleResultData
             _gameCharacterResultData.currentStressValue = _gameCharacterResultData.maximumStressValue;
         }
 
-        if (hasEnergyMarker)
+        // 更新能量殘響的 ATL 。
+        if (renewedEnergyMarkerATLs > 0)
         {
-            // 能量殘響
-            _gameCharacterResultData.hasEnergyMarker = hasEnergyMarker;
-            _gameCharacterResultData.energyMarkerRemainingATLs = energyMarkerRemainingATLs;
+            _gameCharacterResultData.energyMarkerRemainingATLs = renewedEnergyMarkerATLs;
         }
+
+        // 消去能量殘響。
+        if (willRemoveEnergyMarker)
+        {
+            _gameCharacterResultData.energyMarkerRemainingATLs = 0;
+        }
+
+        if (_isNewElement)
+        {
+            gameCharacterResultDataList.Add( _gameCharacterResultData );
+        }
+    }
+
+    public void AddGameCharacterResultData( GameCharacter gameCharacter,
+                                            int stateBreakStatusRemainingATLs = 0, float maximumStatePoint = 0.0f, float currentStatePoint = 0.0f,
+                                            int stressBreakStatusRemainingATLs = 0, float currentStressValue = 0.0f )
+    {
+        BattleResultData_GameCharacter _gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+
+        // 以太
+        _gameCharacterResultData.stateBreakStatusRemainingATLs = stateBreakStatusRemainingATLs;
+        _gameCharacterResultData.maximumStatePoint = maximumStatePoint;
+        _gameCharacterResultData.currentStatePoint = currentStatePoint;
+
+        // 負荷
+        _gameCharacterResultData.stressBreakStatusRemainingATLs = stressBreakStatusRemainingATLs;
+        _gameCharacterResultData.currentStressValue = currentStressValue;
 
         if (_isNewElement)
         {
@@ -171,9 +202,7 @@ public class BattleResultData
                 minimumStatePoint = gameCharacter.GetMinimumStatePoint(),
                 currentStatePoint = gameCharacter.GetCurrentStatePoint(),
                 maximumStressValue = gameCharacter.GetMaximumStressValue(),
-                currentStressValue = gameCharacter.GetCurrentStressValue(),
-                isBreakStatusCausedByStatePoint = gameCharacter.GetIsBreakStatusCausedByStatePoint(),
-                isBreakStatusCausedByStressValue = gameCharacter.GetIsBreakStatusCausedByStressValue()
+                currentStressValue = gameCharacter.GetCurrentStressValue()
             };
         }
 

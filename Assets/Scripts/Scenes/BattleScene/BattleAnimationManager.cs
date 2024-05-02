@@ -7,6 +7,7 @@ using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
 using SkillAnimation = DatabaseManager.SkillAnimation;
+using CharacterIdentityType = GameCharacter.CharacterIdentityType;
 
 public class BattleAnimationManager : MonoBehaviour
 {
@@ -707,12 +708,10 @@ public class BattleAnimationManager : MonoBehaviour
         BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = null;
 
         PlayerCharacter _playerCharacter = this.battleGameManager.GetPlayerCharacter();
-        _playerCharacter.TriggerEvent( AnimationEvent.SetCharacter );
-        _playerCharacter.MinusBreakStatusRemainingATLs();
-
         EnemyCharacter _enemyCharacter = this.battleGameManager.GetEnemyCharacter();
-        _enemyCharacter.TriggerEvent( AnimationEvent.SetCharacter );
-        _enemyCharacter.MinusBreakStatusRemainingATLs();
+
+        BattleLogicManagerV2.OnTheStartOfATL( _playerCharacter );
+        BattleLogicManagerV2.OnTheStartOfATL( _enemyCharacter );
 
         if (BattleLogicManagerV2.ShouldCombatCommandTimeBeSkipped( _playerCharacter, _enemyCharacter ))
         {
@@ -935,10 +934,6 @@ public class BattleAnimationManager : MonoBehaviour
         // “後手方”發動技能。
         _attackTarget.ApplyAssignedSkillAsCurrentSkill();
 
-        float _attackDamage = 0;
-        float _stressValueDamage = 0;
-        float _statePointDamage = 0;
-
         if (_attackTarget.GetIsInBreakStatus())
         {
             _attackTarget.Reset();
@@ -969,9 +964,9 @@ public class BattleAnimationManager : MonoBehaviour
         this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, _attacker.GetIsPlayer() );
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
 
-        if (_attackTarget.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.SuccessfulResister
-            || _attackTarget.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.SuccessfulDefender
-            || _attackTarget.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.SuccessfulEvader)
+        if (_attackTarget.GetCurrentCharacterIdentityType() is CharacterIdentityType.SuccessfulResister
+                                                            or CharacterIdentityType.SuccessfulDefender
+                                                            or CharacterIdentityType.SuccessfulEvader)
         {
             this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COUNTER_COMMAND_TIME, _attackTarget.GetIsPlayer() );
             BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COUNTER_COMMAND_TIME } 】</color>。" );
@@ -1046,8 +1041,8 @@ public class BattleAnimationManager : MonoBehaviour
                 bool _hasAssault = false;
                 if (_winner != null)
                 {
-                    if (_winner.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.LightAssaulter
-                        || _winner.GetCurrentCharacterIdentityType() == GameCharacter.CharacterIdentityType.HeavyAssaulter)
+                    if (_winner.GetCurrentCharacterIdentityType() is CharacterIdentityType.LightAssaulter
+                                                                  or CharacterIdentityType.HeavyAssaulter)
                     {
                         _hasAssault = true;
 
@@ -1063,11 +1058,11 @@ public class BattleAnimationManager : MonoBehaviour
                         ShowPopUpDisplayInfo( _attacker, _attackerBattleResultData );
                         ShowPopUpDisplayInfo( _attackTarget, _attackTargetBattleResultData );
 
-                        if (_winner == _attacker)
+                        if (_winner == _attacker && _attackTarget.IsCharacterObjectActive())
                         {
                             yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, _animationName, _attackTargetBattleResultData ) );
                         }
-                        else if (_winner == _attackTarget)
+                        else if (_winner == _attackTarget && _attacker.IsCharacterObjectActive())
                         {
                             yield return StartCoroutine( PlayCharacterAnimation( _attacker, _animationName, _attackTargetBattleResultData ) );
                         }
@@ -1130,7 +1125,8 @@ public class BattleAnimationManager : MonoBehaviour
 
                     this.cameraEffect.Shake();
                     AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                    yield return StartCoroutine( PlayCharacterAnimation( _loser, GETTING_HIT_ANIMATION_NAME, _attackDamage, _stressValueDamage, _statePointDamage ) );
+                    ShowPopUpDisplayInfo( _attacker, _attackerBattleResultData );
+                    yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
                     yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
                 }
                 else if (_winner == _attackTarget)
@@ -1148,9 +1144,11 @@ public class BattleAnimationManager : MonoBehaviour
                         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DODGE );
                     }
 
+                    ShowPopUpDisplayInfo( _attacker, _attackerBattleResultData );
+
                     if (_attackTargetBackendSkillAnimationCharacterPartA != NO_ANIMATION)
                     {
-                        yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA ) );
+                        yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBattleResultData ) );
                     }
 
                     if (_attackTargetBackendSkillAnimationSkillEffectPartA != NO_ANIMATION)
@@ -1158,7 +1156,7 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, _attackTargetBackendSkillAnimationSkillEffectPartA ) );
                     }
 
-                    yield return new WaitForSeconds( 1.0f );
+                    yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
                 }
 
                 break;
