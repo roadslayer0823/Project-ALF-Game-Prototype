@@ -261,6 +261,7 @@ public class EnemyCharacter : GameCharacter
         List<CharacterSkill> _activeSkillList = new();
         List<CharacterSkill> _backendSkillList = new();
         List<CharacterSkill> _observingSkillList = new();
+        CharacterSkill _derivedSkill = null;
 
         List<CharacterSkill> _selectedActiveSkillList = base.GetSelectedActiveSkillList();
         List<CharacterSkill> _availableActiveSkillList = new();
@@ -306,7 +307,7 @@ public class EnemyCharacter : GameCharacter
                 CharacterSkill _activeSkill = _availableActiveSkillList[ i ];
                 if (_activeSkill == base.GetCurrentSkill())
                 {
-                    _activeSkillList.Add( _activeSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() );
+                    _derivedSkill = _activeSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
                 }
                 else
                 {
@@ -365,7 +366,11 @@ public class EnemyCharacter : GameCharacter
                 _availableSkillList.AddRange( _backendSkillList );
             }
 
-            if (_availableSkillList?.Count > 0)
+            if (_derivedSkill != null && Random.value < 0.5f)
+            {
+                base.SetAssignedSkill( _derivedSkill );
+            }
+            else if (_availableSkillList?.Count > 0)
             {
                 CharacterSkill _randomSkill = GetRandomSkill( _availableSkillList, _enemyDebugMenuPanel );
                 if (_randomSkill != null)

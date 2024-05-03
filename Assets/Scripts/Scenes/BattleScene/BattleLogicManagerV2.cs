@@ -397,6 +397,9 @@ public class BattleLogicManagerV2
 
             lead.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Assaulter );
             improviser.SetCurrentCharacterIdentityType( GameCharacter.CharacterIdentityType.Recipient );
+
+            winner = lead;
+            loser = improviser;
         }
 
         // 判定輕重受擊方。

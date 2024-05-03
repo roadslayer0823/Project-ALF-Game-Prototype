@@ -284,7 +284,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
                     if (_playerCharacterSubskill.GetSubskillData().EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide)
                     {
                         this.playerSkillTagGO.SetActive(true);
-                        this.playerSkillTagText.SetText("对廣角");
+                        this.playerSkillTagText.SetText("對廣角");
                     }
                     else
                     {
@@ -334,7 +334,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
                     if (_enemyCharacterSubskill.GetSubskillData().EffectType == DatabaseManager.Subskill.EffectTypeEnum.wide)
                     {
                         this.enemySkillTagGO.SetActive(true);
-                        this.enemySkillTagText.SetText("对廣角");
+                        this.enemySkillTagText.SetText("對廣角");
                     }
                     else
                     {

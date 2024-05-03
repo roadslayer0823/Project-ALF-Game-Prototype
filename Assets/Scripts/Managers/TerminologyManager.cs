@@ -9,9 +9,9 @@ public class TerminologyManager
     public const string STRESS_VALUE = "負荷值";
     public const string STRESS_BREAK = "負荷崩潰";
     public const string KNOCKOUT = "擊飛";
-    public const string COMBAT_COMMAND_TIME = "臨戰指令時間";
-    public const string REPULSE_COMMAND_TIME = "迎擊指令時間";
-    public const string COUNTER_COMMAND_TIME = "反擊指令時間";
+    public const string COMBAT_COMMAND_TIME = "臨戰指令";
+    public const string REPULSE_COMMAND_TIME = "迎擊指令";
+    public const string COUNTER_COMMAND_TIME = "反擊指令";
 
     public static string GetSkillTypeText( Skill.SkillType skillType )
     {
