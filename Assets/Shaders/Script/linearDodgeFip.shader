@@ -1,6 +1,6 @@
 // Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-Shader "Unlit/ScreenBlend" {
+Shader "Unlit/LinearDodgeFlip" {
 Properties {
    _MainTex ("Base (RGB) Trans (A)", 2D) = "white" {}
    _Color ("Color", Color) = (1,1,1,1)
@@ -11,9 +11,9 @@ SubShader {
    LOD 100
  
    BlendOp Add
-   Blend OneMinusDstColor One, One Zero // screen
-   //Blend SrcAlpha One, One Zero // linear dodge
-   ZWrite Off
+   //Blend OneMinusDstColor One, One Zero // screen
+   Blend SrcAlpha One, One Zero // linear dodge
+   Cull Off ZWrite Off ZTest Always
    AlphaTest Greater .01
      
    Pass {
@@ -40,8 +40,16 @@ SubShader {
        v2f vert (appdata_t v)
        {
          v2f o;
+
          o.vertex = UnityObjectToClipPos(v.vertex);
-         o.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
+         o.texcoord = v.texcoord;
+
+         #if UNITY_UV_STARTS_AT_BOTTOM
+             //o.vertex.x *= -1;
+             //o.texcoord.x *= 1.0;
+             o.texcoord.y = 1.0 - o.texcoord.y;
+         #endif
+            
          return o;
        }
      
