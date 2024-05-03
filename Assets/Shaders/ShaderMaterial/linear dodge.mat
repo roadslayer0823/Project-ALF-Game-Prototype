@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: linear dodge
-  m_Shader: {fileID: 4800000, guid: 7db4b241c6c0145afa30719f5018c9de, type: 3}
+  m_Shader: {fileID: 4800000, guid: 2a96f0c40928043348411f3e71d9504e, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
