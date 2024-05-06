@@ -2,32 +2,35 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 public class PassiveSkillCategorySelectionPanel : MonoBehaviour
-{ 
+{
     [Header("Reference")]
+    [SerializeField] private PassiveSkillSlot[] passiveSkillSlots = new PassiveSkillSlot[0];
     [SerializeField] private GameObject passiveSkillHolder;
     [SerializeField] private GameObject passiveSkillInfoBox;
-    [SerializeField] private TextMeshProUGUI passiveSkillName;
     [SerializeField] private Image passiveSkillButton;
-    [SerializeField] private Image statePointSkillColor;
-    [SerializeField] private Image stressPointSkillColor;
-    [SerializeField] private Image healthPointSkillColor;
 
-    private TextMeshProUGUI selectedOption = null;
-    private bool isSelecting = false;
     private bool isHolding = false;
     private bool isClicked = false;
+
+    public void Start()
+    {
+        for(int i = 0; i<passiveSkillSlots.Length; i++)
+        {
+            passiveSkillSlots[i].UpdateDefaultPassiveSkillUI();
+        }
+    }
 
     public void HoldButton()
     {
         isHolding = true;
+        passiveSkillButton.gameObject.SetActive(false);
         passiveSkillHolder.SetActive(true);
     }
 
     public void ReleaseHoldButton()
     {
         isHolding = false;
-        isSelecting = false;
-        selectedOption = null;
+        passiveSkillButton.gameObject.SetActive(true);
         passiveSkillHolder.SetActive(false);
     }
 
@@ -36,61 +39,47 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         if(isClicked == false)
         {
             isClicked = true;
+            passiveSkillButton.gameObject.SetActive(false);
             passiveSkillHolder.SetActive(true);
         }
         else if(isClicked == true)
         {
             isClicked = false;
-            isSelecting = false;
+            passiveSkillButton.gameObject.SetActive(true);
             passiveSkillHolder.SetActive(false);
         }
     }
 
-    public void ClickOption(TextMeshProUGUI option)
+    public void ClickOption()
     {
         if(isClicked == true)
         {
-            isSelecting = true;
-            selectedOption = option;
-            passiveSkillName.text = selectedOption.text;
-            changeButtonColor();
-            Debug.Log(selectedOption.name);
+            for (int i = 0; i < passiveSkillSlots.Length; i++)
+            {
+                passiveSkillSlots[i].UpdateSelectedPassiveSkillUI();
+            }
         }
     }
 
-    public void OptionEnter(TextMeshProUGUI option)
+    public void OptionEnter()
     {
         if (isHolding == true && isClicked == false)
         {
-            isSelecting = true;
-            selectedOption = option;
-            passiveSkillName.text = selectedOption.text;
-            changeButtonColor();
+            for (int i = 0; i < passiveSkillSlots.Length; i++)
+            {
+                passiveSkillSlots[i].UpdateSelectedPassiveSkillUI();
+            }
         }
     }
 
-    public void onOptionExit()
+    public void OptionExit()
     {
         if(isHolding == true)
         {
-            passiveSkillName.text = "流向系統";
-            passiveSkillButton.color = Color.white;
-        }
-    }
-
-    public void changeButtonColor()
-    {
-        if(passiveSkillName.text == "以太流")
-        {
-            passiveSkillButton.color = statePointSkillColor.color;
-        }
-        else if(passiveSkillName.text == "生命流")
-        {
-            passiveSkillButton.color = healthPointSkillColor.color;
-        }
-        else if(passiveSkillName.text == "负荷流")
-        {
-            passiveSkillButton.color = stressPointSkillColor.color;
+            for (int i = 0; i < passiveSkillSlots.Length; i++)
+            {
+                passiveSkillSlots[i].UpdateDefaultPassiveSkillUI();
+            }
         }
     }
 }

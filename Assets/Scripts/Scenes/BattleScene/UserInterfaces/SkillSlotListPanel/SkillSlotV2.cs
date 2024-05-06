@@ -10,7 +10,7 @@ using System.Collections;
 
 public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
-    [Header( "Settings" )]
+    [Header("Settings")]
     [SerializeField] private SkillType skillType = SkillType.None;
     [SerializeField] public BackendSkillType backendSkillType = BackendSkillType.None;
     [SerializeField] private float skillIconScale = 1.0f;
@@ -87,7 +87,8 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private char[] splitSymbols = { '[', ']', '‧' };
     private StateType currentStateType = StateType.None;
     private bool isObserving = false;
-   
+    public bool isActivated = false;
+
     //audio and animation clip id
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
@@ -359,21 +360,6 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
         this.skillLevel = _subskillData.Level;
 
-        //setup skill name
-        if (_subskillData.NamePartB == "-")
-        {
-            this.bottomRowText.SetText(_subskillData.NamePartA);
-            this.topRowTextObject.SetActive(false);
-        }
-
-        else
-        {
-            this.topRowText.SetText(_subskillData.NamePartA);
-            this.bottomRowText.SetText(_subskillData.NamePartB);
-            this.topRowTextObject.SetActive(true);
-            StartCoroutine(DelayedSizeDeltaUpdate());
-        }
-
         //checking current skill level to whether to show modify skill level animation
         if (this.skillLevel > 1)
         {
@@ -391,6 +377,23 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if (_subskillData.IsObservingSkill && !isObserving)
         {
             UpdateCurrentObservedStatus( false );
+        }
+
+        //setup skill name
+        if (_subskillData.NamePartB == "-")
+        {
+            this.bottomRowText.SetText(_subskillData.NamePartA);
+            this.topRowTextObject.SetActive(false);
+        }
+        else
+        {
+            this.topRowText.SetText(_subskillData.NamePartA);
+            this.bottomRowText.SetText(_subskillData.NamePartB);
+            this.topRowTextObject.SetActive(true);
+            if(isActivated == true)
+            {
+                StartCoroutine(DelayedSizeDeltaUpdate());
+            }
         }
     }
 
