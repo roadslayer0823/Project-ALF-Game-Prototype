@@ -710,8 +710,9 @@ public class BattleAnimationManager : MonoBehaviour
         PlayerCharacter _playerCharacter = this.battleGameManager.GetPlayerCharacter();
         EnemyCharacter _enemyCharacter = this.battleGameManager.GetEnemyCharacter();
 
-        BattleLogicManagerV2.OnTheStartOfATL( _playerCharacter );
-        BattleLogicManagerV2.OnTheStartOfATL( _enemyCharacter );
+        _battleResultData = BattleLogicManagerV2.OnTheStartOfATL( new GameCharacter[] { _playerCharacter, _enemyCharacter } );
+        _playerCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _playerCharacter ), true );
+        _enemyCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _enemyCharacter ), true );
 
         if (BattleLogicManagerV2.ShouldCombatCommandTimeBeSkipped( _playerCharacter, _enemyCharacter ))
         {
@@ -1234,8 +1235,7 @@ public class BattleAnimationManager : MonoBehaviour
 
     private bool EndPartB( GameCharacter attacker, GameCharacter attackTarget )
     {
-        BattleLogicManagerV2.OnTheEndOfPartB( attacker );
-        BattleLogicManagerV2.OnTheEndOfPartB( attackTarget );
+        BattleLogicManagerV2.OnTheEndOfPartB( new GameCharacter[] { attacker, attackTarget } );
 
         this.battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
 

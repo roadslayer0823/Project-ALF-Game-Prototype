@@ -237,7 +237,31 @@ public class BattleGameManager : MonoBehaviour
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { _roundNumber } 回合結束 】</color>" );
 
-        BattleLogicManager.OnExecutionPhaseFinished( GetCharacterList() );
+        if (this.battleFlowManager_V2 == null)
+        {
+            BattleLogicManager.OnExecutionPhaseFinished( GetCharacterList() );
+        }
+        else
+        {
+            List<GameCharacter> _gameCharacters = GetCharacterList();
+            BattleResultData _battleResultData = BattleLogicManagerV2.OnTheEndOfRound( _gameCharacters.ToArray(), out List<string> _resultLogList );
+
+            for (int i = 0; i < _gameCharacters.Count; i++)
+            {
+                GameCharacter _gameCharacter = _gameCharacters[ i ];
+                BattleResultData.BattleResultData_GameCharacter _gameCharacterBattleResultData = _battleResultData.GetGameCharacterResultData( _gameCharacter, out bool _hasResultData );
+
+                if (_hasResultData)
+                {
+                    _gameCharacter.ApplyBattleResultData( _gameCharacterBattleResultData, true );
+                }
+            }
+
+            for (int i = 0; i < _resultLogList.Count; i++)
+            {
+                BattleLog.Instance.AddOnScreenBattleLog( _resultLogList[ i ] );
+            }
+        }
 
         this.battleUiManager.HideSkillSlotListPanel();
         this.battleUiManager.HideATLSlotListPanel();
@@ -270,15 +294,15 @@ public class BattleGameManager : MonoBehaviour
         if (this.battleFlowManager_V2 == null)
         {
             _roundNumber = this.battleFlowManager.GetCurrentRound().GetRoundNumber();
+
+            if (_roundNumber > 1)
+            {
+                BattleLogicManager.OnNewRoundStarted( GetCharacterList() );
+            }
         }
         else
         {
             _roundNumber = this.battleFlowManager_V2.GetCurrentRound().GetRoundNumber();
-        }
-
-        if (_roundNumber > 1)
-        {
-            BattleLogicManager.OnNewRoundStarted( GetCharacterList() );
         }
     }
 

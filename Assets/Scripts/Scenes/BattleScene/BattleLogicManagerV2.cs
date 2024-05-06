@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Skill = DatabaseManager.Skill;
 using SkillType = DatabaseManager.Skill.SkillType;
@@ -687,56 +688,127 @@ public class BattleLogicManagerV2
         }
     }
 
-    public static void OnTheStartOfATL( GameCharacter gameCharacter )
+    public static void OnTheStartOfRound( GameCharacter[] gameCharacters )
     {
-        gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.SetCharacter );
 
-        // 以太崩潰狀態
-        int _stateBreakStatusRemainingATLs = gameCharacter.GetStateBreakStatusRemainingATLs();
-        float _maximumStatePoint = gameCharacter.GetMaximumStatePoint();
-        float _currentStatePoint = gameCharacter.GetCurrentStatePoint();
-        if (_stateBreakStatusRemainingATLs > 0)
-        {
-            _stateBreakStatusRemainingATLs--;
-
-            if (_stateBreakStatusRemainingATLs <= 0)
-            {
-                _maximumStatePoint = gameCharacter.GetOriginalStatePoint();
-                _currentStatePoint = _maximumStatePoint;
-            }
-        }
-
-        // 負荷崩潰狀態
-        int _stressBreakStatusRemainingATLs = gameCharacter.GetStressBreakStatusRemainingATLs();
-        float _currentStressValue = gameCharacter.GetCurrentStressValue();
-        if (_stressBreakStatusRemainingATLs > 0)
-        {
-            _stressBreakStatusRemainingATLs--;
-
-            if (_stressBreakStatusRemainingATLs <= 0)
-            {
-                _currentStressValue = 0.0f;
-            }
-        }
-
-        BattleResultData _battleResultData = new();
-
-        _battleResultData.AddGameCharacterResultData( gameCharacter,
-            stateBreakStatusRemainingATLs: _stateBreakStatusRemainingATLs, maximumStatePoint: _maximumStatePoint, currentStatePoint: _currentStatePoint,
-            stressBreakStatusRemainingATLs: _stressBreakStatusRemainingATLs, currentStressValue: _currentStressValue );
-
-        gameCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( gameCharacter ), true );
     }
 
-    public static void OnTheEndOfPartB( GameCharacter gameCharacter )
+    public static BattleResultData OnTheStartOfATL( GameCharacter[] gameCharacters )
     {
-        gameCharacter.ResetCurrentSkillStatIncrement();
+        BattleResultData _battleResultData = new();
 
-        if (gameCharacter.GetCurrentObservingSkill() != null)
+        for (int i = 0; i < gameCharacters.Length; i++)
         {
-            gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnSkillBeingObserved );
-            gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnAtlEnded );
-            gameCharacter.SetCurrentObservingSkill( null );
+            GameCharacter _gameCharacter = gameCharacters[ i ];
+            _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.SetCharacter );
+
+            // 以太崩潰狀態
+            int _stateBreakStatusRemainingATLs = _gameCharacter.GetStateBreakStatusRemainingATLs();
+            float _maximumStatePoint = _gameCharacter.GetMaximumStatePoint();
+            float _currentStatePoint = _gameCharacter.GetCurrentStatePoint();
+            if (_stateBreakStatusRemainingATLs > 0)
+            {
+                _stateBreakStatusRemainingATLs--;
+
+                if (_stateBreakStatusRemainingATLs <= 0)
+                {
+                    _maximumStatePoint = _gameCharacter.GetOriginalStatePoint();
+                    _currentStatePoint = _maximumStatePoint;
+                }
+            }
+
+            // 負荷崩潰狀態
+            int _stressBreakStatusRemainingATLs = _gameCharacter.GetStressBreakStatusRemainingATLs();
+            float _currentStressValue = _gameCharacter.GetCurrentStressValue();
+            if (_stressBreakStatusRemainingATLs > 0)
+            {
+                _stressBreakStatusRemainingATLs--;
+
+                if (_stressBreakStatusRemainingATLs <= 0)
+                {
+                    _currentStressValue = 0.0f;
+                }
+            }
+
+            _battleResultData.AddGameCharacterResultData( _gameCharacter,
+                stateBreakStatusRemainingATLs: _stateBreakStatusRemainingATLs, maximumStatePoint: _maximumStatePoint, currentStatePoint: _currentStatePoint,
+                stressBreakStatusRemainingATLs: _stressBreakStatusRemainingATLs, currentStressValue: _currentStressValue );
         }
+
+        return _battleResultData;
+    }
+
+    public static void OnTheEndOfPartB( GameCharacter[] gameCharacters )
+    {
+        for (int i = 0; i < gameCharacters.Length; i++)
+        {
+            GameCharacter _gameCharacter = gameCharacters[ i ];
+            _gameCharacter.ResetCurrentSkillStatIncrement();
+
+            if (_gameCharacter.GetCurrentObservingSkill() != null)
+            {
+                _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnSkillBeingObserved );
+                _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnAtlEnded );
+                _gameCharacter.SetCurrentObservingSkill( null );
+            }
+        }
+    }
+
+    public static BattleResultData OnTheEndOfRound( GameCharacter[] gameCharacters, out List<string> resultLogList )
+    {
+        BattleResultData _battleResultData = new();
+        resultLogList = new List<string>();
+
+        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
+        int _stressValueDecreaseOnRoundStart = _battleConfiguration.GetStressValueDecreaseOnRoundStart();
+        float _healthPointRegenerationRateOnRoundStart = _battleConfiguration.GetHealthPointRegenerationRateOnRoundStart();
+        int _maximumStatePointIncreaseOnRoundStart = _battleConfiguration.GetMaximumStatePointIncreaseOnRoundStart();
+
+        for (int i = 0; i < gameCharacters.Length; i++)
+        {
+            GameCharacter _gameCharacter = gameCharacters[ i ];
+            float _virtualHealthPointDamageRecovered = _gameCharacter.GetMaximumHealthPoint() * _healthPointRegenerationRateOnRoundStart;
+            float _currentStatePoint = _gameCharacter.GetCurrentStatePoint();
+            float _maximumStatePointDecrease = ( _currentStatePoint < 0 ) ? Mathf.Abs( _currentStatePoint ) : 0.0f;
+            float _maximumStatePointIncrease = _maximumStatePointIncreaseOnRoundStart;
+            float _stressValueDamageRecovered = _stressValueDecreaseOnRoundStart;
+
+            _battleResultData.AddGameCharacterResultData( _gameCharacter,
+
+                // 回復受到的“虛傷”，回復值為最大生命(HP)值的指定巴仙率。
+                virtualHealthPointDamageRecovered: _virtualHealthPointDamageRecovered,
+
+                // 如果透支以太值至負數去消費，最大以太值將減去負數值。
+                maximumStatePointDecrease: _maximumStatePointDecrease,
+
+                // 提升最大以太值。
+                maximumStatePointIncrease: _maximumStatePointIncrease,
+
+                // 降低當前負荷值。
+                stressValueDamageRecovered: _stressValueDamageRecovered,
+
+                // 當前以太值回復至最大以太值的100%。
+                isCurrentStatePointFullyRestored: true );
+
+            string _resultLog = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetCharacterName() }</color>"
+                              + ( ( _virtualHealthPointDamageRecovered > 0 ) ? $"回復了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _virtualHealthPointDamageRecovered }虛傷值</color>，" : "" );
+
+            if (_maximumStatePointDecrease > 0)
+            {
+                _resultLog += $"因<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>為負數而導致"
+                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>最大{ TerminologyManager.STATE_POINT }</color>"
+                            + $"減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointDecrease }</color>至"
+                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetMaximumStatePoint() }</color>，";
+            }
+
+            _resultLog += ( ( _maximumStatePointIncrease > 0 ) ? $"提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{_maximumStatePointIncrease }最大{ TerminologyManager.STATE_POINT }</color>，" : "" )
+                        + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>已回復至最大值"
+                        + ( ( _stressValueDamageRecovered > 0 ) ? $"，減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _stressValueDamageRecovered }%負荷值</color>" : "" )
+                        + "。";
+
+            resultLogList.Add( _resultLog );
+        }
+
+        return _battleResultData;
     }
 }

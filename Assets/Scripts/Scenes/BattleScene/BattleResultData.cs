@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 public class BattleResultData
 {
@@ -43,50 +44,120 @@ public class BattleResultData
         {
             return ( stateBreakStatusRemainingATLs > 0 || stressBreakStatusRemainingATLs > 0 );
         }
+
+        public void SetCurrentHealthPoint( float value, bool needToUpdateVirtualHealthPoint )
+        {
+            this.currentHealthPoint = Mathf.Clamp( value, 0.0f, this.maximumHealthPoint );
+
+            if (needToUpdateVirtualHealthPoint)
+            {
+                UpdateVirtualHealthPoint();
+            }
+        }
+
+        public void SetVirtualHealthPoint( float value )
+        {
+            this.virtualHealthPoint = Mathf.Clamp( value, 0.0f, this.maximumHealthPoint );
+            UpdateVirtualHealthPoint();
+        }
+
+        private void UpdateVirtualHealthPoint()
+        {
+            if (this.virtualHealthPoint < this.currentHealthPoint)
+            {
+                this.virtualHealthPoint = this.currentHealthPoint;
+            }
+        }
+
+        public void SetMaximumStatePoint( float value )
+        {
+            float _lowestMaximumStatePoint = GameConfiguration.Instance.GetBattleConfiguration().GetLowestMaximumStatePoint();
+            this.maximumStatePoint = ( this.maximumStatePoint < _lowestMaximumStatePoint ) ? _lowestMaximumStatePoint : value;
+        }
+
+        public void SetCurrentStatePoint( float value )
+        {
+            this.currentStatePoint = Mathf.Clamp( value, this.minimumStatePoint, this.maximumStatePoint );
+        }
+
+        public void SetCurrentStressValue( float value )
+        {
+            this.currentStressValue = Mathf.Clamp( value, 0.0f, this.maximumStressValue );
+        }
     }
 
     public void AddGameCharacterResultData( GameCharacter gameCharacter,
-                                            float statePointCost = 0.0f, float maximumStatePointIncrease = 0.0f,
+                                            float virtualHealthPointDamageRecovered = 0.0f, float stressValueDamageRecovered = 0.0f, bool isCurrentStatePointFullyRestored = false,
+                                            float statePointCost = 0.0f, float maximumStatePointIncrease = 0.0f, float maximumStatePointDecrease = 0.0f,
                                             float actualHealthPointDamage = 0.0f, float virtualHealthPointDamage = 0.0f, float statePointDamage = 0.0f, float stressValueDamage = 0.0f,
                                             bool isBreakStatusAvailable = false, int renewedEnergyMarkerATLs = 0, bool willRemoveEnergyMarker = false )
     {
         BattleResultData_GameCharacter _gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
-        float _minimumStatePoint = gameCharacter.GetMinimumStatePoint();
 
-        if (statePointCost > 0)
+        // 回復受到的“虛傷”。
+        if (virtualHealthPointDamageRecovered > 0)
         {
-            // 以太值消耗
-            _gameCharacterResultData.statePointCost += statePointCost;
-            _gameCharacterResultData.currentStatePoint -= statePointCost;
+            _gameCharacterResultData.SetCurrentHealthPoint( _gameCharacterResultData.currentHealthPoint + virtualHealthPointDamageRecovered, true );
         }
 
+        // 降低最大以太值。
+        if (maximumStatePointDecrease > 0)
+        {
+            _gameCharacterResultData.SetMaximumStatePoint( _gameCharacterResultData.maximumStatePoint - maximumStatePointDecrease );
+        }
+
+        // 提升最大以太值。
         if (maximumStatePointIncrease > 0)
         {
-            // 最大以太值提升
+            _gameCharacterResultData.SetMaximumStatePoint( _gameCharacterResultData.maximumStatePoint + maximumStatePointIncrease );
+        }
+
+        // 降低當前負荷值。
+        if (stressValueDamageRecovered > 0)
+        {
+            _gameCharacterResultData.SetCurrentStressValue( _gameCharacterResultData.currentStressValue - stressValueDamageRecovered );
+        }
+
+        // 當前以太值回復至最大以太值的100%。
+        if (isCurrentStatePointFullyRestored)
+        {
+            _gameCharacterResultData.SetCurrentStatePoint( _gameCharacterResultData.maximumStatePoint );
+        }
+
+        // 以太值消耗
+        if (statePointCost > 0)
+        {
+            _gameCharacterResultData.statePointCost += statePointCost;
+            _gameCharacterResultData.SetCurrentStatePoint( _gameCharacterResultData.currentStatePoint - statePointCost );
+        }
+
+        // 最大以太值提升
+        if (maximumStatePointIncrease > 0)
+        {
             _gameCharacterResultData.maximumStatePointIncrease += maximumStatePointIncrease;
             _gameCharacterResultData.maximumStatePoint += maximumStatePointIncrease;
         }
 
+        // 實傷
         if (actualHealthPointDamage > 0)
         {
-            // 實傷
             _gameCharacterResultData.actualHealthPointDamage += actualHealthPointDamage;
-            _gameCharacterResultData.currentHealthPoint -= actualHealthPointDamage;
-            _gameCharacterResultData.virtualHealthPoint -= actualHealthPointDamage;
+            _gameCharacterResultData.SetCurrentHealthPoint( _gameCharacterResultData.currentHealthPoint - actualHealthPointDamage, false );
+            _gameCharacterResultData.SetVirtualHealthPoint( _gameCharacterResultData.virtualHealthPoint - actualHealthPointDamage );
         }
 
+        // 虛傷
         if (virtualHealthPointDamage > 0)
         {
-            // 虛傷
             _gameCharacterResultData.virtualHealthPointDamage += virtualHealthPointDamage;
-            _gameCharacterResultData.currentHealthPoint -= virtualHealthPointDamage;
+            _gameCharacterResultData.SetCurrentHealthPoint( _gameCharacterResultData.currentHealthPoint - virtualHealthPointDamage, true );
         }
 
+        // 以太值傷害
         if (statePointDamage > 0)
         {
-            // 以太值傷害
             _gameCharacterResultData.statePointDamage += statePointDamage;
-            _gameCharacterResultData.currentStatePoint -= statePointDamage;
+            _gameCharacterResultData.SetCurrentStatePoint( _gameCharacterResultData.currentStatePoint - statePointDamage );
 
             if (_gameCharacterResultData.currentStatePoint < 0)
             {
@@ -98,11 +169,11 @@ public class BattleResultData
             }
         }
 
+        // 負荷值傷害
         if (stressValueDamage > 0)
         {
-            // 負荷值傷害
             _gameCharacterResultData.stressValueDamage += stressValueDamage;
-            _gameCharacterResultData.currentStressValue += stressValueDamage;
+            _gameCharacterResultData.SetCurrentStressValue( _gameCharacterResultData.currentStressValue + stressValueDamage );
 
             if (_gameCharacterResultData.currentStressValue >= _gameCharacterResultData.maximumStressValue)
             {
@@ -125,16 +196,6 @@ public class BattleResultData
         {
             _gameCharacterResultData.currentHealthPoint = 0;
             _gameCharacterResultData.isDead = true;
-        }
-
-        if (_gameCharacterResultData.currentStatePoint < _minimumStatePoint)
-        {
-            _gameCharacterResultData.currentStatePoint = _minimumStatePoint;
-        }
-
-        if (_gameCharacterResultData.currentStressValue >= _gameCharacterResultData.maximumStressValue)
-        {
-            _gameCharacterResultData.currentStressValue = _gameCharacterResultData.maximumStressValue;
         }
 
         // 更新能量殘響的 ATL 。
@@ -163,12 +224,12 @@ public class BattleResultData
 
         // 以太
         _gameCharacterResultData.stateBreakStatusRemainingATLs = stateBreakStatusRemainingATLs;
-        _gameCharacterResultData.maximumStatePoint = maximumStatePoint;
-        _gameCharacterResultData.currentStatePoint = currentStatePoint;
+        _gameCharacterResultData.SetMaximumStatePoint( maximumStatePoint );
+        _gameCharacterResultData.SetCurrentStatePoint( currentStatePoint );
 
         // 負荷
         _gameCharacterResultData.stressBreakStatusRemainingATLs = stressBreakStatusRemainingATLs;
-        _gameCharacterResultData.currentStressValue = currentStressValue;
+        _gameCharacterResultData.SetCurrentStressValue( currentStressValue );
 
         if (_isNewElement)
         {
