@@ -41,11 +41,19 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     public void Show()
     {
         base.gameObject.SetActive(true);
+        for (int i = 0; i < skillSlots.Length; i++)
+        {
+            skillSlots[i].isActivated = true;
+        }
     }
 
     public void Hide()
     {
         base.gameObject.SetActive(false);
+        for (int i = 0; i < skillSlots.Length; i++)
+        {
+            skillSlots[i].isActivated = false;
+        }
     }
 
     public void EnableInteraction()
@@ -134,6 +142,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     {
         OnSkillSlotSelected( null );
         ClearSkillSlots();
+
 
         if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
         {
