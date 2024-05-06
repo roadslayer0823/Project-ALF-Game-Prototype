@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,24 +25,15 @@ public class DistanceLevelSystem : MonoBehaviour
     public void SetCurrentDistanceLevel(DistanceLevel currentDistanceLevel)
     {
         this.currentDistanceLevel = currentDistanceLevel;
-
-        switch (this.currentDistanceLevel)
+        (Vector2 distanceLeftPoint, Vector2 distanceRightPoint) = this.currentDistanceLevel switch
         {
-            case DistanceLevel.Near:
-                this.pointerLeft.rectTransform.position = this.nearDistanceLeft.position;
-                this.pointerRight.rectTransform.position = this.nearDistanceRight.position;
-                break;
-
-            case DistanceLevel.Normal:
-                this.pointerLeft.rectTransform.position = this.normalDistanceLeft.position;
-                this.pointerRight.rectTransform.position = this.normalDistanceRight.position;
-                break;
-
-            case DistanceLevel.Far:
-                this.pointerLeft.rectTransform.position = this.farDistanceLeft.position;
-                this.pointerRight.rectTransform.position = this.farDistanceRight.position;
-                break;
-        }
+            DistanceLevel.Near => (this.nearDistanceLeft.position, this.nearDistanceRight.position),
+            DistanceLevel.Normal => (this.normalDistanceLeft.position, this.normalDistanceRight.position),
+            DistanceLevel.Far => (this.farDistanceLeft.position, this.farDistanceRight.position),
+            _ => throw new NotImplementedException()
+        };
+        this.pointerLeft.rectTransform.position = distanceLeftPoint;
+        this.pointerRight.rectTransform.position = distanceRightPoint;
     }
 
     public DistanceLevel GetCurrentDistanceLevel()

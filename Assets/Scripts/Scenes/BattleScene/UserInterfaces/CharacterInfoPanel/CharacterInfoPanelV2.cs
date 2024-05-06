@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
@@ -119,20 +120,14 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
         string maximumStatePointText = _maximumStatePoint.ToString();
 
-        if (maximumStatePointText.Length == 2)
+        (bool isThirdTextActive, bool isFourthTextActive) = maximumStatePointText.Length switch
         {
-            MaxStatePointTextSpacing(false, false, maximumStatePointText);
-        }
-
-        else if (maximumStatePointText.Length == 3)
-        {
-            MaxStatePointTextSpacing(true, false, maximumStatePointText);
-        }
-
-        else if (maximumStatePointText.Length == 4)
-        {
-            MaxStatePointTextSpacing(true, true, maximumStatePointText);
-        }
+            2 => (false, false),
+            3 => (true, false),
+            4 => (true, true),
+            _ => throw new NotImplementedException()
+        };
+        MaxStatePointTextSpacing(isThirdTextActive, isFourthTextActive, maximumStatePointText);
 
         if (this.startingStatePoint != _currentStatePoint)
         {
@@ -169,18 +164,14 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             }
         }
 
-        if (this.selectedCharacter.IsInStateBreakStatus())
+        (bool isBreakTextActive, bool isValueTextActive, Sprite statePointStatus) = this.selectedCharacter.IsInStateBreakStatus() switch
         {
-            this.statePointBreakText.gameObject.SetActive(true);
-            this.statePointValueText.gameObject.SetActive(false);
-            this.statePointStatus.sprite = this.statePointBreak;
-        }
-        else
-        {
-            this.statePointBreakText.gameObject.SetActive(false);
-            this.statePointValueText.gameObject.SetActive(true);
-            this.statePointStatus.sprite = this.statePointNoBreak;
-        }
+            true => (true, false, this.statePointBreak),
+            false => (false, true, this.statePointNoBreak)
+        };
+        this.statePointBreakText.gameObject.SetActive(isBreakTextActive);
+        this.statePointValueText.gameObject.SetActive(isValueTextActive);
+        this.statePointStatus.sprite = statePointStatus;
     }
 
 
@@ -335,6 +326,9 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         for (int i = 0; i < this.maxStatePointText.Length; i++)
         {
             var targetText = this.maxStatePointText[i];
+            targetText.rectTransform.localScale = currentScale;
+            targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, this.defaultTextOffset);
+            targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, this.defaultTextOuter);
             yield return StartCoroutine(MaxStatePointAnimation(targetText, newScale, currentScale, this.defaultTextOffset, this.targetTextOffset, this.defaultTextOuter, this.targetTextOuter, this.maxStatePointDuration));
         }
     }

@@ -2793,7 +2793,7 @@ GameObject:
   - component: {fileID: 5629325800372636650}
   - component: {fileID: 2010561209207569601}
   m_Layer: 5
-  m_Name: CounterSkillSelectionTabButtonV2 (3)
+  m_Name: CounterSkillSelectionTabButtonV2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2816,8 +2816,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 232, y: -17}
-  m_SizeDelta: {x: 258.00003, y: 100}
+  m_AnchoredPosition: {x: 231, y: -17}
+  m_SizeDelta: {x: 265, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7242321976231298759
 CanvasRenderer:

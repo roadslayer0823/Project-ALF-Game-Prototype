@@ -69,40 +69,13 @@ public class ATLSlotV2 : MonoBehaviour
         {
             if (this.battleFlowATL.CheckIsPlayer())
             {
-                if (aTLCurrentStatus == ATLCurrentStatus.Unused)
-                {
-                    this.atlSlot.sprite = this.playerUnuseAtlSlot;
-                }
-                else if (aTLCurrentStatus == ATLCurrentStatus.Using)
-                {
-                    this.atlSlot.sprite = this.playerUsingAtlSlot;
-                }
-                else if (aTLCurrentStatus == ATLCurrentStatus.Used)
-                {
-                    this.atlSlot.sprite = this.playerUsedAtlSlot;
-                }
-
-                this.startingPointX = this.PlayerStartPoint.position.x;
+                currentATlSlotStatus(aTLCurrentStatus, this.playerUnuseAtlSlot, this.playerUsingAtlSlot, this.playerUsedAtlSlot, this.PlayerStartPoint.position.x);
             }
             else
             {
-                if (aTLCurrentStatus == ATLCurrentStatus.Unused)
-                {
-                    this.atlSlot.sprite = this.enemyUnuseAtlSlot;
-                }
-                else if (aTLCurrentStatus == ATLCurrentStatus.Using)
-                {
-                    this.atlSlot.sprite = this.enemyUsingAtlSlot;
-                }
-                else if (aTLCurrentStatus == ATLCurrentStatus.Used)
-                {
-                    this.atlSlot.sprite = this.enemyUsedAtlSlot;
-                }
-
-                this.startingPointX = this.EnemyStartPoint.position.x;
+                currentATlSlotStatus(aTLCurrentStatus, this.enemyUnuseAtlSlot, this.enemyUsingAtlSlot, this.enemyUsedAtlSlot, this.PlayerStartPoint.position.x);
             }
         }
-
         if (this.battleFlowATL_V2 != null)
         {
             int _atlNumber = this.battleFlowATL_V2.GetATLNumber();
@@ -128,6 +101,18 @@ public class ATLSlotV2 : MonoBehaviour
         }
 
         base.gameObject.SetActive(true);
+    }
+
+    public void currentATlSlotStatus(ATLCurrentStatus aTLCurrentStatus, Sprite unuseSlot, Sprite usingSlot, Sprite usedSlot, float startingPointX)
+    {
+        this.atlSlot.sprite = aTLCurrentStatus switch
+        {
+            ATLCurrentStatus.Unused => unuseSlot,
+            ATLCurrentStatus.Using => usingSlot,
+            ATLCurrentStatus.Used => usedSlot,
+            _ => throw new NotImplementedException()
+        };
+        this.startingPointX = startingPointX;
     }
 
     public void Hide()
