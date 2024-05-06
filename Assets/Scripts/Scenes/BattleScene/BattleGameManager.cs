@@ -249,11 +249,11 @@ public class BattleGameManager : MonoBehaviour
             for (int i = 0; i < _gameCharacters.Count; i++)
             {
                 GameCharacter _gameCharacter = _gameCharacters[ i ];
-                BattleResultData.BattleResultData_GameCharacter _gameCharacterBattleResultData = _battleResultData.GetGameCharacterResultData( _gameCharacter, out bool _hasResultData );
+                BattleResultData.BattleResultData_GameCharacter _gameCharacterResultData = _battleResultData.GetGameCharacterResultData( _gameCharacter, out bool _isNewElement );
 
-                if (_hasResultData)
+                if (!_isNewElement)
                 {
-                    _gameCharacter.ApplyBattleResultData( _gameCharacterBattleResultData, true );
+                    _gameCharacter.ApplyBattleResultData( _gameCharacterResultData, true );
                 }
             }
 

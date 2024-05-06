@@ -790,6 +790,8 @@ public class BattleLogicManagerV2
                 // 當前以太值回復至最大以太值的100%。
                 isCurrentStatePointFullyRestored: true );
 
+            BattleResultData_GameCharacter _gameCharacterResultData = _battleResultData.GetGameCharacterResultData( _gameCharacter );
+
             string _resultLog = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetCharacterName() }</color>"
                               + ( ( _virtualHealthPointDamageRecovered > 0 ) ? $"回復了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _virtualHealthPointDamageRecovered }虛傷值</color>，" : "" );
 
@@ -798,11 +800,16 @@ public class BattleLogicManagerV2
                 _resultLog += $"因<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>為負數而導致"
                             + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>最大{ TerminologyManager.STATE_POINT }</color>"
                             + $"減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointDecrease }</color>至"
-                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetMaximumStatePoint() }</color>，";
+                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterResultData.maximumStatePoint }</color>，";
             }
 
-            _resultLog += ( ( _maximumStatePointIncrease > 0 ) ? $"提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{_maximumStatePointIncrease }最大{ TerminologyManager.STATE_POINT }</color>，" : "" )
-                        + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>已回復至最大值"
+            if (_maximumStatePointIncrease > 0)
+            {
+                _resultLog += $"提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointIncrease }最大{ TerminologyManager.STATE_POINT }</color>至"
+                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterResultData.maximumStatePoint }</color>，";
+            }
+
+            _resultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>已回復至最大值"
                         + ( ( _stressValueDamageRecovered > 0 ) ? $"，減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _stressValueDamageRecovered }%負荷值</color>" : "" )
                         + "。";
 

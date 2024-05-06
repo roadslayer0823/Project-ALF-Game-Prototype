@@ -21,6 +21,16 @@ public class BattleResultData
         public float maximumStressValue = 0.0f;
         public float currentStressValue = 0.0f;
 
+        // 崩潰狀態
+        public int stateBreakStatusRemainingATLs = 0;  // 以太崩潰維持值 (ATL)
+        public int stressBreakStatusRemainingATLs = 0; // 負荷崩潰維持值 (ATL)
+
+        // 能量殘響
+        public int energyMarkerRemainingATLs = 0;
+
+        // 其他狀態
+        public bool isDead = false;
+
         // 改變參數（技能發動時）
         public float statePointCost = 0.0f;
         public float maximumStatePointIncrease = 0.0f;
@@ -30,15 +40,6 @@ public class BattleResultData
         public float virtualHealthPointDamage = 0.0f;
         public float statePointDamage = 0.0f;
         public float stressValueDamage = 0.0f;
-
-        // 崩潰狀態
-        public int stateBreakStatusRemainingATLs = 0;  // 以太崩潰維持值 (ATL)
-        public int stressBreakStatusRemainingATLs = 0; // 負荷崩潰維持值 (ATL)
-
-        // 能量殘響
-        public int energyMarkerRemainingATLs = 0;
-
-        public bool isDead = false;
 
         public bool IsInBreakStatus()
         {
@@ -116,12 +117,6 @@ public class BattleResultData
         if (stressValueDamageRecovered > 0)
         {
             _gameCharacterResultData.SetCurrentStressValue( _gameCharacterResultData.currentStressValue - stressValueDamageRecovered );
-        }
-
-        // 當前以太值回復至最大以太值的100%。
-        if (isCurrentStatePointFullyRestored)
-        {
-            _gameCharacterResultData.SetCurrentStatePoint( _gameCharacterResultData.maximumStatePoint );
         }
 
         // 以太值消耗
@@ -210,6 +205,12 @@ public class BattleResultData
             _gameCharacterResultData.energyMarkerRemainingATLs = 0;
         }
 
+        // 當前以太值回復至最大以太值的100%。
+        if (isCurrentStatePointFullyRestored)
+        {
+            _gameCharacterResultData.SetCurrentStatePoint( _gameCharacterResultData.maximumStatePoint );
+        }
+
         if (_isNewElement)
         {
             gameCharacterResultDataList.Add( _gameCharacterResultData );
@@ -263,7 +264,10 @@ public class BattleResultData
                 minimumStatePoint = gameCharacter.GetMinimumStatePoint(),
                 currentStatePoint = gameCharacter.GetCurrentStatePoint(),
                 maximumStressValue = gameCharacter.GetMaximumStressValue(),
-                currentStressValue = gameCharacter.GetCurrentStressValue()
+                currentStressValue = gameCharacter.GetCurrentStressValue(),
+                stateBreakStatusRemainingATLs = gameCharacter.GetStateBreakStatusRemainingATLs(),
+                stressBreakStatusRemainingATLs = gameCharacter.GetStressBreakStatusRemainingATLs(),
+                energyMarkerRemainingATLs = gameCharacter.GetEnergyMarkerRemainingATLs()
             };
         }
 
