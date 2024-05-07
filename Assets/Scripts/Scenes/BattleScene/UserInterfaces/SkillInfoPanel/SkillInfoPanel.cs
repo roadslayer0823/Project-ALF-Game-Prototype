@@ -239,6 +239,7 @@ public class SkillInfoPanel : MonoBehaviour
         {
             this.speedIcon.sprite = _subskillData.Speed switch
             {
+                1 => null,
                 2 => this.speedIconLevelTwo,
                 3 => this.speedIconLevelThree,
                 4 => this.speedIconLevelFour,
@@ -309,6 +310,7 @@ public class SkillInfoPanel : MonoBehaviour
                 Subskill.RangeType.melee => "【近戰】",
                 Subskill.RangeType.ranged => "【遠程】",
                 Subskill.RangeType.melee_or_ranged => "【近/遠】",
+                Subskill.RangeType.none => "",
                 _ => throw new NotImplementedException()
             };
 
