@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using SubSkill = DatabaseManager.Subskill;
 
 public class BattleDistanceManager : MonoBehaviour
@@ -191,3 +192,11 @@ public class BattleDistanceManager : MonoBehaviour
         currentDistance = finalDistance;
     }
 }
+
+/*distanceType = leadSubskill.Range switch
+               {
+                   SubSkill.RangeType.melee => DistanceType.Near,
+                   SubSkill.RangeType.ranged => DistanceType.Normal,
+                   SubSkill.RangeType.none => DistanceType.Near,
+                   _ => throw new NotImplementedException()
+               };*/
