@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Subskill = DatabaseManager.Subskill;
 
 public class SpecialSkillInfoBox : MonoBehaviour
 {
@@ -18,17 +19,17 @@ public class SpecialSkillInfoBox : MonoBehaviour
     [SerializeField] private Sprite percentageWhite;
     [SerializeField] private Sprite percentageYellow;
  
-    private ObservedSkillData observedSkillData = null;
+    private ObservedSkillRecord observedSkillRecord = null;
 
-    public void Initialize(ObservedSkillData observedSkillData)
+    public void Initialize(ObservedSkillRecord observedSkillRecord)
     {
-        this.observedSkillData = observedSkillData;
+        this.observedSkillRecord = observedSkillRecord;
         SetupObservedSkillData();
     }
 
     private void SetupObservedSkillData()
     {
-        if(observedSkillData == null)
+        if(observedSkillRecord == null)
         {
             this.observationPercentageText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, -1);
             this.observationTitle.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, -1);
@@ -41,7 +42,11 @@ public class SpecialSkillInfoBox : MonoBehaviour
         }
         else
         {
-            UpdateObserveSkillIcon();
+            Subskill _observedSkillRecordSubskillData = this.observedSkillRecord.GetSubskillData();
+
+            this.skillIcon.sprite = Resources.Load<Sprite>( _observedSkillRecordSubskillData.IconFilePathOn );
+            this.skillIcon.SetNativeSize();
+
             this.observationPercentageText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, 0.2f);
             this.observationTitle.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, 0.2f);
             this.observationPercentageBar.gameObject.SetActive(true);
@@ -51,27 +56,21 @@ public class SpecialSkillInfoBox : MonoBehaviour
             this.observeSkillUI.SetActive(true);
 
             //checking the current skill name
-            if(this.observedSkillData.GetNamePartB() == "-")
+            if (_observedSkillRecordSubskillData.NamePartB == "-")
             {
-                this.topRowSkillName.SetActive(false);
-                this.bottomRowText.SetText(this.observedSkillData.GetNamePartA());
+                this.topRowSkillName.SetActive( false );
+                this.bottomRowText.SetText( _observedSkillRecordSubskillData.NamePartA );
             }
             else
             {
-                this.topRowSkillName.SetActive(true);
-                this.topRowText.SetText(this.observedSkillData.GetNamePartA());
-                this.bottomRowText.SetText(this.observedSkillData.GetNamePartB());
+                this.topRowSkillName.SetActive( true );
+                this.topRowText.SetText( _observedSkillRecordSubskillData.NamePartA );
+                this.bottomRowText.SetText( _observedSkillRecordSubskillData.NamePartB );
             }
 
-            float _observationRate = this.observedSkillData.GetCurrentObservedRate();
-            this.observationPercentageText.SetText(_observationRate * 100 + "%");
+            float _observationRate = this.observedSkillRecord.GetCurrentObservedRate();
+            this.observationPercentageText.SetText( $"{ _observationRate.ConvertToIntegerInPercentage() }%" );
             this.observationPercentageBar.fillAmount = _observationRate;
         }
-    }
-
-    private void UpdateObserveSkillIcon()
-    {
-        this.skillIcon.sprite = Resources.Load<Sprite>(observedSkillData.GetSkillIconFilePath());
-        this.skillIcon.SetNativeSize();
     }
 }

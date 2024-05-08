@@ -1235,7 +1235,12 @@ public class BattleAnimationManager : MonoBehaviour
 
     private bool EndPartB( GameCharacter attacker, GameCharacter attackTarget )
     {
-        BattleLogicManagerV2.OnTheEndOfPartB( new GameCharacter[] { attacker, attackTarget } );
+        BattleLogicManagerV2.OnTheEndOfPartB( new GameCharacter[] { attacker, attackTarget }, out List<string> _resultLogList );
+
+        for (int i = 0; i < _resultLogList.Count; i++)
+        {
+            BattleLog.Instance.AddOnScreenBattleLog( _resultLogList[ i ] );
+        }
 
         this.battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
 

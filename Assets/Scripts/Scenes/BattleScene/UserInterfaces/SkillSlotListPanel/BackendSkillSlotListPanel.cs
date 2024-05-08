@@ -162,7 +162,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
                 if (( _isAbleToDefend && _subskillData.IsDefendingSkill )
                    || ( _isAbleToEvade && _subskillData.IsEvadingSkill )
-                   || ( _isAbleToObserve && _subskillData.IsObservingSkill )
+                   || ( _isAbleToObserve && _subskillData.IsObservingSkill && !_backendSkillSlot.GetIsObserving())
                    )
                 {
                     _backendSkillSlot.SetCurrentStateType( ( _backendSkill == this.selectedGameCharacter.GetAssignedSkill() ) ? StateType.Selected : StateType.Enabled );

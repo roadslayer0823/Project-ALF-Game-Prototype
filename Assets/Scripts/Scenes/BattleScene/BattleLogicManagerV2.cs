@@ -597,6 +597,32 @@ public class BattleLogicManagerV2
         }
     }
 
+    public static void ExecuteObservingSkill( GameCharacter caster, GameCharacter target, out string resultLog )
+    {
+        resultLog = "";
+
+        CharacterSkill _casterObservingSkill = caster.GetCurrentObservingSkill();
+
+        // 如果新的看破 ID 與舊的看破 ID 不一致，更新看破技能中鎖定的技能和增加看破技能的保護值。
+        if (_casterObservingSkill != null)
+        {
+            CharacterSkill _targetSkill = target.GetCurrentSkill();
+            Subskill _targetSkillSubskillData = _targetSkill.GetCharacterSubskillData().GetSubskillData();
+
+            if (_casterObservingSkill.GetObservedSkillRecord() == null
+                || _targetSkillSubskillData.FeatureId != _casterObservingSkill.GetObservedSkillRecord().GetSubskillData().FeatureId)
+            {
+                _casterObservingSkill.SetObservedSkillRecord( new ObservedSkillRecord( _targetSkillSubskillData ) );
+                _casterObservingSkill.IncreaseObservingSkillProtectionValue();
+            }
+
+            _casterObservingSkill.GetObservedSkillRecord().SetIsRecording( true );
+
+            resultLog = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ caster.GetCharacterName() }</color>使用<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _casterObservingSkill.GetCharacterSubskillData().GetSubskillData().DisplayName }</color>（看破技能）來看破"
+                      + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>使用的<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _targetSkill.GetCharacterSubskillData().GetSubskillData().DisplayName }</color>。";
+        }
+    }
+
     private static void CompareCharacterSkillAttributes( ActionType actionType, GameCharacter lead, GameCharacter improviser,
                                                          out GameCharacter winner, out GameCharacter loser )
     {
@@ -738,19 +764,35 @@ public class BattleLogicManagerV2
         return _battleResultData;
     }
 
-    public static void OnTheEndOfPartB( GameCharacter[] gameCharacters )
+    public static void OnTheEndOfPartB( GameCharacter[] gameCharacters, out List<string> resultLogList )
     {
+        resultLogList = new List<string>();
+
         for (int i = 0; i < gameCharacters.Length; i++)
         {
             GameCharacter _gameCharacter = gameCharacters[ i ];
             _gameCharacter.ResetCurrentSkillStatIncrement();
 
-            if (_gameCharacter.GetCurrentObservingSkill() != null)
+            CharacterSkill _observingSkill = _gameCharacter.GetCurrentObservingSkill();
+            if (_observingSkill != null)
             {
-                _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnSkillBeingObserved );
-                _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnAtlEnded );
-                _gameCharacter.SetCurrentObservingSkill( null );
+                ObservedSkillRecord _observedSkillRecord = _observingSkill.GetObservedSkillRecord();
+                if (_observedSkillRecord.GetIsRecording())
+                {
+                    float _observationRate = _observingSkill.GetCharacterSubskillData().GetSubskillData().ObservationRate;
+
+                    _observedSkillRecord.SetCurrentObservedRate( Mathf.Clamp( _observedSkillRecord.GetCurrentObservedRate() + _observationRate, 0.0f, GameConfiguration.Instance.GetBattleConfiguration().GetMaximumObservedRate() ) );
+
+                    string _resultLog = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetCharacterName() }</color>使用的<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observingSkill.GetCharacterSubskillData().GetSubskillData().DisplayName }</color>（看破技能）對"
+                                      + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observedSkillRecord.GetSubskillData().DisplayName }</color>的看破儲蓄值增加"
+                                      + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observationRate.ConvertToIntegerInPercentage() }%</color>至<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observedSkillRecord.GetCurrentObservedRate().ConvertToIntegerInPercentage() }%</color>。";
+
+                    resultLogList.Add( _resultLog );
+                }
             }
+
+            _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnAtlEnded );
+            _gameCharacter.SetCurrentObservingSkill( null );
         }
     }
 
@@ -814,6 +856,45 @@ public class BattleLogicManagerV2
                         + "。";
 
             resultLogList.Add( _resultLog );
+
+            // 看破技能的看破儲蓄值的減算。
+            CharacterSkill[] _skills = _gameCharacter.GetSkills();
+            for (int j = 0; j < _skills.Length; j++)
+            {
+                CharacterSkill _skill = _skills[ j ];
+                if (_skill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+                {
+                    if (_skill.HasObservingSkillProtectionValue())
+                    {
+                        _skill.DecreaseObservingSkillProtectionValue();
+                    }
+                    else
+                    {
+                        ObservedSkillRecord _observedSkillRecord = _skill.GetObservedSkillRecord();
+                        if (_observedSkillRecord != null)
+                        {
+                            float _observationRateDeductionPerRound = GameConfiguration.Instance.GetBattleConfiguration().GetObservationRateDeductionPerRound();
+                            Subskill _subskillData = _observedSkillRecord.GetSubskillData();
+
+                            _observedSkillRecord.SetCurrentObservedRate( _observedSkillRecord.GetCurrentObservedRate() - _observationRateDeductionPerRound );
+
+                            _resultLog = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetCharacterName() }</color>的<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _skill.GetCharacterSubskillData().GetSubskillData().DisplayName }</color>（看破技能）的記錄裡對"
+                                       + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _subskillData.DisplayName }</color>的<color={ BattleLog.KEYWORD_COLOR_CODE }>看破儲蓄值</color>減少"
+                                       + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observationRateDeductionPerRound.ConvertToIntegerInPercentage() }%</color>至<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observedSkillRecord.GetCurrentObservedRate().ConvertToIntegerInPercentage() }%</color>";
+
+                            if (_observedSkillRecord.GetSubskillData() == null)
+                            {
+                                _skill.ResetObservedSkillRecord();
+                                _resultLog += "和該記錄被刪除了";
+                            }
+
+                            _resultLog += "。";
+
+                            resultLogList.Add( _resultLog );
+                        }
+                    }
+                }
+            }
         }
 
         return _battleResultData;

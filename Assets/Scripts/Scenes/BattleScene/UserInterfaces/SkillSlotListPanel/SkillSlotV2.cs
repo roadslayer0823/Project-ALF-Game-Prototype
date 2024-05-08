@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.EventSystems;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
-using System.Collections;
 
 public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
@@ -561,16 +560,15 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         }
         else
         {
-            List<ObservedSkillData> _observedSkillDataList = this.selectedSkill.GetObservedSkillDataList();
             bool _hasObservationRate = false;
 
-            if (_observedSkillDataList.Count > 0)
+            ObservedSkillRecord _observedSkillRecord = this.selectedSkill.GetObservedSkillRecord();
+            if (_observedSkillRecord != null)
             {
-                ObservedSkillData _observedSkillData = _observedSkillDataList[ 0 ];
-                if (_observedSkillData.GetCurrentObservedRate() > 0)
+                float _observationRate = _observedSkillRecord.GetCurrentObservedRate();
+                if (_observationRate > 0)
                 {
-                    float _observationRate = _observedSkillData.GetCurrentObservedRate();
-                    this.currentObsevedPercentage.SetText( Mathf.RoundToInt( _observationRate * 100 ) + "%" );
+                    this.currentObsevedPercentage.SetText( $"{ _observationRate.ConvertToIntegerInPercentage() }%" );
                     _hasObservationRate = true;
                 }
             }
@@ -655,5 +653,10 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public StateType GetCurrentStateType()
     {
         return this.currentStateType;
+    }
+
+    public bool GetIsObserving()
+    {
+        return this.isObserving;
     }
 }

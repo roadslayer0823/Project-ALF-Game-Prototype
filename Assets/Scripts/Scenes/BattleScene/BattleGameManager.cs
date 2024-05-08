@@ -356,10 +356,8 @@ public class BattleGameManager : MonoBehaviour
                 }
                 else
                 {
-                    GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
-                    CharacterSkill _currentAttackerSkill = _currentAttacker.GetCurrentSkill();
-                    _currentObservingSkill.SetObservedSkill( _currentAttacker, _currentAttackerSkill );
-                    gameCharacter.SetCurrentObservedSkill( _currentAttackerSkill );
+                    BattleLogicManagerV2.ExecuteObservingSkill( gameCharacter, gameCharacter.GetCurrentAttacker(), out string _resultLog );
+                    BattleLog.Instance.AddOnScreenBattleLog( _resultLog );
 
                     this.battleUiManager.GetSkillPromptPanel().ShowPassiveSkillEffectTag( _currentObservingSkill.GetCharacterSubskillData().GetSubskillData().DisplayName, gameCharacter.GetIsPlayer() );
 

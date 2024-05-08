@@ -338,19 +338,7 @@ public class SkillInfoPanel : MonoBehaviour
     private void SetupObservedSkill(CharacterSkill characterSkill)
     {
         this.displayName.SetText("看破");
-
-        if (characterSkill.GetObservedSkillDataList().Count != 0)
-        {
-            for (int i = 0; i < characterSkill.GetObservedSkillDataList().Count; i++)
-            {
-                ObservedSkillData _observedSkillData = characterSkill.GetObservedSkillDataList()[i];
-                this.observedSkillBoxPrefab.Initialize(_observedSkillData);
-            }
-        }
-        else
-        {
-            this.observedSkillBoxPrefab.Initialize(null);
-        }
+        this.observedSkillBoxPrefab.Initialize( characterSkill.GetObservedSkillRecord() );
     }
 
     public void ShowActiveSkillInfoPanel()

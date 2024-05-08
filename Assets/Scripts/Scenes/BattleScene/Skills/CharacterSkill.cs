@@ -11,9 +11,12 @@ public class CharacterSkill
     private int selectedSkillLevel = 1;
     private bool hasSkillUpdateIndicator = false;
 
-    private List<ObservedSkillData> observedSkillDataList = null;
+    // 看破技能
+    [System.Obsolete] private List<ObservedSkillData> observedSkillDataList = null;
+    private ObservedSkillRecord observedSkillRecord = null; // 記錄已被看破的技能。
     private GameCharacter observedSkillCaster = null;
     private CharacterSkill observedSkill = null;
+    private int observingSkillProtectionValue = 0; // 看破技能的保護值。
 
     public const int SPEED_MINIMUM_SPECIAL_VALUE = 3;
     public const int STRENGTH_MINIMUM_SPECIAL_VALUE = 2;
@@ -244,6 +247,21 @@ public class CharacterSkill
         return this.observedSkillDataList;
     }
 
+    public void SetObservedSkillRecord( ObservedSkillRecord observedSkillRecord )
+    {
+        this.observedSkillRecord = observedSkillRecord;
+    }
+
+    public void ResetObservedSkillRecord()
+    {
+        this.observedSkillRecord = null;
+    }
+
+    public ObservedSkillRecord GetObservedSkillRecord()
+    {
+        return this.observedSkillRecord;
+    }
+
     public void SetObservedSkill( GameCharacter observedSkillCaster, CharacterSkill observedSkill )
     {
         this.observedSkillCaster = observedSkillCaster;
@@ -258,6 +276,23 @@ public class CharacterSkill
     public CharacterSkill GetObservedSkill()
     {
         return this.observedSkill;
+    }
+
+    public int IncreaseObservingSkillProtectionValue()
+    {
+        this.observingSkillProtectionValue++;
+        return this.observingSkillProtectionValue;
+    }
+
+    public int DecreaseObservingSkillProtectionValue()
+    {
+        this.observingSkillProtectionValue--;
+        return this.observingSkillProtectionValue;
+    }
+
+    public bool HasObservingSkillProtectionValue()
+    {
+        return ( this.observingSkillProtectionValue > 0 );
     }
 
 #endregion
