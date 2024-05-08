@@ -87,6 +87,9 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     private char[] splitSymbols = { '[', ']', '‧' };
     private StateType currentStateType = StateType.None;
     private bool isObserving = false;
+
+    //public variable
+    public bool isMiddleSlot = false;
     public bool isActivated = false;
 
     //audio and animation clip id
@@ -228,11 +231,6 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         {
             isSwipeable = true;
             DecreaseSkillLevel();
-        }
-
-        if (!isSwipeable)
-        {
-            SelectSkill();
         }
         else
         {
@@ -481,8 +479,10 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         switch ( this.currentStateType )
         {
             case StateType.Enabled:
-
-                EnableButton();
+                if (isMiddleSlot)
+                {
+                    EnableButton();
+                }
                 this.selectedSkillEffect.SetActive( false );
                 ShowSkillFrame(this.selectedSkill);
                 UpdateSkillIcon( false );
@@ -632,6 +632,14 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                this.bottomRowText.text = text;
            }
        }
+    }
+
+    public void ClickToSelectSkill()
+    {
+        if (!isSwipeable)
+        {
+            SelectSkill();
+        }
     }
 
     public CharacterSkill GetSelectedSkill()

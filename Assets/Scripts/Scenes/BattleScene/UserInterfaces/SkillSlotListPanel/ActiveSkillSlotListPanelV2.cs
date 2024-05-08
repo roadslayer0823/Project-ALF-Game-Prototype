@@ -5,9 +5,11 @@ using UnityEngine;
 
 public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 {
-    [SerializeField] private SkillSlotV2[] skillSlots = new SkillSlotV2[0];
     [SerializeField] private GameObject clickAreaTop;
     [SerializeField] private GameObject clickAreaBottom;
+    [SerializeField] private GameObject bottomTopContainer = null;
+    [SerializeField] private GameObject middleContainer = null;
+    [SerializeField] private SkillSlotV2[] skillSlots = new SkillSlotV2[0];
     [SerializeField] private List<Button> skillSlotsButton = null;
     [SerializeField] private List<GameObject> skillSlotList;
     [SerializeField] private List<Transform> fixedSlotPosition;
@@ -35,6 +37,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         SetActiveRecursively(this.skillInformation[2].transform, false);
 
         this.middleSkillSlot = this.skillSlots[ 0 ];
+        this.middleSkillSlot.isMiddleSlot = true;
         ArrangeSkillSlot(1);
     }
 
@@ -142,7 +145,6 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     {
         OnSkillSlotSelected( null );
         ClearSkillSlots();
-
 
         if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
         {
@@ -288,15 +290,20 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 {
                     LeanTween.scale(slotToMove, this.initialScale * 1f, 0.1f).setEase(LeanTweenType.easeInOutQuad);
                     this.skillSlotsButton[i].interactable = true;
+                    this.skillSlotList[i].transform.SetParent(this.middleContainer.transform, false);
                     SetActiveRecursively(this.skillInformation[i].transform, true);
                     currentSlot.UpdateCharacterSkillLevel(currentSlot.skillLevel);
                     this.middleSkillSlot = skillSlotList[i].GetComponent<SkillSlotV2>();
+                    this.middleSkillSlot.isMiddleSlot = true;
                 }
                 else
                 {
                     LeanTween.scale(slotToMove, this.initialScale * 0.5f, 0.1f).setEase(LeanTweenType.easeInOutQuad);
                     this.skillSlotsButton[i].interactable = false;
+                    this.skillSlotList[i].transform.SetParent(this.bottomTopContainer.transform, false);
                     SetActiveRecursively(this.skillInformation[i].transform, false);
+                    this.skillSlots[1].isMiddleSlot = false;
+                    this.skillSlots[2].isMiddleSlot = false;
                 }
 
                 // Use LeanTween to move the slot to the new position
@@ -316,13 +323,13 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         {
             int i = this.skillSlotList.Count - 1;
             GameObject tempSlot = this.skillSlotList[i];
-            GameObject tempSkillInformation = this.skillInformation[i];
             Button tempButton = this.skillSlotsButton[i];
+            GameObject tempSkillInformation = this.skillInformation[i];
             while (i > 0)
             {
                 this.skillSlotList[i] = this.skillSlotList[i - 1];
-                this.skillSlotsButton[i] = this.skillSlotsButton[i - 1];
                 this.skillInformation[i] = this.skillInformation[i - 1];
+                this.skillSlotsButton[i] = this.skillSlotsButton[i - 1];
                 i--;
             }
 
@@ -334,17 +341,17 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         {
             int i = 0;
             GameObject tempSlot = this.skillSlotList[i];
-            GameObject tempSkillInformation = this.skillInformation[i];
             Button tempButton = this.skillSlotsButton[i];
+            GameObject tempSkillInformation = this.skillInformation[i];
             while (i < this.skillSlotList.Count - 1)
             {
-                this.skillSlotList[i] = this.skillSlotList[i + 1];
                 this.skillSlotsButton[i] = this.skillSlotsButton[i + 1];
+                this.skillSlotList[i] = this.skillSlotList[i + 1];
                 this.skillInformation[i] = this.skillInformation[i + 1];
                 i++;
             }
-            this.skillSlotList[this.skillSlotList.Count - 1] = tempSlot;
             this.skillSlotsButton[this.skillSlotsButton.Count - 1] = tempButton;
+            this.skillSlotList[this.skillSlotList.Count - 1] = tempSlot;
             this.skillInformation[this.skillInformation.Count - 1] = tempSkillInformation;
         }
     }
