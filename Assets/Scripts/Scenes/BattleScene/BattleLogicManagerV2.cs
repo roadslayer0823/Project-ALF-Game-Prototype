@@ -848,7 +848,7 @@ public class BattleLogicManagerV2
                     _observedSkillRecord.SetCurrentObservedRate( Mathf.Clamp( _observedSkillRecord.GetCurrentObservedRate() + _observationRate, 0.0f, GameConfiguration.Instance.GetBattleConfiguration().GetMaximumObservedRate() ) );
 
                     string _resultLog = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetCharacterName() }</color>使用的<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observingSkill.GetCharacterSubskillData().GetSubskillData().DisplayName }</color>（看破技能）對"
-                                      + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observedSkillRecord.GetSubskillData().DisplayName }</color>的看破儲蓄值增加"
+                                      + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observedSkillRecord.GetSubskillData().DisplayName }</color>的<color={ BattleLog.KEYWORD_COLOR_CODE }>看破儲蓄值</color>增加"
                                       + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observationRate.ConvertToIntegerInPercentage() }%</color>至<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observedSkillRecord.GetCurrentObservedRate().ConvertToIntegerInPercentage() }%</color>。";
 
                     resultLogList.Add( _resultLog );
