@@ -1218,9 +1218,14 @@ public class BattleAnimationManager : MonoBehaviour
                              GameCharacter attacker, GameCharacter attackTarget, out GameCharacter winner, out GameCharacter loser )
     {
         // 判定 Part B 結果及結算。
-        battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser );
+        battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser, out List<string> _resultLogList );
         attackerBattleResultData = battleResultData.GetGameCharacterResultData( attacker );
         attackTargetBattleResultData = battleResultData.GetGameCharacterResultData( attackTarget );
+
+        for (int i = 0; i < _resultLogList.Count; i++)
+        {
+            BattleLog.Instance.AddOnScreenBattleLog( _resultLogList[ i ] );
+        }
 
         // 結算“後手方”已按下的技能的以太值和最大以太值提升。
         attackTarget.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );

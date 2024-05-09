@@ -233,7 +233,7 @@ public class PlayerActionPanel : MonoBehaviour
         }
         else if (_subskillData.IsObservingSkill)
         {
-            this.selectedGameCharacter.SetCurrentObservingSkill( _skill );
+            this.selectedGameCharacter.SetCurrentObservingSkill( _skill, true );
             skillActionButton.DisableActionButton();
         }
     }

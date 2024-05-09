@@ -278,21 +278,14 @@ public class CharacterSkill
         return this.observedSkill;
     }
 
-    public int IncreaseObservingSkillProtectionValue()
+    public void SetObservingSkillProtectionValue( int observingSkillProtectionValue )
     {
-        this.observingSkillProtectionValue++;
-        return this.observingSkillProtectionValue;
+        this.observingSkillProtectionValue = observingSkillProtectionValue;
     }
 
-    public int DecreaseObservingSkillProtectionValue()
+    public int GetObservingSkillProtectionValue()
     {
-        this.observingSkillProtectionValue--;
         return this.observingSkillProtectionValue;
-    }
-
-    public bool HasObservingSkillProtectionValue()
-    {
-        return ( this.observingSkillProtectionValue > 0 );
     }
 
 #endregion

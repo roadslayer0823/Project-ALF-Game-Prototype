@@ -54,8 +54,8 @@ public class GameCharacter : MonoBehaviour
     private CharacterSkill currentSkill = null;
     private RangeType currentSkillRangeType = RangeType.none;
     private CharacterSkill currentObservingSkill = null;
-    private CharacterSkill currentObservedSkill = null;
-    private int currentSkillStatIncrement = 0;
+    [Obsolete] private CharacterSkill currentObservedSkill = null;
+    [Obsolete] private int currentSkillStatIncrement = 0;
     private GameCharacter currentAttacker = null;
     private float skillCountdownTime = 0.0f;
     private int counterAttacks = 0;
@@ -857,14 +857,19 @@ public class GameCharacter : MonoBehaviour
         return this.currentSkillRangeType;
     }
 
-    public void SetCurrentObservingSkill( CharacterSkill observingSkill )
+    public void SetCurrentObservingSkill( CharacterSkill observingSkill, bool isSelectingSkill )
     {
         this.currentObservingSkill = observingSkill;
 
-        if (this.currentObservingSkill != null)
+        if (this.currentObservingSkill != null && isSelectingSkill)
         {
             TriggerEvent( AnimationEvent.OnObservingSkillSelected );
         }
+    }
+
+    public void ResetCurrentObservingSkill()
+    {
+        this.currentObservingSkill = null;
     }
 
     public CharacterSkill GetCurrentObservingSkill()
@@ -1017,7 +1022,7 @@ public class GameCharacter : MonoBehaviour
         SetCurrentCharacterIdentityType( CharacterIdentityType.None );
         SetCurrentSkill( null );
         SetCurrentSkillRangeType( RangeType.none );
-        SetCurrentObservingSkill( null );
+        ResetCurrentObservingSkill();
         SetCurrentObservedSkill( null );
         SetCurrentAttacker( null );
     }
