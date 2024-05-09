@@ -10,6 +10,7 @@ public class EnemyCharacter : GameCharacter
     public void InitializeSelectedSkills()
     {
         List<CharacterSkill> _activeSkillList = new();
+        List<CharacterSkill> _meleeActiveSkillList = new();
         List<CharacterSkill> _backendSkillList = new();
         List<CharacterSkill> _defendingSkillList = new();
         List<CharacterSkill> _evadingSkillList = new();
@@ -19,15 +20,21 @@ public class EnemyCharacter : GameCharacter
         {
             CharacterSkill _skill = base.skills[ i ];
             SkillType _skillType = _skill.GetSkillData().skillType;
+            Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
+
             if (_skillType == SkillType.active)
             {
                 _activeSkillList.Add( _skill );
+
+                if (_subskillData.Range is RangeType.melee or RangeType.melee_or_ranged)
+                {
+                    _meleeActiveSkillList.Add( _skill );
+                }
             }
             else if (_skillType == SkillType.backend)
             {
                 _backendSkillList.Add( _skill );
 
-                Subskill _subskillData = _skill.GetCharacterSubskillData().GetSubskillData();
                 if (_subskillData.IsDefendingSkill)
                 {
                     _defendingSkillList.Add( _skill );
@@ -79,6 +86,24 @@ public class EnemyCharacter : GameCharacter
             _numberOfSelectedActiveSkills--;
         }
 
+        List<CharacterSkill> _selectedActiveSkillList = base.GetSelectedActiveSkillList();
+        bool _hasMeleeActiveSkill = false;
+
+        for (int i = 0; i < _selectedActiveSkillList.Count; i++)
+        {
+            if (_selectedActiveSkillList[ i ].GetCharacterSubskillData().GetSubskillData().Range is RangeType.melee or RangeType.melee_or_ranged)
+            {
+                _hasMeleeActiveSkill = true;
+                break;
+            }
+        }
+
+        if (!_hasMeleeActiveSkill)
+        {
+            base.RemoveSelectedSkill( _selectedActiveSkillList[ Random.Range( 0, _selectedActiveSkillList.Count ) ] );
+            base.AddSelectedSkill( _meleeActiveSkillList[ Random.Range( 0, _meleeActiveSkillList.Count ) ] );
+        }
+
         /*
         int _numberOfSelectedBackendSkills = Random.Range( 1, GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills() );
         while (_backendSkillList.Count > 0 && _numberOfSelectedBackendSkills > 0)
@@ -121,7 +146,7 @@ public class EnemyCharacter : GameCharacter
                         {
                             if (!_hasUsedObservedSkill)
                             {
-                                base.SetCurrentObservingSkill( _selectedBackendSkill );
+                                base.SetCurrentObservingSkill( _selectedBackendSkill, true );
                                 _hasUsedObservedSkill = true;
                             }
                         }
@@ -271,9 +296,9 @@ public class EnemyCharacter : GameCharacter
             RangeType _activeSkillRange = _activeSkill.GetCharacterSubskillData().GetSubskillData().Range;
             bool _isActiveSkillAvailable = true;
 
-            if (( _enemyDebugMenuPanel.IsMeleeSkillToggleOn() && _activeSkillRange == Subskill.RangeType.melee )
-                || ( _enemyDebugMenuPanel.IsRangedSkillToggleOn() && _activeSkillRange == Subskill.RangeType.ranged )
-                || ( _enemyDebugMenuPanel.IsRangedMeleeSkillToggleOn() && _activeSkillRange == Subskill.RangeType.melee_or_ranged ))
+            if (( _enemyDebugMenuPanel.IsMeleeSkillToggleOn() && _activeSkillRange == RangeType.melee )
+                || ( _enemyDebugMenuPanel.IsRangedSkillToggleOn() && _activeSkillRange == RangeType.ranged )
+                || ( _enemyDebugMenuPanel.IsRangedMeleeSkillToggleOn() && _activeSkillRange == RangeType.melee_or_ranged ))
             {
                 _isActiveSkillAvailable = false;
             }
@@ -385,7 +410,7 @@ public class EnemyCharacter : GameCharacter
             CharacterSkill _randomSkill = GetRandomSkill( _observingSkillList, _enemyDebugMenuPanel );
             if (_randomSkill != null)
             {
-                base.SetCurrentObservingSkill( _randomSkill );
+                base.SetCurrentObservingSkill( _randomSkill, true );
             }
         }
     }

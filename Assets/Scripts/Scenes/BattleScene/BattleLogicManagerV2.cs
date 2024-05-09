@@ -215,8 +215,10 @@ public class BattleLogicManagerV2
         lead.SetCurrentSkillRangeType( _leadCurrentSkillRangeType );
     }
 
-    public static BattleResultData DetermineResultForPartB( GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser )
+    public static BattleResultData DetermineResultForPartB( GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser, out List<string> resultLogList )
     {
+        resultLogList = new List<string>();
+
         BattleResultData _battleResultData = new();
         winner = null;
         loser = null;
@@ -240,7 +242,7 @@ public class BattleLogicManagerV2
                 float _stressValueDamageMultiplierOnRepulseForLoser = GameConfiguration.Instance.GetBattleConfiguration().GetStressValueDamageMultiplierOnRepulseForLoser();
 
                 // 判定迎擊中途結果。
-                CompareCharacterSkillAttributes( ActionType.Repulse, lead, improviser, out winner, out loser );
+                CompareCharacterSkillAttributes( ActionType.Repulse, lead, improviser, out winner, out loser, ref resultLogList );
 
                 string _repulseResultLog = $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定迎擊中途結果</color>為";
                 if (winner == lead)
@@ -256,7 +258,7 @@ public class BattleLogicManagerV2
                     _repulseResultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>雙方打平</color>。";
                 }
 
-                BattleLog.Instance.AddOnScreenBattleLog( _repulseResultLog );
+                resultLogList.Add( _repulseResultLog );
 
                 if (_leadRangeType == RangeType.melee)
                 {
@@ -362,13 +364,28 @@ public class BattleLogicManagerV2
                 if (_improviserSubskillData.IsDefendingSkill)
                 {
                     // 判定防禦成敗。
-                    CompareCharacterSkillAttributes( ActionType.Defend, lead, improviser, out winner, out loser );
+                    CompareCharacterSkillAttributes( ActionType.Defend, lead, improviser, out winner, out loser, ref resultLogList );
                 }
                 else if (_improviserSubskillData.IsEvadingSkill)
                 {
                     // 判定迴避成敗。
-                    CompareCharacterSkillAttributes( ActionType.Evade, lead, improviser, out winner, out loser );
+                    CompareCharacterSkillAttributes( ActionType.Evade, lead, improviser, out winner, out loser, ref resultLogList );
                 }
+
+                string _resultLog = $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定結果</color>為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ improviser.GetCharacterName() }</color>";
+
+                if (_improviserSubskillData.IsDefendingSkill)
+                {
+                    _resultLog += "防禦";
+                }
+                else if (_improviserSubskillData.IsEvadingSkill)
+                {
+                    _resultLog += "迴避";
+                }
+
+                _resultLog += $"{ ( ( winner == improviser ) ? "成功" : "失敗" ) }。";
+
+                resultLogList.Add( _resultLog );
 
                 ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: winner == lead, hasStatePointDamage: true, hasStressValueDamage: true );
 
@@ -613,7 +630,7 @@ public class BattleLogicManagerV2
                 || _targetSkillSubskillData.FeatureId != _casterObservingSkill.GetObservedSkillRecord().GetSubskillData().FeatureId)
             {
                 _casterObservingSkill.SetObservedSkillRecord( new ObservedSkillRecord( _targetSkillSubskillData ) );
-                _casterObservingSkill.IncreaseObservingSkillProtectionValue();
+                _casterObservingSkill.SetObservingSkillProtectionValue( _casterObservingSkill.GetObservingSkillProtectionValue() + 1 );
             }
 
             _casterObservingSkill.GetObservedSkillRecord().SetIsRecording( true );
@@ -623,23 +640,69 @@ public class BattleLogicManagerV2
         }
     }
 
+    private static int GetSkillStatIncrement( GameCharacter observer, CharacterSkill targetSkill )
+    {
+        int _targetSkillFeatureId = targetSkill.GetCharacterSubskillData().GetSubskillData().FeatureId;
+
+        List<CharacterSkill> _selectedBackendSkillList = observer.GetSelectedBackendSkillList();
+        for (int i = 0; i < _selectedBackendSkillList.Count; i++)
+        {
+            CharacterSkill _selectedBackendSkill = _selectedBackendSkillList[ i ];
+            if (_selectedBackendSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+            {
+                ObservedSkillRecord _observedSkillRecord = _selectedBackendSkill.GetObservedSkillRecord();
+                if (_observedSkillRecord != null)
+                {
+                    if (_targetSkillFeatureId == _observedSkillRecord.GetSubskillData().FeatureId)
+                    {
+                        return Mathf.FloorToInt( _observedSkillRecord.GetCurrentObservedRate() );
+                    }
+                }
+            }
+        }
+
+        return 0;
+    }
+
     private static void CompareCharacterSkillAttributes( ActionType actionType, GameCharacter lead, GameCharacter improviser,
-                                                         out GameCharacter winner, out GameCharacter loser )
+                                                         out GameCharacter winner, out GameCharacter loser, ref List<string> resultLogList )
     {
         winner = null;
         loser = null;
 
-        int _leadSkillStatIncrement = lead.GetCurrentSkillStatIncrement();
-        Subskill _leadSubskillData = lead.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        CharacterSkill _leadCurrentSkill = lead.GetCurrentSkill();
+        CharacterSkill _improviserCurrentSkill = improviser.GetCurrentSkill();
+        string _resultLog = "";
+
+        int _leadSkillStatIncrement = GetSkillStatIncrement( lead, _improviserCurrentSkill );
+        Subskill _leadSubskillData = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData();
         int _leadSkillSpeed = _leadSubskillData.Speed + _leadSkillStatIncrement;
         int _leadSkillStrength = _leadSubskillData.Strength + _leadSkillStatIncrement;
         int _leadSkillEffectType = ( int )_leadSubskillData.EffectType;
 
-        int _improviserSkillStatIncrement = improviser.GetCurrentSkillStatIncrement();
-        Subskill _improviserSubskillData = improviser.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        int _improviserSkillStatIncrement = GetSkillStatIncrement( improviser, _leadCurrentSkill );
+        Subskill _improviserSubskillData = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData();
         int _improviserSkillSpeed = _improviserSubskillData.Speed + _improviserSkillStatIncrement;
         int _improviserSkillStrength = _improviserSubskillData.Strength + _improviserSkillStatIncrement;
         int _improviserSkillEffectType = ( int )_improviserSubskillData.EffectType;
+
+        if (_leadSkillStatIncrement > 0)
+        {
+            _resultLog = $"因為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ lead.GetCharacterName() }</color>已看破<color={ BattleLog.KEYWORD_COLOR_CODE }>{ improviser.GetCharacterName() }</color>使用的"
+                       + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviserSubskillData.DisplayName }</color>，所以<color={ BattleLog.KEYWORD_COLOR_CODE }>{ lead.GetCharacterName() }</color>使用的"
+                       + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _leadSubskillData.DisplayName }</color>的強度和速度得到<color={ BattleLog.KEYWORD_COLOR_CODE }>+{ _leadSkillStatIncrement }</color>。";
+
+            resultLogList.Add( _resultLog );
+        }
+
+        if (_improviserSkillStatIncrement > 0)
+        {
+            _resultLog = $"因為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ improviser.GetCharacterName() }</color>已看破<color={ BattleLog.KEYWORD_COLOR_CODE }>{ lead.GetCharacterName() }</color>使用的"
+                       + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _leadSubskillData.DisplayName }</color>，所以<color={ BattleLog.KEYWORD_COLOR_CODE }>{ improviser.GetCharacterName() }</color>使用的"
+                       + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviserSubskillData.DisplayName }</color>的強度和速度得到<color={ BattleLog.KEYWORD_COLOR_CODE }>+{ _improviserSkillStatIncrement }</color>。";
+
+            resultLogList.Add( _resultLog );
+        }
 
         switch ( actionType )
         {
@@ -773,6 +836,7 @@ public class BattleLogicManagerV2
             GameCharacter _gameCharacter = gameCharacters[ i ];
             _gameCharacter.ResetCurrentSkillStatIncrement();
 
+            // 看破技能記錄裡鎖定的看破 ID 的儲蓄值的加算。
             CharacterSkill _observingSkill = _gameCharacter.GetCurrentObservingSkill();
             if (_observingSkill != null)
             {
@@ -792,7 +856,7 @@ public class BattleLogicManagerV2
             }
 
             _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnAtlEnded );
-            _gameCharacter.SetCurrentObservingSkill( null );
+            _gameCharacter.ResetCurrentObservingSkill();
         }
     }
 
@@ -857,16 +921,17 @@ public class BattleLogicManagerV2
 
             resultLogList.Add( _resultLog );
 
-            // 看破技能的看破儲蓄值的減算。
+            // 看破技能記錄裡鎖定的看破 ID 的儲蓄值的減算。
             CharacterSkill[] _skills = _gameCharacter.GetSkills();
             for (int j = 0; j < _skills.Length; j++)
             {
                 CharacterSkill _skill = _skills[ j ];
                 if (_skill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
                 {
-                    if (_skill.HasObservingSkillProtectionValue())
+                    int _observingSkillProtectionValue = _skill.GetObservingSkillProtectionValue();
+                    if (_observingSkillProtectionValue > 0)
                     {
-                        _skill.DecreaseObservingSkillProtectionValue();
+                        _skill.SetObservingSkillProtectionValue( _observingSkillProtectionValue - 1 );
                     }
                     else
                     {

@@ -161,11 +161,30 @@ public class BackendSkillSlotListPanel : MonoBehaviour
                 this.backendSkillSlot[i].UpdateCurrentSkillDisplayTextUI(true);
 
                 if (( _isAbleToDefend && _subskillData.IsDefendingSkill )
-                   || ( _isAbleToEvade && _subskillData.IsEvadingSkill )
-                   || ( _isAbleToObserve && _subskillData.IsObservingSkill && !_backendSkillSlot.GetIsObserving())
-                   )
+                   || ( _isAbleToEvade && _subskillData.IsEvadingSkill ))
                 {
                     _backendSkillSlot.SetCurrentStateType( ( _backendSkill == this.selectedGameCharacter.GetAssignedSkill() ) ? StateType.Selected : StateType.Enabled );
+                }
+                else if (_isAbleToObserve && _subskillData.IsObservingSkill)
+                {
+                    bool _isSelected = _backendSkillSlot.GetIsObserving();
+
+                    if (!_isSelected)
+                    {
+                        GameCharacter _currentAttacker = this.selectedGameCharacter.GetCurrentAttacker();
+                        if (_currentAttacker != null)
+                        {
+                            ObservedSkillRecord _observedSkillRecord = _backendSkill.GetObservedSkillRecord();
+                            if (_observedSkillRecord != null
+                                && _observedSkillRecord.GetSubskillData().FeatureId == _currentAttacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().FeatureId)
+                            {
+                                _isSelected = true;
+                                this.selectedGameCharacter.SetCurrentObservingSkill( _backendSkill, false );
+                            }
+                        }
+                    }
+
+                    _backendSkillSlot.SetCurrentStateType( ( _isSelected ) ? StateType.Selected : StateType.Enabled );
                 }
                 else
                 {

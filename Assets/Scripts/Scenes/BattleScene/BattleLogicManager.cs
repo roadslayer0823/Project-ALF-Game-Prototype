@@ -636,7 +636,7 @@ public class BattleLogicManager
         if (defender.GetCurrentObservingSkill() != null)
         {
             defender.TriggerEvent( BattleAnimationManager.AnimationEvent.OnSkillBeingObserved );
-            defender.SetCurrentObservingSkill( null );
+            defender.ResetCurrentObservingSkill();
         }
     }
 }
