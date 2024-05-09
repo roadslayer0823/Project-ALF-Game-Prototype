@@ -285,6 +285,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: isMiddleSlot
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: backendSkillType
       value: 1
       objectReference: {fileID: 0}
@@ -424,6 +428,10 @@ PrefabInstance:
     - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: skillType
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: isMiddleSlot
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: backendSkillType
@@ -707,6 +715,10 @@ PrefabInstance:
     - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: skillType
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: isMiddleSlot
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: backendSkillType

@@ -632,6 +632,11 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
        }
     }
 
+    public void SetCurrentIsMiddleSlot(bool isMiddleSlot)
+    {
+        this.isMiddleSlot = isMiddleSlot;
+    }
+
     public void ClickToSelectSkill()
     {
         if (!isSwipeable)

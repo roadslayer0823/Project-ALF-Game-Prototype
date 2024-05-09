@@ -208,6 +208,10 @@ MonoBehaviour:
   - {fileID: 612871978455559505}
   - {fileID: 455713211041586561}
   - {fileID: 3032069551264966745}
+  currentSkillSlotPosition:
+  - {fileID: 612871978455559505}
+  - {fileID: 455713211041586561}
+  - {fileID: 3032069551264966745}
   skillSlotsButton:
   - {fileID: 1594526952229624635}
   - {fileID: 1797704541972114411}
