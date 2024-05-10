@@ -2158,12 +2158,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b28e229e36b244edae476179f1cec47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clickDelay: 0.2
+  clickDelay: 0
   alphaThreshold: 0.1
   flashDelay: 1
   flashIntervalTime: 1.5
   flashFadeOutAlpha: 0.5
-  skillBoxButton: {fileID: 0}
   currentSkillSelectionSequence: {fileID: 7230059083224466586}
   skillTypeText: {fileID: 5331126579607500326}
   skillLevelAnimationText: {fileID: 8270598196668060318}
