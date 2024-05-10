@@ -454,7 +454,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             }
 
             this.gameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
-            this.onSkillSelectedCallback(skillSelectionBox);
             UpdateBackendSkillListBoxV2();
         }
 
@@ -463,6 +462,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             this.gameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
             UpdateActiveSkillListBoxV2();
         }
+
+        this.onSkillSelectedCallback(skillSelectionBox);
 
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_SKILL_ON);
     }
