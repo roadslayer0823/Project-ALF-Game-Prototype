@@ -9,7 +9,7 @@ using static DatabaseManager;
 public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [Header("Settings")]
-    [SerializeField] private float clickDelay = 0.2f;
+    [SerializeField] private float clickDelay = 0f;
     [SerializeField] private float alphaThreshold = 0.1f;
     [SerializeField] private float flashDelay = 1.0f;
     [SerializeField] private float flashIntervalTime = 1.5f;
@@ -234,7 +234,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     {
         this.isWaitingSecondClick = true;
 
-        if (this.isSelected)
+        if (this.isSelected && this.clickDelay > 0)
         {
             yield return new WaitForSeconds(this.clickDelay);
         }
@@ -268,16 +268,21 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
                 _lastSelectedSkillSelectionBox.HideSelectionHighlight();
             }
 
-            if (_lastSelectedSkillSelectionBox == this && this.selectionHighlight.gameObject.activeSelf
-                && this.skillSelectionPanel.GetSelectedActiveSkillList().Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedActiveSkills()
-                && !this.isSelected)
+            if (_lastSelectedSkillSelectionBox == this && this.selectionHighlight.gameObject.activeSelf && !this.isSelected)
             {
-                this.skillSelectionPanel.AddSelectedSkillBox(this);
-
-                this.isSelected = true;
-
-                UpdateSkillIcon(true);
+                if (this.skillSelectionPanel.IsCharacterAllowedToAddOrRemoveSkill(this.characterSkill, true))
+                {
+                    Debug.Log("Clicked this.characterSkill id: " + this.characterSkill.GetSkillData().Id);
+                    this.skillSelectionPanel.AddSelectedSkillBoxV2(this);
+                    this.isSelected = true;
+                    UpdateSkillIcon(true);
+                }
+                else
+                {
+                    Debug.Log("Unable to add skill");
+                }
             }
+
 
             ShowSelectionHighlight();
             this.skillSelectionPanel.ShowSkillInfoPanel(this);
@@ -312,13 +317,13 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 
         if (_lastSelectedSkillSelectionBox == this && this.selectionHighlight.gameObject.activeSelf && !this.isSelected)
         {
-            if(this.skillSelectionPanel.GetSelectedBackendSkillList().Count < GameConfiguration.Instance.GetBattleConfiguration().GetMaximumSelectedBackendSkills())
+            if(this.skillSelectionPanel.IsCharacterAllowedToAddOrRemoveSkill(this.characterSkill,true))
             {
-                this.skillSelectionPanel.AddSelectedSkillBox(this);
+                this.skillSelectionPanel.AddSelectedSkillBoxV2(this);
             }
             else
             {
-                this.skillSelectionPanel.ReplaceSelectedBackendSkill(this);
+                Debug.Log("Unable to add skill");
             }
         }
 
@@ -344,12 +349,17 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         {
             this.currentSkillSelectionSequence.gameObject.SetActive(false);
         }
-        
-        this.skillSelectionPanel.RemoveSelectedSkillBox(this);
-        
-        this.isSelected = false;
 
-        UpdateSkillIcon(false);
+        if (this.skillSelectionPanel.IsCharacterAllowedToAddOrRemoveSkill(this.characterSkill, false))
+        {
+            this.skillSelectionPanel.RemoveSelectedSkillBoxV2(this);
+            UpdateSkillIcon(false);
+            SetIsSelected(false);
+        }
+        else
+        {
+            Debug.Log("Cannot remove skill");
+        }
     }
 
     // check if any second click, if not then deselect the selected skill box

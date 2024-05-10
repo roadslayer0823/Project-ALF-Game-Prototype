@@ -848,7 +848,7 @@ public class BattleLogicManagerV2
                     _observedSkillRecord.SetCurrentObservedRate( Mathf.Clamp( _observedSkillRecord.GetCurrentObservedRate() + _observationRate, 0.0f, GameConfiguration.Instance.GetBattleConfiguration().GetMaximumObservedRate() ) );
 
                     string _resultLog = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetCharacterName() }</color>使用的<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observingSkill.GetCharacterSubskillData().GetSubskillData().DisplayName }</color>（看破技能）對"
-                                      + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observedSkillRecord.GetSubskillData().DisplayName }</color>的看破儲蓄值增加"
+                                      + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observedSkillRecord.GetSubskillData().DisplayName }</color>的<color={ BattleLog.KEYWORD_COLOR_CODE }>看破儲蓄值</color>增加"
                                       + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observationRate.ConvertToIntegerInPercentage() }%</color>至<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _observedSkillRecord.GetCurrentObservedRate().ConvertToIntegerInPercentage() }%</color>。";
 
                     resultLogList.Add( _resultLog );
@@ -905,17 +905,16 @@ public class BattleLogicManagerV2
             {
                 _resultLog += $"因<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>為負數而導致"
                             + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>最大{ TerminologyManager.STATE_POINT }</color>"
-                            + $"減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointDecrease }</color>至"
-                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterResultData.maximumStatePoint }</color>，";
+                            + $"減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointDecrease }</color>，";
             }
 
             if (_maximumStatePointIncrease > 0)
             {
-                _resultLog += $"提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointIncrease }最大{ TerminologyManager.STATE_POINT }</color>至"
-                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterResultData.maximumStatePoint }</color>，";
+                _resultLog += $"提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointIncrease }最大{ TerminologyManager.STATE_POINT }</color>，";
             }
 
-            _resultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>已回復至最大值"
+            _resultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>最大{ TerminologyManager.STATE_POINT }</color>現為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterResultData.maximumStatePoint }</color>，"
+                        + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>已回復至最大值"
                         + ( ( _stressValueDamageRecovered > 0 ) ? $"，減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _stressValueDamageRecovered }%負荷值</color>" : "" )
                         + "。";
 
