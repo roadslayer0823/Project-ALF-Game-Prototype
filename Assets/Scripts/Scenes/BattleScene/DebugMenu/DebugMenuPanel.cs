@@ -45,8 +45,6 @@ public class DebugMenuPanel : MonoBehaviour
         {
             "參數",
             "虛傷",
-            "當前技能",
-            "當前先手回合",
             "當前以太值",
             "當前負荷值",
             "當前生命值"
@@ -83,35 +81,13 @@ public class DebugMenuPanel : MonoBehaviour
     public void OnPlayerStateListChange()
     {
         this.selectedPlayerStat = playerStatList.options[playerStatList.value].text;
-        if (selectedPlayerStat == "當前技能")
-        {
-            playerInputPlaceHolder.text = "無法使用此功能";
-        }
-        else if(selectedPlayerStat == "當前先手回合")
-        {
-            playerInputPlaceHolder.text = "1=先手，2=後手";
-        }
-        else
-        {
-            playerInputPlaceHolder.text = "輸入數值";
-        }
+        playerInputPlaceHolder.text = "輸入數值";
     }
 
     public void OnEnemyStateListChange()
     {
         this.selectedEnemyStat = enemyStatList.options[enemyStatList.value].text;
-        if(selectedEnemyStat == "當前技能")
-        {
-            enemyInputPlaceHolder.text = "輸入格式:技能ID-技能等級,...";
-        }
-        else if (selectedEnemyStat == "當前先手回合")
-        {
-            enemyInputPlaceHolder.text = "1=先手，2=後手";
-        }
-        else
-        {
-            enemyInputPlaceHolder.text = "輸入數值";
-        }
+        enemyInputPlaceHolder.text = "輸入數值";
     }
 
     public void OnPlayerStateValueChange()
@@ -206,83 +182,6 @@ public class DebugMenuPanel : MonoBehaviour
                     characterObject.ClearVirtualHealthPoint();
                 }
             }
-        }
-
-        else if(statNames == "當前先手回合") //current turn
-        {
-            int value;
-            if(int.TryParse(newStatValue, out value))
-            {
-                bool _isPlayerFirst = false;
-                if (characterObject.GetIsPlayer())
-                {
-                    _isPlayerFirst = (value == 1);
-                }
-                else
-                {
-                    _isPlayerFirst = (value == 2);
-                }
-                battleGameManager.GetBattleFlowManager().SetIsPlayerFirst(_isPlayerFirst);
-                battleGameManager.GetBattleUiManager().GetCharacterInfoPanel().ShowRoundInfoText(_isPlayerFirst);
-            }
-        }
-
-        else if (statNames == "當前技能" && characterObject is EnemyCharacter)//current enemy skill
-        {
-            characterObject.GetSelectedActiveSkillList().Clear();
-            characterObject.GetSelectedBackendSkillList().Clear();
-
-            string inputString = newStatValue;
-            string[] skillGroup = inputString.Split(new string[] { "," }, StringSplitOptions.None);
-            List<string> changedSkill = new List<string>();
-
-            foreach (string item in skillGroup)
-            {
-                string[] secondSplit = item.Split(new char[] { '-' });
-                if (secondSplit.Length >= 2)
-                {
-                    string skillId = secondSplit[0];
-                    string skillLevel = secondSplit[1];
-
-                    Debug.Log("skillId: " + skillId);
-                    Debug.Log("skilllevel: Level" + skillLevel);
-
-                    CharacterSkill characterSkill = characterObject.GetSkillbySkillId(skillId);
-                    characterSkill.SetSelectedSkillLevel(int.Parse(skillLevel));
-
-                    CharacterSkill repulseSkill = null;
-                    if (characterSkill.GetCharacterSubskillData().GetRepulseSkillList().Count > 0)
-                    {
-                        repulseSkill = characterSkill.GetCharacterSubskillData().GetRepulseSkillList()[0];
-                    }
-
-                    CharacterSkill derivedSkill = null;
-                    if (characterSkill.GetCharacterSubskillData().GetDerivedSkillList().Count > 0)
-                    {
-                        derivedSkill = characterSkill.GetCharacterSubskillData().GetDerivedSkillList()[0];
-                    }
-
-                    if (repulseSkill != null)
-                    {
-                        characterSkill.GetCharacterSubskillData().SetSelectedRepulseSkill(repulseSkill);
-                    }
-
-                    if (derivedSkill != null)
-                    {
-                        characterSkill.GetCharacterSubskillData().SetSelectedDerivedSkill(derivedSkill);
-                    }
-
-                    characterObject.AddSelectedSkill(characterSkill);
-
-                    changedSkill.Add(characterSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
-                }
-            }
-            string allChangedSkill = string.Join("\n", changedSkill);
-
-            changedSkillInfo.text = allChangedSkill;
-            Debug.Log(allChangedSkill);
-            Debug.Log("skill no. : " + characterObject.GetSelectedActiveSkillList().Count);
-            Debug.Log("Backend skill no. : " + characterObject.GetSelectedBackendSkillList().Count);
         }
     }
 
