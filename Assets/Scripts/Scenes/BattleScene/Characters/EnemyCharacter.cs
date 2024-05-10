@@ -260,6 +260,9 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnObservingSkillBeingUsed:
                 break;
+
+            case AnimationEvent.OnDeath:
+                break;
         }
     }
 

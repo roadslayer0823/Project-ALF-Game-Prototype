@@ -528,19 +528,54 @@ public class BattleLogicManagerV2
     {
         CharacterSkill _casterSkill = caster.GetCurrentSkill();
         Subskill _casterSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
+        BattleResultData_GameCharacter _casterBattleResultData = null;
+
         CharacterSkill _targetSkill = target.GetCurrentSkill();
         Subskill _targetSubskillData = _targetSkill?.GetCharacterSubskillData().GetSubskillData();
+        BattleResultData_GameCharacter _targetBattleResultData = null;
 
         int _energyMarkerAtl = _casterSubskillData.EnergyMarkerATL;
         if (_energyMarkerAtl > 0)
         {
             // 更新“能量殘響”。
-            battleResultData.AddGameCharacterResultData( target, renewedEnergyMarkerATLs: _energyMarkerAtl );
+            _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, renewedEnergyMarkerATLs: _energyMarkerAtl );
         }
 
+        // 在發生迎擊時，如果攻擊或迎擊技能是近戰，而對方的迎擊或攻擊技能是遠程，就會得到額外的最大以太值提升。
+        // 近戰攻擊 VS 遠程迎擊：近戰攻擊得到額外的最大以太值提升。
+        // 近戰迎擊 VS 遠程攻擊：近戰迎擊得到額外的最大以太值提升。
+        if (_targetSkill != null)
+        {
+            if (_casterSkill.GetSkillData().skillType == Skill.SkillType.repulse
+                || _targetSkill.GetSkillData().skillType == Skill.SkillType.repulse)
+            {
+                if (_casterSubskillData.Range == Subskill.RangeType.melee
+                    && _targetSubskillData?.Range == Subskill.RangeType.ranged)
+                {
+                    float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
+                    _casterBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: caster, maximumStatePointIncrease: _maxStatePointUp );
+                }
+            }
+        }
+
+        // 以太傷害
+        if (hasStatePointDamage)
+        {
+            float _statePointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStatePointDamage( _casterSubskillData ) * ( ( _targetBattleResultData != null && _targetBattleResultData.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
+            _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, statePointDamage: _statePointDamage, isBreakStatusAvailable: isBreakStatusAvailable );
+        }
+
+        // 負荷傷害
+        if (hasStressValueDamage)
+        {
+            float _stressValueDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStressValueDamage( _casterSubskillData ) * ( ( _targetBattleResultData != null && _targetBattleResultData.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) * stressValueDamageMultiplier );
+            _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, stressValueDamage: _stressValueDamage, isBreakStatusAvailable: isBreakStatusAvailable );
+        }
+
+        // HP 傷害
         if (hasHealthPointDamage)
         {
-            float _healthPointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetCurrentAttackDamage( _casterSkill, caster, target ) );
+            float _healthPointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetCurrentAttackDamage( _casterSkill, caster, target, ( _targetBattleResultData != null && _targetBattleResultData.HasEnergyMarker() ), ( _targetBattleResultData != null && _targetBattleResultData.IsInBreakStatus() ) ) );
             if (_healthPointDamage > 0)
             {
                 bool _isActualDamage = false;
@@ -562,55 +597,27 @@ public class BattleLogicManagerV2
 
                 if (_isActualDamage)
                 {
-                    battleResultData.AddGameCharacterResultData( gameCharacter: target, actualHealthPointDamage: _healthPointDamage );
+                    // 實傷
+                    _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, actualHealthPointDamage: _healthPointDamage );
                 }
                 else
                 {
-                    battleResultData.AddGameCharacterResultData( gameCharacter: target, virtualHealthPointDamage: _healthPointDamage );
+                    // 虛傷
+                    _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, virtualHealthPointDamage: _healthPointDamage );
                 }
             }
         }
 
-        if (hasStatePointDamage)
-        {
-            float _statePointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStatePointDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
-            battleResultData.AddGameCharacterResultData( gameCharacter: target, statePointDamage: _statePointDamage, isBreakStatusAvailable: isBreakStatusAvailable );
-        }
-
-        if (hasStressValueDamage)
-        {
-            float _stressValueDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStressValueDamage( _casterSubskillData ) * ( ( target.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) * stressValueDamageMultiplier );
-            battleResultData.AddGameCharacterResultData( gameCharacter: target, stressValueDamage: _stressValueDamage, isBreakStatusAvailable: isBreakStatusAvailable );
-        }
-
-        // 在發生迎擊時，如果攻擊或迎擊技能是近戰，而對方的迎擊或攻擊技能是遠程，就會得到額外的最大以太值提升。
-        // 近戰攻擊 VS 遠程迎擊：近戰攻擊得到額外的最大以太值提升。
-        // 近戰迎擊 VS 遠程攻擊：近戰迎擊得到額外的最大以太值提升。
-        if (_targetSkill != null)
-        {
-            if (_casterSkill.GetSkillData().skillType == Skill.SkillType.repulse
-                || _targetSkill.GetSkillData().skillType == Skill.SkillType.repulse)
-            {
-                if (_casterSubskillData.Range == Subskill.RangeType.melee
-                    && _targetSubskillData?.Range == Subskill.RangeType.ranged)
-                {
-                    float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
-                    battleResultData.AddGameCharacterResultData( gameCharacter: caster, maximumStatePointIncrease: _maxStatePointUp );
-                }
-            }
-        }
-
-        BattleResultData_GameCharacter _targetResultData = battleResultData.GetGameCharacterResultData( target );
-        if (_targetResultData.IsInBreakStatus() && hasHealthPointDamage)
+        if (_targetBattleResultData.IsInBreakStatus() && hasHealthPointDamage)
         {
             // 尚未回復的虛傷部分全數轉化為實傷。
-            _targetResultData.virtualHealthPoint = _targetResultData.currentHealthPoint;
+            _targetBattleResultData.virtualHealthPoint = _targetBattleResultData.currentHealthPoint;
         }
 
         if (_casterSubskillData.WillRemoveEnergyMarker)
         {
             // 消去“能量殘響”。
-            battleResultData.AddGameCharacterResultData( gameCharacter: target, willRemoveEnergyMarker: true );
+            _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, willRemoveEnergyMarker: true );
         }
     }
 
@@ -834,7 +841,6 @@ public class BattleLogicManagerV2
         for (int i = 0; i < gameCharacters.Length; i++)
         {
             GameCharacter _gameCharacter = gameCharacters[ i ];
-            _gameCharacter.ResetCurrentSkillStatIncrement();
 
             // 看破技能記錄裡鎖定的看破 ID 的儲蓄值的加算。
             CharacterSkill _observingSkill = _gameCharacter.GetCurrentObservingSkill();
@@ -853,6 +859,11 @@ public class BattleLogicManagerV2
 
                     resultLogList.Add( _resultLog );
                 }
+            }
+
+            if (_gameCharacter.GetIsDead())
+            {
+                _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnDeath );
             }
 
             _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnAtlEnded );

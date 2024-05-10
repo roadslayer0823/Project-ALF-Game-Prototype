@@ -143,6 +143,12 @@ public class PlayerCharacter : GameCharacter
                 _battleUiManager.OnSkillBeingUsed( base.GetCurrentObservingSkill() );
 
                 break;
+
+            case AnimationEvent.OnDeath:
+
+                _battleUiManager.UpdateSkillButtons();
+
+                break;
         }
     }
 }

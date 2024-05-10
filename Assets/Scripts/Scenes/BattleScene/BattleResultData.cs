@@ -43,7 +43,12 @@ public class BattleResultData
 
         public bool IsInBreakStatus()
         {
-            return ( stateBreakStatusRemainingATLs > 0 || stressBreakStatusRemainingATLs > 0 );
+            return ( this.stateBreakStatusRemainingATLs > 0 || this.stressBreakStatusRemainingATLs > 0 );
+        }
+
+        public bool HasEnergyMarker()
+        {
+            return ( this.energyMarkerRemainingATLs > 0 );
         }
 
         public void SetCurrentHealthPoint( float value, bool needToUpdateVirtualHealthPoint )
@@ -87,11 +92,11 @@ public class BattleResultData
         }
     }
 
-    public void AddGameCharacterResultData( GameCharacter gameCharacter,
-                                            float virtualHealthPointDamageRecovered = 0.0f, float stressValueDamageRecovered = 0.0f, bool isCurrentStatePointFullyRestored = false,
-                                            float statePointCost = 0.0f, float maximumStatePointIncrease = 0.0f, float maximumStatePointDecrease = 0.0f,
-                                            float actualHealthPointDamage = 0.0f, float virtualHealthPointDamage = 0.0f, float statePointDamage = 0.0f, float stressValueDamage = 0.0f,
-                                            bool isBreakStatusAvailable = false, int renewedEnergyMarkerATLs = 0, bool willRemoveEnergyMarker = false )
+    public BattleResultData_GameCharacter AddGameCharacterResultData( GameCharacter gameCharacter,
+                                                                      float virtualHealthPointDamageRecovered = 0.0f, float stressValueDamageRecovered = 0.0f, bool isCurrentStatePointFullyRestored = false,
+                                                                      float statePointCost = 0.0f, float maximumStatePointIncrease = 0.0f, float maximumStatePointDecrease = 0.0f,
+                                                                      float actualHealthPointDamage = 0.0f, float virtualHealthPointDamage = 0.0f, float statePointDamage = 0.0f, float stressValueDamage = 0.0f,
+                                                                      bool isBreakStatusAvailable = false, int renewedEnergyMarkerATLs = 0, bool willRemoveEnergyMarker = false )
     {
         BattleResultData_GameCharacter _gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
 
@@ -133,21 +138,6 @@ public class BattleResultData
             _gameCharacterResultData.maximumStatePoint += maximumStatePointIncrease;
         }
 
-        // 實傷
-        if (actualHealthPointDamage > 0)
-        {
-            _gameCharacterResultData.actualHealthPointDamage += actualHealthPointDamage;
-            _gameCharacterResultData.SetCurrentHealthPoint( _gameCharacterResultData.currentHealthPoint - actualHealthPointDamage, false );
-            _gameCharacterResultData.SetVirtualHealthPoint( _gameCharacterResultData.virtualHealthPoint - actualHealthPointDamage );
-        }
-
-        // 虛傷
-        if (virtualHealthPointDamage > 0)
-        {
-            _gameCharacterResultData.virtualHealthPointDamage += virtualHealthPointDamage;
-            _gameCharacterResultData.SetCurrentHealthPoint( _gameCharacterResultData.currentHealthPoint - virtualHealthPointDamage, true );
-        }
-
         // 以太值傷害
         if (statePointDamage > 0)
         {
@@ -187,6 +177,21 @@ public class BattleResultData
             }
         }
 
+        // 實傷
+        if (actualHealthPointDamage > 0)
+        {
+            _gameCharacterResultData.actualHealthPointDamage += actualHealthPointDamage;
+            _gameCharacterResultData.SetCurrentHealthPoint( _gameCharacterResultData.currentHealthPoint - actualHealthPointDamage, false );
+            _gameCharacterResultData.SetVirtualHealthPoint( _gameCharacterResultData.virtualHealthPoint - actualHealthPointDamage );
+        }
+
+        // 虛傷
+        if (virtualHealthPointDamage > 0)
+        {
+            _gameCharacterResultData.virtualHealthPointDamage += virtualHealthPointDamage;
+            _gameCharacterResultData.SetCurrentHealthPoint( _gameCharacterResultData.currentHealthPoint - virtualHealthPointDamage, true );
+        }
+
         if (_gameCharacterResultData.currentHealthPoint <= 0)
         {
             _gameCharacterResultData.currentHealthPoint = 0;
@@ -215,11 +220,13 @@ public class BattleResultData
         {
             gameCharacterResultDataList.Add( _gameCharacterResultData );
         }
+
+        return _gameCharacterResultData;
     }
 
-    public void AddGameCharacterResultData( GameCharacter gameCharacter,
-                                            int stateBreakStatusRemainingATLs = 0, float maximumStatePoint = 0.0f, float currentStatePoint = 0.0f,
-                                            int stressBreakStatusRemainingATLs = 0, float currentStressValue = 0.0f )
+    public BattleResultData_GameCharacter AddGameCharacterResultData( GameCharacter gameCharacter,
+                                                                      int stateBreakStatusRemainingATLs = 0, float maximumStatePoint = 0.0f, float currentStatePoint = 0.0f,
+                                                                      int stressBreakStatusRemainingATLs = 0, float currentStressValue = 0.0f )
     {
         BattleResultData_GameCharacter _gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
 
@@ -236,6 +243,8 @@ public class BattleResultData
         {
             gameCharacterResultDataList.Add( _gameCharacterResultData );
         }
+
+        return _gameCharacterResultData;
     }
 
     public BattleResultData_GameCharacter GetGameCharacterResultData( GameCharacter gameCharacter )

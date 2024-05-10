@@ -325,10 +325,10 @@ public class BattleGameManager : MonoBehaviour
 
     private void OnCharacterEventTriggered( BattleAnimationManager.AnimationEvent animationEvent, GameCharacter gameCharacter )
     {
-        if (BattleLogicManager.IsGameCharacterDead( gameCharacter ))
-        {
-            return;
-        }
+        //if (BattleLogicManager.IsGameCharacterDead( gameCharacter ))
+        //{
+        //    return;
+        //}
 
         gameCharacter.OnEventTriggered( this, animationEvent );
 

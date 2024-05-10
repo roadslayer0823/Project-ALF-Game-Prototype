@@ -173,7 +173,7 @@ public class BattleLogicManager
 
         if (hasAttackDamage)
         {
-            attackDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetCurrentAttackDamage( _casterSkill, caster, target ) );
+            attackDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetCurrentAttackDamage( _casterSkill, caster, target, target.HasEnergyMarker(), target.GetIsInBreakStatus() ) );
             if (attackDamage > 0)
             {
                 target.MinusCurrentHealthPoint( attackDamage );

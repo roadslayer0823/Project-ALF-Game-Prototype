@@ -4,15 +4,15 @@ using Subskill = DatabaseManager.Subskill;
 
 public class BattleCalculationManager
 {
-    public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target )
+    public static float GetCurrentAttackDamage( CharacterSkill skill, GameCharacter caster, GameCharacter target, bool isTargetHavingEnergyMarker, bool isTargetInBreakStatus )
     {
         GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
 
         Subskill subskillData = skill.GetCharacterSubskillData().GetSubskillData();
 
         float _attackDamage = ( GetAttackDamage( skill.GetCharacterSubskillData().GetSubskillData() )
-                              * ( ( target.HasEnergyMarker() ) ? subskillData.EnergyMarkerHealthDamageRate : 1.0f )
-                              * ( ( target.GetIsInBreakStatus() ) ? _battleConfiguration.GetBreakDamageMultiplier() : 1.0f ) );
+                              * ( ( isTargetHavingEnergyMarker ) ? subskillData.EnergyMarkerHealthDamageRate : 1.0f )
+                              * ( ( isTargetInBreakStatus ) ? _battleConfiguration.GetBreakDamageMultiplier() : 1.0f ) );
 
         CharacterSkill _targetSkill = target.GetCurrentSkill();
         if (_targetSkill != null)

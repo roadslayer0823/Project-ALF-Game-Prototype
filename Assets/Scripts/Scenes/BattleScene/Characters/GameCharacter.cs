@@ -83,6 +83,7 @@ public class GameCharacter : MonoBehaviour
     private bool isCounterAttacking = false;        // 是否正在進行反擊？
     private int stateBreakStatusRemainingATLs = 0;  // 以太崩潰維持值 (ATL)
     private int stressBreakStatusRemainingATLs = 0; // 負荷崩潰維持值 (ATL)
+    private bool isDead = false;
 
     public enum CharacterIdentityType
     {
@@ -1050,6 +1051,9 @@ public class GameCharacter : MonoBehaviour
             // 能量殘響
             this.energyMarkerRemainingATLs = battleResultData.energyMarkerRemainingATLs;
 
+            // 其他狀態
+            this.isDead = battleResultData.isDead;
+
             if (needToUpdateDisplay)
             {
                 InvokeOnCharacterInfoUpdatedCallback();
@@ -1140,6 +1144,11 @@ public class GameCharacter : MonoBehaviour
     public bool IsInStressBreakStatus()
     {
         return ( this.stressBreakStatusRemainingATLs > 0 );
+    }
+
+    public bool GetIsDead()
+    {
+        return this.isDead;
     }
 
     public void InvokeOnCharacterInfoUpdatedCallback()

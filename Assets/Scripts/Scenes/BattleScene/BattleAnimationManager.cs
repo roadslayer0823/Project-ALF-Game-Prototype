@@ -83,7 +83,8 @@ public class BattleAnimationManager : MonoBehaviour
         OnPartB,
         OnAtlEnded,
         OnNormalSkillBeingUsed,
-        OnObservingSkillBeingUsed
+        OnObservingSkillBeingUsed,
+        OnDeath
     }
 
     public void Initialize( BattleGameManager battleGameManager, Action<bool> onBattleEndedCallback )
@@ -1771,7 +1772,7 @@ public class BattleAnimationManager : MonoBehaviour
         for (int i = 0; i < _playerCharacterList.Count; i++)
         {
             PlayerCharacter _playerCharacter = _playerCharacterList[ i ];
-            if (BattleLogicManager.IsGameCharacterDead( _playerCharacter ))
+            if (_playerCharacter.GetIsDead() || BattleLogicManager.IsGameCharacterDead( _playerCharacter ))
             {
                 if (_playerCharacter.gameObject.activeSelf)
                 {
@@ -1789,7 +1790,7 @@ public class BattleAnimationManager : MonoBehaviour
         for (int i = 0; i < _enemyCharacterList.Count; i++)
         {
             EnemyCharacter _enemyCharacter = _enemyCharacterList[ i ];
-            if (BattleLogicManager.IsGameCharacterDead( _enemyCharacter ))
+            if (_enemyCharacter.GetIsDead() || BattleLogicManager.IsGameCharacterDead( _enemyCharacter ))
             {
                 if (_enemyCharacter.gameObject.activeSelf)
                 {
