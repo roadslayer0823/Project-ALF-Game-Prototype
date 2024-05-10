@@ -383,10 +383,6 @@ public class SkillInfoPanel : MonoBehaviour
             {
                 this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetActiveSkillBoxSelectedBackgroundImage());
             }
-            else
-            {
-                this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetActiveSkillBoxSelectBackgroundImage());
-            }
         }
     }
 

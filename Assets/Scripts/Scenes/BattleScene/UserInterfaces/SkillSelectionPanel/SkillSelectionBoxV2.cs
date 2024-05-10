@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using static DatabaseManager;
 
-public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {
     [Header("Settings")]
     [SerializeField] private float clickDelay = 0.2f;
@@ -16,6 +16,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     [SerializeField][Range(0, 1)] private float flashFadeOutAlpha = 0.5f;
 
     [Header("ActiveSkillSelectionBox")]
+    [SerializeField] private Button skillBoxButton = null;
     [SerializeField] private Image currentSkillSelectionSequence = null;
     [SerializeField] private TextMeshProUGUI skillTypeText = null;
     [SerializeField] private TextMeshProUGUI skillLevelAnimationText = null;
@@ -39,18 +40,18 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     [SerializeField] private Image skillIcon = null;
     [SerializeField] private GameObject skillNameGO = null;
     [SerializeField] private TextMeshProUGUI skillNameText = null;
+    [SerializeField] private SwipeDetector swipeDetector = null;
+    [SerializeField] private LongPressDetector longPressDetector = null;
     private SkillSelectionPanelV2 skillSelectionPanel = null;
     private CharacterSkill characterSkill = null;
+    private bool isPointerDown = false;
     private bool isSelected = false;
-    private bool isLongPress = false;
     private bool isDoubleTap = false;
     private bool isWaitingSecondClick = false;
-    private IEnumerator deselectSkillTimer = null;
-    private Vector2 mousePressPosition = new Vector2();
-    private Vector2 mouseReleasePosition = new Vector2();
-    private Vector2 currentSwipe = new Vector2();
     private int skillLevel = 0;
     private int clickCount = 0;
+    private float pressTime = 2f;
+    private float timePressStarted;
     private Skill.SkillType skillType = Skill.SkillType.none;
 
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
@@ -84,24 +85,24 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
+    private void Update()
+    {
+        if(isPointerDown && !longPressDetector.GetIsLongPress())
+        {
+            longPressDetector.SkillSelectionLongPress(timePressStarted, pressTime, true);
+        }
+    }
+
     // when pointer down
     public void OnPointerDown(PointerEventData eventData)
     {
+        swipeDetector.SetTouchStartPos(eventData.position);
+
         if (this.skillBoxFrame.gameObject.activeSelf)
         {
-            this.deselectSkillTimer = DeselectSkillCountDownTimer(2);
-            StartCoroutine(this.deselectSkillTimer);
-
-            //save began touch 2d point
-            this.mousePressPosition = Input.mousePosition;
-
-            Color _skillIconPointerDownColor = this.skillIcon.color;
-            _skillIconPointerDownColor.a = 0.5f;
-            this.skillIcon.color = _skillIconPointerDownColor;
-        }
-        else
-        {
-            Debug.Log("Empty box");
+            timePressStarted = Time.time;
+            isPointerDown = true;
+            longPressDetector.SetIsLongPress(false);
         }
     }
 
@@ -112,87 +113,52 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         {
             if (this.selectionHighlight.gameObject.activeSelf)
             {
-                //save ended touch 2d point
-                this.mouseReleasePosition = Input.mousePosition;
-
-                //create vector from the two points
-                this.currentSwipe = new Vector2(this.mouseReleasePosition.x - this.mousePressPosition.x, this.mouseReleasePosition.y - this.mousePressPosition.y);
-
-                //normalize the 2d vector
-                this.currentSwipe.Normalize();
-
-                if (this.currentSwipe.x < 0 && this.currentSwipe.y > -0.5f && this.currentSwipe.y < 0.5f) // swipe left
-                {
-                    DeselectSkill();
-
-                    this.isLongPress = true;
-                }
-                else if (this.currentSwipe.y > 0 && this.currentSwipe.x > -0.5f && this.currentSwipe.x < 0.5f) // swipe up
-                {
-                    IncreaseSkillLevel();
-
-                    this.isLongPress = true;
-                }
-                else if (this.currentSwipe.y < 0 && this.currentSwipe.x > -0.5f && this.currentSwipe.x < 0.5f) // swipe down
-                {
-                    DecreaseSkillLevel();
-
-                    this.isLongPress = true;
-                }
+                swipeDetector.SetTouchEndPos(eventData.position);
+                swipeDetector.DetectSwipe();
             }
-
-            if (!this.isLongPress && !this.isWaitingSecondClick)
-            {
-                StartCoroutine(SelectSkillBox());
-            }
-            else
-            {
-                StopCoroutine(SelectSkillBox());
-            }
-
-            this.clickCount += 1;
-            if (this.clickCount == 2)
-            {
-                this.isDoubleTap = true;
-            }
-            else
-            {
-                this.isDoubleTap = false;
-            }
-
-            if (!this.isWaitingSecondClick)
-            {
-                this.clickCount = 0;
-            }
-
-            if (this.isLongPress)
-            {
-                this.clickCount = 0;
-            }
-
-            if (this.deselectSkillTimer != null)
-            {
-                StopCoroutine(this.deselectSkillTimer);
-
-                this.isLongPress = false;
-            }
-
             Color _skillIconPointerUpColor = this.skillIcon.color;
             _skillIconPointerUpColor.a = 1.0f;
             this.skillIcon.color = _skillIconPointerUpColor;
 
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
         }
+        isPointerDown = false;
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        longPressDetector.SetIsLongPress(true);
+    }
+
+    public void ClickToSelectSkill()
+    {
+        this.clickCount += 1;
+        if (!isPointerDown && !longPressDetector.GetIsLongPress())
+        {
+            StartCoroutine(SelectSkillBox());
+        }
+        else
+        {
+            StopCoroutine(SelectSkillBox());
+        }
+        if (this.clickCount == 2)
+        {
+            this.isDoubleTap = true;
+        }
+        else
+        {
+            this.isDoubleTap = false;
+        }
+
+        if (!this.isWaitingSecondClick)
+        {
+            this.clickCount = 0;
+        }
     }
 
     // display the highlight image
     public void ShowSelectionHighlight()
     {
-        if (!this.isSelected && this.skillType == Skill.SkillType.active)
-        {
-            SetSkillBoxFrame(this.skillSelectionPanel.GetActiveSkillBoxSelectBackgroundImage());
-        }
-        
         this.selectionHighlight.gameObject.SetActive(true);
         this.skillNameGO.SetActive(false);
 
@@ -333,7 +299,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     }
 
     // deselect the selected skill box
-    private void DeselectSkill()
+    public void DeselectSkill()
     {
         if (!this.isSelected)
         {
@@ -342,7 +308,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 
         this.isWaitingSecondClick = false;
         this.clickCount = 0;
-        this.isLongPress = false;
         this.isDoubleTap = false;
 
         if (this.skillType == Skill.SkillType.active)
@@ -362,17 +327,9 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
-    // check if any second click, if not then deselect the selected skill box
-    IEnumerator DeselectSkillCountDownTimer(float seconds)
+    public void testingDeselectSkill()
     {
-        yield return new WaitForSeconds(seconds);
-
-        if (this.isSelected && this.selectionHighlight.gameObject.activeSelf)
-        {
-            DeselectSkill();
-
-            this.isLongPress = true;
-        }
+        Debug.Log("deselect skill");
     }
 
     // Level down
