@@ -9,7 +9,7 @@ using static DatabaseManager;
 public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [Header("Settings")]
-    [SerializeField] private float clickDelay = 0f;
+    [SerializeField] private float clickDelay = 0.2f;
     [SerializeField] private float alphaThreshold = 0.1f;
     [SerializeField] private float flashDelay = 1.0f;
     [SerializeField] private float flashIntervalTime = 1.5f;
