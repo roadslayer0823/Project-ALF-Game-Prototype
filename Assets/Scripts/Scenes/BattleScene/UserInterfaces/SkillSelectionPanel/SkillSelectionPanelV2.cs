@@ -640,7 +640,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
                     {
                         RemoveSelectedSkillBoxV2(GetDefaultDefendSkillSelectionBox());
                     }
-                    if(evadeSkillCount > 1)
+                    else if(evadeSkillCount > 1)
                     {
                         RemoveSelectedSkillBoxV2(GetGenericSkillSelectionBox());
                         SetGenericSkillSelectionBox(null);
@@ -654,7 +654,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
                     {
                         RemoveSelectedSkillBoxV2(GetDefaultEvadeSkillSelectionBox());
                     }
-                    if(defendSkillCount > 1)
+                    else if(defendSkillCount > 1)
                     {
                         RemoveSelectedSkillBoxV2(GetGenericSkillSelectionBox());
                         SetGenericSkillSelectionBox(null);
@@ -671,17 +671,30 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             {
                 if(selectedBackendSkillsCount > 2)
                 {
-                    if(characterSkill == GetGenericSkillSelectionBox().GetCharacterSkill())
+                    if (_subskill.IsDefendingSkill)
                     {
-                        RemoveSelectedSkillBoxV2(GetGenericSkillSelectionBox());
-                        SetGenericSkillSelectionBox(null);
+                        if (characterSkill == GetDefaultDefendSkillSelectionBox().GetCharacterSkill())
+                        {
+                            SetDefaultDefendSkillSelectionBox(GetGenericSkillSelectionBox());
+                            SetGenericSkillSelectionBox(null);
+                        }
+                        return defendSkillCount > 1;
                     }
 
-                    if (_subskill.IsDefendingSkill) return defendSkillCount > 1;                
-
-                    else if (_subskill.IsEvadingSkill) return evadeSkillCount > 1;
-
-                    else return _subskill.IsObservingSkill;               
+                    else if (_subskill.IsEvadingSkill)
+                    {
+                        if (characterSkill == GetDefaultEvadeSkillSelectionBox().GetCharacterSkill())
+                        {
+                            SetDefaultEvadeSkillSelectionBox(GetGenericSkillSelectionBox());
+                            SetGenericSkillSelectionBox(null);
+                        }
+                        return evadeSkillCount > 1;
+                    }
+                    else
+                    {
+                        SetGenericSkillSelectionBox(null);
+                        return _subskill.IsObservingSkill;
+                    }
                 }
                 else
                 {
