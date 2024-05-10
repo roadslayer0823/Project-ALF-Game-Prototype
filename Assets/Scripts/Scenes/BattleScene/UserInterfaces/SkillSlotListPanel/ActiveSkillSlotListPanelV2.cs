@@ -10,6 +10,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     [SerializeField] private GameObject bottomTopContainer = null;
     [SerializeField] private GameObject middleContainer = null;
     [SerializeField] private SkillSlotV2[] skillSlots = new SkillSlotV2[0];
+    [SerializeField] private List<SkillSlotV2> currentSkillSlotPosition;
     [SerializeField] private List<Button> skillSlotsButton = null;
     [SerializeField] private List<GameObject> skillSlotList;
     [SerializeField] private List<Transform> fixedSlotPosition;
@@ -37,7 +38,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         SetActiveRecursively(this.skillInformation[2].transform, false);
 
         this.middleSkillSlot = this.skillSlots[ 0 ];
-        this.middleSkillSlot.isMiddleSlot = true;
+        this.middleSkillSlot.SetCurrentIsMiddleSlot(true);
         ArrangeSkillSlot(1);
     }
 
@@ -294,7 +295,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                     SetActiveRecursively(this.skillInformation[i].transform, true);
                     currentSlot.UpdateCharacterSkillLevel(currentSlot.skillLevel);
                     this.middleSkillSlot = skillSlotList[i].GetComponent<SkillSlotV2>();
-                    this.middleSkillSlot.isMiddleSlot = true;
+                    this.currentSkillSlotPosition[i].SetCurrentIsMiddleSlot(true);
                 }
                 else
                 {
@@ -302,8 +303,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                     this.skillSlotsButton[i].interactable = false;
                     this.skillSlotList[i].transform.SetParent(this.bottomTopContainer.transform, false);
                     SetActiveRecursively(this.skillInformation[i].transform, false);
-                    this.skillSlots[1].isMiddleSlot = false;
-                    this.skillSlots[2].isMiddleSlot = false;
+                    this.currentSkillSlotPosition[i].SetCurrentIsMiddleSlot(false);
                 }
 
                 // Use LeanTween to move the slot to the new position
@@ -322,19 +322,22 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         if (direction == 1)
         {
             int i = this.skillSlotList.Count - 1;
-            GameObject tempSlot = this.skillSlotList[i];
             Button tempButton = this.skillSlotsButton[i];
+            GameObject tempSlot = this.skillSlotList[i];
             GameObject tempSkillInformation = this.skillInformation[i];
+            SkillSlotV2 tempPosition = this.currentSkillSlotPosition[i];
             while (i > 0)
             {
                 this.skillSlotList[i] = this.skillSlotList[i - 1];
                 this.skillInformation[i] = this.skillInformation[i - 1];
                 this.skillSlotsButton[i] = this.skillSlotsButton[i - 1];
+                this.currentSkillSlotPosition[i] = this.currentSkillSlotPosition[i - 1];
                 i--;
             }
 
             this.skillSlotList[i] = tempSlot;
             this.skillSlotsButton[i] = tempButton;
+            this.currentSkillSlotPosition[i] = tempPosition;
             this.skillInformation[i] = tempSkillInformation;
         }
         else if (direction == -1)
@@ -343,16 +346,20 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
             GameObject tempSlot = this.skillSlotList[i];
             Button tempButton = this.skillSlotsButton[i];
             GameObject tempSkillInformation = this.skillInformation[i];
+            SkillSlotV2 tempPosition = this.currentSkillSlotPosition[i];
+
             while (i < this.skillSlotList.Count - 1)
             {
                 this.skillSlotsButton[i] = this.skillSlotsButton[i + 1];
                 this.skillSlotList[i] = this.skillSlotList[i + 1];
                 this.skillInformation[i] = this.skillInformation[i + 1];
+                this.currentSkillSlotPosition[i] = this.currentSkillSlotPosition[i + 1];
                 i++;
             }
             this.skillSlotsButton[this.skillSlotsButton.Count - 1] = tempButton;
             this.skillSlotList[this.skillSlotList.Count - 1] = tempSlot;
             this.skillInformation[this.skillInformation.Count - 1] = tempSkillInformation;
+            this.currentSkillSlotPosition[this.currentSkillSlotPosition.Count - 1] = tempPosition;
         }
     }
 
