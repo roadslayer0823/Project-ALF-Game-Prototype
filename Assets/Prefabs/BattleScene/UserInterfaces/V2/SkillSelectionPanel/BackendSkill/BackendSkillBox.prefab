@@ -582,6 +582,7 @@ MonoBehaviour:
   flashDelay: 1
   flashIntervalTime: 1.5
   flashFadeOutAlpha: 0.5
+  skillBoxButton: {fileID: 894071331046640558}
   currentSkillSelectionSequence: {fileID: 0}
   skillTypeText: {fileID: 0}
   skillLevelAnimationText: {fileID: 0}

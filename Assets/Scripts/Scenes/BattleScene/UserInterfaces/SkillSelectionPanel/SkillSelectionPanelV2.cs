@@ -430,7 +430,13 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         Skill.SkillType _skillType = skillSelectionBox.GetCharacterSkill().GetSkillData().skillType;
         Subskill _subskill = skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData();
 
-        if (_skillType == Skill.SkillType.backend)
+        if (_skillType == Skill.SkillType.active)
+        {
+            this.gameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
+            this.onSkillSelectedCallback(skillSelectionBox);
+            UpdateActiveSkillListBoxV2();
+        }
+        else if (_skillType == Skill.SkillType.backend)
         {
             if (GetGenericSkillSelectionBox() == null)
             {
@@ -454,17 +460,9 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             }
 
             this.gameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
+            this.onSkillSelectedCallback(skillSelectionBox);
             UpdateBackendSkillListBoxV2();
         }
-
-        if (_skillType == Skill.SkillType.active)
-        {
-            this.gameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
-            UpdateActiveSkillListBoxV2();
-        }
-
-        this.onSkillSelectedCallback(skillSelectionBox);
-
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_SKILL_ON);
     }
 
@@ -673,10 +671,13 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             {
                 if(selectedBackendSkillsCount > 2)
                 {
-                    RemoveSelectedSkillBoxV2(GetGenericSkillSelectionBox());
-                    SetGenericSkillSelectionBox(null);
+                    if(characterSkill == GetGenericSkillSelectionBox().GetCharacterSkill())
+                    {
+                        RemoveSelectedSkillBoxV2(GetGenericSkillSelectionBox());
+                        SetGenericSkillSelectionBox(null);
+                    }
 
-                    if (_subskill.IsDefendingSkill) return defendSkillCount > 1;
+                    if (_subskill.IsDefendingSkill) return defendSkillCount > 1;                
 
                     else if (_subskill.IsEvadingSkill) return evadeSkillCount > 1;
 
