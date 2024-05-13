@@ -149,7 +149,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 
         if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
         {
-            int _middleSkillIndex = (middleSkillSlotSkillIndex < 0) ? 0 : middleSkillSlotSkillIndex;
+            int _middleSkillIndex = ( middleSkillSlotSkillIndex < 0 ) ? 0 : middleSkillSlotSkillIndex;
             int _otherSkillIndex = -1;
 
             for (int i = 0; i < this.selectedSkills.Count; i++)
@@ -163,29 +163,25 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 
             for (int i = 0; i < this.skillSlots.Length; i++)
             {
-                SkillSlotV2 _skillSlot = this.skillSlots[i];
-                if (_skillSlot == this.middleSkillSlot)
-                {
-                    _skillSlot.SetSelectedSkill(this.selectedSkills[_middleSkillIndex]);
-                }
-                else
-                {
-                    _skillSlot.SetSelectedSkill(this.selectedSkills[_otherSkillIndex]);
-                }
+                SkillSlotV2 _skillSlot = this.skillSlots[ i ];
+                _skillSlot.SetSelectedSkill( this.selectedSkills[ ( _skillSlot == this.middleSkillSlot ) ? _middleSkillIndex : _otherSkillIndex ] );
             }
-        }
-        if (this.selectedSkills.Count == 1)
-        {
-            DisableInteraction();
         }
         else
         {
-            EnableInteraction();
-        }
+            if (this.selectedSkills.Count == 1)
+            {
+                DisableInteraction();
+            }
+            else
+            {
+                EnableInteraction();
+            }
 
-        for (int i = 0; i < this.selectedSkills.Count; i++)
-        {
-            this.skillSlots[i].SetSelectedSkill(this.selectedSkills[i]);
+            for (int i = 0; i < this.selectedSkills.Count; i++)
+            {
+                this.skillSlots[ i ].SetSelectedSkill( this.selectedSkills[ i ] );
+            }
         }
 
         SkillSlotV2.StateType _stateType = stateType;
