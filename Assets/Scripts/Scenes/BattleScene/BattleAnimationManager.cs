@@ -744,6 +744,8 @@ public class BattleAnimationManager : MonoBehaviour
         if (_attacker == null || _attackTarget == null)
         {
             BattleLog.Instance.AddOnScreenBattleLog( "沒有先後手方。當前 ATL 結束。" );
+            _playerCharacter.ResetAssignedSkill();
+            _enemyCharacter.ResetAssignedSkill();
             yield break;
         }
 
@@ -853,6 +855,11 @@ public class BattleAnimationManager : MonoBehaviour
 
         yield return StartCoroutine( PlayShowingSkillInformation( _attacker ) );
 
+        bool _isAttackerCounterAttacking = _attacker.GetIsCounterAttacking();
+        _attacker.SetIsCounterAttacking( false );
+        _attackTarget.SetIsCounterAttacking( false );
+
+        // “先手方”使用派生技能。
         if (_attackerSkillType == Skill.SkillType.derived)
         {
             yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, _atlSlotListPanel, battleFlowRound.GetCurrentATL().GetATLNumber() ) );
@@ -864,18 +871,11 @@ public class BattleAnimationManager : MonoBehaviour
 
             yield break;
         }
-        else if (_attackerSkillType == Skill.SkillType.counter)
+        // “先手方”使用反擊技能。
+        else if (_isAttackerCounterAttacking)
         {
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
-
-            if (_attacker.GetIsPlayer())
-            {
-                yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, "Player_Ariku_Counterattack" ) );
-            }
-            else
-            {
-                yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, "Enemy_Enemy_Counterattack" ) );
-            }
+            yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, ( _attacker.GetIsPlayer() ) ? "Player_Ariku_Counterattack" : "Enemy_Enemy_Counterattack" ) );
         }
         else
         {
@@ -978,6 +978,8 @@ public class BattleAnimationManager : MonoBehaviour
                                                             or CharacterIdentityType.SuccessfulDefender
                                                             or CharacterIdentityType.SuccessfulEvader)
         {
+            _attackTarget.SetIsCounterAttacking( true );
+
             if (_attackTarget.GetIsPlayer())
             {
                 this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COUNTER_COMMAND_TIME, true );

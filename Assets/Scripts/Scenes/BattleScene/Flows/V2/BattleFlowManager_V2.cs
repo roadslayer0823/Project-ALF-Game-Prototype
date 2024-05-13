@@ -27,13 +27,7 @@ public class BattleFlowManager_V2 : MonoBehaviour
 
     public void StartNewRound()
     {
-        int _roundNumber = 0;
-        if (this.currentRound != null)
-        {
-            _roundNumber = this.currentRound.GetRoundNumber();
-        }
-
-        this.currentRound = new BattleFlowRound_V2( this, _roundNumber + 1, OnCurrentRoundPhaseChanged );
+        this.currentRound = new BattleFlowRound_V2( this, ( this.currentRound != null ) ? this.currentRound.GetRoundNumber() : 1, OnCurrentRoundPhaseChanged );
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { this.currentRound.GetRoundNumber() } 回合開始 】</color>" );
         this.battleGameManager.OnNewRoundStarted();

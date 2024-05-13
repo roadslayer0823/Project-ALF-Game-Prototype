@@ -1024,7 +1024,7 @@ public class GameCharacter : MonoBehaviour
         SetCurrentSkill( null );
         SetCurrentSkillRangeType( RangeType.none );
         ResetCurrentObservingSkill();
-        SetCurrentObservedSkill( null );
+        SetCurrentObservedSkill( null ); // Obsolete
         SetCurrentAttacker( null );
     }
 

@@ -28,7 +28,7 @@ public class BattleFlowRound_V2
         this.roundNumber = roundNumber;
         this.onCurrentPhaseChangedCallback = onCurrentPhaseChangedCallback;
 
-        List<BattleFlowATL_V2> _atlList = new List<BattleFlowATL_V2>();
+        List<BattleFlowATL_V2> _atlList = new();
         for (int i = 0; i < GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots(); i++)
         {
             _atlList.Add( GetNewATL( i + 1 ) );
