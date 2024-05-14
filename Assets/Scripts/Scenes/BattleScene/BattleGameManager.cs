@@ -48,7 +48,7 @@ public class BattleGameManager : MonoBehaviour
         AudioManager.Instance.SetUpAudioDatabase( this.audioDatabase );
 
         this.battleUiManager.SetAllActive( false );
-        this.battleUiManager.HideEnemyCharacterInfoBox();
+        //this.battleUiManager.HideEnemyCharacterInfoBox();
         this.battleAnimationManager.ChangeToBackgroundPartB();
         this.playerCharacter.PlayCharacterAnimation( "Prepare" );
         this.enemyCharacter.PlayCharacterAnimation( "Idle" );
@@ -168,15 +168,15 @@ public class BattleGameManager : MonoBehaviour
         ShowPreparationView();
         this.enemyCharacter.InitializeSelectedSkills();
 
-        StartCoroutine( RunStartingPreparationPhase() );
+        //StartCoroutine( RunStartingPreparationPhase() );
     }
 
-    private IEnumerator RunStartingPreparationPhase()
-    {
-        yield return null;
-        yield return null;
-        this.battleUiManager.ShowEnemyCharacterInfoBoxHUD();
-    }
+    //private IEnumerator RunStartingPreparationPhase()
+    //{
+    //    yield return null;
+    //    yield return null;
+    //    this.battleUiManager.ShowEnemyCharacterInfoBoxHUD();
+    //}
 
     public void OnExecutionPhaseStarted()
     {
@@ -193,7 +193,7 @@ public class BattleGameManager : MonoBehaviour
 
         this.battleUiManager.HideSkillSelectionPanel();
         this.battleUiManager.ShowSkillSlotListPanel();
-        this.battleUiManager.ShowEnemyCharacterInfoBoxUI();
+        //this.battleUiManager.ShowEnemyCharacterInfoBoxUI();
 
         if (this.battleFlowManager_V2 == null)
         {
