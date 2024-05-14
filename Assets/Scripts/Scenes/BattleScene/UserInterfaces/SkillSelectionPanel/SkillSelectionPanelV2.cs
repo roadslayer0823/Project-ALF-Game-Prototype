@@ -429,34 +429,94 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     {
         Skill.SkillType _skillType = skillSelectionBox.GetCharacterSkill().GetSkillData().skillType;
         Subskill _subskill = skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData();
+        List<CharacterSkill> _backendSkillList = this.gameCharacter.GetSelectedBackendSkillList();
+        int defendSkillCount = 0;
+        int evadeSkillCount = 0;
+        int observeSkillCount = 0;
 
+        for (int i = 0; i < _backendSkillList.Count; i++)
+        {
+            Subskill _backendSubSkill = this.gameCharacter.GetSelectedBackendSkillList()[i].GetCharacterSubskillData().GetSubskillData();
+
+            if (_backendSubSkill.IsDefendingSkill)
+            {
+                defendSkillCount += 1;
+            }
+            if (_backendSubSkill.IsEvadingSkill)
+            {
+                evadeSkillCount += 1;
+            }
+            if (_backendSubSkill.IsObservingSkill)
+            {
+                observeSkillCount += 1;
+            }
+        }
         if (_skillType == Skill.SkillType.active)
         {
             this.gameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
             this.onSkillSelectedCallback(skillSelectionBox);
             UpdateActiveSkillListBoxV2();
         }
+
         else if (_skillType == Skill.SkillType.backend)
         {
             if (GetGenericSkillSelectionBox() == null)
             {
-                this.SetGenericSkillSelectionBox(skillSelectionBox);
+                SetGenericSkillSelectionBox(skillSelectionBox);
+                Debug.Log("generic skill box is null and setting new skill into it: " + GetGenericSkillSelectionBox().GetCharacterSkill().GetSkillData().Id);
             }
             else if (_subskill.IsDefendingSkill)
             {
-                this.SetDefaultDefendSkillSelectionBox(skillSelectionBox);
+                if (observeSkillCount > 0)
+                {
+                    Debug.Log("remove default defend, set new defend");
+                    RemoveSelectedSkillBox(GetDefaultDefendSkillSelectionBox());
+                    SetDefaultDefendSkillSelectionBox(skillSelectionBox);
+
+                }
+                else if (evadeSkillCount > 1)
+                {
+                    Debug.Log("remove generic for replace defend: " + _subskill.Id);
+                    RemoveSelectedSkillBox(GetGenericSkillSelectionBox(),true);
+                    SetGenericSkillSelectionBox(skillSelectionBox);
+                }
+                else
+                {
+                    SetDefaultDefendSkillSelectionBox(skillSelectionBox);
+                }
             }
             else if (_subskill.IsEvadingSkill)
             {
-                this.SetDefaultEvadeSkillSelectionBox(skillSelectionBox);
+                if (observeSkillCount > 0)
+                {
+                    Debug.Log("remove default evade, set new evade");
+                    RemoveSelectedSkillBox(GetDefaultEvadeSkillSelectionBox());
+                    SetDefaultEvadeSkillSelectionBox(skillSelectionBox);
+
+                }
+                else if (defendSkillCount > 1)
+                {
+                    Debug.Log("remove generic for replace evade: " + _subskill.Id);
+                    RemoveSelectedSkillBox(GetGenericSkillSelectionBox(),true);
+                    SetGenericSkillSelectionBox(skillSelectionBox);
+                }
+                else
+                {
+                    SetDefaultEvadeSkillSelectionBox(skillSelectionBox);
+                }
+
             }
             else if (_subskill.IsObservingSkill)
             {
-                this.SetGenericSkillSelectionBox(skillSelectionBox);
+                if (GetGenericSkillSelectionBox() != null || defendSkillCount > 1 || evadeSkillCount > 1)
+                {
+                    RemoveSelectedSkillBox(GetGenericSkillSelectionBox(),true);
+                }
+                SetGenericSkillSelectionBox(skillSelectionBox);
             }
             else
             {
-                Debug.Log("Cannot add selected skill box v2");
+                Debug.Log("Unknown subskill");
             }
 
             this.gameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
@@ -555,36 +615,54 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         }
     }
 
-    // remove selected skill box
-    public void RemoveSelectedSkillBoxV2(SkillSelectionBoxV2 skillSelectionBox)
+    // remove selected skill box, check if need to replace when default skill get selected
+    public void RemoveSelectedSkillBox(SkillSelectionBoxV2 skillSelectionBox, bool needToChangeSlot = false)
     {
-        this.gameCharacter.RemoveSelectedSkill(skillSelectionBox.GetCharacterSkill());
+        CharacterSkill _characterSkill = skillSelectionBox.GetCharacterSkill();
+        Skill.SkillType _skillType = _characterSkill.GetSkillData().skillType;
+        Subskill _subskill = skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData();
 
+        this.gameCharacter.RemoveSelectedSkill(skillSelectionBox.GetCharacterSkill());
         this.onSkillDeselectedCallback(skillSelectionBox);
         skillSelectionBox.UpdateSkillIcon(false);
         skillSelectionBox.SetIsSelected(false);
 
-        if (skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == Skill.SkillType.active)
+        if (_skillType == Skill.SkillType.active)
         {
             this.selectedActiveSkillBoxList.Remove(skillSelectionBox);
             UpdateActiveSkillListBoxUI();
-
         }
-        else if (skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == Skill.SkillType.backend)
+        else if (_skillType == Skill.SkillType.backend)
         {
+            if(needToChangeSlot)
+            {
+                if (_subskill.IsDefendingSkill && _characterSkill == GetDefaultDefendSkillSelectionBox().GetCharacterSkill())
+                {
+                    Debug.Log("set generic defend to default defend when default get remove");
+                    SetDefaultDefendSkillSelectionBox(GetGenericSkillSelectionBox());
+                }
+
+                else if (_subskill.IsEvadingSkill && _characterSkill == GetDefaultEvadeSkillSelectionBox().GetCharacterSkill())
+                {
+                    Debug.Log("set generic evade to default evade when default get remove");
+                    SetDefaultEvadeSkillSelectionBox(GetGenericSkillSelectionBox());
+                }
+
+                SetGenericSkillSelectionBox(null);
+            }
+            this.selectedBackendSkillBoxList.Remove(skillSelectionBox);
             UpdateBackendSkillListBoxV2();
         }
-
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_SKILL_OFF);
     }
 
     public bool IsCharacterAllowedToAddOrRemoveSkill(CharacterSkill characterSkill, bool isAdding = true)
     {
-        int selectedActiveSkillsCount = this.gameCharacter.GetSelectedActiveSkillList().Count;
-        int selectedBackendSkillsCount = this.gameCharacter.GetSelectedBackendSkillList().Count;
-        int defendSkillCount = 0;
-        int evadeSkillCount = 0;
-        int observeSkillCount = 0;
+        int _selectedActiveSkillsCount = this.gameCharacter.GetSelectedActiveSkillList().Count;
+        int _selectedBackendSkillsCount = this.gameCharacter.GetSelectedBackendSkillList().Count;
+        int _defendSkillCount = 0;
+        int _evadeSkillCount = 0;
+        int _observeSkillCount = 0;
 
         Skill.SkillType _skillType = characterSkill.GetSkillData().skillType;
         Subskill _subskill = characterSkill.GetCharacterSubskillData().GetSubskillData();
@@ -596,15 +674,15 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
             if (_backendSubSkill.IsDefendingSkill)
             {
-                defendSkillCount += 1;
+                _defendSkillCount += 1;
             }
             if (_backendSubSkill.IsEvadingSkill)
             {
-                evadeSkillCount += 1;
+                _evadeSkillCount += 1;
             }
             if (_backendSubSkill.IsObservingSkill)
             {
-                observeSkillCount += 1;
+                _observeSkillCount += 1;
             }
         }
 
@@ -612,11 +690,11 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         {
             if(isAdding)
             {
-                return selectedActiveSkillsCount < 3;
+                return _selectedActiveSkillsCount < 3;
             }
             else
             {
-                return selectedActiveSkillsCount > 0;
+                return _selectedActiveSkillsCount > 0;
             }
         }
 
@@ -624,82 +702,23 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         {
             if (isAdding)
             {
-                if (_subskill.IsObservingSkill)
-                {
-                    if (GetGenericSkillSelectionBox() != null || defendSkillCount > 1 || evadeSkillCount > 1)
-                    {
-                        RemoveSelectedSkillBoxV2(GetGenericSkillSelectionBox());
-                        SetGenericSkillSelectionBox(null);
-                    }
-                    return true;
-                }
+                if (_subskill.IsDefendingSkill) return _defendSkillCount < 2;
 
-                else if (_subskill.IsDefendingSkill && defendSkillCount < 2)
-                {
-                    if (observeSkillCount == 1)
-                    {
-                        RemoveSelectedSkillBoxV2(GetDefaultDefendSkillSelectionBox());
-                    }
-                    else if(evadeSkillCount > 1)
-                    {
-                        RemoveSelectedSkillBoxV2(GetGenericSkillSelectionBox());
-                        SetGenericSkillSelectionBox(null);
-                    }
-                    return true;
-                }
+                else if (_subskill.IsEvadingSkill) return _evadeSkillCount < 2;
 
-                else if (_subskill.IsEvadingSkill && evadeSkillCount < 2)
-                {
-                    if (observeSkillCount == 1)
-                    {
-                        RemoveSelectedSkillBoxV2(GetDefaultEvadeSkillSelectionBox());
-                    }
-                    else if(defendSkillCount > 1)
-                    {
-                        RemoveSelectedSkillBoxV2(GetGenericSkillSelectionBox());
-                        SetGenericSkillSelectionBox(null);
-                    }
-                    return true;
-                }
+                else return _subskill.IsObservingSkill;
+            }
+            else if (_selectedBackendSkillsCount > 2)
+            {
+                if (_subskill.IsDefendingSkill) return _defendSkillCount > 1;
 
-                else
-                {
-                    return false;
-                }
+                else if (_subskill.IsEvadingSkill) return _evadeSkillCount > 1;
+
+                else return _subskill.IsObservingSkill;
             }
             else
             {
-                if(selectedBackendSkillsCount > 2)
-                {
-                    if (_subskill.IsDefendingSkill)
-                    {
-                        if (characterSkill == GetDefaultDefendSkillSelectionBox().GetCharacterSkill())
-                        {
-                            SetDefaultDefendSkillSelectionBox(GetGenericSkillSelectionBox());
-                            SetGenericSkillSelectionBox(null);
-                        }
-                        return defendSkillCount > 1;
-                    }
-
-                    else if (_subskill.IsEvadingSkill)
-                    {
-                        if (characterSkill == GetDefaultEvadeSkillSelectionBox().GetCharacterSkill())
-                        {
-                            SetDefaultEvadeSkillSelectionBox(GetGenericSkillSelectionBox());
-                            SetGenericSkillSelectionBox(null);
-                        }
-                        return evadeSkillCount > 1;
-                    }
-                    else
-                    {
-                        SetGenericSkillSelectionBox(null);
-                        return _subskill.IsObservingSkill;
-                    }
-                }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
         }
         else
