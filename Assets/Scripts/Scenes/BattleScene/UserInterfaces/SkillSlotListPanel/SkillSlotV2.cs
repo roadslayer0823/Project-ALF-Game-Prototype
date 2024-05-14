@@ -14,6 +14,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     [SerializeField] public BackendSkillType backendSkillType = BackendSkillType.None;
     [SerializeField] private float skillIconScale = 1.0f;
     [SerializeField] private float alphaThreshold = 0.1f;
+    [SerializeField] private SwipeDetector swipeDetector;
 
     [Header("Skill UI")]
     [SerializeField] private Image skillFrame;
@@ -206,13 +207,16 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        this.mousePressPosition = Input.mousePosition;
+        swipeDetector.SetTouchStartPos(Input.mousePosition);
+        //this.mousePressPosition = Input.mousePosition;
     }
 
     //changing skill level mechanics
     public void OnPointerUp(PointerEventData eventData)
     {
-        //save ended touch 2D point
+        swipeDetector.SetTouchEndPos(Input.mousePosition);
+        swipeDetector.DetectSwipe();
+        /*//save ended touch 2D point
         this.mouseReleasePosition = Input.mousePosition;
 
         //create vector from the two point
@@ -234,7 +238,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         else
         {
             isSwipeable = false;
-        }
+        }*/
     }
 
     public void IncreaseSkillLevel()
