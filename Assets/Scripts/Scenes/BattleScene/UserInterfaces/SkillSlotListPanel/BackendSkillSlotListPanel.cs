@@ -16,9 +16,9 @@ public class BackendSkillSlotListPanel : MonoBehaviour
     private GameCharacter selectedGameCharacter = null;
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
 
-    private Action<SkillSlotV2> onSkillSlotSelectedCallback = null;
+    private Action<SkillSlotV2,bool> onSkillSlotSelectedCallback = null;
 
-    public void Initialize( Action<SkillSlotV2> onSkillSlotSelectedCallback )
+    public void Initialize( Action<SkillSlotV2,bool> onSkillSlotSelectedCallback )
     {
         this.onSkillSlotSelectedCallback = onSkillSlotSelectedCallback;
 
@@ -50,9 +50,9 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         this.qteButton.SetActive(true);
     }
 
-    public void OnSkillSlotSelected( SkillSlotV2 skillSlot )
+    public void OnSkillSlotSelected( SkillSlotV2 skillSlot, bool isSelectingSkill )
     {
-        this.onSkillSlotSelectedCallback?.Invoke( skillSlot );
+        this.onSkillSlotSelectedCallback?.Invoke( skillSlot, isSelectingSkill );
     }
 
     public void UpdateBackendSkillSlots( GameCharacter gameCharacter, List<SkillType> skillTypeList )
@@ -67,7 +67,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
         this.selectedGameCharacter = gameCharacter;
         this.selectedSkills = new List<CharacterSkill>( gameCharacter.GetSelectedBackendSkillList() );
-        OnSkillSlotSelected( null );
+        OnSkillSlotSelected( null, false );
 
         CharacterSkill _defenceSlotCharacterSkill = null;
         CharacterSkill _evasionSlotCharacterSkill = null;
@@ -193,7 +193,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
                 if (_backendSkillSlot.GetCurrentStateType() == StateType.Selected)
                 {
-                    OnSkillSlotSelected( _backendSkillSlot );
+                    OnSkillSlotSelected( _backendSkillSlot, false );
                 }
             }
             else
@@ -257,6 +257,20 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         {
             SkillSlotV2 _skillSlot = this.backendSkillSlot[ i ];
             if (_skillSlot.GetSelectedSkill() == skill)
+            {
+                return _skillSlot;
+            }
+        }
+
+        return null;
+    }
+
+    public SkillSlotV2 GetSelectedSkillSlot()
+    {
+        for (int i = 0; i < this.backendSkillSlot.Length; i++)
+        {
+            SkillSlotV2 _skillSlot = this.backendSkillSlot[ i ];
+            if (_skillSlot.GetCurrentStateType() == StateType.Selected)
             {
                 return _skillSlot;
             }

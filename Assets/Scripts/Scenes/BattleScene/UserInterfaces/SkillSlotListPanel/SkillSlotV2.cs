@@ -122,7 +122,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         Enabled,
         Disabled,
         Selected,
-        Activated,
+        Activated
     }
 
     private void Start()
@@ -169,7 +169,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             if (this.activeSkillSlotListPanelV2 != null)
             {
                 _selectedGameCharacter = this.activeSkillSlotListPanelV2.GetSelectedGameCharacter();
-                this.activeSkillSlotListPanelV2.OnSkillSlotSelected( this );
+                this.activeSkillSlotListPanelV2.OnSkillSlotSelected( this, true );
             }
             else if (this.backendSkillSlotListPanel != null)
             {
@@ -177,7 +177,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
                 if (!_isObservingSkill)
                 {
-                    this.backendSkillSlotListPanel.OnSkillSlotSelected( this );
+                    this.backendSkillSlotListPanel.OnSkillSlotSelected( this, true );
                 }
             }
 
@@ -189,9 +189,6 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             {
                 _selectedGameCharacter.SetAssignedSkill( this.selectedSkill );
             }
-
-            SetCurrentStateType( StateType.Selected );
-            PlaySkillOutlineAnimation();
         }
     }
 

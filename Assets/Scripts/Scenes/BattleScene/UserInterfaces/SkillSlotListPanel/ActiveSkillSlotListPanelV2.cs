@@ -23,9 +23,9 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     private SkillSlotV2 middleSkillSlot = null;
     public bool isAnimationRunning = true;
 
-    private Action<SkillSlotV2> onSkillSlotSelectedCallback = null;
+    private Action<SkillSlotV2,bool> onSkillSlotSelectedCallback = null;
 
-    public void Initialize( Action<SkillSlotV2> onSkillSlotSelectedCallback )
+    public void Initialize( Action<SkillSlotV2,bool> onSkillSlotSelectedCallback )
     {
         this.onSkillSlotSelectedCallback = onSkillSlotSelectedCallback;
 
@@ -72,9 +72,9 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         this.clickAreaBottom.SetActive(false);
     }
 
-    public void OnSkillSlotSelected( SkillSlotV2 skillSlot )
+    public void OnSkillSlotSelected( SkillSlotV2 skillSlot, bool isSelectingSkill )
     {
-        this.onSkillSlotSelectedCallback?.Invoke( skillSlot );
+        this.onSkillSlotSelectedCallback?.Invoke( skillSlot, isSelectingSkill );
     }
 
     private void SetActiveRecursively(Transform parentTransform, bool active)
@@ -144,7 +144,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 
     private void UpdateSkillSlotsWithSelectedSkills( int middleSkillSlotSkillIndex = 0, SkillSlotV2.StateType stateType = SkillSlotV2.StateType.Enabled )
     {
-        OnSkillSlotSelected( null );
+        OnSkillSlotSelected( null, false );
         ClearSkillSlots();
 
         if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
@@ -210,16 +210,33 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         return this.skillSlots;
     }
 
-    public SkillSlotV2 GetSkillSlot( CharacterSkill skill )
+    public List<SkillSlotV2> GetSkillSlots( CharacterSkill skill )
     {
+        List<SkillSlotV2> _matchedSkillSlotList = new();
+
         for (int i = 0; i < this.skillSlots.Length; i++)
         {
             SkillSlotV2 _skillSlot = this.skillSlots[ i ];
             if (_skillSlot.GetSelectedSkill() == skill)
             {
+                _matchedSkillSlotList.Add( _skillSlot );
+            }
+        }
+
+        return _matchedSkillSlotList;
+    }
+
+    public SkillSlotV2 GetSelectedSkillSlot()
+    {
+        for (int i = 0; i < this.skillSlots.Length; i++)
+        {
+            SkillSlotV2 _skillSlot = this.skillSlots[ i ];
+            if (_skillSlot.GetCurrentStateType() == SkillSlotV2.StateType.Selected)
+            {
                 return _skillSlot;
             }
         }
+
         return null;
     }
 
@@ -253,7 +270,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     {
         if (this.selectedSkills.Count == 2)
         {
-            for (int i = 0; i < skillSlots.Length; i++)
+            for (int i = 0; i < this.skillSlots.Length; i++)
             {
                 if (this.skillSlots[i] == this.middleSkillSlot)
                 {
@@ -271,6 +288,8 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                     break;
                 }
             }
+
+            OnSkillSlotSelected( GetSelectedSkillSlot(), false );
         }
 
         if(this.isAnimationRunning == true)

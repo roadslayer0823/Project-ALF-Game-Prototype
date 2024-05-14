@@ -31,7 +31,7 @@ public class BattleUiManager : MonoBehaviour
 
     private BattleGameManager battleGameManager = null;
     private GameCharacter selectedGameCharacter = null;
-    private SkillSlotV2 selectedSkillSlot = null;
+    private CharacterSkill selectedSkill = null;
 
     // Version 2
     private ATLSlotListPanelV3 atlSlotListPanelV3 = null;
@@ -422,14 +422,37 @@ public class BattleUiManager : MonoBehaviour
         this.atlSlotListPanel.OnSkillSlotUpdated();
     }
 
-    public void OnSkillSlotSelected( SkillSlotV2 skillSlot )
+    public void OnSkillSlotSelected( SkillSlotV2 skillSlot, bool isSelectingSkill )
     {
-        if (this.selectedSkillSlot != null)
+        List<SkillSlotV2> _skillSlotList = null;
+
+        if (this.selectedSkill != null)
         {
-            this.selectedSkillSlot.SetCurrentStateType( SkillSlotV2.StateType.Enabled );
+            _skillSlotList = GetMatchedSkillSlotList( this.selectedSkill );
+            for (int i = 0; i < _skillSlotList.Count; i++)
+            {
+                _skillSlotList[ i ].SetCurrentStateType( SkillSlotV2.StateType.Enabled );
+            }
+
+            this.selectedSkill = null;
         }
 
-        this.selectedSkillSlot = skillSlot;
+        if (skillSlot != null)
+        {
+            this.selectedSkill = skillSlot.GetSelectedSkill();
+
+            _skillSlotList = GetMatchedSkillSlotList( this.selectedSkill );
+            for (int i = 0; i < _skillSlotList.Count; i++)
+            {
+                SkillSlotV2 _skillSlot = _skillSlotList[ i ];
+                _skillSlot.SetCurrentStateType( SkillSlotV2.StateType.Selected );
+
+                if (isSelectingSkill)
+                {
+                    _skillSlot.PlaySkillOutlineAnimation();
+                }
+            }
+        }
     }
 
     public bool IsUsingSkillSlotListPanelV2()
@@ -591,7 +614,7 @@ public class BattleUiManager : MonoBehaviour
                 if (_assignedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
                 {
                     CharacterSkill _repulseSkill = _assignedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
-                    this.activeSkillSlotListPanelV2.GetSkillSlot( _repulseSkill ).SelectSkill();
+                    this.activeSkillSlotListPanelV2.GetSkillSlots( _repulseSkill )[ 0 ].SelectSkill();
                 }
             }
         }
@@ -599,17 +622,27 @@ public class BattleUiManager : MonoBehaviour
 
     public void OnSkillBeingUsed( CharacterSkill skill )
     {
-        SkillSlotV2 _skillSlot = this.activeSkillSlotListPanelV2.GetSkillSlot( skill );
-
-        if (_skillSlot == null)
+        List<SkillSlotV2> _skillSlotList = GetMatchedSkillSlotList( skill );
+        for (int i = 0; i < _skillSlotList.Count; i++)
         {
-            _skillSlot = this.backendSkillSlotListPanel.GetSkillSlot( skill );
+            _skillSlotList[ i ].SetCurrentStateType( SkillSlotV2.StateType.Activated );
+        }
+    }
+
+    public List<SkillSlotV2> GetMatchedSkillSlotList( CharacterSkill skill )
+    {
+        List<SkillSlotV2> _matchedSkillSlotList = this.activeSkillSlotListPanelV2.GetSkillSlots( skill );
+
+        if (_matchedSkillSlotList.Count <= 0)
+        {
+            SkillSlotV2 _backendSkillSlot = this.backendSkillSlotListPanel.GetSkillSlot( skill );
+            if (_backendSkillSlot != null)
+            {
+                _matchedSkillSlotList.Add( _backendSkillSlot );
+            }
         }
 
-        if (_skillSlot != null)
-        {
-            _skillSlot.SetCurrentStateType( SkillSlotV2.StateType.Activated );
-        }
+        return _matchedSkillSlotList;
     }
 
 #endregion
