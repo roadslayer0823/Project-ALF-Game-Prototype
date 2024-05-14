@@ -317,9 +317,14 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 
         if (this.skillSelectionPanel.IsCharacterAllowedToAddOrRemoveSkill(this.characterSkill, false))
         {
-            this.skillSelectionPanel.RemoveSelectedSkillBoxV2(this);
-            UpdateSkillIcon(false);
-            SetIsSelected(false);
+            if(this.skillType == Skill.SkillType.active)
+            {
+                this.skillSelectionPanel.RemoveSelectedSkillBox(this);
+            }
+            else if(this.skillType == Skill.SkillType.backend)
+            {
+                this.skillSelectionPanel.RemoveSelectedSkillBox(this,true);
+            }
         }
         else
         {
