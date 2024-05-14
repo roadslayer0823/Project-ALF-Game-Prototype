@@ -91,6 +91,8 @@ public class CutScreenHandlerV2 : MonoBehaviour
 
             onComplete?.Invoke();
 
+            yield return null;
+
             // separate the cut screen
             Vector3 _movingUpwardPosition = new Vector3(Screen.width * 0.5f, (Screen.height * 0.5f) + Screen.height, 0);
             Vector3 _movingDownwardPosition = new Vector3(Screen.width * 0.5f, (Screen.height * 0.5f) - Screen.height, 0);

@@ -488,6 +488,7 @@ public class GameCharacter : MonoBehaviour
     public void ShowCharacterObject()
     {
         this.characterAnimator.gameObject.SetActive( true );
+        this.characterAnimator.Play( "Idle" );
 
         if (this.gameCharacterInfoBox != null)
         {
