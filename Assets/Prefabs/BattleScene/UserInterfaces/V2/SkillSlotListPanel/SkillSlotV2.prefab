@@ -1861,6 +1861,7 @@ GameObject:
   - component: {fileID: 7490135158555407957}
   - component: {fileID: 8742595457740914751}
   - component: {fileID: 3903610091004816897}
+  - component: {fileID: 5462888228027486730}
   m_Layer: 5
   m_Name: SkillSlotV2
   m_TagString: Untagged
@@ -1911,6 +1912,7 @@ MonoBehaviour:
   backendSkillType: 0
   skillIconScale: 1
   alphaThreshold: 0.1
+  swipeDetector: {fileID: 5462888228027486730}
   skillFrame: {fileID: 1078840878763072139}
   skillIcon: {fileID: 2635130088466552121}
   blankActiveSkillFrame: {fileID: 21300000, guid: 1c0f199fc7a974bffae83aa45b8884ee, type: 3}
@@ -1959,6 +1961,8 @@ MonoBehaviour:
   minusLevelBackground: {fileID: 1455066168055056994}
   skillBoxAnimation: {fileID: 3903610091004816897}
   skillLevel: 1
+  isMiddleSlot: 0
+  isActivated: 0
 --- !u!114 &8742595457740914751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2036,6 +2040,55 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 1
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5462888228027486730
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7495925800829592457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5230ad48ce95450393bc14f5f2e130f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minSwipeDistance: 30
+  onSwipeLeftCallBack:
+    m_PersistentCalls:
+      m_Calls: []
+  onSwipeRightCallBack:
+    m_PersistentCalls:
+      m_Calls: []
+  onSwipeUpCallBack:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7490135158555407957}
+        m_TargetAssemblyTypeName: SkillSlotV2, Assembly-CSharp
+        m_MethodName: IncreaseSkillLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onSwipeDownCallBack:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7490135158555407957}
+        m_TargetAssemblyTypeName: SkillSlotV2, Assembly-CSharp
+        m_MethodName: DecreaseSkillLevel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7671457941574946588
 GameObject:
   m_ObjectHideFlags: 0
