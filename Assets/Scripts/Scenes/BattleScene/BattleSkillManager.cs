@@ -28,9 +28,19 @@ public class BattleSkillManager : MonoBehaviour
 
     public static List<SkillType> GetSkillTypeList( GameCharacter gameCharacter, BattlePhaseType battlePhaseType, int atlNumber, GameCharacter attacker = null )
     {
+        List<SkillType> _skillTypeList = new();
+
+        BattleResultData.BattleResultData_GameCharacter _temporaryBattleResultData = gameCharacter.GetTemporaryBattleResultData();
+        if (_temporaryBattleResultData != null)
+        {
+            if (_temporaryBattleResultData.IsInBreakStatus() || _temporaryBattleResultData.isDead)
+            {
+                return _skillTypeList;
+            }
+        }
+
         CharacterIdentityType _characterIdentityType = gameCharacter.GetCurrentCharacterIdentityType();
         CharacterSkill _currentSkill = gameCharacter.GetCurrentSkill();
-        List<SkillType> _skillTypeList = new();
 
         switch ( battlePhaseType )
         {

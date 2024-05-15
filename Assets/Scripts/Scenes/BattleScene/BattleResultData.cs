@@ -280,6 +280,8 @@ public class BattleResultData
             };
         }
 
+        gameCharacter.SetTemporaryBattleResultData( _gameCharacterResultData );
+
         return _gameCharacterResultData;
     }
 }
