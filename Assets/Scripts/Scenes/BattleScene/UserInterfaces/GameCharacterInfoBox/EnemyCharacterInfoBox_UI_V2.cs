@@ -53,6 +53,7 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
         this.startingStatePoint = this.selectedCharacter.GetMaximumStatePoint();
         this.startingHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
         this.startingVirtualPoint = this.selectedCharacter.GetMaximumHealthPoint();
+        this.startingStressValue = this.selectedCharacter.GetMaximumStressValue();
     }
 
     public void UpdateDisplayInfo()
@@ -86,27 +87,45 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
             _currentHealthPoint = 0;
         }
 
-        this.healthPointBar.fillAmount = _currentHealthPoint / _maximumHealthPoint;
-        LeanTween.value(gameObject, this.startingHealthPoint, _currentHealthPoint, this.barAnimationDuration)
-            .setOnUpdate((float val) =>
-            {
-                this.startingHealthPoint = Mathf.RoundToInt(val);
-                float _healthPointFillAmount = startingHealthPoint / _maximumHealthPoint;
-                this.healthPointBarAnimation.fillAmount = _healthPointFillAmount;
-            });
-        
-        LeanTween.value(gameObject, this.startingVirtualPoint, _virtualHealthPoint, 0.3f)
-            .setOnUpdate((float val) =>
-            {
-                this.startingVirtualPoint = Mathf.RoundToInt(val);
-                float _virtualPointFillAmount = this.startingVirtualPoint / _maximumHealthPoint;
-                this.virtualHPBar.fillAmount = _virtualPointFillAmount;
-            });
+        if(this.startingHealthPoint != _currentHealthPoint)
+        {
+            this.healthPointBar.fillAmount = _currentHealthPoint / _maximumHealthPoint;
+            LeanTween.value(gameObject, this.startingHealthPoint, _currentHealthPoint, this.barAnimationDuration)
+                .setOnUpdate((float val) =>
+                {
+                    this.startingHealthPoint = Mathf.RoundToInt(val);
+                    float _healthPointFillAmount = startingHealthPoint / _maximumHealthPoint;
+                    this.healthPointBarAnimation.fillAmount = _healthPointFillAmount;
+                });
+        }
+
+        if(this.startingVirtualPoint != _virtualHealthPoint)
+        {
+            LeanTween.value(gameObject, this.startingVirtualPoint, _virtualHealthPoint, 0.3f)
+           .setOnUpdate((float val) =>
+           {
+               this.startingVirtualPoint = Mathf.RoundToInt(val);
+               float _virtualPointFillAmount = this.startingVirtualPoint / _maximumHealthPoint;
+               this.virtualHPBar.fillAmount = _virtualPointFillAmount;
+           });
+        }
     }
 
     public void StressValueInfo()
     {
         float _currentStressValue = this.selectedCharacter.GetCurrentStressValue();
+        if (this.startingStressValue != _currentStressValue)
+        {
+            LeanTween.value(gameObject, this.startingStressValue, _currentStressValue, this.barAnimationDuration)
+           .setOnUpdate((float val) =>
+           {
+               this.startingStressValue = Mathf.RoundToInt(val);
+               float _stressValueFillAmount = val / 100;
+               Debug.Log("fill amount" + _stressValueFillAmount);
+               this.stressValueBar.fillAmount = _stressValueFillAmount;
+           });
+
+        }
 
         if (this.selectedCharacter.IsInStressBreakStatus())
         {
@@ -116,15 +135,6 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
         }
         else
         {
-            this.stressBreakUI.gameObject.SetActive(false);
-            LeanTween.value(gameObject, this.startingHealthPoint, _currentStressValue, this.barAnimationDuration)
-            .setOnUpdate((float val) =>
-            {
-                this.startingHealthPoint = Mathf.RoundToInt(val);
-                float _stressValueFillAmount = startingStressValue / _currentStressValue;
-                this.stressValueBar.fillAmount = _stressValueFillAmount;
-            });
-
             this.stressBreakBar.SetActive(false);
             this.stressBreakUI.gameObject.SetActive(false);
             this.stressValueBarSlot.gameObject.SetActive(true);

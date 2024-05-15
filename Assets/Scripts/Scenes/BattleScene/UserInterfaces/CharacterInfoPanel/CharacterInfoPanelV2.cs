@@ -327,9 +327,9 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         {
             var targetText = this.maxStatePointText[i];
             targetText.rectTransform.localScale = currentScale;
+            yield return StartCoroutine(MaxStatePointAnimation(targetText, newScale, currentScale, this.defaultTextOffset, this.targetTextOffset, this.defaultTextOuter, this.targetTextOuter, this.maxStatePointDuration));
             targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, this.defaultTextOffset);
             targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, this.defaultTextOuter);
-            yield return StartCoroutine(MaxStatePointAnimation(targetText, newScale, currentScale, this.defaultTextOffset, this.targetTextOffset, this.defaultTextOuter, this.targetTextOuter, this.maxStatePointDuration));
         }
     }
 
@@ -348,7 +348,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         _sequence.insert(LeanTween.value(targetText.gameObject, defaultOuter, targetOuter, duration)
            .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val); }));
 
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSeconds(0.1f);
 
         _sequence.insert(LeanTween.value(targetText.gameObject, targetOffset, defaultOffset, duration)
            .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val); }));
@@ -357,5 +357,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
            .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val); }));
 
         _sequence.insert(LeanTween.scale(targetText.gameObject, currentScale, duration));
+
+        yield return new WaitForSeconds(0.1f);
     }
 }
