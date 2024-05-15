@@ -86,7 +86,6 @@ public class SkillInfoPanel : MonoBehaviour
     private CharacterSkill selectedSkill;
     private SkillInfoTabButton skillInfoTabButton = SkillInfoTabButton.none;
     private SkillSelectionBoxV2 skillSelectionBox = null;
-    private string integratedText = "";
 
     public enum SkillInfoTabButton
     {
@@ -173,6 +172,7 @@ public class SkillInfoPanel : MonoBehaviour
     {
         CharacterSubskill _characterSubskill = characterSkill.GetCharacterSubskillData();
         Subskill _subskillData = _characterSubskill.GetSubskillData();
+        string _integratedText = "";
 
         if (this.skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
         {
@@ -197,8 +197,8 @@ public class SkillInfoPanel : MonoBehaviour
         }
 
         string skillNameText = _subskillData.DisplayName; // display name
-        this.integratedText = skillTypeText + " " + skillNameText;
-        this.displayName.SetText(integratedText);
+        _integratedText = skillTypeText + " " + skillNameText;
+        this.displayName.SetText(_integratedText);
 
         this.levelText.SetText(activeSkill.GetCharacterSubskillData().GetSubskillData().Level.ToString()); // Level Text
 
@@ -322,8 +322,8 @@ public class SkillInfoPanel : MonoBehaviour
         {
             tagEffectTypeText = $"【{ TerminologyManager.GetWideEffectTypeText(characterSkill.GetSkillData()) }】";
         }
-        this.integratedText = rangeTagText + "" + tagEffectTypeText;
-        this.tagArea.text = this.integratedText;
+        _integratedText = rangeTagText + "" + tagEffectTypeText;
+        this.tagArea.text = _integratedText;
 
         if (string.IsNullOrEmpty(this.tagArea.text))
         {
