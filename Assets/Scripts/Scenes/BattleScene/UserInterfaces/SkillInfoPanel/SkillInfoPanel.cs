@@ -303,28 +303,37 @@ public class SkillInfoPanel : MonoBehaviour
             this.statePointDamage.SetActive(false);
         }
 
-        if (_subskillData.Range != Subskill.RangeType.none || _subskillData.EffectType == Subskill.EffectTypeEnum.wide)
+        string rangeTagText = "";
+        string tagEffectTypeText = "";
+
+        if (_subskillData.Range != Subskill.RangeType.none)
         {
-            string rangeTagText = _subskillData.Range switch
+            rangeTagText = _subskillData.Range switch
             {
                 Subskill.RangeType.melee => "【近戰】",
-                Subskill.RangeType.ranged => "【遠程】",
+                 Subskill.RangeType.ranged => "【遠程】",
                 Subskill.RangeType.melee_or_ranged => "【近/遠】",
                 Subskill.RangeType.none => "",
                 _ => throw new NotImplementedException()
             };
-
-            string tagEffectTypeText = $"【{ TerminologyManager.GetWideEffectTypeText(characterSkill.GetSkillData()) }】";
-            this.integratedText = rangeTagText + "" + tagEffectTypeText;
-            this.tagArea.text = this.integratedText;
-            this.tagArea.gameObject.SetActive(true);
         }
 
-        else
+        if (_subskillData.EffectType == Subskill.EffectTypeEnum.wide)
+        {
+            tagEffectTypeText = $"【{ TerminologyManager.GetWideEffectTypeText(characterSkill.GetSkillData()) }】";
+        }
+        this.integratedText = rangeTagText + "" + tagEffectTypeText;
+        this.tagArea.text = this.integratedText;
+
+        if (string.IsNullOrEmpty(this.tagArea.text))
         {
             this.tagArea.gameObject.SetActive(false);
         }
-
+        else
+        {
+            this.tagArea.gameObject.SetActive(true);
+        }
+       
         if (_subskillData.Description == "-") // Description
         {
             //this.skillDescription.SetText("");
@@ -333,6 +342,11 @@ public class SkillInfoPanel : MonoBehaviour
         {
             //this.skillDescription.SetText(_subskillData.Description);
         }
+    }
+
+    private void UpdateRangeText()
+    {
+
     }
 
     private void SetupObservedSkill(CharacterSkill characterSkill)
