@@ -344,11 +344,6 @@ public class SkillInfoPanel : MonoBehaviour
         }
     }
 
-    private void UpdateRangeText()
-    {
-
-    }
-
     private void SetupObservedSkill(CharacterSkill characterSkill)
     {
         this.displayName.SetText("看破");
