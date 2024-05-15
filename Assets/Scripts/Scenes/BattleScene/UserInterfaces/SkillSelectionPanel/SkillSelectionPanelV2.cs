@@ -443,11 +443,11 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             {
                 defendSkillCount += 1;
             }
-            if (_backendSubSkill.IsEvadingSkill)
+            else if (_backendSubSkill.IsEvadingSkill)
             {
                 evadeSkillCount += 1;
             }
-            if (_backendSubSkill.IsObservingSkill)
+            else if (_backendSubSkill.IsObservingSkill)
             {
                 observeSkillCount += 1;
             }
@@ -528,12 +528,10 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         for (int i = 0; i < this.backendSkillBoxList.Count; i++)
         {
             SkillSelectionBoxV2 _backendSkillSelectionBox = this.backendSkillBoxList[i];
-
             List<CharacterSkill> _selectedCharacterSkill = this.gameCharacter.GetSelectedBackendSkillList();
 
             for (int j = 0; j < _selectedCharacterSkill.Count; j++)
             {
-
                 if (_selectedCharacterSkill[j].GetSkillData().Id == _backendSkillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().SkillId)
                 {
                     _backendSkillSelectionBox.UpdateSkillIcon(true);
@@ -567,7 +565,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             {
                 defendSkillCount += 1;
             }
-            if (_subskill.IsEvadingSkill)
+            else if (_subskill.IsEvadingSkill)
             {
                 evadeSkillCount += 1;
             }
