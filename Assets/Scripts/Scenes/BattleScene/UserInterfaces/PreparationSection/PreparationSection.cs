@@ -10,6 +10,7 @@ public class PreparationSection : MonoBehaviour
     [SerializeField] private Button showActiveSkillSelectionPanelButton = null;
     [SerializeField] private Button showBackendSkillSelectionPanelButton = null;
     [SerializeField] private Button executeButton = null;
+    [SerializeField] private GameObject darkLayer = null;
 
     private GameCharacter selectedGameCharacter = null;
     private Action onActiveSkillButtonClickedCallback = null;
@@ -71,6 +72,16 @@ public class PreparationSection : MonoBehaviour
         this.skillMenuContainer.SetActive( false );
     }
 
+    public void ShowDarkLayer()
+    {
+        this.darkLayer.SetActive(true);
+    }
+
+    public void HideDarkLayer()
+    {
+        this.darkLayer.SetActive(false);
+    }
+
     public void EnableExecuteButton()
     {
         this.executeButton.interactable = true;
@@ -100,6 +111,7 @@ public class PreparationSection : MonoBehaviour
         }
 
         this.isShowingActiveSkillSelectionPanelNext = false;
+        ShowDarkLayer();
     }
 
     private void ShowBackendSkillSelectionPanel()
@@ -116,6 +128,7 @@ public class PreparationSection : MonoBehaviour
         }
 
         this.isShowingActiveSkillSelectionPanelNext = true;
+        ShowDarkLayer();
     }
 
 }

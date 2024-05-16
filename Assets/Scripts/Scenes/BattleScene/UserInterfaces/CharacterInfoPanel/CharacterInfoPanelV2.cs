@@ -337,7 +337,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
     public IEnumerator MaxStatePointAnimation(TextMeshProUGUI targetText, Vector3 targetScale, Vector3 currentScale, float defaultOffset, float targetOffset, float defaultOuter, float targetOuter, float duration)
     {
-        var _sequence = LeanTween.sequence();
+        /*var _sequence = LeanTween.sequence();
 
         LeanTween.cancel(targetText.gameObject);
 
@@ -358,6 +358,24 @@ public class CharacterInfoPanelV2 : MonoBehaviour
            .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val); }));
 
         _sequence.insert(LeanTween.scale(targetText.gameObject, currentScale, duration));
+
+        yield return new WaitForSeconds(0.1f);*/
+
+        LeanTween.cancel(targetText.gameObject);
+
+        LeanTween.scale(targetText.gameObject.gameObject, targetScale, duration);
+        LeanTween.value(targetText.gameObject, defaultOffset, targetOffset, duration)
+           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val); });
+        LeanTween.value(targetText.gameObject, defaultOuter, targetOuter, duration)
+           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val); });
+
+        yield return new WaitForSeconds(0.1f);
+
+        LeanTween.value(targetText.gameObject, targetOffset, defaultOffset, duration)
+           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val); });
+        LeanTween.value(targetText.gameObject, targetOuter, defaultOuter, duration)
+           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val); });
+        LeanTween.scale(targetText.gameObject, currentScale, duration);
 
         yield return new WaitForSeconds(0.1f);
     }
