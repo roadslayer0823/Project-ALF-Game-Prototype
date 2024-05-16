@@ -24,7 +24,16 @@ public class BattleLogicManagerV2
 
     public static bool IsAbleToUseAnySkill( GameCharacter gameCharacter )
     {
-        if (gameCharacter.GetIsInBreakStatus())
+        BattleResultData_GameCharacter _temporaryBattleResultData = gameCharacter.GetTemporaryBattleResultData();
+
+        if (_temporaryBattleResultData != null)
+        {
+            if (_temporaryBattleResultData.IsInBreakStatus())
+            {
+                return false;
+            }
+        }
+        else if (gameCharacter.GetIsInBreakStatus())
         {
             return false;
         }
@@ -34,15 +43,27 @@ public class BattleLogicManagerV2
 
     public static bool IsAbleToUseAttackingAndDefendingSkills( GameCharacter gameCharacter )
     {
-        if (IsAbleToUseAnySkill( gameCharacter ))
+        if (!IsAbleToUseAnySkill( gameCharacter ))
         {
-            if (gameCharacter.GetCurrentStatePoint() > GameConfiguration.Instance.GetBattleConfiguration().GetMinimumCurrentStatePoint())
-            {
-                return true;
-            }
+            return false;
         }
 
-        return false;
+        float _minimumCurrentStatePoint = GameConfiguration.Instance.GetBattleConfiguration().GetMinimumCurrentStatePoint();
+        BattleResultData_GameCharacter _temporaryBattleResultData = gameCharacter.GetTemporaryBattleResultData();
+
+        if (_temporaryBattleResultData != null)
+        {
+            if (_temporaryBattleResultData.currentStatePoint <= _minimumCurrentStatePoint)
+            {
+                return false;
+            }
+        }
+        else if (gameCharacter.GetCurrentStatePoint() <= _minimumCurrentStatePoint)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public static bool ShouldCombatCommandTimeBeSkipped( GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
@@ -134,8 +155,19 @@ public class BattleLogicManagerV2
                 // 否則：
                 else
                 {
+                    float _minimumCurrentStatePoint = GameConfiguration.Instance.GetBattleConfiguration().GetMinimumCurrentStatePoint();
                     float _gameCharacterOne_StatePoint = gameCharacterOne.GetCurrentStatePoint() - _gameCharacterOne_Skill_SubskillData.StatePointCost;
                     float _gameCharacterTwo_StatePoint = gameCharacterTwo.GetCurrentStatePoint() - _gameCharacterTwo_Skill_SubskillData.StatePointCost;
+
+                    if (_gameCharacterOne_StatePoint < _minimumCurrentStatePoint)
+                    {
+                        _gameCharacterOne_StatePoint = _minimumCurrentStatePoint;
+                    }
+
+                    if (_gameCharacterTwo_StatePoint < _minimumCurrentStatePoint)
+                    {
+                        _gameCharacterTwo_StatePoint = _minimumCurrentStatePoint;
+                    }
 
                     BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>的當前以太值（扣除技能以太值消耗後）是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterOne_StatePoint }</color>。" );
                     BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>的當前以太值（扣除技能以太值消耗後）是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterTwo_StatePoint }</color>。" );
@@ -453,7 +485,7 @@ public class BattleLogicManagerV2
 
         if (_casterSubskillData.IsEvadingSkill)
         {
-            Subskill _targetSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
+            Subskill _targetSubskillData = target.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
             float _evasionStress = _targetSubskillData.EvasionStress * ( ( caster.HasEnergyMarker() ) ? _targetSubskillData.EnergyMarkerEvasionStressRate : 1.0f );
             _statePointCost += _evasionStress;
 

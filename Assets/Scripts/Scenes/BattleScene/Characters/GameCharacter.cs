@@ -84,6 +84,7 @@ public class GameCharacter : MonoBehaviour
     private int stateBreakStatusRemainingATLs = 0;  // 以太崩潰維持值 (ATL)
     private int stressBreakStatusRemainingATLs = 0; // 負荷崩潰維持值 (ATL)
     private bool isDead = false;
+    private BattleResultData_GameCharacter temporaryBattleResultData = null;
 
     public enum CharacterIdentityType
     {
@@ -1060,6 +1061,8 @@ public class GameCharacter : MonoBehaviour
                 InvokeOnCharacterInfoUpdatedCallback();
             }
         }
+
+        this.temporaryBattleResultData = null;
     }
 
     public void SetCurrentCharacterIdentityType( CharacterIdentityType currentCharacterIdentityType )
@@ -1150,6 +1153,16 @@ public class GameCharacter : MonoBehaviour
     public bool GetIsDead()
     {
         return this.isDead;
+    }
+
+    public void SetTemporaryBattleResultData( BattleResultData_GameCharacter temporaryBattleResultData )
+    {
+        this.temporaryBattleResultData = temporaryBattleResultData;
+    }
+
+    public BattleResultData_GameCharacter GetTemporaryBattleResultData()
+    {
+        return this.temporaryBattleResultData;
     }
 
     public void InvokeOnCharacterInfoUpdatedCallback()

@@ -430,27 +430,29 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         Skill.SkillType _skillType = skillSelectionBox.GetCharacterSkill().GetSkillData().skillType;
         Subskill _subskill = skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData();
         List<CharacterSkill> _backendSkillList = this.gameCharacter.GetSelectedBackendSkillList();
+
         int defendSkillCount = 0;
         int evadeSkillCount = 0;
         int observeSkillCount = 0;
 
         for (int i = 0; i < _backendSkillList.Count; i++)
         {
-            Subskill _backendSubSkill = this.gameCharacter.GetSelectedBackendSkillList()[i].GetCharacterSubskillData().GetSubskillData();
+            Subskill _backendSubSkill = _backendSkillList[i].GetCharacterSubskillData().GetSubskillData();
 
             if (_backendSubSkill.IsDefendingSkill)
             {
                 defendSkillCount += 1;
             }
-            if (_backendSubSkill.IsEvadingSkill)
+            else if (_backendSubSkill.IsEvadingSkill)
             {
                 evadeSkillCount += 1;
             }
-            if (_backendSubSkill.IsObservingSkill)
+            else if (_backendSubSkill.IsObservingSkill)
             {
                 observeSkillCount += 1;
             }
         }
+
         if (_skillType == Skill.SkillType.active)
         {
             this.gameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
@@ -463,20 +465,17 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             if (GetGenericSkillSelectionBox() == null)
             {
                 SetGenericSkillSelectionBox(skillSelectionBox);
-                Debug.Log("generic skill box is null and setting new skill into it: " + GetGenericSkillSelectionBox().GetCharacterSkill().GetSkillData().Id);
             }
             else if (_subskill.IsDefendingSkill)
             {
                 if (observeSkillCount > 0)
                 {
-                    Debug.Log("remove default defend, set new defend");
                     RemoveSelectedSkillBox(GetDefaultDefendSkillSelectionBox());
                     SetDefaultDefendSkillSelectionBox(skillSelectionBox);
 
                 }
                 else if (evadeSkillCount > 1)
                 {
-                    Debug.Log("remove generic for replace defend: " + _subskill.Id);
                     RemoveSelectedSkillBox(GetGenericSkillSelectionBox(),true);
                     SetGenericSkillSelectionBox(skillSelectionBox);
                 }
@@ -489,14 +488,11 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             {
                 if (observeSkillCount > 0)
                 {
-                    Debug.Log("remove default evade, set new evade");
                     RemoveSelectedSkillBox(GetDefaultEvadeSkillSelectionBox());
                     SetDefaultEvadeSkillSelectionBox(skillSelectionBox);
-
                 }
                 else if (defendSkillCount > 1)
                 {
-                    Debug.Log("remove generic for replace evade: " + _subskill.Id);
                     RemoveSelectedSkillBox(GetGenericSkillSelectionBox(),true);
                     SetGenericSkillSelectionBox(skillSelectionBox);
                 }
@@ -518,7 +514,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             {
                 Debug.Log("Unknown subskill");
             }
-
             this.gameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
             this.onSkillSelectedCallback(skillSelectionBox);
             UpdateBackendSkillListBoxV2();
@@ -533,12 +528,11 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         for (int i = 0; i < this.backendSkillBoxList.Count; i++)
         {
             SkillSelectionBoxV2 _backendSkillSelectionBox = this.backendSkillBoxList[i];
+            List<CharacterSkill> _selectedCharacterSkill = this.gameCharacter.GetSelectedBackendSkillList();
 
-            for (int j = 0; j < this.gameCharacter.GetSelectedBackendSkillList().Count; j++)
+            for (int j = 0; j < _selectedCharacterSkill.Count; j++)
             {
-                CharacterSkill _selectedCharacterSkill = this.gameCharacter.GetSelectedBackendSkillList()[j];
-
-                if (_selectedCharacterSkill.GetSkillData().Id == _backendSkillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().SkillId)
+                if (_selectedCharacterSkill[j].GetSkillData().Id == _backendSkillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().SkillId)
                 {
                     _backendSkillSelectionBox.UpdateSkillIcon(true);
                     _backendSkillSelectionBox.SetIsSelected(true);
@@ -565,11 +559,13 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
         for (int i = 0; i < _backendSkillList.Count; i++)
         {
-            if (_backendSkillList[i].GetCharacterSubskillData().GetSubskillData().IsDefendingSkill)
+            Subskill _subskill = _backendSkillList[i].GetCharacterSubskillData().GetSubskillData();
+
+            if (_subskill.IsDefendingSkill)
             {
                 defendSkillCount += 1;
             }
-            if (_backendSkillList[i].GetCharacterSubskillData().GetSubskillData().IsEvadingSkill)
+            else if (_subskill.IsEvadingSkill)
             {
                 evadeSkillCount += 1;
             }
@@ -641,13 +637,11 @@ public class SkillSelectionPanelV2 : MonoBehaviour
                     Debug.Log("set generic defend to default defend when default get remove");
                     SetDefaultDefendSkillSelectionBox(GetGenericSkillSelectionBox());
                 }
-
                 else if (_subskill.IsEvadingSkill && _characterSkill == GetDefaultEvadeSkillSelectionBox().GetCharacterSkill())
                 {
                     Debug.Log("set generic evade to default evade when default get remove");
                     SetDefaultEvadeSkillSelectionBox(GetGenericSkillSelectionBox());
                 }
-
                 SetGenericSkillSelectionBox(null);
             }
             this.selectedBackendSkillBoxList.Remove(skillSelectionBox);
@@ -670,7 +664,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
         for (int i = 0; i < _backendSkillList.Count; i++)
         {
-            Subskill _backendSubSkill = this.gameCharacter.GetSelectedBackendSkillList()[i].GetCharacterSubskillData().GetSubskillData();
+            Subskill _backendSubSkill = _backendSkillList[i].GetCharacterSubskillData().GetSubskillData();
 
             if (_backendSubSkill.IsDefendingSkill)
             {
@@ -734,16 +728,13 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         {
             return;
         }
-
         for (int i = selectedSkillSelectionList.IndexOf(targetToMove); i > 0; i--)
         {
             selectedSkillSelectionList[i] = selectedSkillSelectionList[i - 1];
             this.gameCharacter.GetSelectedActiveSkillList()[i] = selectedSkillSelectionList[i - 1].GetCharacterSkill();
         }
-
         selectedSkillSelectionList[0] = targetToMove;
         this.gameCharacter.GetSelectedActiveSkillList()[0] = targetToMove.GetCharacterSkill();
-
         UpdateActiveSkillListBoxUI();
     }
 
