@@ -121,7 +121,6 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
            {
                this.startingStressValue = Mathf.RoundToInt(val);
                float _stressValueFillAmount = val / 100;
-               Debug.Log("fill amount" + _stressValueFillAmount);
                this.stressValueBar.fillAmount = _stressValueFillAmount;
            });
 

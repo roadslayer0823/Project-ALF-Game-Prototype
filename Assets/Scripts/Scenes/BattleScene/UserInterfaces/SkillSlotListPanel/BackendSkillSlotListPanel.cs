@@ -8,7 +8,7 @@ using StateType = SkillSlotV2.StateType;
 
 public class BackendSkillSlotListPanel : MonoBehaviour
 {
-    [SerializeField] private SkillSlotV2[] backendSkillSlot = new SkillSlotV2[ 0 ];
+    [SerializeField] private SkillSlotV2[] backendSkillSlots = new SkillSlotV2[ 0 ];
     [SerializeField] private SkillSlotV2 qteSkillSlot = null;
     [SerializeField] private GameObject qteButton = null;
 
@@ -22,9 +22,9 @@ public class BackendSkillSlotListPanel : MonoBehaviour
     {
         this.onSkillSlotSelectedCallback = onSkillSlotSelectedCallback;
 
-        for (int i = 0; i < this.backendSkillSlot.Length; i++)
+        for (int i = 0; i < this.backendSkillSlots.Length; i++)
         {
-            this.backendSkillSlot[i].InitializeBackendSkillSlot(this);
+            this.backendSkillSlots[i].InitializeBackendSkillSlot(this);
         }
 
         this.qteSkillSlot.InitializeBackendSkillSlot( this );
@@ -57,9 +57,9 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
     public void UpdateBackendSkillSlots( GameCharacter gameCharacter, List<SkillType> skillTypeList )
     {
-        for (int i = 0; i < this.backendSkillSlot.Length; i++)
+        for (int i = 0; i < this.backendSkillSlots.Length; i++)
         {
-            SkillSlotV2 _backendSkillSlot = this.backendSkillSlot[i];
+            SkillSlotV2 _backendSkillSlot = this.backendSkillSlots[i];
             _backendSkillSlot.SetSelectedSkill(null);
         }
 
@@ -78,9 +78,9 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             CharacterSkill _selectedSkill = this.selectedSkills[ i ];
             Subskill _subskillData = _selectedSkill.GetCharacterSubskillData().GetSubskillData();
 
-            for (int j = 0; j < this.backendSkillSlot.Length; j++)
+            for (int j = 0; j < this.backendSkillSlots.Length; j++)
             {
-                SkillSlotV2 _backendSkillSlot = this.backendSkillSlot[j];
+                SkillSlotV2 _backendSkillSlot = this.backendSkillSlots[j];
 
                 if (_backendSkillSlot.GetSelectedSkill() == _selectedSkill)
                 {
@@ -150,15 +150,15 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             _isAbleToCounter = false;
         }
 
-        for (int i = 0; i < this.backendSkillSlot.Length; i++)
+        for (int i = 0; i < this.backendSkillSlots.Length; i++)
         {
-            SkillSlotV2 _backendSkillSlot = this.backendSkillSlot[ i ];
+            SkillSlotV2 _backendSkillSlot = this.backendSkillSlots[ i ];
             CharacterSkill _backendSkill = _backendSkillSlot.GetSelectedSkill();
 
             if (_backendSkill != null)
             {
                 Subskill _subskillData = _backendSkill.GetCharacterSubskillData().GetSubskillData();
-                this.backendSkillSlot[i].UpdateCurrentSkillDisplayTextUI(true);
+                _backendSkillSlot.UpdateCurrentSkillDisplayTextUI(true);
 
                 if (( _isAbleToDefend && _subskillData.IsDefendingSkill )
                    || ( _isAbleToEvade && _subskillData.IsEvadingSkill ))
@@ -198,7 +198,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             }
             else
             {
-                this.backendSkillSlot[i].UpdateCurrentSkillDisplayTextUI(false);
+                _backendSkillSlot.UpdateCurrentSkillDisplayTextUI(false);
             }
         }
 
@@ -241,7 +241,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             for (int i = 0; i < observedSkill.GetObservedSkillDataList().Count; i++)
             {
                 ObservedSkillData _observedSkillData = observedSkill.GetObservedSkillDataList()[i];
-                this.backendSkillSlot[2].InitializeObserveSkillSlot(_observedSkillData);
+                this.backendSkillSlots[2].InitializeObserveSkillSlot(_observedSkillData);
             }
         }
     }
@@ -253,9 +253,9 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
     public SkillSlotV2 GetSkillSlot( CharacterSkill skill )
     {
-        for (int i = 0; i < this.backendSkillSlot.Length; i++)
+        for (int i = 0; i < this.backendSkillSlots.Length; i++)
         {
-            SkillSlotV2 _skillSlot = this.backendSkillSlot[ i ];
+            SkillSlotV2 _skillSlot = this.backendSkillSlots[ i ];
             if (_skillSlot.GetSelectedSkill() == skill)
             {
                 return _skillSlot;
@@ -267,9 +267,9 @@ public class BackendSkillSlotListPanel : MonoBehaviour
 
     public SkillSlotV2 GetSelectedSkillSlot()
     {
-        for (int i = 0; i < this.backendSkillSlot.Length; i++)
+        for (int i = 0; i < this.backendSkillSlots.Length; i++)
         {
-            SkillSlotV2 _skillSlot = this.backendSkillSlot[ i ];
+            SkillSlotV2 _skillSlot = this.backendSkillSlots[ i ];
             if (_skillSlot.GetCurrentStateType() == StateType.Selected)
             {
                 return _skillSlot;
