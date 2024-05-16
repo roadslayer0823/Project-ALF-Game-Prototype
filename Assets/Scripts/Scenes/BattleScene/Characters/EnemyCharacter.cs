@@ -120,8 +120,8 @@ public class EnemyCharacter : GameCharacter
 
         base.ClearSelectedBackendSkillList();
         base.AddSelectedSkill( _defendingSkillList[ Random.Range( 0, _defendingSkillList.Count ) ] );
-        base.AddSelectedSkill( _evadingSkillList[ Random.Range( 0, _defendingSkillList.Count ) ] );
-        base.AddSelectedSkill( _observingSkillList[ Random.Range( 0, _defendingSkillList.Count ) ] );
+        base.AddSelectedSkill( _evadingSkillList[ Random.Range( 0, _evadingSkillList.Count ) ] );
+        base.AddSelectedSkill( _observingSkillList[ Random.Range( 0, _observingSkillList.Count ) ] );
     }
 
     public override void OnEventTriggered( BattleGameManager battleGameManager, AnimationEvent animationEvent )
@@ -413,7 +413,14 @@ public class EnemyCharacter : GameCharacter
             CharacterSkill _randomSkill = GetRandomSkill( _observingSkillList, _enemyDebugMenuPanel );
             if (_randomSkill != null)
             {
-                base.SetCurrentObservingSkill( _randomSkill, true );
+                if (BattleLogicManagerV2.IsAttackerCurrentSkillRecordedInObservingSkill( _randomSkill, base.GetCurrentAttacker() ))
+                {
+                    base.SetCurrentObservingSkill( _randomSkill, false );
+                }
+                else if (Random.value < 0.5f)
+                {
+                    base.SetCurrentObservingSkill( _randomSkill, true );
+                }
             }
         }
     }

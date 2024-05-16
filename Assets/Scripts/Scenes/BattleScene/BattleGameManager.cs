@@ -168,6 +168,14 @@ public class BattleGameManager : MonoBehaviour
         ShowPreparationView();
         this.enemyCharacter.InitializeSelectedSkills();
 
+        if (BattleLogicManagerV2.ShouldPreparationSectionBeSkipped( this.playerCharacter ))
+        {
+            this.battleUiManager.GetPlayerDashboard().ProcessExecuteButton();
+
+            BattleLog.Instance.AddOnScreenBattleLog( $"因為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ this.playerCharacter.GetCharacterName() }</color>正在處於<color={ BattleLog.KEYWORD_COLOR_CODE }>崩潰狀態</color>，"
+                                                     + $"所以跳過<color={ BattleLog.SPECIAL_COLOR_CODE }>【 準備階段 】</color>，直接進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 戰鬥階段 】</color>。" );
+        }
+
         //StartCoroutine( RunStartingPreparationPhase() );
     }
 

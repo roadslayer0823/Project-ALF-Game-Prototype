@@ -174,9 +174,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
                         GameCharacter _currentAttacker = this.selectedGameCharacter.GetCurrentAttacker();
                         if (_currentAttacker != null)
                         {
-                            ObservedSkillRecord _observedSkillRecord = _backendSkill.GetObservedSkillRecord();
-                            if (_observedSkillRecord != null
-                                && _observedSkillRecord.GetSubskillData().FeatureId == _currentAttacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().FeatureId)
+                            if (BattleLogicManagerV2.IsAttackerCurrentSkillRecordedInObservingSkill( _backendSkill, _currentAttacker ))
                             {
                                 _isSelected = true;
                                 this.selectedGameCharacter.SetCurrentObservingSkill( _backendSkill, false );

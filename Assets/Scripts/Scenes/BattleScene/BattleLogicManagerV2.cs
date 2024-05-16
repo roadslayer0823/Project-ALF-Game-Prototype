@@ -22,7 +22,7 @@ public class BattleLogicManagerV2
         return ( skill?.GetSkillData().skillType is SkillType.active or SkillType.derived or SkillType.counter );
     }
 
-    public static bool IsAbleToUseAnySkill( GameCharacter gameCharacter )
+    public static bool IsInBreakStatus( GameCharacter gameCharacter )
     {
         BattleResultData_GameCharacter _temporaryBattleResultData = gameCharacter.GetTemporaryBattleResultData();
 
@@ -30,10 +30,20 @@ public class BattleLogicManagerV2
         {
             if (_temporaryBattleResultData.IsInBreakStatus())
             {
-                return false;
+                return true;
             }
         }
-        else if (gameCharacter.GetIsInBreakStatus())
+        else if (gameCharacter.GetStateBreakStatusRemainingATLs() > 0 || gameCharacter.GetStressBreakStatusRemainingATLs() > 0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static bool IsAbleToUseAnySkill( GameCharacter gameCharacter )
+    {
+        if (IsInBreakStatus( gameCharacter ))
         {
             return false;
         }
@@ -64,6 +74,28 @@ public class BattleLogicManagerV2
         }
 
         return true;
+    }
+
+    public static bool IsAttackerCurrentSkillRecordedInObservingSkill( CharacterSkill observingSkill, GameCharacter attacker )
+    {
+        ObservedSkillRecord _observedSkillRecord = observingSkill.GetObservedSkillRecord();
+        if (_observedSkillRecord != null
+            && _observedSkillRecord.GetSubskillData().FeatureId == attacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().FeatureId)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static bool ShouldPreparationSectionBeSkipped( GameCharacter gameCharacter )
+    {
+        if (IsInBreakStatus( gameCharacter ))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public static bool ShouldCombatCommandTimeBeSkipped( GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )

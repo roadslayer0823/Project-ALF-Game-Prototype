@@ -20,8 +20,12 @@ public class PlayerDashboard : MonoBehaviour
 
     public void ClickOnExecuteButton()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_EXECUTE);
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_EXECUTE );
+        ProcessExecuteButton();
+    }
 
+    public void ProcessExecuteButton()
+    {
         HideExecuteButtonContainer();
 
         if (this.onExecuteButtonClickedCallback != null)
@@ -30,7 +34,7 @@ public class PlayerDashboard : MonoBehaviour
         }
         else
         {
-            Debug.Log("The value for 'onExecuteButtonClickedCallback' is not assigned.");
+            Debug.Log( "The value for 'onExecuteButtonClickedCallback' is not assigned." );
         }
     }
 
