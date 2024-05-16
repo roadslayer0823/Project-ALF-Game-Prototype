@@ -158,7 +158,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             if (_backendSkill != null)
             {
                 Subskill _subskillData = _backendSkill.GetCharacterSubskillData().GetSubskillData();
-                this.backendSkillSlots[i].UpdateCurrentSkillDisplayTextUI(true);
+                _backendSkillSlot.UpdateCurrentSkillDisplayTextUI(true);
 
                 if (( _isAbleToDefend && _subskillData.IsDefendingSkill )
                    || ( _isAbleToEvade && _subskillData.IsEvadingSkill ))
@@ -198,7 +198,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             }
             else
             {
-                this.backendSkillSlots[i].UpdateCurrentSkillDisplayTextUI(false);
+                _backendSkillSlot.UpdateCurrentSkillDisplayTextUI(false);
             }
         }
 

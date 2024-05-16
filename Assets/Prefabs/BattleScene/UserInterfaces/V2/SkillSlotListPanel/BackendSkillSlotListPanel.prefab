@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46aaa52fe1a4c46e5a96807bcb6a77c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backendSkillSlot:
+  backendSkillSlots:
   - {fileID: 7729403517520406078}
   - {fileID: 409482243282576432}
   - {fileID: 5802804956746720144}
