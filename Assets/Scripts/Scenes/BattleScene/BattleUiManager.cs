@@ -25,6 +25,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private SkillPromptPanelV2 skillPromptPanel = null;
     [SerializeField] private GameObject enemyCharacterInfoBoxUI = null;
     [SerializeField] private GameObject enemyCharacterInfoBoxHUD = null;
+    [SerializeField] private GameObject darkLayer = null;
 
     [Header( "Debug" )]
     [SerializeField] private EnemyDebugMenuPanel enemyDebugMenuPanel = null;
@@ -47,7 +48,7 @@ public class BattleUiManager : MonoBehaviour
         }
         else
         {
-            this.preparationSection.Initialize( OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel );
+            this.preparationSection.Initialize( this, OnExecuteButtonClicked, ShowActiveSkillSelectionPanel, ShowBackendSkillSelectionPanel );
 
             if (this.playerDashboard != null)
             {
@@ -61,7 +62,7 @@ public class BattleUiManager : MonoBehaviour
         }
         else
         {
-            this.skillSelectionPanelV2.Initialize( OnSkillSelectedFromSkillSelectionPanelV2, OnSkillDeselectedFromSkillSelectionPanelV2, ReturnToSkillMenu );
+            this.skillSelectionPanelV2.Initialize( this, OnSkillSelectedFromSkillSelectionPanelV2, OnSkillDeselectedFromSkillSelectionPanelV2, ReturnToSkillMenu );
         }
 
         if (this.activeSkillSlotListPanelV2 == null)
@@ -246,6 +247,7 @@ public class BattleUiManager : MonoBehaviour
 
     public void OnExecuteButtonClicked()
     {
+        HideDarkLayer();
         this.skillSelectionPanel.CheckForNecessarySkill();
         this.battleGameManager.StartExecution();
     }
@@ -287,8 +289,10 @@ public class BattleUiManager : MonoBehaviour
 
     public void ReturnToSkillMenu()
     {
-        HideSkillSelectionPanel();
         this.skillInfoPanel.Hide();
+        HideSkillSelectionPanel();
+        HideDarkLayer();
+
         this.preparationSection.ShowSkillMenu();
     }
 
@@ -678,5 +682,15 @@ public class BattleUiManager : MonoBehaviour
     public EnemyDebugMenuPanel GetEnemyDebugMenuPanel()
     {
         return this.enemyDebugMenuPanel;
+    }
+
+    public void ShowDarkLayer()
+    {
+        this.darkLayer.SetActive( true );
+    }
+
+    public void HideDarkLayer()
+    {
+        this.darkLayer.SetActive( false );
     }
 }

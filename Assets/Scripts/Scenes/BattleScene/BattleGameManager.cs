@@ -162,12 +162,24 @@ public class BattleGameManager : MonoBehaviour
         }
         else
         {
-            this.battleUiManager.GetPreparationSection().Show();
+            PreparationSection _preparationSection = this.battleUiManager.GetPreparationSection();
+
+            if (BattleLogicManagerV2.ShouldPreparationSectionBeSkipped( this.playerCharacter ))
+            {
+                _preparationSection.DisableSkillSelectionButtons();
+            }
+            else
+            {
+                _preparationSection.EnableSkillSelectionButtons();
+            }
+
+            _preparationSection.Show();
         }
 
         ShowPreparationView();
         this.enemyCharacter.InitializeSelectedSkills();
 
+        /*
         if (BattleLogicManagerV2.ShouldPreparationSectionBeSkipped( this.playerCharacter ))
         {
             this.battleUiManager.GetPlayerDashboard().ProcessExecuteButton();
@@ -175,6 +187,7 @@ public class BattleGameManager : MonoBehaviour
             BattleLog.Instance.AddOnScreenBattleLog( $"因為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ this.playerCharacter.GetCharacterName() }</color>正在處於<color={ BattleLog.KEYWORD_COLOR_CODE }>崩潰狀態</color>，"
                                                      + $"所以跳過<color={ BattleLog.SPECIAL_COLOR_CODE }>【 準備階段 】</color>，直接進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 戰鬥階段 】</color>。" );
         }
+        */
 
         //StartCoroutine( RunStartingPreparationPhase() );
     }

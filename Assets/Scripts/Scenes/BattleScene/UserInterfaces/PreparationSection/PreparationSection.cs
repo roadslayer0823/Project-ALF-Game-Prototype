@@ -9,30 +9,25 @@ public class PreparationSection : MonoBehaviour
     [Header("SkillSelectionPanel button")]
     [SerializeField] private Button showActiveSkillSelectionPanelButton = null;
     [SerializeField] private Button showBackendSkillSelectionPanelButton = null;
+    [SerializeField] private Button switchingButton = null;
     [SerializeField] private Button executeButton = null;
-    [SerializeField] private GameObject darkLayer = null;
 
-    private GameCharacter selectedGameCharacter = null;
+    private BattleUiManager battleUiManager = null;
     private Action onActiveSkillButtonClickedCallback = null;
     private Action onBackendSkillButtonClickedCallback = null;
     private Action onExecuteButtonClickedCallback = null;
-    private bool isShowingActiveSkillSelectionPanelNext = false;
 
     private const string AUDIO_ID_EXECUTE = "execute";
     private const string AUDIO_ID_POPUP = "popup";
 
-    public void Initialize(Action onExecuteButtonClickedCallback, Action onShowActiveSkillSelectionPanelCallback, Action onShowBackendSkillSelectionPanelCallback)
+    public void Initialize( BattleUiManager battleUiManager, Action onExecuteButtonClickedCallback, Action onShowActiveSkillSelectionPanelCallback, Action onShowBackendSkillSelectionPanelCallback )
     {
+        this.battleUiManager = battleUiManager;
         this.onExecuteButtonClickedCallback = onExecuteButtonClickedCallback;
-        this.showActiveSkillSelectionPanelButton.onClick.AddListener(ShowActiveSkillSelectionPanel);
-        this.showBackendSkillSelectionPanelButton.onClick.AddListener(ShowBackendSkillSelectionPanel);
         this.onActiveSkillButtonClickedCallback = onShowActiveSkillSelectionPanelCallback;
         this.onBackendSkillButtonClickedCallback = onShowBackendSkillSelectionPanelCallback;
-    }
-
-    public void SetSelectedGameCharacter(GameCharacter selectedGameCharacter)
-    {
-        this.selectedGameCharacter = selectedGameCharacter;
+        this.showActiveSkillSelectionPanelButton.onClick.AddListener( ShowActiveSkillSelectionPanel );
+        this.showBackendSkillSelectionPanelButton.onClick.AddListener( ShowBackendSkillSelectionPanel );
     }
 
     public void ClickOnExecuteButton()
@@ -40,6 +35,7 @@ public class PreparationSection : MonoBehaviour
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_EXECUTE);
 
         DisableExecuteButton();
+        this.battleUiManager.HideDarkLayer();
 
         if (this.onExecuteButtonClickedCallback != null)
         {
@@ -72,16 +68,6 @@ public class PreparationSection : MonoBehaviour
         this.skillMenuContainer.SetActive( false );
     }
 
-    public void ShowDarkLayer()
-    {
-        this.darkLayer.SetActive(true);
-    }
-
-    public void HideDarkLayer()
-    {
-        this.darkLayer.SetActive(false);
-    }
-
     public void EnableExecuteButton()
     {
         this.executeButton.interactable = true;
@@ -97,6 +83,20 @@ public class PreparationSection : MonoBehaviour
         this.executeButton.gameObject.SetActive( false );
     }
 
+    public void EnableSkillSelectionButtons()
+    {
+        this.showActiveSkillSelectionPanelButton.interactable = true;
+        this.showBackendSkillSelectionPanelButton.interactable = true;
+        this.switchingButton.interactable = true;
+    }
+
+    public void DisableSkillSelectionButtons()
+    {
+        this.showActiveSkillSelectionPanelButton.interactable = false;
+        this.showBackendSkillSelectionPanelButton.interactable = false;
+        this.switchingButton.interactable = false;
+    }
+
     public void ShowActiveSkillSelectionPanel()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_POPUP);
@@ -110,8 +110,7 @@ public class PreparationSection : MonoBehaviour
             Debug.Log("The value for 'onActiveSkillButtonClicked' is not assigned.");
         }
 
-        this.isShowingActiveSkillSelectionPanelNext = false;
-        ShowDarkLayer();
+        this.battleUiManager.ShowDarkLayer();
     }
 
     private void ShowBackendSkillSelectionPanel()
@@ -127,8 +126,6 @@ public class PreparationSection : MonoBehaviour
             Debug.Log("The value for 'onBackendSkillButtonClicked' is not assigned.");
         }
 
-        this.isShowingActiveSkillSelectionPanelNext = true;
-        ShowDarkLayer();
+        this.battleUiManager.ShowDarkLayer();
     }
-
 }

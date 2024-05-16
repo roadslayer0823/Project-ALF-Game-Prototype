@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using static DatabaseManager;
+using Skill = DatabaseManager.Skill;
+using Subskill = DatabaseManager.Subskill;
 
 public class SkillSelectionPanelV2 : MonoBehaviour
 {
@@ -59,8 +60,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     [Header("")]
     [SerializeField] private Button returnButton = null;
     [SerializeField] private SkillInfoPanel skillInfoPanel = null;
-    [SerializeField] private GameObject darkLayer = null;
 
+    private BattleUiManager battleUiManager = null;
     private Action<SkillSelectionBoxV2> onSkillSelectedCallback = null;
     private Action<SkillSelectionBoxV2> onSkillDeselectedCallback = null;
     private Action onReturnedCallback = null;
@@ -78,18 +79,19 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         Backend
     }
 
-    public void Initialize( Action<SkillSelectionBoxV2> onSkillSelectedCallback, Action<SkillSelectionBoxV2> onSkillDeselectedCallback, Action onReturnedCallback )
+    public void Initialize( BattleUiManager battleUiManager, Action<SkillSelectionBoxV2> onSkillSelectedCallback, Action<SkillSelectionBoxV2> onSkillDeselectedCallback, Action onReturnedCallback )
     {
+        this.battleUiManager = battleUiManager;
         this.onSkillSelectedCallback = onSkillSelectedCallback;
         this.onSkillDeselectedCallback = onSkillDeselectedCallback;
         this.onReturnedCallback = onReturnedCallback;
 
-        this.activeSkillSelectionListGO.SetActive(false);
-        this.backendSkillSelectionListGO.SetActive(false);
+        this.activeSkillSelectionListGO.SetActive( false );
+        this.backendSkillSelectionListGO.SetActive( false );
         this.skillInfoPanel.Hide();
 
-        this.activeSkillListBoxButton.onClick.AddListener(OnActiveSkillListBoxButtonClick);
-        this.backendSkillListBoxButton.onClick.AddListener(OnBackendSkillListBoxButtonClick);
+        this.activeSkillListBoxButton.onClick.AddListener( OnActiveSkillListBoxButtonClick );
+        this.backendSkillListBoxButton.onClick.AddListener( OnBackendSkillListBoxButtonClick );
         this.returnButton.onClick.AddListener( OnReturnButtonClick );
     }
 
@@ -144,7 +146,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         ShowBackendSkillSelectionList(false);
 
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-        this.darkLayer.SetActive(true);
+        this.battleUiManager.ShowDarkLayer();
     }
 
     // when click the backend skill list box button
@@ -163,14 +165,13 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         ShowActiveSkillSelectionList(false);
 
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-        this.darkLayer.SetActive(true);
+        this.battleUiManager.ShowDarkLayer();
     }
 
     // when click the return button
     private void OnReturnButtonClick()
     {
         this.onReturnedCallback?.Invoke();
-        this.darkLayer.SetActive(false);
     }
 
     // initialize active skill list

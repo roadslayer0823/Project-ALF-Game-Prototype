@@ -107,6 +107,7 @@ MonoBehaviour:
   backendGenericBoxFilledIcon: {fileID: 6109524651211413141}
   returnButton: {fileID: 982782964219806141}
   skillInfoPanel: {fileID: 0}
+  darkLayer: {fileID: 0}
 --- !u!1 &5189946530786782906
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,7 +126,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7882923261070061789
 RectTransform:
   m_ObjectHideFlags: 0
