@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
@@ -53,14 +52,15 @@ public class DebugMenuPanel : MonoBehaviour
         characterList.AddOptions(stateNames);
     }
 
-
     public void Show()
     {
+        Time.timeScale = 0.0f;
         this.container.SetActive(true);
     }
 
     public void Hide()
     {
+        Time.timeScale = 1.0f;
         this.container.SetActive(false);
         changedSkillInfo.text = null;
     }
