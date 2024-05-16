@@ -59,6 +59,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     [Header("")]
     [SerializeField] private Button returnButton = null;
     [SerializeField] private SkillInfoPanel skillInfoPanel = null;
+    [SerializeField] private GameObject darkLayer = null;
 
     private Action<SkillSelectionBoxV2> onSkillSelectedCallback = null;
     private Action<SkillSelectionBoxV2> onSkillDeselectedCallback = null;
@@ -143,6 +144,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         ShowBackendSkillSelectionList(false);
 
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        this.darkLayer.SetActive(true);
     }
 
     // when click the backend skill list box button
@@ -161,12 +163,14 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         ShowActiveSkillSelectionList(false);
 
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        this.darkLayer.SetActive(true);
     }
 
     // when click the return button
     private void OnReturnButtonClick()
     {
         this.onReturnedCallback?.Invoke();
+        this.darkLayer.SetActive(false);
     }
 
     // initialize active skill list
@@ -308,7 +312,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     public void ShowBackendSkillSelectionList(bool show)
     {
         this.backendSkillSelectionListGO.SetActive(show);
-
         if (show)
         {
             for (int i = 0; i < this.backendSkillBoxList.Count; i++)
