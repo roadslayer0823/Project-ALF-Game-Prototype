@@ -72,6 +72,16 @@ public class PreparationSection : MonoBehaviour
         this.skillMenuContainer.SetActive( false );
     }
 
+    public void ShowDarkLayer()
+    {
+        this.darkLayer.SetActive(true);
+    }
+
+    public void HideDarkLayer()
+    {
+        this.darkLayer.SetActive(false);
+    }
+
     public void EnableExecuteButton()
     {
         this.executeButton.interactable = true;
@@ -101,7 +111,7 @@ public class PreparationSection : MonoBehaviour
         }
 
         this.isShowingActiveSkillSelectionPanelNext = false;
-        this.darkLayer.SetActive(true);
+        ShowDarkLayer();
     }
 
     private void ShowBackendSkillSelectionPanel()
@@ -118,7 +128,7 @@ public class PreparationSection : MonoBehaviour
         }
 
         this.isShowingActiveSkillSelectionPanelNext = true;
-        this.darkLayer.SetActive(true);
+        ShowDarkLayer();
     }
 
 }
