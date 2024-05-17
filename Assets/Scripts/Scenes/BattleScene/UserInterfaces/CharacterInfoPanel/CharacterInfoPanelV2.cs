@@ -72,6 +72,10 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     private float breakStatusColor = 0.0f;
     private float defaultColor = 1f;
 
+    //max state point text scale
+    private Vector2 currentScale;
+    private Vector2 newScale;
+
     public void Initialize()
     {
         float _startingStatePoint = this.selectedCharacter.GetMaximumStatePoint();
@@ -79,10 +83,16 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         float _startingVirtualPoint = this.selectedCharacter.GetMaximumHealthPoint();
         float _startingStressValue = -1f;
 
+        Vector2 _currentScale = this.maxStatePointValueFirstText.rectTransform.localScale;
+        Vector2 _newScale = new Vector3(currentScale.x / this.scaleMultiplier, currentScale.y / this.scaleMultiplier);
+
         this.startingStatePoint = _startingStatePoint;
         this.startingHealthPoint = _startingHealthPoint;
         this.startingVirtualPoint = _startingVirtualPoint;
         this.startingStressValue = _startingStressValue;
+
+        this.currentScale = _currentScale;
+        this.newScale = _newScale;
     }
 
     public void SetSelectedCharacter(GameCharacter selectedCharacter)
@@ -321,8 +331,6 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
     public IEnumerator PlayMaxStatePointAnimation()
     {
-        Vector2 currentScale = this.maxStatePointValueFirstText.rectTransform.localScale;
-        Vector2 newScale = new Vector3(currentScale.x / this.scaleMultiplier, currentScale.y / this.scaleMultiplier);
         for (int i = 0; i < this.maxStatePointText.Length; i++)
         {
             var targetText = this.maxStatePointText[i];
