@@ -200,7 +200,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     {
         this.isWaitingSecondClick = true;
 
-        if (this.isSelected && this.clickDelay > 0)
+        if (this.isSelected && this.clickDelay > 0 && this.selectionHighlight.gameObject.activeSelf)
         {
             yield return new WaitForSeconds(this.clickDelay);
         }
@@ -238,7 +238,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             {
                 if (this.skillSelectionPanel.IsCharacterAllowedToAddOrRemoveSkill(this.characterSkill, true))
                 {
-                    Debug.Log("Clicked this.characterSkill id: " + this.characterSkill.GetSkillData().Id);
                     this.skillSelectionPanel.AddSelectedSkillBoxV2(this);
                     this.isSelected = true;
                     UpdateSkillIcon(true);
