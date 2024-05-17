@@ -177,7 +177,7 @@ public class BattleResultData
             }
         }
 
-        // 實傷
+        // HP 傷害（實傷）
         if (actualHealthPointDamage > 0)
         {
             _gameCharacterResultData.actualHealthPointDamage += actualHealthPointDamage;
@@ -185,7 +185,7 @@ public class BattleResultData
             _gameCharacterResultData.SetVirtualHealthPoint( _gameCharacterResultData.virtualHealthPoint - actualHealthPointDamage );
         }
 
-        // 虛傷
+        // HP 傷害（虛傷）
         if (virtualHealthPointDamage > 0)
         {
             _gameCharacterResultData.virtualHealthPointDamage += virtualHealthPointDamage;

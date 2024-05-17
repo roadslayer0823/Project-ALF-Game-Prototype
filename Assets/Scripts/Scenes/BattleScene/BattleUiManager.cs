@@ -85,6 +85,7 @@ public class BattleUiManager : MonoBehaviour
             this.playerDashboard.Initialize( OnExecuteButtonClicked );
             this.atlSlotListPanelV3 = this.playerDashboard.GetAtlSlotListPanelV3();
             this.characterInfoPanelV2 = this.playerDashboard.GetCharacterInfoPanelV2();
+            this.characterInfoPanelV2.Initialize();
         }
     }
 
