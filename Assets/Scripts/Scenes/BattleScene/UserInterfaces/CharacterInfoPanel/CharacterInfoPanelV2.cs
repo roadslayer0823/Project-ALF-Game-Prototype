@@ -78,18 +78,8 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
     public void Initialize()
     {
-        float _startingStatePoint = this.selectedCharacter.GetMaximumStatePoint();
-        float _startingHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
-        float _startingVirtualPoint = this.selectedCharacter.GetMaximumHealthPoint();
-        float _startingStressValue = -1f;
-
         Vector2 _currentScale = this.maxStatePointValueFirstText.rectTransform.localScale;
         Vector2 _newScale = new Vector3(currentScale.x / this.scaleMultiplier, currentScale.y / this.scaleMultiplier);
-
-        this.startingStatePoint = _startingStatePoint;
-        this.startingHealthPoint = _startingHealthPoint;
-        this.startingVirtualPoint = _startingVirtualPoint;
-        this.startingStressValue = _startingStressValue;
 
         this.currentScale = _currentScale;
         this.newScale = _newScale;
@@ -100,6 +90,11 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         this.selectedCharacter = selectedCharacter;
         this.selectedCharacter.AddOnCharacterInfoUpdatedCallback( UpdateDisplayInfo );
         UpdateDisplayInfo();
+
+        this.startingStatePoint = this.selectedCharacter.GetMaximumStatePoint();
+        this.startingHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
+        this.startingVirtualPoint = this.selectedCharacter.GetMaximumHealthPoint();
+        this.startingStressValue = -1f;
     }
 
     public void UpdateDisplayInfo()
@@ -244,12 +239,12 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                 Color32 redColor = new Color32(255, 0, 0, 255);
                 Color32 blueColor = new Color32(0, 100, 255, 255);
 
-                //blue color
+                //red color
                 float redR = redColor.r;
                 float redG = redColor.g;
                 float redB = redColor.b;
 
-                //red color
+                //blue color
                 float blueR = blueColor.r;
                 float blueG = blueColor.g;
                 float blueB = blueColor.b;
@@ -290,14 +285,14 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                 _sequence.append(LeanTween.value(gameObject, new Vector3(blueR, blueG, blueB), new Vector3(redR, redG, redB), this.textAnimationDuration)
                     .setOnUpdate((Vector3 color) =>
                     {
-                        Color32 currentColor = new Color32((byte)(color.x + 255), (byte)(color.y - 100), (byte)(color.z - 255), 255);
+                        Color32 currentColor = new Color32((byte)(color.x), (byte)(color.y), (byte)(color.z), 255);
                         this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, currentColor);
                     }));
 
                 _sequence.append(LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), this.textAnimationDuration)
                     .setOnUpdate((Vector3 color) =>
                     {
-                        Color32 currentColor = new Color32((byte)(color.x - 255), (byte)(color.y + 100), (byte)(color.z + 255), 255);
+                        Color32 currentColor = new Color32((byte)(color.x), (byte)(color.y), (byte)(color.z), 255);
                         this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, currentColor);
                     }));
             }

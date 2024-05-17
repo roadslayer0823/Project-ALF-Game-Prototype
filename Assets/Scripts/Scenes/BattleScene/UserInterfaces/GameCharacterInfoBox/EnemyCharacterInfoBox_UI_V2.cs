@@ -17,7 +17,7 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
     [SerializeField] private Image stressValueBar = null;
     [SerializeField] private Image stressValueBarAnimation = null;
     [SerializeField] private Image stressValueHittedSlot = null;
-    [SerializeField] private Image stressValueHittedBar = null;
+    [SerializeField] private Image stressValueGlowEffect = null;
 
     [Header("Effect Marker UI")]
     [SerializeField] private TextMeshProUGUI effectMarkerValue = null;
@@ -28,6 +28,7 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
     [SerializeField] private GameObject stateBreakBar = null;
     [SerializeField] private Image statePointBarSlot = null;
     [SerializeField] private Image statePointBar = null;
+    [SerializeField] private Image statePointGlowEffect = null;
 
     [Header("Health Point UI")]
     [SerializeField] private Image virtualHPBar = null;
@@ -121,30 +122,44 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
         if (this.startingStressValue != _currentStressValue)
         {
             float _defaultAlphaValue = 255;
-            Color _stressValueBarColor = this.stressValueHittedBar.color;
             Color _stressValueSlotColor = this.stressValueHittedSlot.color;
+            Color32 redColor = new Color32(255, 0, 0, 191);
+            Color32 blueColor = new Color32(0, 132, 255, 191);
 
-            ColorAlphaSetup(_stressValueBarColor, _defaultAlphaValue, this.stressValueHittedBar);
+            //red color
+            float redR = redColor.r;
+            float redG = redColor.g;
+            float redB = redColor.b;
+
+            //blue color
+            float blueR = blueColor.r;
+            float blueG = blueColor.g;
+            float blueB = blueColor.b;
+
             ColorAlphaSetup(_stressValueSlotColor, _defaultAlphaValue, this.stressValueHittedSlot);
-           
-            this.stressValueBar.fillAmount = _currentStressValue / 100;
+            this.stressValueGlowEffect.color = redColor;
 
+            this.stressValueBar.fillAmount = _currentStressValue / 100;
             LeanTween.value(gameObject, this.startingStressValue, _currentStressValue, this.barAnimationDuration)
-           .setOnUpdate((float val) =>
-           {
-               this.startingStressValue = Mathf.RoundToInt(val);
-               float _stressValueFillAmount = val / 100;
-               this.stressValueHittedBar.fillAmount = _stressValueFillAmount;
-               this.stressValueBarAnimation.fillAmount = _stressValueFillAmount;
-           }).setOnComplete(() =>
-           {
-               LeanTween.value(gameObject, _defaultAlphaValue, 0, this.barAnimationDuration)
                .setOnUpdate((float val) =>
                {
-                   ColorAlphaSetup(_stressValueBarColor, val, this.stressValueHittedBar);
-                   ColorAlphaSetup(_stressValueBarColor, val, this.stressValueHittedSlot);
+                   this.startingStressValue = Mathf.RoundToInt(val);
+                   float _stressValueFillAmount = val / 100;
+                   this.stressValueBarAnimation.fillAmount = _stressValueFillAmount;
+                   this.stressValueGlowEffect.fillAmount = _stressValueFillAmount;
                });
-           });
+
+            LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), this.barAnimationDuration)
+                      .setOnUpdate((Vector3 color) =>
+                      {
+                          this.stressValueGlowEffect.color = new Color32((byte)color.x, (byte)color.y, (byte)color.z, 191);
+                      });
+
+            LeanTween.value(gameObject, _defaultAlphaValue, 0, this.barAnimationDuration)
+                .setOnUpdate((float val) =>
+                {
+                    ColorAlphaSetup(_stressValueSlotColor, val, this.stressValueHittedSlot);
+                });
         }
 
         if (this.selectedCharacter.IsInStressBreakStatus())
@@ -180,6 +195,7 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
                     this.startingStatePoint = Mathf.RoundToInt(val);
                     float _statePointFillAmount = this.startingStatePoint / _maximumStatePoint;
                     this.statePointBar.fillAmount = _statePointFillAmount;
+                    this.statePointGlowEffect.fillAmount = _statePointFillAmount;
                 });
 
             this.stateBreakUI.SetActive(false);
