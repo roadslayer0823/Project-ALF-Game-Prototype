@@ -15,6 +15,9 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
     [SerializeField] private GameObject stressBreakBar = null;
     [SerializeField] private Image stressValueBarSlot = null;
     [SerializeField] private Image stressValueBar = null;
+    [SerializeField] private Image stressValueBarAnimation = null;
+    [SerializeField] private Image stressValueHittedSlot = null;
+    [SerializeField] private Image stressValueHittedBar = null;
 
     [Header("Effect Marker UI")]
     [SerializeField] private TextMeshProUGUI effectMarkerValue = null;
@@ -36,6 +39,7 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
     private float startingHealthPoint = 0.0f;
     private float startingVirtualPoint = 0.0f;
     private float startingStressValue = -1;
+    private float alphaValue = 255;
 
     //animation duration
     private readonly float barAnimationDuration = 1f;
@@ -116,14 +120,31 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
         float _currentStressValue = this.selectedCharacter.GetCurrentStressValue();
         if (this.startingStressValue != _currentStressValue)
         {
+            float _defaultAlphaValue = 255;
+            Color _stressValueBarColor = this.stressValueHittedBar.color;
+            Color _stressValueSlotColor = this.stressValueHittedSlot.color;
+
+            ColorAlphaSetup(_stressValueBarColor, _defaultAlphaValue, this.stressValueHittedBar);
+            ColorAlphaSetup(_stressValueSlotColor, _defaultAlphaValue, this.stressValueHittedSlot);
+           
+            this.stressValueBar.fillAmount = _currentStressValue / 100;
+
             LeanTween.value(gameObject, this.startingStressValue, _currentStressValue, this.barAnimationDuration)
            .setOnUpdate((float val) =>
            {
                this.startingStressValue = Mathf.RoundToInt(val);
                float _stressValueFillAmount = val / 100;
-               this.stressValueBar.fillAmount = _stressValueFillAmount;
+               this.stressValueHittedBar.fillAmount = _stressValueFillAmount;
+               this.stressValueBarAnimation.fillAmount = _stressValueFillAmount;
+           }).setOnComplete(() =>
+           {
+               LeanTween.value(gameObject, _defaultAlphaValue, 0, this.barAnimationDuration)
+               .setOnUpdate((float val) =>
+               {
+                   ColorAlphaSetup(_stressValueBarColor, val, this.stressValueHittedBar);
+                   ColorAlphaSetup(_stressValueBarColor, val, this.stressValueHittedSlot);
+               });
            });
-
         }
 
         if (this.selectedCharacter.IsInStressBreakStatus())
@@ -165,5 +186,11 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
             this.stateBreakBar.SetActive(false);
             this.statePointBarSlot.gameObject.SetActive(true);
         }
+    }
+
+    private void ColorAlphaSetup(Color objectColor, float defaultAlphaValue, Image targetImage)
+    {
+        objectColor.a = defaultAlphaValue;
+        targetImage.color = objectColor;
     }
 }
