@@ -125,14 +125,15 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
         string maximumStatePointText = _maximumStatePoint.ToString();
 
-        (bool isThirdTextActive, bool isFourthTextActive) = maximumStatePointText.Length switch
+        (bool isSecondTextActivate, bool isThirdTextActive, bool isFourthTextActive) = maximumStatePointText.Length switch
         {
-            2 => (false, false),
-            3 => (true, false),
-            4 => (true, true),
+            1 => (false, false, false),
+            2 => (true, false, false),
+            3 => (true, true, false),
+            4 => (true, true, true),
             _ => throw new NotImplementedException()
         };
-        MaxStatePointTextSpacing(isThirdTextActive, isFourthTextActive, maximumStatePointText);
+        MaxStatePointTextSpacing(isSecondTextActivate, isThirdTextActive, isFourthTextActive, maximumStatePointText);
 
         if (this.startingStatePoint != _currentStatePoint)
         {
@@ -322,8 +323,9 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         }
     }
 
-    public void MaxStatePointTextSpacing(bool isThirdText, bool isFourthText, string targetString)
+    public void MaxStatePointTextSpacing(bool isSecondText, bool isThirdText, bool isFourthText, string targetString)
     {
+        this.maxStatePointValueSecondText.gameObject.SetActive(isSecondText);
         this.maxStatePointValueThirdText.gameObject.SetActive(isThirdText);
         this.maxStatePointValueFourthText.gameObject.SetActive(isFourthText);
         MaxStatePointTextList(targetString);
