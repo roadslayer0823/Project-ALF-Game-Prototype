@@ -296,8 +296,6 @@ public class BattleLogicManagerV2
 
         if (_improviserCurrentSkill != null)
         {
-            ExecuteCasterSkillOnUse( ref _battleResultData, improviser, lead );
-
             Skill _improviserSkillData = _improviserCurrentSkill.GetSkillData();
             Subskill _improviserSubskillData = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData();
             _improviserRangeType = _improviserSubskillData.Range;
@@ -539,10 +537,10 @@ public class BattleLogicManagerV2
         }
 
         _statePointCost = BattleCalculationManager.AdjustAmount( _statePointCost );
-        battleResultData.AddGameCharacterResultData( gameCharacter: caster, statePointCost: _statePointCost );
+        battleResultData.AddGameCharacterResultData_StatePointCost( caster, _statePointCost, out _ );
 
         float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
-        battleResultData.AddGameCharacterResultData( gameCharacter: caster, maximumStatePointIncrease: _maxStatePointUp );
+        battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease( caster, _maxStatePointUp, out _ );
 
         string _log = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ caster.GetCharacterName() }</color>使出了"
                     + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _casterSubskillData.DisplayName }</color>"
@@ -603,7 +601,7 @@ public class BattleLogicManagerV2
         if (_energyMarkerAtl > 0)
         {
             // 更新“能量殘響”。
-            _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, renewedEnergyMarkerATLs: _energyMarkerAtl );
+            battleResultData.AddGameCharacterResultData_RenewedEnergyMarkerATLs( target, _energyMarkerAtl, out _targetBattleResultData );
         }
 
         // 在發生迎擊時，如果攻擊或迎擊技能是近戰，而對方的迎擊或攻擊技能是遠程，就會得到額外的最大以太值提升。
@@ -618,7 +616,7 @@ public class BattleLogicManagerV2
                     && _targetSubskillData?.Range == Subskill.RangeType.ranged)
                 {
                     float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
-                    _casterBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: caster, maximumStatePointIncrease: _maxStatePointUp );
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease( caster, _maxStatePointUp, out _casterBattleResultData );
                 }
             }
         }
@@ -627,14 +625,14 @@ public class BattleLogicManagerV2
         if (hasStatePointDamage)
         {
             float _statePointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStatePointDamage( _casterSubskillData ) * ( ( _targetBattleResultData != null && _targetBattleResultData.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
-            _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, statePointDamage: _statePointDamage, isBreakStatusAvailable: isBreakStatusAvailable );
+            battleResultData.AddGameCharacterResultData_StatePointDamage( target, _statePointDamage, isBreakStatusAvailable, out _targetBattleResultData );
         }
 
         // 負荷傷害
         if (hasStressValueDamage)
         {
             float _stressValueDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStressValueDamage( _casterSubskillData ) * ( ( _targetBattleResultData != null && _targetBattleResultData.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) * stressValueDamageMultiplier );
-            _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, stressValueDamage: _stressValueDamage, isBreakStatusAvailable: isBreakStatusAvailable );
+            battleResultData.AddGameCharacterResultData_StressValueDamage( target, _stressValueDamage, isBreakStatusAvailable, out _targetBattleResultData );
         }
 
         // HP 傷害
@@ -663,12 +661,12 @@ public class BattleLogicManagerV2
                 if (_isActualDamage)
                 {
                     // 實傷
-                    _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, actualHealthPointDamage: _healthPointDamage );
+                    battleResultData.AddGameCharacterResultData_ActualHealthPointDamage( target, _healthPointDamage, out _targetBattleResultData );
                 }
                 else
                 {
                     // 虛傷
-                    _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, virtualHealthPointDamage: _healthPointDamage );
+                    battleResultData.AddGameCharacterResultData_VirtualHealthPointDamage( target, _healthPointDamage, out _targetBattleResultData );
                 }
             }
         }
@@ -676,13 +674,13 @@ public class BattleLogicManagerV2
         if (_targetBattleResultData.IsInBreakStatus() && hasHealthPointDamage)
         {
             // 尚未回復的虛傷部分全數轉化為實傷。
-            _targetBattleResultData.virtualHealthPoint = _targetBattleResultData.currentHealthPoint;
+            battleResultData.AddGameCharacterResultData_ConvertAllVirtualDamageToActualDamage( target, out _targetBattleResultData );
         }
 
         if (_casterSubskillData.WillRemoveEnergyMarker)
         {
             // 消去“能量殘響”。
-            _targetBattleResultData = battleResultData.AddGameCharacterResultData( gameCharacter: target, willRemoveEnergyMarker: true );
+            battleResultData.AddGameCharacterResultData_RemoveEnergyMarker( target, out _targetBattleResultData );
         }
     }
 
@@ -955,22 +953,20 @@ public class BattleLogicManagerV2
             float _maximumStatePointIncrease = _maximumStatePointIncreaseOnRoundStart;
             float _stressValueDamageRecovered = _stressValueDecreaseOnRoundStart;
 
-            _battleResultData.AddGameCharacterResultData( _gameCharacter,
-
-                // 回復受到的“虛傷”，回復值為最大生命(HP)值的指定巴仙率。
-                virtualHealthPointDamageRecovered: _virtualHealthPointDamageRecovered,
+            // 回復受到的“虛傷”，回復值為最大生命(HP)值的指定巴仙率。
+            _battleResultData.AddGameCharacterResultData_VirtualHealthPointDamageRecovered( _gameCharacter, _virtualHealthPointDamageRecovered, out _ )
 
                 // 如果透支以太值至負數去消費，最大以太值將減去負數值。
-                maximumStatePointDecrease: _maximumStatePointDecrease,
+                .AddGameCharacterResultData_MaximumStatePointDecrease( _gameCharacter, _maximumStatePointDecrease, out _ )
 
                 // 提升最大以太值。
-                maximumStatePointIncrease: _maximumStatePointIncrease,
+                .AddGameCharacterResultData_MaximumStatePointIncrease( _gameCharacter, _maximumStatePointIncrease, out _ )
 
                 // 降低當前負荷值。
-                stressValueDamageRecovered: _stressValueDamageRecovered,
+                .AddGameCharacterResultData_StressValueDamageRecovered( _gameCharacter, _stressValueDamageRecovered, out _ )
 
                 // 當前以太值回復至最大以太值的100%。
-                isCurrentStatePointFullyRestored: true );
+                .AddGameCharacterResultData_FullyRestoreCurrentStatePoint( _gameCharacter, out _ );
 
             BattleResultData_GameCharacter _gameCharacterResultData = _battleResultData.GetGameCharacterResultData( _gameCharacter );
 
