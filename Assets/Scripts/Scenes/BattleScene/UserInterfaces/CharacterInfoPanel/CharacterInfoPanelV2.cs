@@ -79,7 +79,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     public void Initialize()
     {
         Vector2 _currentScale = this.maxStatePointValueFirstText.rectTransform.localScale;
-        Vector2 _newScale = new Vector3(currentScale.x / this.scaleMultiplier, currentScale.y / this.scaleMultiplier);
+        Vector2 _newScale = new Vector3(_currentScale.x / this.scaleMultiplier, _currentScale.y / this.scaleMultiplier);
 
         this.currentScale = _currentScale;
         this.newScale = _newScale;

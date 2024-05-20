@@ -213,29 +213,6 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     {
         swipeDetector.SetTouchEndPos(Input.mousePosition);
         swipeDetector.DetectSwipe();
-        /*//save ended touch 2D point
-        this.mouseReleasePosition = Input.mousePosition;
-
-        //create vector from the two point
-        this.currentSwipe = this.mouseReleasePosition - this.mousePressPosition;
-
-        //swipe up
-        if (this.currentSwipe.y > 30 && this.currentSwipe.x > -30 && this.currentSwipe.x < 30)
-        {
-            isSwipeable = true;
-            IncreaseSkillLevel();
-        }
-
-        //swipe down
-        if (this.currentSwipe.y < -30 && this.currentSwipe.x > -30 && this.currentSwipe.x < 30)
-        {
-            isSwipeable = true;
-            DecreaseSkillLevel();
-        }
-        else
-        {
-            isSwipeable = false;
-        }*/
     }
 
     public void IncreaseSkillLevel()
