@@ -10,6 +10,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 {
     [Header("Settings")]
     [SerializeField] private float clickDelay = 0.2f;
+    [SerializeField] private float lastClickTime = 0f;
     [SerializeField] private float alphaThreshold = 0.1f;
     [SerializeField] private float flashDelay = 1.0f;
     [SerializeField] private float flashIntervalTime = 1.5f;
@@ -87,9 +88,20 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 
     private void Update()
     {
-        if(isPointerDown && !longPressDetector.GetIsLongPress())
+        if (isPointerDown && !longPressDetector.GetIsLongPress())
         {
+            isWaitingSecondClick = Time.time - lastClickTime <= clickDelay;
             longPressDetector.SkillSelectionLongPress(timePressStarted, pressTime, true);
+            lastClickTime = Time.time;
+        }
+
+        if (!this.isWaitingSecondClick)
+        {
+            this.clickCount = 0;
+        }
+        else if (Time.time - lastClickTime > clickDelay)
+        {
+            isWaitingSecondClick = false;
         }
     }
 
@@ -132,27 +144,10 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 
     public void ClickToSelectSkill()
     {
-        this.clickCount += 1;
         if (!isPointerDown && !longPressDetector.GetIsLongPress())
         {
-            StartCoroutine(SelectSkillBox());
-        }
-        else
-        {
-            StopCoroutine(SelectSkillBox());
-        }
-        if (this.clickCount == 2)
-        {
-            this.isDoubleTap = true;
-        }
-        else
-        {
-            this.isDoubleTap = false;
-        }
-
-        if (!this.isWaitingSecondClick)
-        {
-            this.clickCount = 0;
+            this.clickCount += 1;
+            SelectSkillBox();
         }
     }
 
@@ -196,17 +191,18 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     }
 
     // select the skill box
-    IEnumerator SelectSkillBox()
+    public void SelectSkillBox()
     {
-        this.isWaitingSecondClick = true;
-
-        if (this.isSelected && this.clickDelay > 0 && this.selectionHighlight.gameObject.activeSelf)
-        {
-            yield return new WaitForSeconds(this.clickDelay);
-        }
-
         if (this.skillType == Skill.SkillType.active)
         {
+            if (this.clickCount > 1)
+            {
+                this.isDoubleTap = true;
+            }
+            else
+            {
+                this.isDoubleTap = false;
+            }
             SelectActiveSkill();
         }
         else if (this.skillType == Skill.SkillType.backend)
@@ -218,8 +214,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     // the selected skill box is active skill
     private void SelectActiveSkill()
     {
-        this.isWaitingSecondClick = false;
-
         if (!this.isSelected)
         {
             this.clickCount = 0;
@@ -248,21 +242,15 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
                 }
             }
 
-
             ShowSelectionHighlight();
             this.skillSelectionPanel.ShowSkillInfoPanel(this);
             this.skillSelectionPanel.SetLastSelectedActiveSkillSelectionBox(this);
-
-            this.clickCount = 0;
         }
         else
         {
             if (this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.isSelected)
             {
                 this.skillSelectionPanel.MoveSelectedSkillToFirst(this, this.skillSelectionPanel.GetSelectedActiveSkillList());
-
-                this.isDoubleTap = false;
-                this.clickCount = 0;
             }
         }
     }
