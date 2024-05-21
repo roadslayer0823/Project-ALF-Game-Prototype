@@ -10,6 +10,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 {
     [Header("Settings")]
     [SerializeField] private float clickDelay = 0.2f;
+    [SerializeField] private float lastClickTime = 0f;
     [SerializeField] private float alphaThreshold = 0.1f;
     [SerializeField] private float flashDelay = 1.0f;
     [SerializeField] private float flashIntervalTime = 1.5f;
@@ -87,22 +88,22 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 
     private void Update()
     {
-        if(isPointerDown && !longPressDetector.GetIsLongPress())
+        if (this.isPointerDown && !this.longPressDetector.GetIsLongPress())
         {
-            longPressDetector.SkillSelectionLongPress(timePressStarted, pressTime, true);
+            this.longPressDetector.SkillSelectionLongPress(this.timePressStarted, this.pressTime, true);
         }
     }
 
     // when pointer down
     public void OnPointerDown(PointerEventData eventData)
     {
-        swipeDetector.SetTouchStartPos(eventData.position);
+        this.swipeDetector.SetTouchStartPos(eventData.position);
 
         if (this.skillBoxFrame.gameObject.activeSelf)
         {
-            timePressStarted = Time.time;
-            isPointerDown = true;
-            longPressDetector.SetIsLongPress(false);
+            this.timePressStarted = Time.time;
+            this.isPointerDown = true;
+            this.longPressDetector.SetIsLongPress(false);
         }
     }
 
@@ -113,8 +114,8 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         {
             if (this.selectionHighlight.gameObject.activeSelf)
             {
-                swipeDetector.SetTouchEndPos(eventData.position);
-                swipeDetector.DetectSwipe();
+                this.swipeDetector.SetTouchEndPos(eventData.position);
+                this.swipeDetector.DetectSwipe();
             }
             Color _skillIconPointerUpColor = this.skillIcon.color;
             _skillIconPointerUpColor.a = 1.0f;
@@ -122,37 +123,34 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
 
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
         }
-        isPointerDown = false;
+        this.isPointerDown = false;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        longPressDetector.SetIsLongPress(true);
+        this.longPressDetector.SetIsLongPress(true);
     }
 
     public void ClickToSelectSkill()
     {
-        this.clickCount += 1;
-        if (!isPointerDown && !longPressDetector.GetIsLongPress())
+        if (!this.isPointerDown && !this.longPressDetector.GetIsLongPress())
         {
-            StartCoroutine(SelectSkillBox());
-        }
-        else
-        {
-            StopCoroutine(SelectSkillBox());
-        }
-        if (this.clickCount == 2)
-        {
-            this.isDoubleTap = true;
-        }
-        else
-        {
-            this.isDoubleTap = false;
-        }
-
-        if (!this.isWaitingSecondClick)
-        {
-            this.clickCount = 0;
+            if (this.lastClickTime > 0)
+            {
+                this.isWaitingSecondClick = Time.time - this.lastClickTime <= this.clickDelay;
+                if (!this.isWaitingSecondClick)
+                {
+                    this.clickCount = 0;
+                    this.lastClickTime = 0;
+                }
+            }
+            else
+            {
+                this.isWaitingSecondClick = true;
+            }
+            this.clickCount += 1;
+            SelectSkillBox();
+            this.lastClickTime = Time.time;
         }
     }
 
@@ -196,17 +194,18 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     }
 
     // select the skill box
-    IEnumerator SelectSkillBox()
+    public void SelectSkillBox()
     {
-        this.isWaitingSecondClick = true;
-
-        if (this.isSelected && this.clickDelay > 0 && this.selectionHighlight.gameObject.activeSelf)
-        {
-            yield return new WaitForSeconds(this.clickDelay);
-        }
-
         if (this.skillType == Skill.SkillType.active)
         {
+            if (this.clickCount > 1)
+            {
+                this.isDoubleTap = true;
+            }
+            else
+            {
+                this.isDoubleTap = false;
+            }
             SelectActiveSkill();
         }
         else if (this.skillType == Skill.SkillType.backend)
@@ -218,8 +217,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     // the selected skill box is active skill
     private void SelectActiveSkill()
     {
-        this.isWaitingSecondClick = false;
-
         if (!this.isSelected)
         {
             this.clickCount = 0;
@@ -248,22 +245,13 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
                 }
             }
 
-
             ShowSelectionHighlight();
             this.skillSelectionPanel.ShowSkillInfoPanel(this);
             this.skillSelectionPanel.SetLastSelectedActiveSkillSelectionBox(this);
-
-            this.clickCount = 0;
         }
-        else
+        else if(this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.isSelected)
         {
-            if (this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.isSelected)
-            {
-                this.skillSelectionPanel.MoveSelectedSkillToFirst(this, this.skillSelectionPanel.GetSelectedActiveSkillList());
-
-                this.isDoubleTap = false;
-                this.clickCount = 0;
-            }
+            this.skillSelectionPanel.MoveSelectedSkillToFirst(this, this.skillSelectionPanel.GetSelectedActiveSkillList());
         }
     }
 

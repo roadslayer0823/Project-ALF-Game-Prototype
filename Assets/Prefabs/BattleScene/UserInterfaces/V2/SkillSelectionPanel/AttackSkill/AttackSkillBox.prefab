@@ -2159,6 +2159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clickDelay: 0.2
+  lastClickTime: 0
   alphaThreshold: 0.1
   flashDelay: 1
   flashIntervalTime: 1.5
