@@ -90,18 +90,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     {
         if (isPointerDown && !longPressDetector.GetIsLongPress())
         {
-            isWaitingSecondClick = Time.time - lastClickTime <= clickDelay;
             longPressDetector.SkillSelectionLongPress(timePressStarted, pressTime, true);
-            lastClickTime = Time.time;
-        }
-
-        if (!this.isWaitingSecondClick)
-        {
-            this.clickCount = 0;
-        }
-        else if (Time.time - lastClickTime > clickDelay)
-        {
-            isWaitingSecondClick = false;
         }
     }
 
@@ -146,8 +135,22 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     {
         if (!isPointerDown && !longPressDetector.GetIsLongPress())
         {
+            if (this.lastClickTime > 0)
+            {
+                isWaitingSecondClick = Time.time - this.lastClickTime <= this.clickDelay;
+                if (!this.isWaitingSecondClick)
+                {
+                    this.clickCount = 0;
+                    this.lastClickTime = 0;
+                }
+            }
+            else
+            {
+                isWaitingSecondClick = true;
+            }
             this.clickCount += 1;
             SelectSkillBox();
+            this.lastClickTime = Time.time;
         }
     }
 
@@ -246,12 +249,9 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             this.skillSelectionPanel.ShowSkillInfoPanel(this);
             this.skillSelectionPanel.SetLastSelectedActiveSkillSelectionBox(this);
         }
-        else
+        else if(this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.isSelected)
         {
-            if (this.skillSelectionPanel.GetSelectedActiveSkillList().Contains(this) && this.isSelected)
-            {
-                this.skillSelectionPanel.MoveSelectedSkillToFirst(this, this.skillSelectionPanel.GetSelectedActiveSkillList());
-            }
+            this.skillSelectionPanel.MoveSelectedSkillToFirst(this, this.skillSelectionPanel.GetSelectedActiveSkillList());
         }
     }
 

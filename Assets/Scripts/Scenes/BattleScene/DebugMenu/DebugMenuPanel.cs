@@ -46,7 +46,8 @@ public class DebugMenuPanel : MonoBehaviour
             "虛傷",
             "當前以太值",
             "當前負荷值",
-            "當前生命值"
+            "當前生命值",
+            "使用技能ID"
         };
 
         characterList.AddOptions(stateNames);
@@ -181,6 +182,14 @@ public class DebugMenuPanel : MonoBehaviour
                     characterObject.MinusCurrentHealthPoint(Mathf.Abs(_difference));
                     characterObject.ClearVirtualHealthPoint();
                 }
+            }
+        }
+        else if (statNames == "使用技能ID")//current skill id
+        {
+            float value;
+            if (float.TryParse(newStatValue, out value))
+            {
+
             }
         }
     }
