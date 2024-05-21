@@ -832,9 +832,9 @@ public class BattleAnimationManager : MonoBehaviour
 
         _attacker.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
 
+        // “先手方”發動技能。
         _battleResultData = new BattleResultData();
         BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, _attacker, _attackTarget );
-
         _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
         _attacker.ApplyBattleResultData( _attackerBattleResultData );
 
@@ -1220,6 +1220,17 @@ public class BattleAnimationManager : MonoBehaviour
                              out BattleResultData.BattleResultData_GameCharacter attackerBattleResultData, out BattleResultData.BattleResultData_GameCharacter attackTargetBattleResultData,
                              GameCharacter attacker, GameCharacter attackTarget, out GameCharacter winner, out GameCharacter loser )
     {
+        bool _isAttackTargetUsingSkill = ( attackTarget.GetCurrentSkill() != null );
+
+        if (_isAttackTargetUsingSkill)
+        {
+            // “後手方”發動技能。
+            battleResultData = new BattleResultData();
+            BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref battleResultData, attackTarget, attacker );
+            attackTargetBattleResultData = battleResultData.GetGameCharacterResultData( attackTarget );
+            attackTarget.ApplyBattleResultData( attackTargetBattleResultData );
+        }
+
         // 判定 Part B 結果及結算。
         battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser, out List<string> _resultLogList );
         attackerBattleResultData = battleResultData.GetGameCharacterResultData( attacker );
@@ -1230,11 +1241,13 @@ public class BattleAnimationManager : MonoBehaviour
             BattleLog.Instance.AddOnScreenBattleLog( _resultLogList[ i ] );
         }
 
-        // 結算“後手方”已按下的技能的以太值和最大以太值提升。
-        attackTarget.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
-        //StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
-        attackTarget.ShowPopUpDisplayInfoV2( maxStatePointUp: attackTargetBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackTargetBattleResultData.statePointCost*/ );
-        this.currentCaster = attackTarget;
+        if (_isAttackTargetUsingSkill)
+        {
+            // 結算“後手方”已按下的技能的以太值和最大以太值提升。
+            attackTarget.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
+            //StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
+            attackTarget.ShowPopUpDisplayInfoV2( maxStatePointUp: attackTargetBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackTargetBattleResultData.statePointCost*/ );
+        }
 
         this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtPartB();
         attacker.TriggerEvent( AnimationEvent.OnPartB );

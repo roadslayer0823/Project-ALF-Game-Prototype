@@ -79,7 +79,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     public void Initialize()
     {
         Vector2 _currentScale = this.maxStatePointValueFirstText.rectTransform.localScale;
-        Vector2 _newScale = new Vector3(currentScale.x / this.scaleMultiplier, currentScale.y / this.scaleMultiplier);
+        Vector2 _newScale = new Vector3(_currentScale.x / this.scaleMultiplier, _currentScale.y / this.scaleMultiplier);
 
         this.currentScale = _currentScale;
         this.newScale = _newScale;
@@ -94,7 +94,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         this.startingStatePoint = this.selectedCharacter.GetMaximumStatePoint();
         this.startingHealthPoint = this.selectedCharacter.GetMaximumHealthPoint();
         this.startingVirtualPoint = this.selectedCharacter.GetMaximumHealthPoint();
-        this.startingStressValue = -1f;
+        this.startingStressValue = 0;
     }
 
     public void UpdateDisplayInfo()
@@ -125,14 +125,15 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
         string maximumStatePointText = _maximumStatePoint.ToString();
 
-        (bool isThirdTextActive, bool isFourthTextActive) = maximumStatePointText.Length switch
+        (bool isSecondTextActivate, bool isThirdTextActive, bool isFourthTextActive) = maximumStatePointText.Length switch
         {
-            2 => (false, false),
-            3 => (true, false),
-            4 => (true, true),
+            1 => (false, false, false),
+            2 => (true, false, false),
+            3 => (true, true, false),
+            4 => (true, true, true),
             _ => throw new NotImplementedException()
         };
-        MaxStatePointTextSpacing(isThirdTextActive, isFourthTextActive, maximumStatePointText);
+        MaxStatePointTextSpacing(isSecondTextActivate, isThirdTextActive, isFourthTextActive, maximumStatePointText);
 
         if (this.startingStatePoint != _currentStatePoint)
         {
@@ -219,6 +220,9 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         if (this.isSetupComplete == false)
         {
             this.stressValueStatus.material.SetFloat("_Slide", 0);
+            this.stressValueStatus.material.SetFloat("_Color1_G_Percentage", 1);
+            this.stressValueStatus.material.SetFloat("_Color2_G_Percentage", 1);
+            this.stressValueStatus.material.SetFloat("_Color1_B_Percentage", 1);
         }
 
         if (this.selectedCharacter.IsInStressBreakStatus())
@@ -229,6 +233,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             stressValueStatusAnimation(breakStatusColor, this.stressValueStatusDuration, "_Color2_G_Percentage");
             stressValueStatusAnimation(breakStatusColor, this.stressValueStatusDuration, "_Color1_B_Percentage");
         }
+
         else if (this.startingStressValue != _currentStressValue)
         {
             this.stressPercentageText.SetText(_currentStressValue.ToString());
@@ -253,22 +258,6 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
                 this.characterInfoPanelAnimation.Play(ANIMATION_ID_STRESS_POINT_INCREASE, 0, 0f);
 
-                //stress value status animation
-                if (_currentStressValue >= 0)
-                {
-                    stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
-                    stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color2_G_Percentage");
-                    stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color1_B_Percentage");
-                }
-                else if (_currentStressValue >= 70)
-                {
-                    stressValueStatusAnimation(this.orangeColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
-                }
-                else if (_currentStressValue >= 80)
-                {
-                    stressValueStatusAnimation(this.redColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
-                }
-
                 //number changing animation
                 LeanTween.value(gameObject, this.startingStressValue, _currentStressValue, textAnimationDuration)
                         .setOnUpdate((float val) =>
@@ -277,6 +266,23 @@ public class CharacterInfoPanelV2 : MonoBehaviour
                             this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, new Color32(255, 0, 0, 255));
                             this.startingStressValue = Mathf.RoundToInt(val);
                             this.stressPercentageText.SetText($"{this.startingStressValue}<size=40>%</size>");
+                        }).setOnComplete(() =>
+                        {
+                            //stress value status animation
+                            if (_currentStressValue >= 0)
+                            {
+                                stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
+                                stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color2_G_Percentage");
+                                stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color1_B_Percentage");
+                            }
+                            if (_currentStressValue >= 70)
+                            {
+                                stressValueStatusAnimation(this.orangeColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
+                            }
+                            if (_currentStressValue >= 80)
+                            {
+                                stressValueStatusAnimation(this.redColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
+                            }
                         });
 
                 //number outline animation
@@ -317,8 +323,9 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         }
     }
 
-    public void MaxStatePointTextSpacing(bool isThirdText, bool isFourthText, string targetString)
+    public void MaxStatePointTextSpacing(bool isSecondText, bool isThirdText, bool isFourthText, string targetString)
     {
+        this.maxStatePointValueSecondText.gameObject.SetActive(isSecondText);
         this.maxStatePointValueThirdText.gameObject.SetActive(isThirdText);
         this.maxStatePointValueFourthText.gameObject.SetActive(isFourthText);
         MaxStatePointTextList(targetString);
@@ -340,7 +347,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
     public IEnumerator MaxStatePointAnimation(TextMeshProUGUI targetText, Vector3 targetScale, Vector3 currentScale, float defaultOffset, float targetOffset, float defaultOuter, float targetOuter, float duration)
     {
-        /*var _sequence = LeanTween.sequence();
+        var _sequence = LeanTween.sequence();
 
         LeanTween.cancel(targetText.gameObject);
 
@@ -361,24 +368,6 @@ public class CharacterInfoPanelV2 : MonoBehaviour
            .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val); }));
 
         _sequence.insert(LeanTween.scale(targetText.gameObject, currentScale, duration));
-
-        yield return new WaitForSeconds(0.1f);*/
-
-        LeanTween.cancel(targetText.gameObject);
-
-        LeanTween.scale(targetText.gameObject.gameObject, targetScale, duration);
-        LeanTween.value(targetText.gameObject, defaultOffset, targetOffset, duration)
-           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val); });
-        LeanTween.value(targetText.gameObject, defaultOuter, targetOuter, duration)
-           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val); });
-
-        yield return new WaitForSeconds(0.1f);
-
-        LeanTween.value(targetText.gameObject, targetOffset, defaultOffset, duration)
-           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, val); });
-        LeanTween.value(targetText.gameObject, targetOuter, defaultOuter, duration)
-           .setOnUpdate((float val) => { targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, val); });
-        LeanTween.scale(targetText.gameObject, currentScale, duration);
 
         yield return new WaitForSeconds(0.1f);
     }

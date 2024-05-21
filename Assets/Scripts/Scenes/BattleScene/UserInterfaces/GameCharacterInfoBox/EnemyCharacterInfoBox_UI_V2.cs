@@ -44,6 +44,7 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
 
     //animation duration
     private readonly float barAnimationDuration = 1f;
+    private readonly float colorAnimationDuration = 1.5f;
 
     void Awake()
     {
@@ -140,7 +141,7 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
             this.stressValueGlowEffect.color = redColor;
 
             this.stressValueBar.fillAmount = _currentStressValue / 100;
-            LeanTween.value(gameObject, this.startingStressValue, _currentStressValue, this.barAnimationDuration)
+            LeanTween.value(gameObject, this.startingStressValue, _currentStressValue, this.colorAnimationDuration)
                .setOnUpdate((float val) =>
                {
                    this.startingStressValue = Mathf.RoundToInt(val);
@@ -149,7 +150,7 @@ public class EnemyCharacterInfoBox_UI_V2 : MonoBehaviour
                    this.stressValueGlowEffect.fillAmount = _stressValueFillAmount;
                });
 
-            LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), this.barAnimationDuration)
+            LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), this.colorAnimationDuration)
                       .setOnUpdate((Vector3 color) =>
                       {
                           this.stressValueGlowEffect.color = new Color32((byte)color.x, (byte)color.y, (byte)color.z, 191);
