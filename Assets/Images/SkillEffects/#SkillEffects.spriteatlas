@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: All_SkillEffects
+  m_Name: '#SkillEffects'
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -306,5 +306,5 @@ SpriteAtlas:
   - 03
   - 17
   m_RenderDataMap: {}
-  m_Tag: All_SkillEffects
+  m_Tag: '#SkillEffects'
   m_IsVariant: 0

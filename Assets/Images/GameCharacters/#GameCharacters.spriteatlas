@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: All_GameCharacters
+  m_Name: '#GameCharacters'
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -163,5 +163,5 @@ SpriteAtlas:
   - 02
   - 40
   m_RenderDataMap: {}
-  m_Tag: All_GameCharacters
+  m_Tag: '#GameCharacters'
   m_IsVariant: 0
