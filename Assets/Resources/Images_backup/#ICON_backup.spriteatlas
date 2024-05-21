@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: All_ICON
+  m_Name: '#ICON_backup'
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -109,5 +109,5 @@ SpriteAtlas:
   - "\u9023\u767C\u706B\u7130\u6C23\u529F\u5F48_off"
   - "\u8D64\u7130\u7A7A\u7259_off"
   m_RenderDataMap: {}
-  m_Tag: All_ICON
+  m_Tag: '#ICON_backup'
   m_IsVariant: 0

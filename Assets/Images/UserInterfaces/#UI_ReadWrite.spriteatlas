@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: All_UI_ReadWrite
+  m_Name: '#UI_ReadWrite'
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -32,8 +32,8 @@ SpriteAtlas:
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
-    - {fileID: 102900000, guid: 42df1b7c9553b4de5ad413be2d8f40dd, type: 3}
     - {fileID: 102900000, guid: 2a5589d95d12c41abafc256d423e2117, type: 3}
+    - {fileID: 102900000, guid: 42df1b7c9553b4de5ad413be2d8f40dd, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -271,5 +271,5 @@ SpriteAtlas:
   - "\u5F8C\u53F0\u6280\u80FD\u5E95\u90E8"
   - "\u540E\u53F0\u6280\u80FD\u540D\u724C-1"
   m_RenderDataMap: {}
-  m_Tag: All_UI_ReadWrite
+  m_Tag: '#UI_ReadWrite'
   m_IsVariant: 0

@@ -6,7 +6,7 @@ SpriteAtlas:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: '#All_ICON'
+  m_Name: '#ICON'
   m_EditorData:
     serializedVersion: 2
     textureSettings:
@@ -109,5 +109,5 @@ SpriteAtlas:
   - S1_3_off
   - S5_1_on
   m_RenderDataMap: {}
-  m_Tag: '#All_ICON'
+  m_Tag: '#ICON'
   m_IsVariant: 0
