@@ -924,13 +924,20 @@ public class BattleLogicManagerV2
                 }
             }
 
+            _gameCharacter.ResetCurrentObservingSkill();
+
             if (_gameCharacter.GetIsDead())
             {
                 _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnDeath );
             }
+        }
+    }
 
-            _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnAtlEnded );
-            _gameCharacter.ResetCurrentObservingSkill();
+    public static void OnTheEndOfATL( GameCharacter[] gameCharacters )
+    {
+        for (int i = 0; i < gameCharacters.Length; i++)
+        {
+            gameCharacters[ i ].TriggerEvent( BattleAnimationManager.AnimationEvent.OnAtlEnded );
         }
     }
 

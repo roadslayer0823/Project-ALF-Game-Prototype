@@ -710,8 +710,9 @@ public class BattleAnimationManager : MonoBehaviour
 
         PlayerCharacter _playerCharacter = this.battleGameManager.GetPlayerCharacter();
         EnemyCharacter _enemyCharacter = this.battleGameManager.GetEnemyCharacter();
+        GameCharacter[] _gameCharacters = new GameCharacter[] { _playerCharacter, _enemyCharacter };
 
-        _battleResultData = BattleLogicManagerV2.OnTheStartOfATL( new GameCharacter[] { _playerCharacter, _enemyCharacter } );
+        _battleResultData = BattleLogicManagerV2.OnTheStartOfATL( _gameCharacters );
         _playerCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _playerCharacter ), true );
         _enemyCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _enemyCharacter ), true );
 
@@ -746,6 +747,7 @@ public class BattleAnimationManager : MonoBehaviour
             BattleLog.Instance.AddOnScreenBattleLog( "沒有先後手方。當前 ATL 結束。" );
             _playerCharacter.ResetAssignedSkill();
             _enemyCharacter.ResetAssignedSkill();
+            BattleLogicManagerV2.OnTheEndOfATL( _gameCharacters );
             yield break;
         }
 
@@ -1256,7 +1258,9 @@ public class BattleAnimationManager : MonoBehaviour
 
     private bool EndPartB( GameCharacter attacker, GameCharacter attackTarget )
     {
-        BattleLogicManagerV2.OnTheEndOfPartB( new GameCharacter[] { attacker, attackTarget }, out List<string> _resultLogList );
+        GameCharacter[] _gameCharacters = new GameCharacter[] { attacker, attackTarget };
+
+        BattleLogicManagerV2.OnTheEndOfPartB( _gameCharacters, out List<string> _resultLogList );
 
         for (int i = 0; i < _resultLogList.Count; i++)
         {
@@ -1277,6 +1281,8 @@ public class BattleAnimationManager : MonoBehaviour
 
         attacker.Reset();
         attackTarget.Reset();
+
+        BattleLogicManagerV2.OnTheEndOfATL( _gameCharacters );
 
         return false;
     }

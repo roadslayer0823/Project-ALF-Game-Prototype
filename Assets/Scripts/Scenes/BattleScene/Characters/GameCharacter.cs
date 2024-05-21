@@ -794,6 +794,43 @@ public class GameCharacter : MonoBehaviour
         return null;
     }
 
+    public CharacterSkill GetSkillBySubskillId( string subskillId, out string errorMessage )
+    {
+        errorMessage = "";
+
+        string[] _splittedStrings = subskillId.Split( '_' );
+        if (_splittedStrings.Length == 2)
+        {
+            string _skillId = _splittedStrings[ 0 ];
+            for (int i = 0; i < this.skills.Length; i++)
+            {
+                CharacterSkill _skill = skills[ i ];
+                if (_skill.GetSkillData().Id.Equals( _skillId, StringComparison.OrdinalIgnoreCase ))
+                {
+                    if (int.TryParse( _splittedStrings[ 1 ], out int _skillLevel ))
+                    {
+                        _skill.SetSelectedSkillLevel( _skillLevel );
+                        return _skill;
+                    }
+                    else
+                    {
+                        errorMessage = "invalid subskill id";
+                    }
+
+                    break;
+                }
+            }
+
+            errorMessage = "no such skill id";
+        }
+        else
+        {
+            errorMessage = "invalid subskill id";
+        }
+
+        return null;
+    }
+
     public SortingGroup GetSortingGroup()
     {
         return this.sortingGroup;

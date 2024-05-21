@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
+using Skill = DatabaseManager.Skill;
 using SkillType = DatabaseManager.Skill.SkillType;
 using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
@@ -7,6 +8,10 @@ using Random = UnityEngine.Random;
 
 public class EnemyCharacter : GameCharacter
 {
+    private CharacterSkill nextAtlSkill = null;
+    private bool isUsingNextAtlSkill = false;
+    private int lastAtlNumber = 0;
+
     public void InitializeSelectedSkills()
     {
         List<CharacterSkill> _activeSkillList = new();
@@ -253,6 +258,10 @@ public class EnemyCharacter : GameCharacter
                 break;
 
             case AnimationEvent.OnAtlEnded:
+
+                this.isUsingNextAtlSkill = false;
+                this.lastAtlNumber = _currentATLNumber;
+
                 break;
 
             case AnimationEvent.OnNormalSkillBeingUsed:
@@ -285,6 +294,64 @@ public class EnemyCharacter : GameCharacter
         {
             _skillTypeList.Remove( BattleSkillManager.SkillType.Observe );
         }
+
+        // ----------------------------------------------------------------------------------------------------
+        // For Debug Mode Only
+
+        int _currentATLNumber = battleGameManager.GetBattleFlowManager_V2().GetCurrentRound().GetCurrentATL().GetATLNumber();
+        if (_currentATLNumber != this.lastAtlNumber && this.nextAtlSkill != null)
+        {
+            Skill _skillData = this.nextAtlSkill.GetSkillData();
+
+            if (_skillData.skillType is SkillType.active)
+            {
+                if (_skillTypeList.Contains( BattleSkillManager.SkillType.Active ))
+                {
+                    base.SetAssignedSkill( this.nextAtlSkill );
+                    this.isUsingNextAtlSkill = true;
+                }
+                else if (_skillTypeList.Contains( BattleSkillManager.SkillType.Repulse ))
+                {
+                    base.SetAssignedSkill( this.nextAtlSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() );
+                    this.isUsingNextAtlSkill = true;
+                }
+            }
+            else if (_skillData.skillType is SkillType.backend or SkillType.derived or SkillType.counter)
+            {
+                base.SetAssignedSkill( this.nextAtlSkill );
+                this.isUsingNextAtlSkill = true;
+            }
+
+            this.nextAtlSkill = null;
+            return;
+        }
+
+        if (this.isUsingNextAtlSkill)
+        {
+            CharacterSkill _assignedSkill = base.GetAssignedSkill();
+            if (_assignedSkill != null)
+            {
+                CharacterSubskill _assignedSkillCharacterSubskillData = _assignedSkill.GetCharacterSubskillData();
+
+                if (_skillTypeList.Contains( BattleSkillManager.SkillType.Repulse ))
+                {
+                    base.SetAssignedSkill( _assignedSkillCharacterSubskillData.GetSelectedRepulseSkill() );
+                    return;
+                }
+                else if (_skillTypeList.Contains( BattleSkillManager.SkillType.Derive ))
+                {
+                    base.SetAssignedSkill( _assignedSkillCharacterSubskillData.GetSelectedDerivedSkill() );
+                    return;
+                }
+                else if (_skillTypeList.Contains( BattleSkillManager.SkillType.Counter ))
+                {
+                    base.SetAssignedSkill( _assignedSkillCharacterSubskillData.GetSelectedCounterSkill() );
+                    return;
+                }
+            }
+        }
+
+        // ----------------------------------------------------------------------------------------------------
 
         List<CharacterSkill> _selectedActiveSkillList = base.GetSelectedActiveSkillList();
         List<CharacterSkill> _availableActiveSkillList = new();
@@ -456,5 +523,10 @@ public class EnemyCharacter : GameCharacter
         }
 
         return null;
+    }
+
+    public void SetSkillForNextATL( string subskillId, out string errorMessage )
+    {
+        this.nextAtlSkill = base.GetSkillBySubskillId( subskillId, out errorMessage );
     }
 }
