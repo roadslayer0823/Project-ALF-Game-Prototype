@@ -187,6 +187,7 @@ public class BattleResultData
             {
                 // 陷入以太崩潰狀態。
                 gameCharacterResultData.stateBreakStatusRemainingATLs = 1;
+                BattleLogicManagerV2.OnGameCharacterBeingInBreakStatus( gameCharacter );
             }
         }
 
@@ -210,6 +211,7 @@ public class BattleResultData
                 {
                     // 陷入負荷崩潰狀態。
                     gameCharacterResultData.stressBreakStatusRemainingATLs = 1;
+                    BattleLogicManagerV2.OnGameCharacterBeingInBreakStatus( gameCharacter );
                 }
                 else
                 {

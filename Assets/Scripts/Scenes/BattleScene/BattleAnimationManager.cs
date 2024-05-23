@@ -844,7 +844,6 @@ public class BattleAnimationManager : MonoBehaviour
         _attacker.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
 
         _attackTarget.SetCurrentAttacker( _attacker );
-        this.currentCaster = _attacker;
 
         Skill.SkillType _attackerSkillType = _attacker.GetCurrentSkill().GetSkillData().skillType;
 

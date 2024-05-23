@@ -88,18 +88,43 @@ public class GameCharacter : MonoBehaviour
 
     public enum CharacterIdentityType
     {
+        // 無身份
         None,
+
+        // 先手方
         Lead,
+
+        // 後手方
         Improviser,
+
+        // 直擊方
         Assaulter,
+
+        // 輕直擊方
         LightAssaulter,
+
+        // 重直擊方
         HeavyAssaulter,
+
+        // 受擊方
         Recipient,
+
+        // 輕受擊方
         LightRecipient,
+
+        // 重受擊方
         HeavyRecipient,
+
+        // 抵抗成功方
         SuccessfulResister,
+
+        // 防禦成功方
         SuccessfulDefender,
+
+        // 迴避成功方
         SuccessfulEvader,
+
+        // 平手方
         Deuce
     }
 
@@ -1165,6 +1190,11 @@ public class GameCharacter : MonoBehaviour
     public bool GetIsCounterAttacking()
     {
         return this.isCounterAttacking;
+    }
+
+    public bool IsInBreakStatus()
+    {
+        return ( IsInStateBreakStatus() || IsInStressBreakStatus() );
     }
 
     public int GetStateBreakStatusRemainingATLs()

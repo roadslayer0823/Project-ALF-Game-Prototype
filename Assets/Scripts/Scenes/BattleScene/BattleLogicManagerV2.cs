@@ -266,6 +266,21 @@ public class BattleLogicManagerV2
         return ( lead: null, improviser: null );
     }
 
+    public static void DeclareAssaulterAndRecipient( GameCharacter assaulter, GameCharacter recipient )
+    {
+        assaulter.SetCurrentCharacterIdentityType( CharacterIdentityType.Assaulter );
+        recipient.SetCurrentCharacterIdentityType( CharacterIdentityType.Recipient );
+
+        DetermineLightOrHeavyRecipient( recipient: recipient, assaulter: assaulter );
+    }
+
+    public static void DetermineLightOrHeavyRecipient( GameCharacter recipient, GameCharacter assaulter )
+    {
+        // TODO: Temporarily determine that the recipient is a heavy recipient.
+        recipient.SetCurrentCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
+        assaulter.SetCurrentCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
+    }
+
     public static void DetermineResultForPartA( GameCharacter lead, GameCharacter improviser )
     {
         CharacterSkill _leadCurrentSkill = lead.GetCurrentSkill();
@@ -307,6 +322,9 @@ public class BattleLogicManagerV2
                 // 判定迎擊中途結果。
                 CompareCharacterSkillAttributes( ActionType.Repulse, lead, improviser, out winner, out loser, ref resultLogList );
 
+                // ----------------------------------------------------------------------------------------------------
+                // Battle Log
+
                 string _repulseResultLog = $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定迎擊中途結果</color>為";
                 if (winner == lead)
                 {
@@ -323,6 +341,8 @@ public class BattleLogicManagerV2
 
                 resultLogList.Add( _repulseResultLog );
 
+                // ----------------------------------------------------------------------------------------------------
+
                 if (_leadRangeType == RangeType.melee)
                 {
                     if (_improviserRangeType == RangeType.melee)
@@ -330,26 +350,22 @@ public class BattleLogicManagerV2
                         if (winner == lead)
                         {
                             // 先手近戰攻擊，後手近戰迎擊，先手攻擊勝利。
-                            lead.SetCurrentCharacterIdentityType( CharacterIdentityType.Assaulter );
-                            improviser.SetCurrentCharacterIdentityType( CharacterIdentityType.Recipient );
-
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            DeclareAssaulterAndRecipient( assaulter: lead, recipient: improviser );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
                         }
                         else if (winner == improviser)
                         {
                             // 先手近戰攻擊，後手近戰迎擊，後手迎擊勝利。
-                            improviser.SetCurrentCharacterIdentityType( CharacterIdentityType.Assaulter );
-                            lead.SetCurrentCharacterIdentityType( CharacterIdentityType.Recipient );
-
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            DeclareAssaulterAndRecipient( assaulter: improviser, recipient: lead );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
                         }
                         else
                         {
                             // 先手近戰攻擊，後手近戰迎擊，雙方打平。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true );
                         }
                     }
                     else if (_improviserRangeType == RangeType.ranged)
@@ -357,20 +373,18 @@ public class BattleLogicManagerV2
                         if (winner == lead)
                         {
                             // 先手近戰攻擊，後手遠程迎擊，先手攻擊勝利。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
                         }
                         else if (winner == improviser)
                         {
                             // 先手近戰攻擊，後手遠程迎擊，後手迎擊勝利。
-                            improviser.SetCurrentCharacterIdentityType( CharacterIdentityType.Assaulter );
-                            lead.SetCurrentCharacterIdentityType( CharacterIdentityType.Recipient );
-
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
+                            DeclareAssaulterAndRecipient( assaulter: improviser, recipient: lead );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
                         }
                         else
                         {
                             // 先手近戰攻擊，後手遠程迎擊，雙方打平。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true );
                         }
                     }
                 }
@@ -381,20 +395,18 @@ public class BattleLogicManagerV2
                         if (winner == lead)
                         {
                             // 先手遠程攻擊，後手近戰迎擊，先手攻擊勝利。
-                            lead.SetCurrentCharacterIdentityType( CharacterIdentityType.Assaulter );
-                            improviser.SetCurrentCharacterIdentityType( CharacterIdentityType.Recipient );
-
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
+                            DeclareAssaulterAndRecipient( assaulter: lead, recipient: improviser );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
                         }
                         else if (winner == improviser)
                         {
                             // 先手遠程攻擊，後手近戰迎擊，後手迎擊勝利。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
                         }
                         else
                         {
                             // 先手遠程攻擊，後手近戰迎擊，雙方打平。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true );
                         }
                     }
                     else if (_improviserRangeType == RangeType.ranged)
@@ -402,18 +414,14 @@ public class BattleLogicManagerV2
                         if (winner == lead)
                         {
                             // 先手遠程攻擊，後手近戰迎擊，先手攻擊勝利。
-                            lead.SetCurrentCharacterIdentityType( CharacterIdentityType.Assaulter );
-                            improviser.SetCurrentCharacterIdentityType( CharacterIdentityType.Recipient );
-
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true );
+                            DeclareAssaulterAndRecipient( assaulter: lead, recipient: improviser );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true );
                         }
                         else if (winner == improviser)
                         {
                             // 先手遠程攻擊，後手近戰迎擊，後手迎擊勝利。
-                            improviser.SetCurrentCharacterIdentityType( CharacterIdentityType.Assaulter );
-                            lead.SetCurrentCharacterIdentityType( CharacterIdentityType.Recipient );
-
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true );
+                            DeclareAssaulterAndRecipient( assaulter: improviser, recipient: lead );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true );
                         }
                         else
                         {
@@ -435,6 +443,9 @@ public class BattleLogicManagerV2
                     CompareCharacterSkillAttributes( ActionType.Evade, lead, improviser, out winner, out loser, ref resultLogList );
                 }
 
+                // ----------------------------------------------------------------------------------------------------
+                // Battle Log
+
                 string _resultLog = $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定結果</color>為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ improviser.GetCharacterName() }</color>";
 
                 if (_improviserSubskillData.IsDefendingSkill)
@@ -450,12 +461,11 @@ public class BattleLogicManagerV2
 
                 resultLogList.Add( _resultLog );
 
-                ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: winner == lead, hasStatePointDamage: true, hasStressValueDamage: true );
+                // ----------------------------------------------------------------------------------------------------
 
                 if (winner == lead)
                 {
-                    lead.SetCurrentCharacterIdentityType( CharacterIdentityType.Assaulter );
-                    improviser.SetCurrentCharacterIdentityType( CharacterIdentityType.Recipient );
+                    DeclareAssaulterAndRecipient( assaulter: lead, recipient: improviser );
                 }
                 else if (winner == improviser)
                 {
@@ -470,28 +480,17 @@ public class BattleLogicManagerV2
                         improviser.SetCurrentCharacterIdentityType( CharacterIdentityType.SuccessfulEvader );
                     }
                 }
+
+                ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: winner == lead, hasStatePointDamage: true, hasStressValueDamage: true );
             }
         }
         else
         {
-            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true );
-
-            lead.SetCurrentCharacterIdentityType( CharacterIdentityType.Assaulter );
-            improviser.SetCurrentCharacterIdentityType( CharacterIdentityType.Recipient );
+            DeclareAssaulterAndRecipient( assaulter: lead, recipient: improviser );
+            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true );
 
             winner = lead;
             loser = improviser;
-        }
-
-        // 判定輕重受擊方。
-        if (winner != null && loser != null)
-        {
-            // TODO: Temporarily determine that the assaulter is a heavy assaulter.
-            if (winner.GetCurrentCharacterIdentityType() == CharacterIdentityType.Assaulter)
-            {
-                winner.SetCurrentCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
-                loser.SetCurrentCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
-            }
         }
 
         return _battleResultData;
@@ -585,10 +584,12 @@ public class BattleLogicManagerV2
         BattleLog.Instance.AddOnScreenBattleLog( _log );
     }
 
-    private static void ExecuteCasterSkillOnHit( ref BattleResultData battleResultData, GameCharacter caster, GameCharacter target,
-                                                 bool hasHealthPointDamage = false, bool hasStatePointDamage = false, bool hasStressValueDamage = false, bool isBreakStatusAvailable = true,
-                                                 float stressValueDamageMultiplier = 1.0f )
+    private static void ExecuteCasterSkillOnHit( ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter caster, GameCharacter target,
+                                                 bool hasHealthPointDamage = false, bool hasStatePointDamage = false, bool hasStressValueDamage = false,
+                                                 bool isBreakStatusAvailable = true, float stressValueDamageMultiplier = 1.0f )
     {
+        string _resultLog = "";
+
         CharacterSkill _casterSkill = caster.GetCurrentSkill();
         Subskill _casterSubskillData = _casterSkill.GetCharacterSubskillData().GetSubskillData();
         BattleResultData_GameCharacter _casterBattleResultData = null;
@@ -602,6 +603,8 @@ public class BattleLogicManagerV2
         {
             // 更新“能量殘響”。
             battleResultData.AddGameCharacterResultData_RenewedEnergyMarkerATLs( target, _energyMarkerAtl, out _targetBattleResultData );
+
+            _resultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>的<color={ BattleLog.KEYWORD_COLOR_CODE }>【能量殘響】維持值</color>被更新為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _energyMarkerAtl }個ATL</color>。";
         }
 
         // 在發生迎擊時，如果攻擊或迎擊技能是近戰，而對方的迎擊或攻擊技能是遠程，就會得到額外的最大以太值提升。
@@ -617,32 +620,61 @@ public class BattleLogicManagerV2
                 {
                     float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
                     battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease( caster, _maxStatePointUp, out _casterBattleResultData );
+
+                    _resultLog += $"在發生迎擊時，<color={ BattleLog.KEYWORD_COLOR_CODE }>{ caster.GetCharacterName() }</color>得到額外的<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maxStatePointUp }最大{ TerminologyManager.STATE_POINT }</color>。";
                 }
             }
         }
 
+        bool _isTargetHavingEnergyMarker = false;
+        bool _isTargetInBreakStatus = false;
+        string _extraLog = "";
+
         // 以太傷害
         if (hasStatePointDamage)
         {
-            float _statePointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStatePointDamage( _casterSubskillData ) * ( ( _targetBattleResultData != null && _targetBattleResultData.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
+            _isTargetHavingEnergyMarker = ( _targetBattleResultData != null ) ? _targetBattleResultData.HasEnergyMarker() : target.HasEnergyMarker();
+
+            float _statePointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStatePointDamage( _casterSubskillData ) * ( ( _isTargetHavingEnergyMarker ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
             battleResultData.AddGameCharacterResultData_StatePointDamage( target, _statePointDamage, isBreakStatusAvailable, out _targetBattleResultData );
+
+            if (_statePointDamage > 0)
+            {
+                _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _statePointDamage }{ TerminologyManager.STATE_POINT }傷害</color>{ ( ( _isTargetHavingEnergyMarker ) ? "（帶有能量殘響）" : "" ) }";
+            }
         }
 
         // 負荷傷害
         if (hasStressValueDamage)
         {
-            float _stressValueDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStressValueDamage( _casterSubskillData ) * ( ( _targetBattleResultData != null && _targetBattleResultData.HasEnergyMarker() ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) * stressValueDamageMultiplier );
+            _isTargetHavingEnergyMarker = ( _targetBattleResultData != null ) ? _targetBattleResultData.HasEnergyMarker() : target.HasEnergyMarker();
+
+            float _stressValueDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStressValueDamage( _casterSubskillData ) * ( ( _isTargetHavingEnergyMarker ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) * stressValueDamageMultiplier );
             battleResultData.AddGameCharacterResultData_StressValueDamage( target, _stressValueDamage, isBreakStatusAvailable, out _targetBattleResultData );
+
+            if (_stressValueDamage > 0)
+            {
+                _extraLog += $"{ ( ( _extraLog != "" ) ? "、" : "" ) }<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _stressValueDamage }%負荷值傷害</color>{ ( ( _isTargetHavingEnergyMarker ) ? "（帶有能量殘響）" : "" ) }";
+            }
         }
 
         // HP 傷害
         if (hasHealthPointDamage)
         {
-            float _healthPointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetCurrentAttackDamage( _casterSkill, caster, target, ( _targetBattleResultData != null && _targetBattleResultData.HasEnergyMarker() ), ( _targetBattleResultData != null && _targetBattleResultData.IsInBreakStatus() ) ) );
+            _isTargetHavingEnergyMarker = ( _targetBattleResultData != null ) ? _targetBattleResultData.HasEnergyMarker() : target.HasEnergyMarker();
+            _isTargetInBreakStatus = ( _targetBattleResultData != null ) ? _targetBattleResultData.IsInBreakStatus() : target.IsInBreakStatus();
+
+            float _healthPointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetCurrentAttackDamage( _casterSkill, caster, target, _isTargetHavingEnergyMarker, _isTargetInBreakStatus ) );
             if (_healthPointDamage > 0)
             {
-                bool _isActualDamage = false;
+                // TODO: 參考 Flowchart 裡的“虛傷實傷解說”。
+                // 當角色受到直擊傷害時：
+                // 如果該角色是“輕受擊方”，該直擊傷害為“虛傷”。
+                // 如果該角色是“重受擊方”，該直擊傷害為“實傷”。
 
+                bool _isActualDamage = ( target.GetCurrentCharacterIdentityType() == CharacterIdentityType.HeavyRecipient );
+
+                /*
                 // When the target takes damage, if the target is not using the Repulse skill
                 // and Defending skill, the target will take the actual damage.
                 if (_targetSkill != null)
@@ -657,6 +689,7 @@ public class BattleLogicManagerV2
                 {
                     _isActualDamage = true;
                 }
+                */
 
                 if (_isActualDamage)
                 {
@@ -668,19 +701,38 @@ public class BattleLogicManagerV2
                     // 虛傷
                     battleResultData.AddGameCharacterResultData_VirtualHealthPointDamage( target, _healthPointDamage, out _targetBattleResultData );
                 }
+
+                if (_healthPointDamage > 0)
+                {
+                    _extraLog += $"{ ( ( _extraLog != "" ) ? "、" : "" ) }<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _healthPointDamage }HP值傷害</color>（{ ( ( _isActualDamage ) ? "實傷" : "虛傷" ) }{ ( ( _isTargetHavingEnergyMarker ) ? "、帶有能量殘響" : "" ) }{ ( ( _isTargetInBreakStatus ) ? "、處於崩潰狀態" : "" ) }）";
+                }
             }
+        }
+
+        if (_extraLog != "")
+        {
+            _resultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>受到了{ _extraLog }。";
         }
 
         if (_targetBattleResultData.IsInBreakStatus() && hasHealthPointDamage)
         {
             // 尚未回復的虛傷部分全數轉化為實傷。
             battleResultData.AddGameCharacterResultData_ConvertAllVirtualDamageToActualDamage( target, out _targetBattleResultData );
+
+            _resultLog += $"由於在崩潰狀態時受到了HP值傷害，<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>的HP值裡尚未回復的虛傷值</color>全數轉化為<color={ BattleLog.KEYWORD_COLOR_CODE }>實傷值</color>。";
         }
 
         if (_casterSubskillData.WillRemoveEnergyMarker)
         {
             // 消去“能量殘響”。
             battleResultData.AddGameCharacterResultData_RemoveEnergyMarker( target, out _targetBattleResultData );
+
+            _resultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>帶有的<color={ BattleLog.KEYWORD_COLOR_CODE }>【能量殘響】</color>被消去了。";
+        }
+
+        if (_resultLog != "")
+        {
+            resultLogList.Add( _resultLog );
         }
     }
 
@@ -1041,5 +1093,18 @@ public class BattleLogicManagerV2
         }
 
         return _battleResultData;
+    }
+
+    public static void OnGameCharacterBeingInBreakStatus( GameCharacter gameCharacter )
+    {
+        if (gameCharacter.GetCurrentCharacterIdentityType() is CharacterIdentityType.Recipient
+                                                            or CharacterIdentityType.LightRecipient
+                                                            or CharacterIdentityType.SuccessfulResister
+                                                            or CharacterIdentityType.SuccessfulDefender
+                                                            or CharacterIdentityType.SuccessfulEvader)
+        {
+            gameCharacter.SetCurrentCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
+            gameCharacter.GetCurrentAttacker().SetCurrentCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
+        }
     }
 }

@@ -493,33 +493,36 @@ public class EnemyCharacter : GameCharacter
 
     private CharacterSkill GetSkillAtRandomLevel( CharacterSkill skill, EnemyDebugMenuPanel enemyDebugMenuPanel )
     {
-        int _maximumSkillLevel = skill.GetMaximumSkillLevel();
-        List<int> _skillLevelList = new();
-
-        for (int i = 1; i <= _maximumSkillLevel; i++)
+        if (skill != null)
         {
-            _skillLevelList.Add( i );
-        }
+            int _maximumSkillLevel = skill.GetMaximumSkillLevel();
+            List<int> _skillLevelList = new();
 
-        if (enemyDebugMenuPanel.IsSkillLevel1ToggleOn())
-        {
-            _skillLevelList.Remove( 1 );
-        }
+            for (int i = 1; i <= _maximumSkillLevel; i++)
+            {
+                _skillLevelList.Add( i );
+            }
 
-        if (enemyDebugMenuPanel.IsSkillLevel2ToggleOn())
-        {
-            _skillLevelList.Remove( 2 );
-        }
+            if (enemyDebugMenuPanel.IsSkillLevel1ToggleOn())
+            {
+                _skillLevelList.Remove( 1 );
+            }
 
-        if (enemyDebugMenuPanel.IsSkillLevel3ToggleOn())
-        {
-            _skillLevelList.Remove( 3 );
-        }
+            if (enemyDebugMenuPanel.IsSkillLevel2ToggleOn())
+            {
+                _skillLevelList.Remove( 2 );
+            }
 
-        if (_skillLevelList.Count > 0)
-        {
-            skill.SetSelectedSkillLevel( _skillLevelList.GetRandomElement() );
-            return skill;
+            if (enemyDebugMenuPanel.IsSkillLevel3ToggleOn())
+            {
+                _skillLevelList.Remove( 3 );
+            }
+
+            if (_skillLevelList.Count > 0)
+            {
+                skill.SetSelectedSkillLevel( _skillLevelList.GetRandomElement() );
+                return skill;
+            }
         }
 
         return null;
