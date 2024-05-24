@@ -18,6 +18,7 @@ public class BattleLog : Singleton<BattleLog>
     private bool isShowingBattleLogPanel = false;
 
     private List<Image> lineBreakList = new List<Image>();
+    private int numberOfItemLoaded = 0;
 
     private const string AUDIO_ID_CLICK = "click";
 
@@ -27,6 +28,7 @@ public class BattleLog : Singleton<BattleLog>
     void Start()
     {
         this.clearAllButton.onClick.AddListener(OnClearAllButtonClick);
+        this.scrollRect.onValueChanged.AddListener(LoadingBattleLog);
     }
 
     public void AddOnScreenBattleLog(string logText, Color? textColor = null)
@@ -83,7 +85,7 @@ public class BattleLog : Singleton<BattleLog>
 
     public void OnBattleLogPanelButtonClicked()
     {
-        if(isShowingBattleLogPanel == true)
+        if (isShowingBattleLogPanel == true)
         {
             this.battleLogPanel.SetActive(false);
             isShowingBattleLogPanel = false;
@@ -92,7 +94,50 @@ public class BattleLog : Singleton<BattleLog>
         {
             this.battleLogPanel.SetActive(true);
             isShowingBattleLogPanel = true;
+            ShowFirstGameObject(this.battleLogTextList.Count - 10);
             StartCoroutine(ForceScrollDown());
+
+            if (this.numberOfItemLoaded == 0)
+            {
+                this.numberOfItemLoaded = 10;
+            }
+        }
+    }
+
+    public void ShowFirstGameObject(int value)
+    {
+        for (int i=0; i < value; i++)
+        {
+            this.battleLogTextList[i].gameObject.SetActive(false);
+            this.lineBreakList[i].gameObject.SetActive(false);
+        }
+    }
+
+    public void LoadingBattleLog(Vector2 scrollPosition)
+    {
+        StartCoroutine(OnScroll());
+    }
+
+    IEnumerator OnScroll()
+    {
+        if (this.numberOfItemLoaded < this.battleLogTextList.Count)
+        {
+            if (scrollRect.verticalNormalizedPosition >= 1f)
+            {
+                int i = battleLogTextList.Count - numberOfItemLoaded;
+                int iteration = 0;
+                while (i > 0 && iteration < 10)
+                {
+                    i--;
+                    Debug.Log("value" + i);
+                    this.battleLogTextList[i].gameObject.SetActive(true);
+                    this.lineBreakList[i].gameObject.SetActive(true);
+                    iteration++;
+                    numberOfItemLoaded++;
+                }
+                yield return new WaitForEndOfFrame();
+                scrollRect.verticalNormalizedPosition = 0.99f;
+            }
         }
     }
 }
