@@ -1782,7 +1782,7 @@ public class BattleAnimationManager : MonoBehaviour
         this.darkLayer.color = _color;
     }
 
-    private bool CheckHasBattleEnded()
+    public bool CheckHasBattleEnded()
     {
         bool _hasPlayerCharacterSurvived = false;
         bool _hasEnemyCharacterSurvived = false;

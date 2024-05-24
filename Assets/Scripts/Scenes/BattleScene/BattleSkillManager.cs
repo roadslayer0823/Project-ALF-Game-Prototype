@@ -38,6 +38,13 @@ public class BattleSkillManager : MonoBehaviour
                 return _skillTypeList;
             }
         }
+        else
+        {
+            if (gameCharacter.IsInBreakStatus() || gameCharacter.GetIsDead())
+            {
+                return _skillTypeList;
+            }
+        }
 
         CharacterIdentityType _characterIdentityType = gameCharacter.GetCurrentCharacterIdentityType();
         CharacterSkill _currentSkill = gameCharacter.GetCurrentSkill();

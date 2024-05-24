@@ -227,13 +227,13 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
         if (this.selectedCharacter.IsInStressBreakStatus())
         {
+            this.startingStressValue = _currentStressValue;
             this.stressValueBreak.gameObject.SetActive(true);
             this.stressPercentageText.gameObject.SetActive(false);
             stressValueStatusAnimation(breakStatusColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
             stressValueStatusAnimation(breakStatusColor, this.stressValueStatusDuration, "_Color2_G_Percentage");
             stressValueStatusAnimation(breakStatusColor, this.stressValueStatusDuration, "_Color1_B_Percentage");
         }
-
         else if (this.startingStressValue != _currentStressValue)
         {
             this.stressPercentageText.SetText(_currentStressValue.ToString());

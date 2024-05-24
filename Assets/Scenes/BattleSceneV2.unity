@@ -6023,10 +6023,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: BattleLog
       objectReference: {fileID: 0}
-    - target: {fileID: 427660632138838099, guid: b7c7a290349e542438bff7becc262c6e, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3427044486692670612, guid: b7c7a290349e542438bff7becc262c6e, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0

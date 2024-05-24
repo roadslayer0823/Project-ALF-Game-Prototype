@@ -152,7 +152,6 @@ public class DebugMenuPanel : MonoBehaviour
                 }
                 DisplaySuccessText(characterObject == this.playerCharacter);
             }
-
         }
         else if (statNames == "當前負荷值")//current stress point
         {
@@ -161,11 +160,17 @@ public class DebugMenuPanel : MonoBehaviour
                 float _difference = value - characterObject.GetCurrentStressValue();
                 if (_difference > 0)
                 {
-                    characterObject.AddCurrentStressValue( _difference, true );
+                    //characterObject.AddCurrentStressValue( _difference, true );
+
+                    new BattleResultData().AddGameCharacterResultData_StressValueDamage( characterObject, Mathf.Abs( _difference ), true, out BattleResultData.BattleResultData_GameCharacter result );
+                    characterObject.ApplyBattleResultData( result );
                 }
                 else if (_difference < 0)
                 {
-                    characterObject.MinusCurrentStressValue(Mathf.Abs(_difference));
+                    //characterObject.MinusCurrentStressValue(Mathf.Abs(_difference));
+
+                    new BattleResultData().AddGameCharacterResultData_StressValueDamageRecovered( characterObject, Mathf.Abs( _difference ), out BattleResultData.BattleResultData_GameCharacter result );
+                    characterObject.ApplyBattleResultData( result );
                 }
                 DisplaySuccessText(characterObject == this.playerCharacter);
             }
@@ -220,6 +225,8 @@ public class DebugMenuPanel : MonoBehaviour
                 this.enemyDisplayInfo.text = errorMessage;
             }
         }
+
+        this.battleGameManager.GetBattleAnimationManager().CheckHasBattleEnded();
     }
 
     //change state

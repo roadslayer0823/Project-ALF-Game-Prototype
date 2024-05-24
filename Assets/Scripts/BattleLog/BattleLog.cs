@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,12 +6,17 @@ using TMPro;
 
 public class BattleLog : Singleton<BattleLog>
 {
+    [Header( "Settings" )]
+    [SerializeField] private int numberOfItemsLoadedAtOneTime = 10;
+
+    [Header( "References" )]
     [SerializeField] private ScrollRect scrollRect = null;
     [SerializeField] private RectTransform battleLogContentBox = null;
     [SerializeField] private GameObject battleLogPanel = null;
     [SerializeField] private TextMeshProUGUI battleLogText = null;
     [SerializeField] private Image lineBreak = null;
     [SerializeField] private Button clearAllButton = null;
+    [SerializeField] private GameObject loadingTextObject = null;
 
     private List<TextMeshProUGUI> battleLogTextList = new List<TextMeshProUGUI>();
     private bool isShowingBattleLogPanel = false;
@@ -49,6 +53,11 @@ public class BattleLog : Singleton<BattleLog>
 
         //Scroll to bottom
         StartCoroutine(ForceScrollDown());
+
+        if (isShowingBattleLogPanel)
+        {
+            this.numberOfItemLoaded++;
+        }
     }
 
     // Called at the end of instantiation function.
@@ -81,6 +90,7 @@ public class BattleLog : Singleton<BattleLog>
 
         this.battleLogTextList.Clear();
         this.lineBreakList.Clear();
+        this.numberOfItemLoaded = 0;
     }
 
     public void OnBattleLogPanelButtonClicked()
@@ -93,25 +103,46 @@ public class BattleLog : Singleton<BattleLog>
 
         else if (isShowingBattleLogPanel == false)
         {
+            for (int i = 0; i < this.battleLogTextList.Count; i++)
+            {
+                this.battleLogTextList[ i ].gameObject.SetActive( false );
+            }
+
+            for (int i = 0; i < this.lineBreakList.Count; i++)
+            {
+                this.lineBreakList[ i ].gameObject.SetActive( false );
+            }
+
+            this.numberOfItemLoaded = 0;
+
+            int _battleLogTextListCount = this.battleLogTextList.Count;
+            if (_battleLogTextListCount < this.numberOfItemsLoadedAtOneTime)
+            {
+                for (int i = 0; i < _battleLogTextListCount; i++)
+                {
+                    LoadBattleLogTextAndLineBreak( i );
+                }
+            }
+            else
+            {
+                for (int i = _battleLogTextListCount - this.numberOfItemsLoadedAtOneTime; i < _battleLogTextListCount; i++)
+                {
+                    LoadBattleLogTextAndLineBreak( i );
+                }
+            }
+
             this.battleLogPanel.SetActive(true);
             this.isShowingBattleLogPanel = true;
 
-            if (this.numberOfItemLoaded == 0)
-            {
-                this.numberOfItemLoaded = 10;
-            }
-            
-            ShowFirstGameObject(this.battleLogTextList.Count - 10);
             StartCoroutine(ForceScrollDown());
         }
     }
 
-    public void ShowFirstGameObject(int value)
+    public void ShowFirstGameObject( int value )
     {
-        for (int i=0; i < value; i++)
+        for (int i = 0; i < value; i++)
         {
-            this.battleLogTextList[i].gameObject.SetActive(false);
-            this.lineBreakList[i].gameObject.SetActive(false);
+            LoadBattleLogTextAndLineBreak( i );
         }
     }
 
@@ -120,26 +151,43 @@ public class BattleLog : Singleton<BattleLog>
         StartCoroutine(OnScroll());
     }
 
-    IEnumerator OnScroll()
+    private IEnumerator OnScroll()
     {
         if (this.numberOfItemLoaded < this.battleLogTextList.Count)
         {
-            if (scrollRect.verticalNormalizedPosition >= 1f)
+            if (this.scrollRect.verticalNormalizedPosition > 1.0f)
             {
-                int i = this.battleLogTextList.Count - this.numberOfItemLoaded;
+                this.loadingTextObject.SetActive( true );
+
                 int _iteration = 0;
-                while (i > 0 && _iteration < 10)
+                float _lastContentBoxHeight = this.battleLogContentBox.sizeDelta.y;
+
+                int i = this.battleLogTextList.Count - this.numberOfItemLoaded;
+                while (i > 0 && _iteration < this.numberOfItemsLoadedAtOneTime)
                 {
                     i--;
-                    Debug.Log("value" + i);
-                    this.battleLogTextList[i].gameObject.SetActive(true);
-                    this.lineBreakList[i].gameObject.SetActive(true);
+                    LoadBattleLogTextAndLineBreak( i );
                     _iteration++;
-                    this.numberOfItemLoaded++;
                 }
+
                 yield return new WaitForEndOfFrame();
-                scrollRect.verticalNormalizedPosition = 0.99f;
+
+                this.scrollRect.velocity = Vector2.zero;
+                this.scrollRect.verticalNormalizedPosition = _lastContentBoxHeight / this.battleLogContentBox.sizeDelta.y;
+
+                this.loadingTextObject.SetActive( false );
             }
+        }
+    }
+
+    private void LoadBattleLogTextAndLineBreak( int index )
+    {
+        GameObject _battleLogTextObject = this.battleLogTextList[ index ].gameObject;
+        if (!_battleLogTextObject.activeSelf)
+        {
+            _battleLogTextObject.SetActive( true );
+            this.lineBreakList[ index ].gameObject.SetActive( true );
+            this.numberOfItemLoaded++;
         }
     }
 }
