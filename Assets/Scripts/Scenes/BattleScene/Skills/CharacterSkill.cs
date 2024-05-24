@@ -70,9 +70,20 @@ public class CharacterSkill
         return null;
     }
 
-    public void SetSelectedSkillLevel(int selectedSkillLevel)
+    public bool SetSelectedSkillLevel( int selectedSkillLevel )
     {
+        if (selectedSkillLevel < GetMinimumSkillLevel())
+        {
+            return false;
+        }
+
+        if (selectedSkillLevel > GetMaximumSkillLevel())
+        {
+            return false;
+        }
+
         this.selectedSkillLevel = selectedSkillLevel;
+        return true;
     }
 
     public int GetSelectedSkillLevel()
@@ -80,7 +91,7 @@ public class CharacterSkill
         return this.selectedSkillLevel;
     }
 
-    public int GetMinumumSkillLevel()
+    public int GetMinimumSkillLevel()
     {
         int _totalSubskill = this.characterSubskillList.Count;
         int _skillLevel = 1;

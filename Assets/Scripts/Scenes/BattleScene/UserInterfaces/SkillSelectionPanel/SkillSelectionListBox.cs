@@ -316,7 +316,7 @@ public class SkillSelectionListBox : MonoBehaviour
             {
                 CharacterSkill _characterSkill = characterSkills[i];
 
-                if (_characterSkill.GetMinumumSkillLevel() != 0)
+                if (_characterSkill.GetMinimumSkillLevel() != 0)
                 {
                     SkillSelectionBox skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 
@@ -348,7 +348,7 @@ public class SkillSelectionListBox : MonoBehaviour
                     CharacterSkill _repulseSkill = _repulseSkillList[i];
                     SkillSelectionBox _skillSelectionBox = null;
 
-                    if (_repulseSkill.GetMinumumSkillLevel() != 0)
+                    if (_repulseSkill.GetMinimumSkillLevel() != 0)
                     {
                         _skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 
@@ -402,7 +402,7 @@ public class SkillSelectionListBox : MonoBehaviour
                     CharacterSkill _derivedSkill = _derivedSkillList[i];
                     SkillSelectionBox _skillSelectionBox = null;
 
-                    if (_derivedSkill.GetMinumumSkillLevel() != 0)
+                    if (_derivedSkill.GetMinimumSkillLevel() != 0)
                     {
                         _skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 
@@ -456,7 +456,7 @@ public class SkillSelectionListBox : MonoBehaviour
                     CharacterSkill _counterSkill = _counterSkillList[i];
                     SkillSelectionBox _skillSelectionBox = null;
 
-                    if (_counterSkill.GetMinumumSkillLevel() != 0)
+                    if (_counterSkill.GetMinimumSkillLevel() != 0)
                     {
                         _skillSelectionBox = Instantiate(this.skillSelectionBoxPrefab, this.containerContent, false);
 

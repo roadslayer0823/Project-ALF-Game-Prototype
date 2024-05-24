@@ -827,15 +827,25 @@ public class GameCharacter : MonoBehaviour
         if (_splittedStrings.Length == 2)
         {
             string _skillId = _splittedStrings[ 0 ];
+            bool _hasSkill = false;
+
             for (int i = 0; i < this.skills.Length; i++)
             {
                 CharacterSkill _skill = skills[ i ];
                 if (_skill.GetSkillData().Id.Equals( _skillId, StringComparison.OrdinalIgnoreCase ))
                 {
-                    if (int.TryParse( _splittedStrings[ 1 ], out int _skillLevel ) && _skillLevel <= 3 && _skillLevel  > 0)
+                    _hasSkill = true;
+
+                    if (int.TryParse( _splittedStrings[ 1 ], out int _skillLevel ))
                     {
-                        _skill.SetSelectedSkillLevel( _skillLevel );
-                        return _skill;
+                        if (_skill.SetSelectedSkillLevel( _skillLevel ))
+                        {
+                            return _skill;
+                        }
+                        else
+                        {
+                            errorMessage = "no such skill level";
+                        }
                     }
                     else
                     {
@@ -846,7 +856,10 @@ public class GameCharacter : MonoBehaviour
                 }
             }
 
-            errorMessage = "no such skill id";
+            if (!_hasSkill)
+            {
+                errorMessage = "no such skill id";
+            }
         }
         else
         {

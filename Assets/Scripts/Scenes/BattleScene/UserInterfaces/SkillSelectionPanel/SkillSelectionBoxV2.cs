@@ -82,7 +82,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             
             this.skillNameText.SetText(characterSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
 
-            this.skillLevel = characterSkill.GetMinumumSkillLevel();
+            this.skillLevel = characterSkill.GetMinimumSkillLevel();
         }
     }
 
@@ -327,7 +327,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     // Level down
     public void DecreaseSkillLevel()
     {
-        int _minimumSkillLevel = this.characterSkill.GetMinumumSkillLevel();
+        int _minimumSkillLevel = this.characterSkill.GetMinimumSkillLevel();
         int _maximumSkillLevel = this.characterSkill.GetMaximumSkillLevel();
 
         if (this.skillLevel == _minimumSkillLevel)
@@ -351,7 +351,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     // Level up
     public void IncreaseSkillLevel()
     {
-        int _minimumSkillLevel = this.characterSkill.GetMinumumSkillLevel();
+        int _minimumSkillLevel = this.characterSkill.GetMinimumSkillLevel();
         int _maximumSkillLevel = this.characterSkill.GetMaximumSkillLevel();
 
         if (this.skillLevel == _maximumSkillLevel)
