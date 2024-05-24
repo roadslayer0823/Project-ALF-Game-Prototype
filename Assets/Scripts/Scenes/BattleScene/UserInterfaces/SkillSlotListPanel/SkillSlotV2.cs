@@ -217,7 +217,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void IncreaseSkillLevel()
     {
-        int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
+        int _minimumSkillLevel = this.selectedSkill.GetMinimumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
 
         if (this.skillLevel == _maximumSkillLevel)
@@ -240,7 +240,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void DecreaseSkillLevel()
     {
-        int _minimumSkillLevel = this.selectedSkill.GetMinumumSkillLevel();
+        int _minimumSkillLevel = this.selectedSkill.GetMinimumSkillLevel();
         int _maximumSkillLevel = this.selectedSkill.GetMaximumSkillLevel();
 
         if (this.skillLevel == _minimumSkillLevel)

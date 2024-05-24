@@ -48,7 +48,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
         this.minusLevelButton.onClick.AddListener(OnMinusLevelButtonClick);
         this.plusLevelButton.onClick.AddListener(OnPlusLevelButtonClick);
 
-        this.skillLevel = this.characterSkill.GetMinumumSkillLevel();
+        this.skillLevel = this.characterSkill.GetMinimumSkillLevel();
         UpdateCharacterSkillLevel(this.skillLevel);
         this.selectionHightlight.gameObject.SetActive(false);
     }
@@ -173,7 +173,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_DOWN);
 
-        int _minimumSkillLevel = this.characterSkill.GetMinumumSkillLevel();
+        int _minimumSkillLevel = this.characterSkill.GetMinimumSkillLevel();
         int _maximumSkillLevel = this.characterSkill.GetMaximumSkillLevel();
 
         this.skillLevel = Math.Clamp(this.skillLevel - 1, _minimumSkillLevel, _maximumSkillLevel);
@@ -190,7 +190,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BOOST_LEVEL_UP);
 
-        int _minimumSkillLevel = this.characterSkill.GetMinumumSkillLevel();
+        int _minimumSkillLevel = this.characterSkill.GetMinimumSkillLevel();
         int _maximumSkillLevel = this.characterSkill.GetMaximumSkillLevel();
 
         this.skillLevel = Math.Clamp(this.skillLevel + 1, _minimumSkillLevel, _maximumSkillLevel);
@@ -222,7 +222,7 @@ public class SkillSelectionBox : MonoBehaviour, IPointerClickHandler
 
     private void SetupLevelUIDisplayVisibility()
     {
-        int _minimumSkillLevel = this.characterSkill.GetMinumumSkillLevel();
+        int _minimumSkillLevel = this.characterSkill.GetMinimumSkillLevel();
         int _maximumSkillLevel = this.characterSkill.GetMaximumSkillLevel();
 
         if (this.skillLevel == _maximumSkillLevel)
