@@ -28,16 +28,17 @@ public class DebugMenuPanel : MonoBehaviour
     private string selectedEnemyStat;
     private string newPlayerStatValue;
     private string newEnemyStatValue;
+    private bool isFirstDigit = true;
 
     private const string AUDIO_ID_CLICK = "click";
 
     //display function
     public void Start()
     {
-        InitializeDropDowns(playerStatList);
-        InitializeDropDowns(enemyStatList);
-        playerStatValue.interactable = false;
-        enemyStatValue.interactable = false;
+        InitializeDropDowns(this.playerStatList);
+        InitializeDropDowns(this.enemyStatList);
+        this.playerStatValue.interactable = false;
+        this.enemyStatValue.interactable = false;
 
     }
 
@@ -60,7 +61,7 @@ public class DebugMenuPanel : MonoBehaviour
         };
 
         characterList.AddOptions(stateNames);
-        enemyStatList.AddOptions(enemyOnlyState);
+        this.enemyStatList.AddOptions(enemyOnlyState);
     }
 
     public void Show()
@@ -90,70 +91,52 @@ public class DebugMenuPanel : MonoBehaviour
     //state value declaration
     public void OnPlayerStateListChange()
     {
-        this.selectedPlayerStat = playerStatList.options[playerStatList.value].text;
-        playerInputPlaceHolder.text = "輸入數值";
-        ResetInfoText();
-        if (this.selectedPlayerStat == "參數")
-        {
-            playerStatValue.interactable = false;
-            playerStatValue.text = null;
-        }
-        else
-        {
-            playerStatValue.interactable = true;
-            playerStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateNumber(addedChar, true); };
-        }
+        this.selectedPlayerStat = this.playerStatList.options[playerStatList.value].text;
+        this.playerInputPlaceHolder.text = "輸入數值";
+        CheckValueInput(this.selectedPlayerStat, this.playerStatValue, true);
     }
 
     public void OnEnemyStateListChange()
     {
-        this.selectedEnemyStat = enemyStatList.options[enemyStatList.value].text;
-        enemyInputPlaceHolder.text = "輸入數值";
-        ResetInfoText();
-
-        if (this.selectedEnemyStat == "參數")
-        {
-            enemyStatValue.interactable = false;
-            enemyStatValue.text = null;
-        }
-        else
-        {
-            enemyStatValue.interactable = true;
-
-            if (this.selectedEnemyStat == "使用技能ID")
-            {
-                enemyStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateSkillId(addedChar); };
-            }
-            else
-            {
-                enemyStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateNumber(addedChar, false); };
-            }
-        }     
+        this.selectedEnemyStat = this.enemyStatList.options[enemyStatList.value].text;
+        this.enemyInputPlaceHolder.text = "輸入數值";
+        CheckValueInput(this.selectedEnemyStat, this.enemyStatValue, false);
     }
 
     public void OnPlayerStateValueChange()
     {
-        newPlayerStatValue = playerStatValue.text;
+        ResetInfoText();
+        this.newPlayerStatValue = this.playerStatValue.text;
+        if(this.playerStatValue.text == "")
+        {
+            isFirstDigit = true;
+        }
     }
 
     public void OnEnemyStateValueChange()
     {
-        newEnemyStatValue = enemyStatValue.text;
+        ResetInfoText();
+        this.newEnemyStatValue = this.enemyStatValue.text;
+        if(this.enemyStatValue.text == "")
+        {
+            isFirstDigit = true;
+        }
     }
 
     public bool IsPlayerDropdownActive()
     {
-        return playerStatList.gameObject.activeSelf;
+        return this.playerStatList.gameObject.activeSelf;
     }
 
     public bool IsEnemyDropdownActive()
     {
-        return enemyStatList.gameObject.activeSelf;
+        return this.enemyStatList.gameObject.activeSelf;
     }
 
     //state option
     public void ChangeStateValue(string statNames, string newStatValue, GameCharacter characterObject)
     {
+        // negative
         if (statNames == "當前以太值") //current state point
         {
             if (float.TryParse(newStatValue, out float value))
@@ -167,7 +150,7 @@ public class DebugMenuPanel : MonoBehaviour
                 {
                     characterObject.MinusCurrentStatePoint( Mathf.Abs( _difference ), false, true );
                 }
-                DisplaySuccessText(characterObject == playerCharacter);
+                DisplaySuccessText(characterObject == this.playerCharacter);
             }
 
         }
@@ -184,7 +167,7 @@ public class DebugMenuPanel : MonoBehaviour
                 {
                     characterObject.MinusCurrentStressValue(Mathf.Abs(_difference));
                 }
-                DisplaySuccessText(characterObject == playerCharacter);
+                DisplaySuccessText(characterObject == this.playerCharacter);
             }
         }
         else if (statNames == "虛傷")//current virtual value
@@ -204,7 +187,7 @@ public class DebugMenuPanel : MonoBehaviour
                         characterObject.AddVirtualHealthPoint(value);
                     }
                 }
-                DisplaySuccessText(characterObject == playerCharacter);
+                DisplaySuccessText(characterObject == this.playerCharacter);
             }
         }
         else if (statNames == "當前生命值")//current health
@@ -222,7 +205,7 @@ public class DebugMenuPanel : MonoBehaviour
                     characterObject.MinusCurrentHealthPoint(Mathf.Abs(_difference));
                     characterObject.ClearVirtualHealthPoint();
                 }
-                DisplaySuccessText(characterObject == playerCharacter);
+                DisplaySuccessText(characterObject == this.playerCharacter);
             }
         }
         else if (statNames == "使用技能ID")//current skill id
@@ -230,11 +213,11 @@ public class DebugMenuPanel : MonoBehaviour
             this.enemyCharacter.SetSkillForNextATL(newStatValue, out string errorMessage);
             if(errorMessage == "")
             {
-                enemyDisplayInfo.text = "輸入技能：" + this.enemyCharacter.GetSkillForNextATL();
+                this.enemyDisplayInfo.text = "輸入技能：" + this.enemyCharacter.GetSkillForNextATL().GetCharacterSubskillData().GetSubskillData().DisplayName;
             }
             else
             {
-                enemyDisplayInfo.text = errorMessage;
+                this.enemyDisplayInfo.text = errorMessage;
             }
         }
     }
@@ -243,13 +226,13 @@ public class DebugMenuPanel : MonoBehaviour
     public void OnPlayerButtonClick()
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
-        ChangeStateValue(selectedPlayerStat, newPlayerStatValue, playerCharacter);
+        ChangeStateValue(this.selectedPlayerStat, this.newPlayerStatValue, this.playerCharacter);
     }
 
     public void OnEnemyButtonClick()
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
-        ChangeStateValue(selectedEnemyStat, newEnemyStatValue, enemyCharacter);
+        ChangeStateValue(this.selectedEnemyStat, this.newEnemyStatValue, this.enemyCharacter);
     }
 
     public void ClickToToggleDebugMode()
@@ -264,26 +247,46 @@ public class DebugMenuPanel : MonoBehaviour
 
     public void ResetInfoText()
     {
-        playerDisplayInfo.text = null;
-        enemyDisplayInfo.text = null;
+        this.playerDisplayInfo.text = null;
+        this.enemyDisplayInfo.text = null;
     }
 
     public void DisplaySuccessText(bool isPlayer)
     {
         if(isPlayer)
         {
-            playerDisplayInfo.text = "設定成功";
+            this.playerDisplayInfo.text = "設定成功";
         }
         else
         {
-            enemyDisplayInfo.text = "設定成功";
+            this.enemyDisplayInfo.text = "設定成功";
+        }
+    }
+    public void CheckValueInput(string selectedCharacterStat, TMP_InputField characterStatValue, bool isPlayer)
+    {
+        if (selectedCharacterStat == "參數")
+        {
+            characterStatValue.interactable = false;
+            characterStatValue.text = null;
+        }
+        else
+        {
+            characterStatValue.interactable = true;
+
+            if (selectedCharacterStat == "使用技能ID")
+            {
+                characterStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateSkillId(addedChar); };
+            }
+            else
+            {
+                characterStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateNumber(addedChar, isPlayer); };
+            }
         }
     }
 
     public char ValidateSkillId(char addedChar)
     {
-        ResetInfoText();
-        if (validateInputWord.Contains(addedChar) || char.IsNumber(addedChar))
+        if (this.validateInputWord.Contains(addedChar) || char.IsNumber(addedChar))
         {
             if(char.IsLetter(addedChar))
             {
@@ -293,27 +296,35 @@ public class DebugMenuPanel : MonoBehaviour
         }
         else
         {
-            enemyDisplayInfo.text = "技能ID_格式: S1_1";
+            this.enemyDisplayInfo.text = "技能ID_格式: S1_1";
             return '\0';
         }
     }
 
     public char ValidateNumber(char addedChar, bool isPlayer)
     {
-        ResetInfoText();
+        if (this.selectedEnemyStat == "當前以太值" || this.selectedPlayerStat == "當前以太值")
+        {
+            if (addedChar == '-' && isFirstDigit)
+            {
+                isFirstDigit = false;
+                return addedChar;
+            }
+        }
         if (char.IsNumber(addedChar))
         {
+            isFirstDigit = false;
             return addedChar;
         }
         else
         {
             if(isPlayer)
             {
-                playerDisplayInfo.text = "請輸入數字";
+                this.playerDisplayInfo.text = "請輸入數字";
             }
             else
             {
-                enemyDisplayInfo.text = "請輸入數字";
+                this.enemyDisplayInfo.text = "請輸入數字";
             }
             return '\0';
         }
