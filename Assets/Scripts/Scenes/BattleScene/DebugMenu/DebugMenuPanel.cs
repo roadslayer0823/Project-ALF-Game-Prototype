@@ -28,6 +28,7 @@ public class DebugMenuPanel : MonoBehaviour
     private string selectedEnemyStat;
     private string newPlayerStatValue;
     private string newEnemyStatValue;
+    private bool isFirstDigit = true;
 
     private const string AUDIO_ID_CLICK = "click";
 
@@ -92,53 +93,34 @@ public class DebugMenuPanel : MonoBehaviour
     {
         this.selectedPlayerStat = this.playerStatList.options[playerStatList.value].text;
         this.playerInputPlaceHolder.text = "輸入數值";
-        ResetInfoText();
-        if (this.selectedPlayerStat == "參數")
-        {
-            this.playerStatValue.interactable = false;
-            this.playerStatValue.text = null;
-        }
-        else
-        {
-            this.playerStatValue.interactable = true;
-            this.playerStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateNumber(addedChar, true); };
-        }
+        CheckValueInput(this.selectedPlayerStat, this.playerStatValue, true);
     }
 
     public void OnEnemyStateListChange()
     {
         this.selectedEnemyStat = this.enemyStatList.options[enemyStatList.value].text;
         this.enemyInputPlaceHolder.text = "輸入數值";
-        ResetInfoText();
-
-        if (this.selectedEnemyStat == "參數")
-        {
-            this.enemyStatValue.interactable = false;
-            this.enemyStatValue.text = null;
-        }
-        else
-        {
-            this.enemyStatValue.interactable = true;
-
-            if (this.selectedEnemyStat == "使用技能ID")
-            {
-                this.enemyStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateSkillId(addedChar); };
-            }
-            else
-            {
-                this.enemyStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateNumber(addedChar, false); };
-            }
-        }     
+        CheckValueInput(this.selectedEnemyStat, this.enemyStatValue, false);
     }
 
     public void OnPlayerStateValueChange()
     {
+        ResetInfoText();
         this.newPlayerStatValue = this.playerStatValue.text;
+        if(this.playerStatValue.text == "")
+        {
+            isFirstDigit = true;
+        }
     }
 
     public void OnEnemyStateValueChange()
     {
+        ResetInfoText();
         this.newEnemyStatValue = this.enemyStatValue.text;
+        if(this.enemyStatValue.text == "")
+        {
+            isFirstDigit = true;
+        }
     }
 
     public bool IsPlayerDropdownActive()
@@ -154,6 +136,7 @@ public class DebugMenuPanel : MonoBehaviour
     //state option
     public void ChangeStateValue(string statNames, string newStatValue, GameCharacter characterObject)
     {
+        // negative
         if (statNames == "當前以太值") //current state point
         {
             if (float.TryParse(newStatValue, out float value))
@@ -279,10 +262,30 @@ public class DebugMenuPanel : MonoBehaviour
             this.enemyDisplayInfo.text = "設定成功";
         }
     }
+    public void CheckValueInput(string selectedCharacterStat, TMP_InputField characterStatValue, bool isPlayer)
+    {
+        if (selectedCharacterStat == "參數")
+        {
+            characterStatValue.interactable = false;
+            characterStatValue.text = null;
+        }
+        else
+        {
+            characterStatValue.interactable = true;
+
+            if (selectedCharacterStat == "使用技能ID")
+            {
+                characterStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateSkillId(addedChar); };
+            }
+            else
+            {
+                characterStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateNumber(addedChar, isPlayer); };
+            }
+        }
+    }
 
     public char ValidateSkillId(char addedChar)
     {
-        ResetInfoText();
         if (this.validateInputWord.Contains(addedChar) || char.IsNumber(addedChar))
         {
             if(char.IsLetter(addedChar))
@@ -300,9 +303,17 @@ public class DebugMenuPanel : MonoBehaviour
 
     public char ValidateNumber(char addedChar, bool isPlayer)
     {
-        ResetInfoText();
+        if (this.selectedEnemyStat == "當前以太值" || this.selectedPlayerStat == "當前以太值")
+        {
+            if (addedChar == '-' && isFirstDigit)
+            {
+                isFirstDigit = false;
+                return addedChar;
+            }
+        }
         if (char.IsNumber(addedChar))
         {
+            isFirstDigit = false;
             return addedChar;
         }
         else
