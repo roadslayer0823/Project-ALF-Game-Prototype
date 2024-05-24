@@ -88,19 +88,21 @@ public class BattleLog : Singleton<BattleLog>
         if (isShowingBattleLogPanel == true)
         {
             this.battleLogPanel.SetActive(false);
-            isShowingBattleLogPanel = false;
+            this.isShowingBattleLogPanel = false;
         }
+
         else if (isShowingBattleLogPanel == false)
         {
             this.battleLogPanel.SetActive(true);
-            isShowingBattleLogPanel = true;
-            ShowFirstGameObject(this.battleLogTextList.Count - 10);
-            StartCoroutine(ForceScrollDown());
+            this.isShowingBattleLogPanel = true;
 
             if (this.numberOfItemLoaded == 0)
             {
                 this.numberOfItemLoaded = 10;
             }
+            
+            ShowFirstGameObject(this.battleLogTextList.Count - 10);
+            StartCoroutine(ForceScrollDown());
         }
     }
 
@@ -124,16 +126,16 @@ public class BattleLog : Singleton<BattleLog>
         {
             if (scrollRect.verticalNormalizedPosition >= 1f)
             {
-                int i = battleLogTextList.Count - numberOfItemLoaded;
-                int iteration = 0;
-                while (i > 0 && iteration < 10)
+                int i = this.battleLogTextList.Count - this.numberOfItemLoaded;
+                int _iteration = 0;
+                while (i > 0 && _iteration < 10)
                 {
                     i--;
                     Debug.Log("value" + i);
                     this.battleLogTextList[i].gameObject.SetActive(true);
                     this.lineBreakList[i].gameObject.SetActive(true);
-                    iteration++;
-                    numberOfItemLoaded++;
+                    _iteration++;
+                    this.numberOfItemLoaded++;
                 }
                 yield return new WaitForEndOfFrame();
                 scrollRect.verticalNormalizedPosition = 0.99f;
