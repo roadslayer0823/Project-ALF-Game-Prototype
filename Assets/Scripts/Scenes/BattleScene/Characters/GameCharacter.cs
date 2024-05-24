@@ -832,7 +832,7 @@ public class GameCharacter : MonoBehaviour
                 CharacterSkill _skill = skills[ i ];
                 if (_skill.GetSkillData().Id.Equals( _skillId, StringComparison.OrdinalIgnoreCase ))
                 {
-                    if (int.TryParse( _splittedStrings[ 1 ], out int _skillLevel ))
+                    if (int.TryParse( _splittedStrings[ 1 ], out int _skillLevel ) && _skillLevel <= 3 && _skillLevel  > 0)
                     {
                         _skill.SetSelectedSkillLevel( _skillLevel );
                         return _skill;

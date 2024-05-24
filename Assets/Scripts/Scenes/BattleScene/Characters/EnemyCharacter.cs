@@ -532,4 +532,9 @@ public class EnemyCharacter : GameCharacter
     {
         this.nextAtlSkill = base.GetSkillBySubskillId( subskillId, out errorMessage );
     }
+
+    public string GetSkillForNextATL()
+    {
+        return this.nextAtlSkill.GetCharacterSubskillData().GetSubskillData().DisplayName;
+    }
 }
