@@ -1180,7 +1180,7 @@ public class GameCharacter : MonoBehaviour
 
         if (this.assignedSkill != null)
         {
-            SetCurrentSkill( this.assignedSkill );
+            SetCurrentSkill( this.assignedSkill.GetClone() );
             this.assignedSkill = null;
         }
     }

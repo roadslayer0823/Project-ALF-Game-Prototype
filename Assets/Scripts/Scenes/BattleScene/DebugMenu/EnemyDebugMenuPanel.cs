@@ -42,7 +42,7 @@ public class EnemyDebugMenuPanel : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
 
-        Time.timeScale = 1.0f;
+        Time.timeScale = PauseButton.currentTimeScale;
         this.container.SetActive( false );
     }
 

@@ -184,6 +184,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
             if (_isObservingSkill)
             {
                 _selectedGameCharacter.SetCurrentObservingSkill( this.selectedSkill, true );
+                SetCurrentStateType( StateType.Selected );
             }
             else
             {

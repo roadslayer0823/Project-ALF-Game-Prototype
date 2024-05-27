@@ -6,6 +6,7 @@ public class PauseButton : MonoBehaviour
     [SerializeField] private TMP_Text buttonLabel = null;
 
     private bool isPaused = false;
+    public static float currentTimeScale = 1.0f;
 
     public void ClickToToggle()
     {
@@ -21,5 +22,7 @@ public class PauseButton : MonoBehaviour
             Time.timeScale = 1.0f;
             buttonLabel.text = "Pause";
         }
+
+        currentTimeScale = Time.timeScale;
     }
 }

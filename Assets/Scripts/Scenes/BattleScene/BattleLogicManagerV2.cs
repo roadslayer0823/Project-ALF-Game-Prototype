@@ -976,8 +976,6 @@ public class BattleLogicManagerV2
                 }
             }
 
-            _gameCharacter.ResetCurrentObservingSkill();
-
             if (_gameCharacter.GetIsDead())
             {
                 _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnDeath );

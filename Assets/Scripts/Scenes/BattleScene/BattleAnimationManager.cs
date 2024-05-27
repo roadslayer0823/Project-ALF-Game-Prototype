@@ -1273,15 +1273,19 @@ public class BattleAnimationManager : MonoBehaviour
             return true;
         }
 
+        BattleLogicManagerV2.OnTheEndOfATL( _gameCharacters );
+
+        // ---------------------------- Reset ----------------------------
+
         attacker.GetOwnContainer().SetActive( false );
         attacker.ShowCharacterObject();
         attacker.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
-        attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
-
         attacker.Reset();
+
+        attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
         attackTarget.Reset();
 
-        BattleLogicManagerV2.OnTheEndOfATL( _gameCharacters );
+        // ---------------------------------------------------------------
 
         return false;
     }

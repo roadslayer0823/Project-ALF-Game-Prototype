@@ -260,6 +260,11 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             }
         }
 
+        if (this.qteSkillSlot.GetSelectedSkill() == skill)
+        {
+            return this.qteSkillSlot;
+        }
+
         return null;
     }
 

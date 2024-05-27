@@ -28,6 +28,16 @@ public class CharacterSkill
         this.observedSkillDataList = new List<ObservedSkillData>();
     }
 
+    public CharacterSkill GetClone()
+    {
+        return new CharacterSkill( this.skillData, this.owner )
+        {
+            characterSubskillList = this.characterSubskillList,
+            selectedSkillLevel = this.selectedSkillLevel,
+            hasSkillUpdateIndicator = this.hasSkillUpdateIndicator
+        };
+    }
+
     public void SetupCharacterSubskillList()
     {
         List<Subskill> _subskillList = DatabaseManager.Instance.GetSubskillList();

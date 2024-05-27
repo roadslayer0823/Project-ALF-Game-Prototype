@@ -72,7 +72,7 @@ public class DebugMenuPanel : MonoBehaviour
 
     public void Hide()
     {
-        Time.timeScale = 1.0f;
+        Time.timeScale = PauseButton.currentTimeScale;
         this.container.SetActive(false);
     }
 
