@@ -271,10 +271,10 @@ public class DebugMenuPanel : MonoBehaviour
     }
     public void CheckValueInput(string selectedCharacterStat, TMP_InputField characterStatValue, bool isPlayer)
     {
+        characterStatValue.text = null;
         if (selectedCharacterStat == "參數")
         {
             characterStatValue.interactable = false;
-            characterStatValue.text = null;
         }
         else
         {
