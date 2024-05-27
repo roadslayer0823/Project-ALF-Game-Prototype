@@ -358,13 +358,12 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         if (_subskillData.NamePartB == "-")
         {
             this.bottomRowText.SetText(_subskillData.NamePartA);
-            this.topRowTextObject.SetActive(false);
+            this.skillPrefixBackground.rectTransform.sizeDelta = new Vector2(0, 0);
         }
         else
         {
             this.topRowText.SetText(_subskillData.NamePartA);
             this.bottomRowText.SetText(_subskillData.NamePartB);
-            this.topRowTextObject.SetActive(true);
             if(isActivated == true)
             {
                 StartCoroutine(DelayedSizeDeltaUpdate());
