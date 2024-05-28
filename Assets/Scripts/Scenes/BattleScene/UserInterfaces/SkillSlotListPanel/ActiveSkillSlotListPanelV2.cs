@@ -111,21 +111,38 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         UpdateSkillSlotsWithSelectedSkills( _middleSkillSlotSkillIndex );
     }
 
-    public void ChangeToDerivedMode( GameCharacter gameCharacter )
+    public void ChangeToDerivedMode( GameCharacter gameCharacter, bool hasActiveSkillType )
     {
         this.selectedGameCharacter = gameCharacter;
 
         CharacterSkill _currentSkill = this.selectedGameCharacter.GetCurrentSkill();
+        string _currentSkillSubskillId = _currentSkill.GetCharacterSubskillData().GetSubskillData().Id;
+        CharacterSkill _derivedSkill = null;
+
         for (int i = 0; i < this.selectedSkills.Count; i++)
         {
-            CharacterSkill _selectedSkill = this.selectedSkills[ i ];
-            if (_selectedSkill == _currentSkill)
+            if (this.selectedSkills[ i ].GetCharacterSubskillData().GetSubskillData().Id == _currentSkillSubskillId)
             {
-                this.selectedSkills[ i ] = _currentSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
+                _derivedSkill = _currentSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
+                this.selectedSkills[ i ] = _derivedSkill;
+                break;
             }
         }
 
-        UpdateSkillSlotsWithSelectedSkills();
+        UpdateSkillSlotsWithSelectedSkills( stateType: ( ( hasActiveSkillType ) ? SkillSlotV2.StateType.Enabled : SkillSlotV2.StateType.Disabled ) );
+
+        if (_derivedSkill != null && !hasActiveSkillType && BattleLogicManagerV2.IsAbleToUseAttackingAndDefendingSkills( this.selectedGameCharacter ))
+        {
+            List<SkillSlotV2> _skillSlots = GetSkillSlots( _derivedSkill );
+            for (int i = 0; i < _skillSlots.Count; i++)
+            {
+                SkillSlotV2 _skillSlot = _skillSlots[ i ];
+                if (_skillSlot.GetCurrentStateType() != SkillSlotV2.StateType.Enabled)
+                {
+                    _skillSlot.SetCurrentStateType( SkillSlotV2.StateType.Enabled );
+                }
+            }
+        }
     }
 
     private int GetMiddleSkillSlotSkillIndex()
@@ -169,19 +186,19 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         }
         else
         {
-            if (this.selectedSkills.Count == 1)
-            {
-                DisableInteraction();
-            }
-            else
-            {
-                EnableInteraction();
-            }
-
             for (int i = 0; i < this.selectedSkills.Count; i++)
             {
                 this.skillSlots[ i ].SetSelectedSkill( this.selectedSkills[ i ] );
             }
+        }
+
+        if (this.selectedSkills.Count == 1)
+        {
+            DisableInteraction();
+        }
+        else
+        {
+            EnableInteraction();
         }
 
         SkillSlotV2.StateType _stateType = stateType;

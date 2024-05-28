@@ -564,6 +564,7 @@ public class BattleUiManager : MonoBehaviour
     public void UpdateSkillButtons( List<SkillType> skillTypeList = null )
     {
         List<SkillType> _skillTypeList = skillTypeList ?? new List<SkillType>();
+        bool _hasActiveSkillType = _skillTypeList.Contains( SkillType.Active );
         bool _isAbleToRepulse = false;
 
         Debug.Log( "UpdateSkillButtons" );
@@ -577,9 +578,9 @@ public class BattleUiManager : MonoBehaviour
         else if (_skillTypeList.Contains( SkillType.Derive ))
         {
             Debug.Log( "SkillType.Derive" );
-            this.activeSkillSlotListPanelV2.ChangeToDerivedMode( this.selectedGameCharacter );
+            this.activeSkillSlotListPanelV2.ChangeToDerivedMode( this.selectedGameCharacter, _hasActiveSkillType );
 
-            if (_skillTypeList.Contains( SkillType.Active ))
+            if (_hasActiveSkillType)
             {
                 this.activeSkillSlotListPanelV2.EnableInteraction();
             }
@@ -591,7 +592,7 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             Debug.Log( "Default" );
-            this.activeSkillSlotListPanelV2.ChangeToDefaultMode( this.selectedGameCharacter, ( _skillTypeList.Contains( SkillType.Active ) ) ? SkillSlotV2.StateType.Enabled : SkillSlotV2.StateType.Disabled );
+            this.activeSkillSlotListPanelV2.ChangeToDefaultMode( this.selectedGameCharacter, ( _hasActiveSkillType ) ? SkillSlotV2.StateType.Enabled : SkillSlotV2.StateType.Disabled );
         }
 
         if (this.backendSkillSlotListPanel == null)
