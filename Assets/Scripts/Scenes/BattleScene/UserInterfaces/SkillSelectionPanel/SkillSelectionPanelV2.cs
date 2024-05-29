@@ -120,6 +120,10 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         {
             InitializeActiveSkillList();
         }
+        else
+        {
+            UpdateSelectedSkillListUI();
+        }
 
         if (this.backendSkillBoxList.Count == 0)
         {
@@ -418,9 +422,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
                 if (_selectedCharacterSkill.GetSkillData().Id == _activeSkillSelectionBoxInList.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().SkillId
                     && !this.selectedActiveSkillBoxList.Contains(_activeSkillSelectionBoxInList))
                 {
-                    _activeSkillSelectionBoxInList.SetCurrentSkillLevel(_selectedCharacterSkillLevel);
-                    _activeSkillSelectionBoxInList.GetCharacterSkill().SetSelectedSkillLevel(_selectedCharacterSkillLevel);
-                    _activeSkillSelectionBoxInList.UpdateSkillSelectionBoxData();
                     this.selectedActiveSkillBoxList.Add(_activeSkillSelectionBoxInList);
                     break;
                 }
@@ -748,6 +749,18 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         this.gameObject.SetActive( true );
         ShowActiveSkillSelectionList( skillType == SkillType.Active );
         ShowBackendSkillSelectionList( skillType == SkillType.Backend );
+    }
+
+    public void UpdateSelectedSkillListUI()
+    {
+        for (int i = 0; i < this.activeSkillBoxList.Count; i++)
+        {
+            CharacterSkill _selectedCharacterSkill = this.gameCharacter.GetSelectedActiveSkillList()[i];
+            int _selectedCharacterSkillLevel = _selectedCharacterSkill.GetSelectedSkillLevel();
+
+            this.activeSkillBoxList[i].GetCharacterSkill().SetSelectedSkillLevel(_selectedCharacterSkillLevel);
+            this.activeSkillBoxList[i].UpdateSkillSelectionBoxData();
+        }
     }
 
     // hide the skill selection panel
