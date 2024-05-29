@@ -28,7 +28,7 @@ public class DebugMenuPanel : MonoBehaviour
     private string selectedEnemyStat;
     private string newPlayerStatValue;
     private string newEnemyStatValue;
-    private bool isFirstDigit = true;
+    private char tempChar = '\0';
 
     private const string AUDIO_ID_CLICK = "click";
 
@@ -39,7 +39,6 @@ public class DebugMenuPanel : MonoBehaviour
         InitializeDropDowns(this.enemyStatList);
         this.playerStatValue.interactable = false;
         this.enemyStatValue.interactable = false;
-
     }
 
     private void InitializeDropDowns(TMP_Dropdown characterList)
@@ -49,10 +48,10 @@ public class DebugMenuPanel : MonoBehaviour
         var stateNames = new List<string>
         {
             "參數",
-            "虛傷",
+            "當前生命值",
             "當前以太值",
             "當前負荷值",
-            "當前生命值"
+            "虛傷",
         };
 
         var enemyOnlyState = new List<string>
@@ -74,6 +73,7 @@ public class DebugMenuPanel : MonoBehaviour
     {
         Time.timeScale = PauseButton.currentTimeScale;
         this.container.SetActive(false);
+        ResetInfoText();
     }
 
     public void ClickToShow()
@@ -93,23 +93,28 @@ public class DebugMenuPanel : MonoBehaviour
     {
         this.selectedPlayerStat = this.playerStatList.options[playerStatList.value].text;
         this.playerInputPlaceHolder.text = "輸入數值";
-        CheckValueInput(this.selectedPlayerStat, this.playerStatValue, true);
+        CheckValueInput(this.selectedPlayerStat, this.playerStatValue);
     }
 
     public void OnEnemyStateListChange()
     {
         this.selectedEnemyStat = this.enemyStatList.options[enemyStatList.value].text;
         this.enemyInputPlaceHolder.text = "輸入數值";
-        CheckValueInput(this.selectedEnemyStat, this.enemyStatValue, false);
+        CheckValueInput(this.selectedEnemyStat, this.enemyStatValue);
     }
 
     public void OnPlayerStateValueChange()
     {
         ResetInfoText();
         this.newPlayerStatValue = this.playerStatValue.text;
-        if(this.playerStatValue.text == "")
+        if(tempChar == ' ')
         {
-            isFirstDigit = true;
+            this.playerDisplayInfo.text = "請輸入數字";
+            tempChar = '\0';
+        }
+        if (this.selectedPlayerStat == "當前以太值")
+        {
+            playerStatValue.text = playerStatValue.text.Replace(" ", "").Replace(".", "");
         }
     }
 
@@ -117,11 +122,24 @@ public class DebugMenuPanel : MonoBehaviour
     {
         ResetInfoText();
         this.newEnemyStatValue = this.enemyStatValue.text;
-        if(this.enemyStatValue.text == "")
+        if (tempChar == ' ')
         {
-            isFirstDigit = true;
+            if (this.selectedEnemyStat == "使用技能ID")
+            {
+                this.enemyDisplayInfo.text = "技能ID的格式: S1_1";
+            }
+            else
+            {
+                this.enemyDisplayInfo.text = "請輸入數字";
+            }
+            tempChar = '\0';
+        }
+        if (this.selectedEnemyStat == "當前以太值")
+        {
+            enemyStatValue.text = enemyStatValue.text.Replace(" ", "").Replace(".", "");
         }
     }
+
 
     public bool IsPlayerDropdownActive()
     {
@@ -148,7 +166,7 @@ public class DebugMenuPanel : MonoBehaviour
                 }
                 else if (_difference < 0)
                 {
-                    characterObject.MinusCurrentStatePoint( Mathf.Abs( _difference ), false, true );
+                    characterObject.MinusCurrentStatePoint(Mathf.Abs(_difference), false, true);
                 }
                 DisplaySuccessText(characterObject == this.playerCharacter);
             }
@@ -162,15 +180,15 @@ public class DebugMenuPanel : MonoBehaviour
                 {
                     //characterObject.AddCurrentStressValue( _difference, true );
 
-                    new BattleResultData().AddGameCharacterResultData_StressValueDamage( characterObject, Mathf.Abs( _difference ), true, out BattleResultData.BattleResultData_GameCharacter result );
-                    characterObject.ApplyBattleResultData( result );
+                    new BattleResultData().AddGameCharacterResultData_StressValueDamage(characterObject, Mathf.Abs(_difference), true, out BattleResultData.BattleResultData_GameCharacter result);
+                    characterObject.ApplyBattleResultData(result);
                 }
                 else if (_difference < 0)
                 {
                     //characterObject.MinusCurrentStressValue(Mathf.Abs(_difference));
 
-                    new BattleResultData().AddGameCharacterResultData_StressValueDamageRecovered( characterObject, Mathf.Abs( _difference ), out BattleResultData.BattleResultData_GameCharacter result );
-                    characterObject.ApplyBattleResultData( result );
+                    new BattleResultData().AddGameCharacterResultData_StressValueDamageRecovered(characterObject, Mathf.Abs(_difference), out BattleResultData.BattleResultData_GameCharacter result);
+                    characterObject.ApplyBattleResultData(result);
                 }
                 DisplaySuccessText(characterObject == this.playerCharacter);
             }
@@ -216,7 +234,7 @@ public class DebugMenuPanel : MonoBehaviour
         else if (statNames == "使用技能ID")//current skill id
         {
             this.enemyCharacter.SetSkillForNextATL(newStatValue, out string errorMessage);
-            if(errorMessage == "")
+            if (errorMessage == "")
             {
                 this.enemyDisplayInfo.text = "輸入技能：" + this.enemyCharacter.GetSkillForNextATL().GetCharacterSubskillData().GetSubskillData().DisplayName;
             }
@@ -232,24 +250,24 @@ public class DebugMenuPanel : MonoBehaviour
     //change state
     public void OnPlayerButtonClick()
     {
-        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
         ChangeStateValue(this.selectedPlayerStat, this.newPlayerStatValue, this.playerCharacter);
     }
 
     public void OnEnemyButtonClick()
     {
-        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
         ChangeStateValue(this.selectedEnemyStat, this.newEnemyStatValue, this.enemyCharacter);
     }
 
     public void ClickToToggleDebugMode()
     {
-        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
-        this.debugModeObjectLabel.SetActive( !this.debugModeObjectLabel.activeSelf );
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        this.debugModeObjectLabel.SetActive(!this.debugModeObjectLabel.activeSelf);
 
         bool _isDebugMode = this.debugModeObjectLabel.activeSelf;
-        this.battleGameManager.GetBattleAnimationManager().SetIsDebugMode( _isDebugMode );
-        this.debugModeButtonLabel.SetText( ( _isDebugMode ) ? "Debug Mode ON" : "Debug Mode OFF" );
+        this.battleGameManager.GetBattleAnimationManager().SetIsDebugMode(_isDebugMode);
+        this.debugModeButtonLabel.SetText((_isDebugMode) ? "Debug Mode ON" : "Debug Mode OFF");
     }
 
     public void ResetInfoText()
@@ -260,7 +278,7 @@ public class DebugMenuPanel : MonoBehaviour
 
     public void DisplaySuccessText(bool isPlayer)
     {
-        if(isPlayer)
+        if (isPlayer)
         {
             this.playerDisplayInfo.text = "設定成功";
         }
@@ -269,7 +287,7 @@ public class DebugMenuPanel : MonoBehaviour
             this.enemyDisplayInfo.text = "設定成功";
         }
     }
-    public void CheckValueInput(string selectedCharacterStat, TMP_InputField characterStatValue, bool isPlayer)
+    public void CheckValueInput(string selectedCharacterStat, TMP_InputField characterStatValue)
     {
         characterStatValue.text = null;
         if (selectedCharacterStat == "參數")
@@ -279,14 +297,34 @@ public class DebugMenuPanel : MonoBehaviour
         else
         {
             characterStatValue.interactable = true;
+            characterStatValue.ActivateInputField();
 
             if (selectedCharacterStat == "使用技能ID")
             {
-                characterStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateSkillId(addedChar); };
+                characterStatValue.contentType = TMP_InputField.ContentType.Standard;
+                characterStatValue.onValidateInput = (string input, int charIndex, char addedChar) =>
+                {
+                    tempChar = ValidateSkillId(addedChar);
+                    characterStatValue.text = characterStatValue.text.Replace(" ", "");
+                    return tempChar;
+                };
             }
             else
             {
-                characterStatValue.onValidateInput = (string input, int charIndex, char addedChar) => { return ValidateNumber(addedChar, isPlayer); };
+                characterStatValue.contentType = TMP_InputField.ContentType.DecimalNumber;
+                if (selectedCharacterStat == "當前以太值")
+                {
+                    characterStatValue.onValidateInput = null;
+                }
+                else
+                {
+                    characterStatValue.onValidateInput = (string input, int charIndex, char addedChar) =>
+                    {
+                        tempChar = ValidateNumber(addedChar);
+                        characterStatValue.text = characterStatValue.text.Replace(" ", "").Replace(".", "");
+                        return tempChar;
+                    };
+                }
             }
         }
     }
@@ -295,7 +333,7 @@ public class DebugMenuPanel : MonoBehaviour
     {
         if (this.validateInputWord.Contains(addedChar) || char.IsNumber(addedChar))
         {
-            if(char.IsLetter(addedChar))
+            if (char.IsLetter(addedChar))
             {
                 addedChar = char.ToUpper(addedChar);
             }
@@ -303,37 +341,19 @@ public class DebugMenuPanel : MonoBehaviour
         }
         else
         {
-            this.enemyDisplayInfo.text = "技能ID_格式: S1_1";
-            return '\0';
+            return ' ';
         }
     }
 
-    public char ValidateNumber(char addedChar, bool isPlayer)
+    public char ValidateNumber(char addedChar)
     {
-        if (this.selectedEnemyStat == "當前以太值" || this.selectedPlayerStat == "當前以太值")
-        {
-            if (addedChar == '-' && isFirstDigit)
-            {
-                isFirstDigit = false;
-                return addedChar;
-            }
-        }
         if (char.IsNumber(addedChar))
         {
-            isFirstDigit = false;
             return addedChar;
         }
         else
         {
-            if(isPlayer)
-            {
-                this.playerDisplayInfo.text = "請輸入數字";
-            }
-            else
-            {
-                this.enemyDisplayInfo.text = "請輸入數字";
-            }
-            return '\0';
+            return ' ';
         }
     }
 }
