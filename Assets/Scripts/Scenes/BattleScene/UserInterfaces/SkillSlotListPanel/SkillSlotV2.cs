@@ -6,7 +6,7 @@ using TMPro;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
-public class SkillSlotV2 : MonoBehaviour/*,IPointerDownHandler, IPointerUpHandler*/
+public class SkillSlotV2 : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private SkillType skillType = SkillType.None;
