@@ -399,4 +399,9 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     {
         return this.selectedGameCharacter;
     }
+
+    public SkillSlotV2 GetMiddleSkillSlot()
+    {
+        return this.middleSkillSlot;
+    }
 }
