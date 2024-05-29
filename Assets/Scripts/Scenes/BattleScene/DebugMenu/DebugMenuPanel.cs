@@ -35,32 +35,8 @@ public class DebugMenuPanel : MonoBehaviour
     //display function
     public void Start()
     {
-        InitializeDropDowns(this.playerStatList);
-        InitializeDropDowns(this.enemyStatList);
         this.playerStatValue.interactable = false;
         this.enemyStatValue.interactable = false;
-    }
-
-    private void InitializeDropDowns(TMP_Dropdown characterList)
-    {
-        characterList.ClearOptions();
-
-        var stateNames = new List<string>
-        {
-            "參數",
-            "當前生命值",
-            "當前以太值",
-            "當前負荷值",
-            "虛傷",
-        };
-
-        var enemyOnlyState = new List<string>
-        {
-            "使用技能ID"
-        };
-
-        characterList.AddOptions(stateNames);
-        this.enemyStatList.AddOptions(enemyOnlyState);
     }
 
     public void Show()
@@ -139,7 +115,6 @@ public class DebugMenuPanel : MonoBehaviour
             enemyStatValue.text = enemyStatValue.text.Replace(" ", "").Replace(".", "");
         }
     }
-
 
     public bool IsPlayerDropdownActive()
     {
@@ -287,6 +262,7 @@ public class DebugMenuPanel : MonoBehaviour
             this.enemyDisplayInfo.text = "設定成功";
         }
     }
+
     public void CheckValueInput(string selectedCharacterStat, TMP_InputField characterStatValue)
     {
         characterStatValue.text = null;

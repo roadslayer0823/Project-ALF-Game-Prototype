@@ -878,7 +878,15 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: 
+    - m_Text: "\u53C3\u6578"
+      m_Image: {fileID: 0}
+    - m_Text: "\u7576\u524D\u751F\u547D\u503C"
+      m_Image: {fileID: 0}
+    - m_Text: "\u7576\u524D\u4EE5\u592A\u503C"
+      m_Image: {fileID: 0}
+    - m_Text: "\u7576\u524D\u8CA0\u8377\u503C"
+      m_Image: {fileID: 0}
+    - m_Text: "\u865B\u50B7"
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2541,7 +2549,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u5C0D\u65B9\u53C3\u6578"
+  m_text: "\u53C3\u6578"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: af3c0676133d1448488aad03ec87dd42, type: 2}
   m_sharedMaterial: {fileID: -2912949617361915243, guid: af3c0676133d1448488aad03ec87dd42, type: 2}
@@ -4234,7 +4242,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u5C0D\u65B9\u7684\u89D2\u8272"
+  m_text: "\u6575\u65B9\u7684\u89D2\u8272"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d820d13fe549d431296db73193852419, type: 2}
   m_sharedMaterial: {fileID: 5552093590376774946, guid: d820d13fe549d431296db73193852419, type: 2}
@@ -4538,11 +4546,17 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: "\u5C0D\u65B9\u53C3\u6578"
+    - m_Text: "\u53C3\u6578"
+      m_Image: {fileID: 0}
+    - m_Text: "\u7576\u524D\u751F\u547D\u503C"
       m_Image: {fileID: 0}
     - m_Text: "\u7576\u524D\u4EE5\u592A\u503C"
       m_Image: {fileID: 0}
     - m_Text: "\u7576\u524D\u8CA0\u8377\u503C"
+      m_Image: {fileID: 0}
+    - m_Text: "\u865B\u50B7"
+      m_Image: {fileID: 0}
+    - m_Text: "\u4F7F\u7528\u6280\u80FDID"
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4888,7 +4902,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 
+  m_text: "\u53C3\u6578"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: af3c0676133d1448488aad03ec87dd42, type: 2}
   m_sharedMaterial: {fileID: -2912949617361915243, guid: af3c0676133d1448488aad03ec87dd42, type: 2}
