@@ -3,11 +3,10 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.EventSystems;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 
-public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class SkillSlotV2 : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private SkillType skillType = SkillType.None;
@@ -132,6 +131,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 
     public void Initialize(ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2)
     {
+        SetSelectedSkill(this.selectedSkill);
         this.activeSkillSlotListPanelV2 = activeSkillSlotListPanelV2;
         this.SetBlankFrame( this.skillType );
         this.skillIcon.transform.localScale = new Vector3( this.skillIconScale, this.skillIconScale, 1.0f );
@@ -196,24 +196,6 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     public void EnableButton()
     {
         this.skillSelectionButton.interactable = true;
-    }
-
-    public void DisableButton()
-    {
-        this.skillSelectionButton.interactable = false;
-    }
-
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        swipeDetector.SetTouchStartPos(Input.mousePosition);
-        //this.mousePressPosition = Input.mousePosition;
-    }
-
-    //changing skill level mechanics
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        swipeDetector.SetTouchEndPos(Input.mousePosition);
-        swipeDetector.DetectSwipe();
     }
 
     public void IncreaseSkillLevel()
@@ -358,6 +340,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
         //setup skill name
         if (_subskillData.NamePartB == "-")
         {
+            this.topRowText.SetText("");
             this.bottomRowText.SetText(_subskillData.NamePartA);
             this.skillPrefixBackground.rectTransform.sizeDelta = new Vector2(0, 0);
         }
@@ -463,6 +446,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 this.selectedSkillEffect.SetActive( false );
                 ShowSkillFrame(this.selectedSkill);
                 UpdateSkillIcon( false );
+                swipeDetector.enabled = true;
                 break;
 
             case StateType.Disabled:
@@ -470,14 +454,15 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 this.selectedSkillEffect.SetActive( false );
                 SetBlankFrame( this.skillType );
                 UpdateSkillIcon( false );
+                swipeDetector.enabled = false;
                 break;
 
             case StateType.Selected:
 
-                DisableButton();
                 this.selectedSkillEffect.SetActive( true );
                 ShowActivateSkillFrame(this.selectedSkill);
                 UpdateSkillIcon( true );
+                swipeDetector.enabled = true;
                 break;
 
             case StateType.Activated:
@@ -486,6 +471,7 @@ public class SkillSlotV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
                 SetBlankFrame(this.skillType);
                 UpdateSkillIcon( false );
                 PlaySkillOutlineAnimation();
+                swipeDetector.enabled = false;
                 break;
         }
     }

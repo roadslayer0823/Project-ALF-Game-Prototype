@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
-public class SwipeDetector : MonoBehaviour
+public class SwipeDetector : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     [SerializeField] private float minSwipeDistance = 30f;
     [SerializeField] private UnityEvent onSwipeLeftCallBack = null;
@@ -59,6 +60,17 @@ public class SwipeDetector : MonoBehaviour
                 onSwipeRightCallBack.Invoke();
             }
         }
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        SetTouchEndPos(Input.mousePosition);
+        DetectSwipe();
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        SetTouchStartPos(Input.mousePosition);
     }
 }
 
