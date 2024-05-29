@@ -164,6 +164,21 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         OnSkillSlotSelected( null, false );
         ClearSkillSlots();
 
+        SkillSlotV2.StateType _stateType = stateType;
+
+        if (!BattleLogicManagerV2.IsAbleToUseAttackingAndDefendingSkills( this.selectedGameCharacter ))
+        {
+            _stateType = SkillSlotV2.StateType.Disabled;
+        }
+
+        if (_stateType == SkillSlotV2.StateType.Enabled)
+        {
+            for (int i = 0; i < this.selectedSkills.Count; i++)
+            {
+                this.selectedSkills[ i ].ResetSelectedSkillLevelToPreset();
+            }
+        }
+
         if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
         {
             int _middleSkillIndex = ( middleSkillSlotSkillIndex < 0 ) ? 0 : middleSkillSlotSkillIndex;
@@ -199,13 +214,6 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         else
         {
             EnableInteraction();
-        }
-
-        SkillSlotV2.StateType _stateType = stateType;
-
-        if (!BattleLogicManagerV2.IsAbleToUseAttackingAndDefendingSkills( this.selectedGameCharacter ))
-        {
-            _stateType = SkillSlotV2.StateType.Disabled;
         }
 
         for (int i = 0; i < this.skillSlots.Length; i++)

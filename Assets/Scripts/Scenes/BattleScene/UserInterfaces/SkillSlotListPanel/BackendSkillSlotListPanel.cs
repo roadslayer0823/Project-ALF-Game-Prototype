@@ -249,6 +249,11 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         return this.selectedGameCharacter;
     }
 
+    public List<SkillSlotV2> GetAllSkillSlots()
+    {
+        return new List<SkillSlotV2>( this.backendSkillSlots ) { this.qteSkillSlot };
+    }
+
     public SkillSlotV2 GetSkillSlot( CharacterSkill skill )
     {
         for (int i = 0; i < this.backendSkillSlots.Length; i++)

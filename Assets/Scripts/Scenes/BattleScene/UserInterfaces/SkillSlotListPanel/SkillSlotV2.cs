@@ -314,23 +314,16 @@ public class SkillSlotV2 : MonoBehaviour
         }
 
         this.selectedSkill = selectedSkill;
+        this.skillLevel = this.selectedSkill.GetSelectedSkillLevel();
 
-        Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
-        this.skillLevel = _subskillData.Level;
-
-        //checking current skill level to whether to show modify skill level animation
-        if (this.skillLevel > 1)
-        {
-            this.skillLevelGameObject.SetActive(true);
-        }
-        else
-        {
-            this.skillLevelGameObject.SetActive(false);
-        }
+        // Check the current skill level to determine whether it needs to show the modify-skill-level animation.
+        this.skillLevelGameObject.SetActive( this.skillLevel > 1 );
 
         UpdateCharacterSkillLevel(this.skillLevel);
         this.skillIcon.gameObject.SetActive(true);
         UpdateDisplay();
+
+        Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
 
         if (_subskillData.IsObservingSkill && !isObserving)
         {

@@ -203,6 +203,8 @@ public class BattleGameManager : MonoBehaviour
     {
         this.currentGamePhase = GamePhase.Execution;
 
+        this.playerCharacter.RecordAllSkillSelectedLevelsAsPresets();
+
         if (this.battleUiManager.GetPreparationSection() == null)
         {
             this.battleUiManager.ShowBattleSection( this.playerCharacter );

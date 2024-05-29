@@ -1107,6 +1107,14 @@ public class GameCharacter : MonoBehaviour
 
 #region Version 2
 
+    public void RecordAllSkillSelectedLevelsAsPresets()
+    {
+        for (int i = 0; i < this.skills.Length; i++)
+        {
+            this.skills[ i ].RecordSelectedSkillLevelAsPreset();
+        }
+    }
+
     public void ApplyBattleResultData( BattleResultData_GameCharacter battleResultData, bool needToUpdateDisplay = true )
     {
         if (battleResultData != null)

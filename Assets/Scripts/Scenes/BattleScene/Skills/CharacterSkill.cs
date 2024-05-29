@@ -8,7 +8,8 @@ public class CharacterSkill
     private GameCharacter owner = null;
     private Skill skillData = null;
     private List<CharacterSubskill> characterSubskillList = null;
-    private int selectedSkillLevel = 1;
+    private int selectedSkillLevel = 1; // 當前出力等級
+    private int presetSkillLevel = 1; // 預設出力等級（在準備階段裡設定的出力等級）
     private bool hasSkillUpdateIndicator = false;
 
     // 看破技能
@@ -99,6 +100,21 @@ public class CharacterSkill
     public int GetSelectedSkillLevel()
     {
         return this.selectedSkillLevel;
+    }
+
+    public void RecordSelectedSkillLevelAsPreset()
+    {
+        this.presetSkillLevel = this.selectedSkillLevel;
+    }
+
+    public void ResetSelectedSkillLevelToPreset()
+    {
+        this.selectedSkillLevel = this.presetSkillLevel;
+    }
+
+    public int GetPresetSkillLevel()
+    {
+        return this.presetSkillLevel;
     }
 
     public int GetMinimumSkillLevel()
