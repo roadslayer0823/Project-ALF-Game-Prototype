@@ -12,6 +12,7 @@ public class SwipeDetector : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
 
     private Vector2 touchStartPos;
     private Vector2 touchEndPos;
+    private bool isDetected = false;
 
     public void SetTouchStartPos(Vector2 startPos)
     {
@@ -21,6 +22,11 @@ public class SwipeDetector : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     public void SetTouchEndPos(Vector2 endPos)
     {
         this.touchEndPos = endPos;
+    }
+
+    public void SetIsDetected(bool isDetected)
+    {
+        this.isDetected = isDetected;
     }
 
     public void DetectSwipe()
@@ -65,7 +71,10 @@ public class SwipeDetector : MonoBehaviour, IPointerDownHandler, IPointerUpHandl
     public void OnPointerUp(PointerEventData eventData)
     {
         SetTouchEndPos(Input.mousePosition);
-        DetectSwipe();
+        if (isDetected)
+        {
+            DetectSwipe();
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
