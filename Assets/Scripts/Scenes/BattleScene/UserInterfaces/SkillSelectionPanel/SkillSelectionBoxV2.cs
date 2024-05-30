@@ -84,7 +84,10 @@ public class SkillSelectionBoxV2 : MonoBehaviour
 
     public void ClickToSelectSkill()
     {
-        this.doubleTapDetector.StartTap();
+        if (!this.longPressDetector.GetIsPointerDown() && !this.longPressDetector.GetIsLongPress())
+        {
+            this.doubleTapDetector.StartTap();
+        }
     }
 
     // display the highlight image
