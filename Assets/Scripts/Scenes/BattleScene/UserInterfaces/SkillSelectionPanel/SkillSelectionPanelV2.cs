@@ -9,6 +9,8 @@ using System.Linq;
 
 public class SkillSelectionPanelV2 : MonoBehaviour
 {
+    [SerializeField] private bool onActiveSkillSlotFollow = false;
+
     [Header("UI Images")]
     [SerializeField] private Sprite activeSkillBoxUnselectBackgroundImage = null;
     [SerializeField] private Sprite activeSkillBoxSelectBackgroundImage = null;
@@ -121,7 +123,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         {
             InitializeActiveSkillList();
         }
-        else
+        else if(onActiveSkillSlotFollow)
         {
             SetMiddleActiveSkillFromBattleSkillSlot();
         }
