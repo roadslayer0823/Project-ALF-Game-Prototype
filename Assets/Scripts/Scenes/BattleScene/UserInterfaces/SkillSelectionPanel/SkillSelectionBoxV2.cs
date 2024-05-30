@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using static DatabaseManager;
 
-public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
+public class SkillSelectionBoxV2 : MonoBehaviour/*, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler*/
 {
     [Header("Settings")]
     [SerializeField] private float clickDelay = 0.2f;
@@ -86,55 +86,11 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
-    private void Update()
-    {
-        if (this.isPointerDown && !this.longPressDetector.GetIsLongPress())
-        {
-            this.longPressDetector.SkillSelectionLongPress(this.timePressStarted, this.pressTime, true);
-        }
-    }
-
-    // when pointer down
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        this.swipeDetector.SetTouchStartPos(eventData.position);
-
-        if (this.skillBoxFrame.gameObject.activeSelf)
-        {
-            this.timePressStarted = Time.time;
-            this.isPointerDown = true;
-            this.longPressDetector.SetIsLongPress(false);
-        }
-    }
-
-    // when pointer up
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if (this.skillBoxFrame.gameObject.activeSelf)
-        {
-            if (this.selectionHighlight.gameObject.activeSelf)
-            {
-                this.swipeDetector.SetTouchEndPos(eventData.position);
-                this.swipeDetector.DetectSwipe();
-            }
-            Color _skillIconPointerUpColor = this.skillIcon.color;
-            _skillIconPointerUpColor.a = 1.0f;
-            this.skillIcon.color = _skillIconPointerUpColor;
-
-            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-        }
-        this.isPointerDown = false;
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        this.longPressDetector.SetIsLongPress(true);
-    }
-
     public void ClickToSelectSkill()
     {
-        if (!this.isPointerDown && !this.longPressDetector.GetIsLongPress())
+        if (!this.longPressDetector.GetIsPointerDown() && !this.longPressDetector.GetIsLongPress())
         {
+
             if (this.lastClickTime > 0)
             {
                 this.isWaitingSecondClick = Time.time - this.lastClickTime <= this.clickDelay;
