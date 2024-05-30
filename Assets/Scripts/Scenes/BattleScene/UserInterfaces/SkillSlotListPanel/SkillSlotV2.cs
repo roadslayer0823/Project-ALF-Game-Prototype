@@ -220,6 +220,7 @@ public class SkillSlotV2 : MonoBehaviour
         UpdateCharacterSkillLevel(this.skillLevel);
         SetSelectedSkill(this.selectedSkill);
         ModifySkillLevelAnimation(this.plusLevelImage, this.plusLevelBackground, this.plusLevelOriginalPosition, this.plusLevelTargetPosition);
+        SelectSkill();
     }
 
     public void DecreaseSkillLevel()
@@ -243,6 +244,7 @@ public class SkillSlotV2 : MonoBehaviour
         UpdateCharacterSkillLevel(this.skillLevel);
         SetSelectedSkill(this.selectedSkill);
         ModifySkillLevelAnimation(this.minusLevelImage, this.minusLevelBackground, this.minusLevelOriginalPosition, this.minusLevelTargetPosition);
+        SelectSkill();
     }
 
     public void UpdateCharacterSkillLevel(int skillLevel)
