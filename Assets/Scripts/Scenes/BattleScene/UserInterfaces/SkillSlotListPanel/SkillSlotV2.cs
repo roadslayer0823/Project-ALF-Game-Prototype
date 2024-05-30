@@ -133,6 +133,7 @@ public class SkillSlotV2 : MonoBehaviour
     {
         SetSelectedSkill(this.selectedSkill);
         this.activeSkillSlotListPanelV2 = activeSkillSlotListPanelV2;
+        this.swipeDetector.SetIsDetected(true);
         this.SetBlankFrame( this.skillType );
         this.skillIcon.transform.localScale = new Vector3( this.skillIconScale, this.skillIconScale, 1.0f );
     }
