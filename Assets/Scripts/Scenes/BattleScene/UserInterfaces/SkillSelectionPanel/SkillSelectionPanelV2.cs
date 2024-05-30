@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
+using System.Linq;
 
 public class SkillSelectionPanelV2 : MonoBehaviour
 {
@@ -122,7 +123,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         }
         else
         {
-            UpdateSelectedSkillListUI();
+            SetMiddleActiveSkillFromBattleSkillSlot();
         }
 
         if (this.backendSkillBoxList.Count == 0)
@@ -422,6 +423,9 @@ public class SkillSelectionPanelV2 : MonoBehaviour
                 if (_selectedCharacterSkill.GetSkillData().Id == _activeSkillSelectionBoxInList.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().SkillId
                     && !this.selectedActiveSkillBoxList.Contains(_activeSkillSelectionBoxInList))
                 {
+                    _activeSkillSelectionBoxInList.SetCurrentSkillLevel(_selectedCharacterSkillLevel);
+                    _activeSkillSelectionBoxInList.GetCharacterSkill().SetSelectedSkillLevel(_selectedCharacterSkillLevel);
+                    _activeSkillSelectionBoxInList.UpdateSkillSelectionBoxData();
                     this.selectedActiveSkillBoxList.Add(_activeSkillSelectionBoxInList);
                     break;
                 }
@@ -743,24 +747,40 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         UpdateActiveSkillListBoxUI();
     }
 
+    public void SetMiddleActiveSkillFromBattleSkillSlot()
+    {
+        SkillSelectionBoxV2 middleSkillBox = null;
+        CharacterSkill middleSkill = this.battleUiManager.GetActiveSkillSlotListPanelV2().GetMiddleSkillSlot().GetSelectedSkill();
+        
+        for (int i = 0; i < this.GetSelectedActiveSkillList().Count; i++)
+        {
+            if (middleSkill.GetSkillData().Id == this.GetSelectedActiveSkillList()[i].GetCharacterSkill().GetSkillData().Id)
+            {
+                middleSkillBox = this.GetSelectedActiveSkillList()[i];
+            }
+            else
+            {
+                Debug.Log("Skill not available");
+            }
+        }
+
+        for (int i = this.GetSelectedActiveSkillList().IndexOf(middleSkillBox); i > 0; i--)
+        {
+            this.GetSelectedActiveSkillList()[i] = this.GetSelectedActiveSkillList()[i - 1];
+            this.gameCharacter.GetSelectedActiveSkillList()[i] = this.GetSelectedActiveSkillList()[i - 1].GetCharacterSkill();
+        }
+        this.GetSelectedActiveSkillList()[0] = middleSkillBox;
+        this.gameCharacter.GetSelectedActiveSkillList()[0] = middleSkill;
+        UpdateActiveSkillListBoxUI();
+    }
+
+
     // show the skill selection panel
     public void ShowSkillSelectionPanel( SkillType skillType )
     {
         this.gameObject.SetActive( true );
         ShowActiveSkillSelectionList( skillType == SkillType.Active );
         ShowBackendSkillSelectionList( skillType == SkillType.Backend );
-    }
-
-    public void UpdateSelectedSkillListUI()
-    {
-        for (int i = 0; i < this.activeSkillBoxList.Count; i++)
-        {
-            CharacterSkill _selectedCharacterSkill = this.gameCharacter.GetSelectedActiveSkillList()[i];
-            int _selectedCharacterSkillLevel = _selectedCharacterSkill.GetSelectedSkillLevel();
-
-            this.activeSkillBoxList[i].GetCharacterSkill().SetSelectedSkillLevel(_selectedCharacterSkillLevel);
-            this.activeSkillBoxList[i].UpdateSkillSelectionBoxData();
-        }
     }
 
     // hide the skill selection panel
