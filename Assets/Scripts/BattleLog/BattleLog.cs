@@ -20,6 +20,7 @@ public class BattleLog : Singleton<BattleLog>
 
     private List<TextMeshProUGUI> battleLogTextList = new List<TextMeshProUGUI>();
     private bool isShowingBattleLogPanel = false;
+    private bool isLoadingBattleLog = false;
 
     private List<Image> lineBreakList = new List<Image>();
     private int numberOfItemLoaded = 0;
@@ -146,37 +147,42 @@ public class BattleLog : Singleton<BattleLog>
         }
     }
 
-    public void LoadingBattleLog(Vector2 scrollPosition)
+    public void LoadingBattleLog( Vector2 scrollPosition )
     {
-        StartCoroutine(OnScroll());
+        if (!this.isLoadingBattleLog)
+        {
+            StartCoroutine( OnScroll() );
+        }
     }
 
     private IEnumerator OnScroll()
     {
-        if (this.numberOfItemLoaded < this.battleLogTextList.Count)
+        if (this.numberOfItemLoaded < this.battleLogTextList.Count
+            && this.scrollRect.verticalNormalizedPosition >= 1.0f)
         {
-            if (this.scrollRect.verticalNormalizedPosition > 1.0f)
+            this.isLoadingBattleLog = true;
+            this.loadingTextObject.SetActive( true );
+            this.scrollRect.enabled = false;
+
+            int _iteration = 0;
+            float _lastContentBoxHeight = this.battleLogContentBox.sizeDelta.y;
+
+            int i = this.battleLogTextList.Count - this.numberOfItemLoaded;
+            while (i > 0 && _iteration < this.numberOfItemsLoadedAtOneTime)
             {
-                this.loadingTextObject.SetActive( true );
-
-                int _iteration = 0;
-                float _lastContentBoxHeight = this.battleLogContentBox.sizeDelta.y;
-
-                int i = this.battleLogTextList.Count - this.numberOfItemLoaded;
-                while (i > 0 && _iteration < this.numberOfItemsLoadedAtOneTime)
-                {
-                    i--;
-                    LoadBattleLogTextAndLineBreak( i );
-                    _iteration++;
-                }
-
-                yield return new WaitForEndOfFrame();
-
-                this.scrollRect.velocity = Vector2.zero;
-                this.scrollRect.verticalNormalizedPosition = _lastContentBoxHeight / this.battleLogContentBox.sizeDelta.y;
-
-                this.loadingTextObject.SetActive( false );
+                i--;
+                LoadBattleLogTextAndLineBreak( i );
+                _iteration++;
             }
+
+            yield return new WaitForEndOfFrame();
+
+            this.scrollRect.StopMovement();
+            this.scrollRect.verticalNormalizedPosition = _lastContentBoxHeight / this.battleLogContentBox.sizeDelta.y;
+
+            this.loadingTextObject.SetActive( false );
+            this.isLoadingBattleLog = false;
+            this.scrollRect.enabled = true;
         }
     }
 

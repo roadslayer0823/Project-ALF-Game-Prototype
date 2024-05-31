@@ -5,7 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
-using System.Linq;
 
 public class SkillSelectionPanelV2 : MonoBehaviour
 {
@@ -74,6 +73,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     private const string AUDIO_ID_SKILL_OFF = "skill_off";
     private const string AUDIO_ID_SKILL_ON = "skill_on";
     private const string AUDIO_ID_CLICK = "click";
+
+    private bool onActiveSkillSlotFollow = false;
 
     public enum SkillType
     {
@@ -906,5 +907,10 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     public GameCharacter GetGameCharacter()
     {
         return this.gameCharacter;
+    }
+
+    public void SetActiveSkillSlotSequenceFollowing(bool isOn)
+    {
+        onActiveSkillSlotFollow = isOn;
     }
 }
