@@ -1,9 +1,11 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.UI;
 
 public class PauseButton : MonoBehaviour
 {
     [SerializeField] private TMP_Text buttonLabel = null;
+    [SerializeField] private Slider timeSpeedSlider = null;
 
     private bool isPaused = false;
     public static float currentTimeScale = 1.0f;
@@ -24,5 +26,10 @@ public class PauseButton : MonoBehaviour
         }
 
         currentTimeScale = Time.timeScale;
+    }
+
+    public void SliderToggle()
+    {
+        currentTimeScale = timeSpeedSlider.normalizedValue;
     }
 }
