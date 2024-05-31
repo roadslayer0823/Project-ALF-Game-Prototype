@@ -87,7 +87,6 @@ public class BattleSkillManager : MonoBehaviour
                                                or CharacterIdentityType.Improviser
                                                or CharacterIdentityType.LightRecipient
                                                or CharacterIdentityType.HeavyAssaulter
-                                               or CharacterIdentityType.HeavyRecipient
                                                or CharacterIdentityType.Deuce)
                     {
                         _skillTypeList = new List<SkillType> { SkillType.Active, SkillType.Defend, SkillType.Evade };
