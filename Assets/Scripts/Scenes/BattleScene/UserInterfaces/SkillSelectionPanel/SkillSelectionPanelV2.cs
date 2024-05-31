@@ -74,8 +74,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     private const string AUDIO_ID_SKILL_ON = "skill_on";
     private const string AUDIO_ID_CLICK = "click";
 
-    private bool onActiveSkillSlotFollow = false;
-
     public enum SkillType
     {
         None,
