@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using static DatabaseManager;
 
-public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
+public class SkillSelectionBoxV2 : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private float clickDelay = 0.2f;
@@ -43,16 +43,12 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     [SerializeField] private TextMeshProUGUI skillNameText = null;
     [SerializeField] private SwipeDetector swipeDetector = null;
     [SerializeField] private LongPressDetector longPressDetector = null;
+    [SerializeField] private DoubleTapDetector doubleTapDetector = null;
+
     private SkillSelectionPanelV2 skillSelectionPanel = null;
     private CharacterSkill characterSkill = null;
-    private bool isPointerDown = false;
     private bool isSelected = false;
-    private bool isDoubleTap = false;
-    private bool isWaitingSecondClick = false;
     private int skillLevel = 0;
-    private int clickCount = 0;
-    private float pressTime = 2f;
-    private float timePressStarted;
     private Skill.SkillType skillType = Skill.SkillType.none;
 
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
@@ -86,71 +82,11 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
         }
     }
 
-    private void Update()
-    {
-        if (this.isPointerDown && !this.longPressDetector.GetIsLongPress())
-        {
-            this.longPressDetector.SkillSelectionLongPress(this.timePressStarted, this.pressTime, true);
-        }
-    }
-
-    // when pointer down
-    public void OnPointerDown(PointerEventData eventData)
-    {
-        this.swipeDetector.SetTouchStartPos(eventData.position);
-
-        if (this.skillBoxFrame.gameObject.activeSelf)
-        {
-            this.timePressStarted = Time.time;
-            this.isPointerDown = true;
-            this.longPressDetector.SetIsLongPress(false);
-        }
-    }
-
-    // when pointer up
-    public void OnPointerUp(PointerEventData eventData)
-    {
-        if (this.skillBoxFrame.gameObject.activeSelf)
-        {
-            if (this.selectionHighlight.gameObject.activeSelf)
-            {
-                this.swipeDetector.SetTouchEndPos(eventData.position);
-                this.swipeDetector.DetectSwipe();
-            }
-            Color _skillIconPointerUpColor = this.skillIcon.color;
-            _skillIconPointerUpColor.a = 1.0f;
-            this.skillIcon.color = _skillIconPointerUpColor;
-
-            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-        }
-        this.isPointerDown = false;
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        this.longPressDetector.SetIsLongPress(true);
-    }
-
     public void ClickToSelectSkill()
     {
-        if (!this.isPointerDown && !this.longPressDetector.GetIsLongPress())
+        if (!this.longPressDetector.GetIsPointerDown() && !this.longPressDetector.GetIsLongPress())
         {
-            if (this.lastClickTime > 0)
-            {
-                this.isWaitingSecondClick = Time.time - this.lastClickTime <= this.clickDelay;
-                if (!this.isWaitingSecondClick)
-                {
-                    this.clickCount = 0;
-                    this.lastClickTime = 0;
-                }
-            }
-            else
-            {
-                this.isWaitingSecondClick = true;
-            }
-            this.clickCount += 1;
-            SelectSkillBox();
-            this.lastClickTime = Time.time;
+            this.doubleTapDetector.StartTap();
         }
     }
 
@@ -198,14 +134,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     {
         if (this.skillType == Skill.SkillType.active)
         {
-            if (this.clickCount > 1)
-            {
-                this.isDoubleTap = true;
-            }
-            else
-            {
-                this.isDoubleTap = false;
-            }
             SelectActiveSkill();
         }
         else if (this.skillType == Skill.SkillType.backend)
@@ -219,12 +147,12 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     {
         if (!this.isSelected)
         {
-            this.clickCount = 0;
+            this.doubleTapDetector.ResetDoubleTapValue();
         }
 
         SkillSelectionBoxV2 _lastSelectedSkillSelectionBox = this.skillSelectionPanel.GetLastSelectedActiveSkillSelectionBox();
 
-        if (!this.isDoubleTap)
+        if (!this.doubleTapDetector.IsDoubleTap())
         {
             if (_lastSelectedSkillSelectionBox != null && _lastSelectedSkillSelectionBox != this)
             {
@@ -258,9 +186,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
     // the selected skill box is backend skill
     private void SelectBackendSkill()
     {
-        this.isWaitingSecondClick = false;
-        this.clickCount = 0;
-
         SkillSelectionBoxV2 _lastSelectedSkillSelectionBox = this.skillSelectionPanel.GetLastSelectedBackendSkillSelectionBox();
 
         if (_lastSelectedSkillSelectionBox != null && _lastSelectedSkillSelectionBox != this)
@@ -293,10 +218,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             return;
         }
 
-        this.isWaitingSecondClick = false;
-        this.clickCount = 0;
-        this.isDoubleTap = false;
-
         if (this.skillType == Skill.SkillType.active)
         {
             this.currentSkillSelectionSequence.gameObject.SetActive(false);
@@ -307,6 +228,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour, IPointerDownHandler, IPointerU
             if(this.skillType == Skill.SkillType.active)
             {
                 this.skillSelectionPanel.RemoveSelectedSkillBox(this);
+                this.doubleTapDetector.ResetDoubleTapValue();
             }
             else if(this.skillType == Skill.SkillType.backend)
             {

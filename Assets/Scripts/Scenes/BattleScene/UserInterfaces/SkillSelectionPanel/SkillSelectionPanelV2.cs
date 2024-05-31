@@ -8,6 +8,8 @@ using Subskill = DatabaseManager.Subskill;
 
 public class SkillSelectionPanelV2 : MonoBehaviour
 {
+    [SerializeField] private bool onActiveSkillSlotFollow = false;
+
     [Header("UI Images")]
     [SerializeField] private Sprite activeSkillBoxUnselectBackgroundImage = null;
     [SerializeField] private Sprite activeSkillBoxSelectBackgroundImage = null;
@@ -71,8 +73,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     private const string AUDIO_ID_SKILL_OFF = "skill_off";
     private const string AUDIO_ID_SKILL_ON = "skill_on";
     private const string AUDIO_ID_CLICK = "click";
-
-    private bool onActiveSkillSlotFollow = false;
 
     public enum SkillType
     {

@@ -1,21 +1,23 @@
 using UnityEngine;
 using UnityEngine.Events;
-using System.Collections;
+using UnityEngine.EventSystems;
 
-public class LongPressDetector : MonoBehaviour
+public class LongPressDetector : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
 {
     [SerializeField] private UnityEvent onLongPressedCallBack = null;
     [SerializeField] private float longPressDuration;
+
+    private float pressTime = 2f;
+    private float timePressStarted;
     private bool isLongPress;
+    private bool isPointerDown = false;
 
-    public void SetIsLongPress(bool currentLongPress)
+    public void Update()
     {
-        this.isLongPress = currentLongPress;
-    }
-
-    public bool GetIsLongPress()
-    {
-        return this.isLongPress;
+        if (GetIsPointerDown() && !GetIsLongPress())
+        {
+            SkillSelectionLongPress(this.timePressStarted, this.pressTime, true);
+        }
     }
 
     public void SkillSelectionLongPress(float startPressTime, float longPressDuration, bool currentLongPress)
@@ -25,5 +27,42 @@ public class LongPressDetector : MonoBehaviour
             isLongPress = currentLongPress;
             onLongPressedCallBack.Invoke();
         }
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        SetIsPointerDown(false);
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        this.timePressStarted = Time.time;
+        SetIsPointerDown(true);
+        SetIsLongPress(false);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        SetIsLongPress(true);
+    }
+
+    public void SetIsLongPress(bool currentLongPress)
+    {
+        this.isLongPress = currentLongPress;
+    }
+
+    public void SetIsPointerDown(bool currentPointerDown)
+    {
+        this.isPointerDown = currentPointerDown;
+    }
+
+    public bool GetIsLongPress()
+    {
+        return this.isLongPress;
+    }
+
+    public bool GetIsPointerDown()
+    {
+        return this.isPointerDown;
     }
 }

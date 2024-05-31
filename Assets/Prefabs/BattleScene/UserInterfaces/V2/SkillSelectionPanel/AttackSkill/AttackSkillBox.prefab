@@ -2110,6 +2110,7 @@ GameObject:
   - component: {fileID: 9126710129763126092}
   - component: {fileID: 4369206959853597835}
   - component: {fileID: 6436104361591118025}
+  - component: {fileID: 3669551835019427336}
   - component: {fileID: 8344915032155510504}
   m_Layer: 5
   m_Name: AttackSkillBox
@@ -2186,6 +2187,7 @@ MonoBehaviour:
   skillNameText: {fileID: 2194774549794930642}
   swipeDetector: {fileID: 4369206959853597835}
   longPressDetector: {fileID: 6436104361591118025}
+  doubleTapDetector: {fileID: 3669551835019427336}
 --- !u!114 &4369206959853597835
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2275,6 +2277,35 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   longPressDuration: 0
+--- !u!114 &3669551835019427336
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8369654111289908257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b504ab77b984422eb269c8d480c418d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onDoubleTapCallBack:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 9126710129763126092}
+        m_TargetAssemblyTypeName: SkillSelectionBoxV2, Assembly-CSharp
+        m_MethodName: SelectSkillBox
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  tapDelay: 0.2
+  startDetect: 0
 --- !u!114 &8344915032155510504
 MonoBehaviour:
   m_ObjectHideFlags: 0
