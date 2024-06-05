@@ -16,6 +16,7 @@ public class SkillSlotV2 : MonoBehaviour
     [SerializeField] private SwipeDetector swipeDetector;
 
     [Header("Skill UI")]
+    [SerializeField] private Image unSelectSkillFrame;
     [SerializeField] private Image skillFrame;
     [SerializeField] private Image skillIcon;
     [SerializeField] private Sprite blankActiveSkillFrame;
@@ -76,9 +77,6 @@ public class SkillSlotV2 : MonoBehaviour
     private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
     private BackendSkillSlotListPanel backendSkillSlotListPanel = null;
     private ObservedSkillData observedSkillData;
-    private Vector2 mousePressPosition = new Vector2();
-    private Vector2 mouseReleasePosition = new Vector2();
-    private Vector2 currentSwipe = new Vector2();
 
     public int skillLevel = 1;
     private bool isSwipeable = false;
@@ -90,6 +88,7 @@ public class SkillSlotV2 : MonoBehaviour
     //public variable
     public bool isMiddleSlot = false;
     public bool isActivated = false;
+    public bool isSelected;
 
     //audio and animation clip id
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
@@ -135,6 +134,7 @@ public class SkillSlotV2 : MonoBehaviour
         this.activeSkillSlotListPanelV2 = activeSkillSlotListPanelV2;
         this.swipeDetector.SetIsDetected(true);
         this.SetBlankFrame( this.skillType );
+        this.skillFrame.material.SetFloat("_Brightness", 1);
         this.skillIcon.transform.localScale = new Vector3( this.skillIconScale, this.skillIconScale, 1.0f );
     }
 
@@ -412,7 +412,9 @@ public class SkillSlotV2 : MonoBehaviour
             _ => throw new NotImplementedException()
         };
         this.skillFrame.SetNativeSize();
+        this.unSelectSkillFrame.SetNativeSize();
         this.skillFrame.sprite = frameSprite;
+        this.unSelectSkillFrame.sprite = frameSprite;
         this.currentObsevedPercentage.gameObject.SetActive(isShowing);
 
         this.skillNameBackground.sprite = blankSkillNameBackground;
@@ -435,30 +437,45 @@ public class SkillSlotV2 : MonoBehaviour
         switch ( this.currentStateType )
         {
             case StateType.Enabled:
+                ActivateSkillFrame();
                 if (isMiddleSlot)
                 {
                     EnableButton();
+                    BrightnessLoopAnimation();
+                    PlayActivateOutlineAnimation();
                 }
-                this.selectedSkillEffect.SetActive( false );
-                ShowSkillFrame(this.selectedSkill);
-                UpdateSkillIcon( false );
+                if(isSelected == true)
+                {
+                    this.selectedSkillEffect.SetActive(true);
+                    ShowActivateSkillFrame(this.selectedSkill);
+                    UpdateSkillIcon(true);
+                }
+                if (isSelected == false)
+                {
+                    this.selectedSkillEffect.SetActive(false);
+                    ShowSkillFrame(this.selectedSkill);
+                    UpdateSkillIcon(false);
+                }
                 swipeDetector.enabled = true;
                 break;
 
             case StateType.Disabled:
-
-                this.selectedSkillEffect.SetActive( false );
-                SetBlankFrame( this.skillType );
-                UpdateSkillIcon( false );
-                swipeDetector.enabled = false;
-                break;
-
-            case StateType.Selected:
-
-                this.selectedSkillEffect.SetActive( true );
-                ShowActivateSkillFrame(this.selectedSkill);
-                UpdateSkillIcon( true );
-                swipeDetector.enabled = true;
+                DeselectSkillFrame();
+                this.skillFrame.material.SetFloat("_Brightness", 1);
+                if (isSelected == true)
+                {
+                    this.selectedSkillEffect.SetActive(true);
+                    ShowActivateSkillFrame(this.selectedSkill);
+                    UpdateSkillIcon(true);
+                    swipeDetector.enabled = true;
+                }
+                if (isSelected == false)
+                {
+                    this.selectedSkillEffect.SetActive(false);
+                    SetBlankFrame(this.skillType);
+                    UpdateSkillIcon(false);
+                    swipeDetector.enabled = false;
+                }
                 break;
 
             case StateType.Activated:
@@ -470,6 +487,27 @@ public class SkillSlotV2 : MonoBehaviour
                 swipeDetector.enabled = false;
                 break;
         }
+    }
+
+    public void BrightnessLoopAnimation()
+    {
+        LeanTween.value(this.skillFrame.gameObject, 1, 1.5f, 0.5f).setLoopPingPong().setDelay(0.1f).
+        setOnUpdate((float var) =>
+        {
+            this.skillFrame.material.SetFloat("_Brightness", var);
+        });
+    }
+
+    public void ActivateSkillFrame()
+    {
+        this.skillFrame.gameObject.SetActive(true);
+        this.unSelectSkillFrame.gameObject.SetActive(false);
+    }
+
+    public void DeselectSkillFrame()
+    {
+        this.skillFrame.gameObject.SetActive(false);
+        this.unSelectSkillFrame.gameObject.SetActive(true);
     }
 
     public void PlaySkillOutlineAnimation()
@@ -486,16 +524,16 @@ public class SkillSlotV2 : MonoBehaviour
         }
     }
 
-    public void PlaySkillOutlineAnimationV2()
+    public void PlayActivateOutlineAnimation()
     {
-        var OutlineAnimation = this.skillType switch
+        if (this.skillType == SkillType.ActiveSkill)
         {
-            SkillType.ActiveSkill => (ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE, ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND),
-            SkillType.BackendSkill => (ANIMATION_ID_BACKEND_SKILL_OUTLINE_RESIZE, ANIMATION_ID_BACKEND_SKILL_OUTLINE_EXPAND),
-            _ => throw new NotImplementedException()
-        };
-        this.skillBoxAnimation.Play(OutlineAnimation.Item1, 1, 0f);
-        this.skillBoxAnimation.Play(OutlineAnimation.Item2, 1, 0f);
+            this.skillBoxAnimation.Play(ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND, 0, 0f);
+        }
+        else if (this.skillType == SkillType.BackendSkill)
+        {
+            this.skillBoxAnimation.Play(ANIMATION_ID_BACKEND_SKILL_OUTLINE_EXPAND, 0, 0f);
+        }
     }
 
     public void UpdateCurrentSkillDisplayTextUI(bool isEnable)
@@ -623,5 +661,15 @@ public class SkillSlotV2 : MonoBehaviour
     public bool GetIsObserving()
     {
         return this.isObserving;
+    }
+
+    public void SetIsSelected(bool isSelected)
+    {
+        this.isSelected = isSelected;
+    }
+
+    public bool GetIsSelected()
+    {
+        return this.isSelected;
     }
 }
