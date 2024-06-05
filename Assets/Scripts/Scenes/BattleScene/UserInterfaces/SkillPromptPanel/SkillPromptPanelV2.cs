@@ -233,9 +233,10 @@ public class SkillPromptPanelV2 : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         this.playerBackendSkillIcon.gameObject.SetActive(false);
         this.playerMarkIcon.gameObject.SetActive(true);
-        yield return new WaitForSeconds(1.0f);
-        this.playerMarkIcon.gameObject.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
         this.playerBackendSkillIcon.gameObject.SetActive(true);
+        yield return new WaitForSeconds(0.5f);
+        this.playerMarkIcon.gameObject.SetActive(false);
     }
 
     // hide the command phase
