@@ -102,6 +102,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
             {
                 this.playerActiveSkillProgressBar.gameObject.SetActive(false);
                 this.playerActiveSkillIcon.gameObject.SetActive(false);
+                this.playerBackendSkillProgressBar.gameObject.SetActive(true);
 
                 this.playerBackendSkillProgressBar.fillAmount = fillAmount;
             }
@@ -232,10 +233,9 @@ public class SkillPromptPanelV2 : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         this.playerBackendSkillIcon.gameObject.SetActive(false);
         this.playerMarkIcon.gameObject.SetActive(true);
-        yield return new WaitForSeconds(1.2f);
+        yield return new WaitForSeconds(1.0f);
         this.playerMarkIcon.gameObject.SetActive(false);
         this.playerBackendSkillIcon.gameObject.SetActive(true);
-        this.playerBackendSkillProgressBar.gameObject.SetActive(true);
     }
 
     // hide the command phase
