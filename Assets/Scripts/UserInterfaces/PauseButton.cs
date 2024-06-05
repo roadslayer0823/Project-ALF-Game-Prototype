@@ -12,17 +12,17 @@ public class PauseButton : MonoBehaviour
 
     public void ClickToToggle()
     {
-        isPaused = !( isPaused );
+        this.isPaused = !( this.isPaused );
 
         if (isPaused)
         {
             Time.timeScale = 0.0f;
-            buttonLabel.text = "Resume";
+            this.buttonLabel.text = "Resume";
         }
         else
         {
             Time.timeScale = 1.0f;
-            buttonLabel.text = "Pause";
+            this.buttonLabel.text = "Pause";
         }
 
         currentTimeScale = Time.timeScale;
@@ -30,6 +30,6 @@ public class PauseButton : MonoBehaviour
 
     public void SliderToggle()
     {
-        currentTimeScale = timeSpeedSlider.normalizedValue;
+        currentTimeScale = this.timeSpeedSlider.normalizedValue;
     }
 }

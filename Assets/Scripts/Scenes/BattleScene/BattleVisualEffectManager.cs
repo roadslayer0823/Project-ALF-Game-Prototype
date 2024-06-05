@@ -6,6 +6,7 @@ public class BattleVisualEffectManager : MonoBehaviour
 {
     [SerializeField] private CameraRadiusBlur cameraRadiusBlur = null;
     [SerializeField] private CutScreenHandlerV2 cutScreenHandler = null;
+    [SerializeField] private Animator darkEffectAnimator = null;
 
     public void SetUp()
     {
@@ -73,4 +74,18 @@ public class BattleVisualEffectManager : MonoBehaviour
     }
 
 #endregion
+
+#region Darken Effect
+    public void TriggerAnimationDarkenPartA()
+    {
+        this.darkEffectAnimator.SetTrigger("darkenPartA");
+    }
+
+    public void TriggerAnimationSetDarkenPartB()
+    {
+        this.darkEffectAnimator.SetTrigger("darkenPartB");
+    }
+
+#endregion
 }
+
