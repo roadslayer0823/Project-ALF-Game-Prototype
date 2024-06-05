@@ -209,6 +209,7 @@ MonoBehaviour:
   playerBackendSkillProgressBar: {fileID: 7364771708649943667}
   playerActiveSkillIcon: {fileID: 5061808981105095814}
   playerBackendSkillIcon: {fileID: 5120389682784780456}
+  playerMarkIcon: {fileID: 9029319449595440999}
   playerPassiveSkillBackgroundSlot1: {fileID: 7192440373424871391}
   playerPassiveSkillBackgroundSlot2: {fileID: 6654151824930636316}
   playerPassiveSkillBackgroundSlot3: {fileID: 6877016482180164656}
@@ -3098,6 +3099,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5775318097511168237, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
   m_PrefabInstance: {fileID: 2744164085403643868}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &9029319449595440999 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6583044952521375931, guid: 1a975966c4fc340a69a7923ec6ecb13a, type: 3}
+  m_PrefabInstance: {fileID: 2744164085403643868}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &4690030490396104251
 PrefabInstance:
   m_ObjectHideFlags: 0

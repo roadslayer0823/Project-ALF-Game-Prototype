@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
 
 public class SkillPromptPanelV2 : MonoBehaviour
 {
@@ -64,6 +65,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [SerializeField] private Image playerBackendSkillProgressBar = null;
     [SerializeField] private Image playerActiveSkillIcon = null;
     [SerializeField] private Image playerBackendSkillIcon = null;
+    [SerializeField] private Image playerMarkIcon = null;
     [SerializeField] private Image playerPassiveSkillBackgroundSlot1 = null;
     [SerializeField] private Image playerPassiveSkillBackgroundSlot2 = null;
     [SerializeField] private Image playerPassiveSkillBackgroundSlot3 = null;
@@ -99,9 +101,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
             else
             {
                 this.playerActiveSkillProgressBar.gameObject.SetActive(false);
-                this.playerBackendSkillProgressBar.gameObject.SetActive(true);
                 this.playerActiveSkillIcon.gameObject.SetActive(false);
-                this.playerBackendSkillIcon.gameObject.SetActive(true);
 
                 this.playerBackendSkillProgressBar.fillAmount = fillAmount;
             }
@@ -201,6 +201,10 @@ public class SkillPromptPanelV2 : MonoBehaviour
 
             LeanTween.cancel( this.playerCommandPhaseGO );
             LeanTween.moveLocalX(this.playerCommandPhaseGO, 0.0f, this.skillInfoPopSpeed);
+            if(phaseName == TerminologyManager.REPULSE_COMMAND_TIME)
+            {
+                StartCoroutine(WaitBeforeRepulse());
+            }
 
             if (duration > 0)
             {
@@ -220,6 +224,18 @@ public class SkillPromptPanelV2 : MonoBehaviour
                 LeanTween.moveLocalX(this.enemyCommandPhaseGO, -600.0f, this.skillInfoPopSpeed).setDelay(duration).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.enemyCommandPhaseGO);
             }
         }
+    }
+
+
+    public IEnumerator WaitBeforeRepulse()
+    {
+        yield return new WaitForSeconds(0.2f);
+        this.playerBackendSkillIcon.gameObject.SetActive(false);
+        this.playerMarkIcon.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1.2f);
+        this.playerMarkIcon.gameObject.SetActive(false);
+        this.playerBackendSkillIcon.gameObject.SetActive(true);
+        this.playerBackendSkillProgressBar.gameObject.SetActive(true);
     }
 
     // hide the command phase
