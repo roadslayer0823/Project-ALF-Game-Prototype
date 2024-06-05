@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20ebbe636057f43efb31c1d194566512, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onActiveSkillSlotFollow: 0
   activeSkillBoxUnselectBackgroundImage: {fileID: 21300000, guid: b454ba89091474789a6f304afa20a108, type: 3}
   activeSkillBoxSelectBackgroundImage: {fileID: 21300000, guid: 6992347dd6c1d44869cba541d1c6b34f, type: 3}
   activeSkillBoxSelectedBackgroundImage: {fileID: 21300000, guid: 505c52cbb79b74beebb19089ccad6dd6, type: 3}
@@ -107,7 +108,6 @@ MonoBehaviour:
   backendGenericBoxFilledIcon: {fileID: 6109524651211413141}
   returnButton: {fileID: 982782964219806141}
   skillInfoPanel: {fileID: 0}
-  darkLayer: {fileID: 0}
 --- !u!1 &5189946530786782906
 GameObject:
   m_ObjectHideFlags: 0
@@ -367,6 +367,10 @@ PrefabInstance:
     - target: {fileID: 5606295895162041795, guid: 64fdb1b56593445a69eed289cc35997e, type: 3}
       propertyPath: clickDelay
       value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5668496246823142469, guid: 64fdb1b56593445a69eed289cc35997e, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -55
       objectReference: {fileID: 0}
     - target: {fileID: 6165487988423117068, guid: 64fdb1b56593445a69eed289cc35997e, type: 3}
       propertyPath: m_SortingLayer
