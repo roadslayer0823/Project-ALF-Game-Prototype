@@ -59,3 +59,9 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: ea8de695acaeb4a6da33e9d85b2c975a, type: 3}
   - id: line_break
     clip: {fileID: 8300000, guid: e7510cc58fc4b49fa990a61408bb1e34, type: 3}
+  - id: skill_enabled
+    clip: {fileID: 8300000, guid: c1de27eac01b84687a3c73620f9bbed9, type: 3}
+  - id: active_skill_selected
+    clip: {fileID: 8300000, guid: ba8685a2867524dbdba2cad782fc633d, type: 3}
+  - id: backend_skill_selected
+    clip: {fileID: 8300000, guid: 985ebbd1907c84b349fc6644b1d0299f, type: 3}
