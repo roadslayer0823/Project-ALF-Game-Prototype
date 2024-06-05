@@ -93,6 +93,9 @@ public class SkillSlotV2 : MonoBehaviour
     //audio and animation clip id
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
+    private const string AUDIO_ID_BUTTON_ENABLE = "skill_enabled";
+    private const string AUDIO_ID_ACTIVE_SKILL_SELECTED = "active_skill_selected";
+    private const string AUDIO_ID_BACKEND_SKILL_SELECTED = "backend_skill_selected";
     private const string ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE = "ActiveSkillOutlineResize";
     private const string ANIMATION_ID_ACTIVE_SKILL_OUTLINE_EXPAND = "ActiveSkillOutlineExpand";
     private const string ANIMATION_ID_BACKEND_SKILL_OUTLINE_RESIZE = "BackendSkillOutlineResize";
@@ -132,7 +135,6 @@ public class SkillSlotV2 : MonoBehaviour
     {
         SetSelectedSkill(this.selectedSkill);
         this.activeSkillSlotListPanelV2 = activeSkillSlotListPanelV2;
-        this.swipeDetector.SetIsDetected(true);
         this.SetBlankFrame( this.skillType );
         this.skillFrame.material.SetFloat("_Brightness", 1);
         this.skillIcon.transform.localScale = new Vector3( this.skillIconScale, this.skillIconScale, 1.0f );
@@ -170,15 +172,16 @@ public class SkillSlotV2 : MonoBehaviour
             if (this.activeSkillSlotListPanelV2 != null)
             {
                 _selectedGameCharacter = this.activeSkillSlotListPanelV2.GetSelectedGameCharacter();
-                this.activeSkillSlotListPanelV2.OnSkillSlotSelected( this, true );
+                this.activeSkillSlotListPanelV2.OnSkillSlotSelected(this, true);
+                AudioManager.Instance.PlaySoundEffect(AUDIO_ID_ACTIVE_SKILL_SELECTED);
             }
             else if (this.backendSkillSlotListPanel != null)
             {
                 _selectedGameCharacter = this.backendSkillSlotListPanel.GetSelectedGameCharacter();
-
+                AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BACKEND_SKILL_SELECTED);
                 if (!_isObservingSkill)
                 {
-                    this.backendSkillSlotListPanel.OnSkillSlotSelected( this, true );
+                    this.backendSkillSlotListPanel.OnSkillSlotSelected(this, true);
                 }
             }
 
@@ -197,6 +200,7 @@ public class SkillSlotV2 : MonoBehaviour
     public void EnableButton()
     {
         this.skillSelectionButton.interactable = true;
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BUTTON_ENABLE);
     }
 
     public void IncreaseSkillLevel()
