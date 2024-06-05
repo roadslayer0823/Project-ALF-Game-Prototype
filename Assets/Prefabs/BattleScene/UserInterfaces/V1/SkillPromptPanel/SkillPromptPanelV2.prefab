@@ -174,8 +174,8 @@ MonoBehaviour:
   speedEffectGO: {fileID: 924451551512430664}
   strengthEffectGO: {fileID: 924451551981816056}
   skillNameBackgroundImage: {fileID: 924451551161095367}
-  activeSkillBackgroundImage: {fileID: 21300000, guid: 873cbb529f6f9403cba1b45a3b3242a9, type: 3}
-  backendSkillBackgroundImage: {fileID: 21300000, guid: 5176ce7c0871c4907bb33a57f3bf2305, type: 3}
+  activeSkillBackgroundImage: {fileID: 21300000, guid: c1b7f34b00ecb46f292839c993c5da99, type: 3}
+  backendSkillBackgroundImage: {fileID: 21300000, guid: fb8ec8d13fafe48268e1873631dad1c9, type: 3}
   enemySkillInfoGO: {fileID: 8816277694440587123}
   enemySkillTagGO: {fileID: 1103204275577673676}
   enemyCommandPhaseGO: {fileID: 1639040187490324452}
@@ -253,10 +253,10 @@ RectTransform:
   m_Father: {fileID: 924451550493040785}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.3}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -1243.1007, y: 0}
+  m_SizeDelta: {x: -834.01, y: 114}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &924451550840975128
 MonoBehaviour:
@@ -335,8 +335,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 196.065, y: -74.2}
-  m_SizeDelta: {x: 392.13, y: 148.4}
+  m_AnchoredPosition: {x: 92.994995, y: -57}
+  m_SizeDelta: {x: 185.98999, y: 114}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &924451551161095366
 CanvasRenderer:
@@ -367,7 +367,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: a20ec56259f784297a51e76a28464d0e, type: 3}
-  m_Type: 1
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -393,7 +393,7 @@ MonoBehaviour:
     m_Right: 15
     m_Top: 0
     m_Bottom: 0
-  m_ChildAlignment: 0
+  m_ChildAlignment: 1
   m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
@@ -631,8 +631,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 196.065, y: -74.2}
-  m_SizeDelta: {x: 362.13, y: 148.4}
+  m_AnchoredPosition: {x: 92.994995, y: -57}
+  m_SizeDelta: {x: 155.98999, y: 114}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &924451552154333715
 CanvasRenderer:
@@ -665,7 +665,7 @@ MonoBehaviour:
   m_text: New Text
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: d820d13fe549d431296db73193852419, type: 2}
-  m_sharedMaterial: {fileID: -8331989788932644591, guid: 4af3b1094441d4a37b82a780fcc0d216, type: 2}
+  m_sharedMaterial: {fileID: 5552093590376774946, guid: d820d13fe549d431296db73193852419, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -689,10 +689,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
-  m_fontSizeBase: 36
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -728,7 +728,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 1
+  m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &924451552446208850
