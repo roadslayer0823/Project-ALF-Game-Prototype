@@ -421,6 +421,7 @@ public class SkillSlotV2 : MonoBehaviour
         this.unSelectSkillFrame.sprite = frameSprite;
         this.currentObsevedPercentage.gameObject.SetActive(isShowing);
 
+        DeselectSkillFrame();
         this.skillNameBackground.sprite = blankSkillNameBackground;
         this.skillPrefixBackground.sprite = blankSkillPrefixBackground;
     }
@@ -464,8 +465,6 @@ public class SkillSlotV2 : MonoBehaviour
                 break;
 
             case StateType.Disabled:
-                DeselectSkillFrame();
-                this.skillFrame.material.SetFloat("_Brightness", 1);
                 if (isSelected == true)
                 {
                     this.selectedSkillEffect.SetActive(true);
