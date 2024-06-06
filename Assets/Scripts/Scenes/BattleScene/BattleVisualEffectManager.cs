@@ -76,7 +76,7 @@ public class BattleVisualEffectManager : MonoBehaviour
 #endregion
 
 #region Darken Effect
-    public void TriggerAnimationDarkenPartA()
+    public void TriggerAnimationSetDarkenPartA()
     {
         this.darkEffectAnimator.SetTrigger("darkenPartA");
     }

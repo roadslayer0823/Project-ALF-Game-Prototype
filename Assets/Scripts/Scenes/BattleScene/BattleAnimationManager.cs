@@ -826,6 +826,8 @@ public class BattleAnimationManager : MonoBehaviour
             ChangeToBackgroundPartB();
         }
 
+        this.battleGameManager.GetBattleVisualEffectManager().TriggerAnimationSetDarkenPartA();
+
         _attacker.GetOwnContainer().SetActive( true );
         _attacker.ShowCharacterObject();
         _attacker.GetOpponentContainer().SetActive( false );
@@ -931,6 +933,8 @@ public class BattleAnimationManager : MonoBehaviour
         {
             ChangeToBackgroundPartA();
         }
+
+        this.battleGameManager.GetBattleVisualEffectManager().TriggerAnimationSetDarkenPartB();
 
         this.targetCamera.transform.position = cameraPosition;
         this.targetCamera.orthographicSize = cameraOrthographicSize;
@@ -1850,15 +1854,15 @@ public class BattleAnimationManager : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
         this.skillPromptPanel.ShowCasterCurrentSkillInfo( caster );
-
-        if (CheckHasTimeStop( caster ))
-        {
-            yield return StartCoroutine( FadeDarkLayer( this.skillTimeStopDarkness, this.backgroundDarknessDuration ) );
-        }
-        else
-        {
-            StartCoroutine( FadeDarkLayer( this.skillNormalDarkness, this.backgroundDarknessDuration ) );
-        }
+        yield return new WaitForSeconds(0);
+        //if (CheckHasTimeStop( caster ))
+        //{
+        //    yield return StartCoroutine( FadeDarkLayer( this.skillTimeStopDarkness, this.backgroundDarknessDuration ) );
+        //}
+        //else
+        //{
+        //    StartCoroutine( FadeDarkLayer( this.skillNormalDarkness, this.backgroundDarknessDuration ) );
+        //}
     }
 
     private bool CheckHasTimeStop( GameCharacter caster )
