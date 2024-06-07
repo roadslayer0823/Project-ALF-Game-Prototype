@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Animations/BattleStartUI.meta
 guid: 76e52febf6d6549e49b783409a9e5d6a
+========
+guid: 1e64af50fc20247dfbe70b8433e8aeeb
+>>>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7:Assets/Animations/BattleStartUI/AnimationController.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

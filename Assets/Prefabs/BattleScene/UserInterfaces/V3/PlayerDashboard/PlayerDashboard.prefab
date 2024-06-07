@@ -11,7 +11,10 @@ GameObject:
   - component: {fileID: 7211318325020464698}
   - component: {fileID: 343275101302673593}
 <<<<<<< HEAD
+<<<<<<< HEAD
   - component: {fileID: 5683704277986299687}
+=======
+>>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
 =======
 >>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
   m_Layer: 5
@@ -34,7 +37,13 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
 <<<<<<< HEAD
+<<<<<<< HEAD
   - {fileID: 8713209819078633191}
+=======
+  - {fileID: 2480533894965542438}
+  - {fileID: 2101324654075828207}
+  - {fileID: 6038635797521485721}
+>>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
 =======
   - {fileID: 2480533894965542438}
   - {fileID: 2101324654075828207}
@@ -64,6 +73,7 @@ MonoBehaviour:
   characterInfoPanelV2: {fileID: 2438685319300247373}
   executeButtonContainer: {fileID: 7822093089784116890}
   executeButton: {fileID: 4626089964375596255}
+<<<<<<< HEAD
 <<<<<<< HEAD
   characterInfoPanelAnimator: {fileID: 5683704277986299687}
   characterInfoPanel: {fileID: 2438685319300247373}
@@ -184,13 +194,19 @@ MonoBehaviour:
   m_ShowMaskGraphic: 0
 =======
 >>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
+=======
+>>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
 --- !u!1001 &2459478990292976814
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_TransformParent: {fileID: 8713209819078633191}
+=======
+    m_TransformParent: {fileID: 7211318325020464698}
+>>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
 =======
     m_TransformParent: {fileID: 7211318325020464698}
 >>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
@@ -266,7 +282,11 @@ PrefabInstance:
     - target: {fileID: 21800511003933320, guid: 90b635611691d46859c02c6537ad80c0, type: 3}
       propertyPath: m_AnchoredPosition.y
 <<<<<<< HEAD
+<<<<<<< HEAD
       value: 116
+=======
+      value: 66
+>>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
 =======
       value: 66
 >>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
@@ -311,7 +331,11 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_TransformParent: {fileID: 8713209819078633191}
+=======
+    m_TransformParent: {fileID: 7211318325020464698}
+>>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
 =======
     m_TransformParent: {fileID: 7211318325020464698}
 >>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
@@ -494,7 +518,11 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
 <<<<<<< HEAD
+<<<<<<< HEAD
     m_TransformParent: {fileID: 8713209819078633191}
+=======
+    m_TransformParent: {fileID: 7211318325020464698}
+>>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
 =======
     m_TransformParent: {fileID: 7211318325020464698}
 >>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
