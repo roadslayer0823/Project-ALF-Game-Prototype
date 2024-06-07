@@ -113,9 +113,8 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         }
 
         HealthPointInfo();
-        StatePointInfo();
         StressValueInfo();
-        this.isSetupComplete = true;
+        StatePointInfo();
     }
 
     private void StatePointInfo()
@@ -137,35 +136,46 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
         if (this.startingStatePoint != _currentStatePoint)
         {
-            //curret state point animation
-            LeanTween.value(gameObject, this.startingStatePoint, _currentStatePoint, this.textAnimationDuration)
+            if (isSetupComplete == false)
+            {
+                LeanTween.value(gameObject, this.startingStatePoint, _currentStatePoint, this.textAnimationDuration)
                 .setOnUpdate((float val) =>
                 {
                     this.startingStatePoint = Mathf.RoundToInt(val);
                     this.statePointValueText.SetText(this.startingStatePoint.ToString());
-                    this.statePointBar.fillAmount = this.startingStatePoint / _maximumStatePoint;
                 });
-
-            //max state point increase animation
-            if (this.startingStatePoint != _maximumStatePoint)
+                isSetupComplete = true;
+            }
+            else
             {
-                if (this.isSetupComplete == true)
-                {
-                    Vector2 maxStatePointIconOriginalPosition = this.maxStatePointIncreaseIcon.gameObject.transform.position;
-                    float maxStatePointIncreaseOpacity = this.maxStatePointIncreaseIcon.color.a;
+                LeanTween.value(gameObject, this.startingStatePoint, _currentStatePoint, this.textAnimationDuration)
+               .setOnUpdate((float val) =>
+               {
+                   this.startingStatePoint = Mathf.RoundToInt(val);
+                   this.statePointValueText.SetText(this.startingStatePoint.ToString());
+                   this.statePointBar.fillAmount = this.startingStatePoint / _maximumStatePoint;
+               });
 
-                    //max state point increase animation
-                    this.maxStatePointIncreaseIcon.gameObject.SetActive(true);
-                    this.characterInfoPanelAnimation.Play(ANIMATION_ID_MAX_STATE_POINT_INCREASE, 1, 0f);
-                    LeanTween.move(this.maxStatePointIncreaseIcon.gameObject, this.maxStatePointAnimEndingPoint, 0.5f)
-                       .setOnComplete(() =>
-                        {
-                            LeanTween.alpha(this.maxStatePointIncreaseIcon.gameObject, 0, 0.3f);
-                            this.maxStatePointIncreaseIcon.gameObject.SetActive(false);
-                            maxStatePointIncreaseOpacity = 255;
-                            maxStatePointIncreaseIcon.gameObject.transform.position = maxStatePointIconOriginalPosition;
-                        });
-                    StartCoroutine(PlayMaxStatePointAnimation());
+                if (this.startingStatePoint != _maximumStatePoint)
+                {
+                    if (this.isSetupComplete == true)
+                    {
+                        Vector2 maxStatePointIconOriginalPosition = this.maxStatePointIncreaseIcon.gameObject.transform.position;
+                        float maxStatePointIncreaseOpacity = this.maxStatePointIncreaseIcon.color.a;
+
+                        //max state point increase animation
+                        this.maxStatePointIncreaseIcon.gameObject.SetActive(true);
+                        this.characterInfoPanelAnimation.Play(ANIMATION_ID_MAX_STATE_POINT_INCREASE, 0, 0f);
+                        LeanTween.move(this.maxStatePointIncreaseIcon.gameObject, this.maxStatePointAnimEndingPoint, 0.5f)
+                            .setOnComplete(() =>
+                            {
+                                LeanTween.alpha(this.maxStatePointIncreaseIcon.gameObject, 0, 0.3f);
+                                this.maxStatePointIncreaseIcon.gameObject.SetActive(false);
+                                maxStatePointIncreaseOpacity = 255;
+                                maxStatePointIncreaseIcon.gameObject.transform.position = maxStatePointIconOriginalPosition;
+                            });
+                        StartCoroutine(PlayMaxStatePointAnimation());
+                    }
                 }
             }
         }
@@ -214,6 +224,11 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         }
     }
 
+    public void SetupStressValueText()
+    {
+        this.stressPercentageText.SetText($"{99}<size=40>%</size>");
+    }
+
     private void StressValueInfo()
     {
         float _currentStressValue = this.selectedCharacter.GetCurrentStressValue();
@@ -223,6 +238,13 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             this.stressValueStatus.material.SetFloat("_Color1_G_Percentage", 1);
             this.stressValueStatus.material.SetFloat("_Color2_G_Percentage", 1);
             this.stressValueStatus.material.SetFloat("_Color1_B_Percentage", 1);
+            LeanTween.value(this.stressPercentageText.gameObject, this.selectedCharacter.GetMaximumStressValue(), this.startingStressValue, textAnimationDuration)
+                    .setOnUpdate((float val) =>
+                    {
+                        this.startingStressValue = Mathf.RoundToInt(val);
+                        this.stressPercentageText.SetText($"{this.startingStressValue}<size=40>%</size>");
+                    });
+            Debug.Log("did not setup");
         }
 
         if (this.selectedCharacter.IsInStressBreakStatus())
@@ -236,71 +258,74 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         }
         else if (this.startingStressValue != _currentStressValue)
         {
-            this.stressPercentageText.SetText(_currentStressValue.ToString());
-            this.stressPercentageText.gameObject.SetActive(true);
-            this.stressValueBreak.gameObject.SetActive(false);
-            if (this.isSetupComplete == true)
+            if(isSetupComplete == true)
             {
-                Color32 redColor = new Color32(255, 0, 0, 255);
-                Color32 blueColor = new Color32(0, 100, 255, 255);
+                this.stressPercentageText.SetText(_currentStressValue.ToString());
+                this.stressPercentageText.gameObject.SetActive(true);
+                this.stressValueBreak.gameObject.SetActive(false);
+                if (this.isSetupComplete == true)
+                {
+                    Color32 redColor = new Color32(255, 0, 0, 255);
+                    Color32 blueColor = new Color32(0, 100, 255, 255);
 
-                //red color
-                float redR = redColor.r;
-                float redG = redColor.g;
-                float redB = redColor.b;
+                    //red color
+                    float redR = redColor.r;
+                    float redG = redColor.g;
+                    float redB = redColor.b;
 
-                //blue color
-                float blueR = blueColor.r;
-                float blueG = blueColor.g;
-                float blueB = blueColor.b;
+                    //blue color
+                    float blueR = blueColor.r;
+                    float blueG = blueColor.g;
+                    float blueB = blueColor.b;
 
-                var _sequence = LeanTween.sequence();
+                    var _sequence = LeanTween.sequence();
 
-                this.characterInfoPanelAnimation.Play(ANIMATION_ID_STRESS_POINT_INCREASE, 0, 0f);
+                    this.characterInfoPanelAnimation.Play(ANIMATION_ID_STRESS_POINT_INCREASE, 0, 0f);
 
-                //number changing animation
-                LeanTween.value(gameObject, this.startingStressValue, _currentStressValue, textAnimationDuration)
-                        .setOnUpdate((float val) =>
-                        {
-                            this.stressValueStatus.material.SetFloat("_Slide", val / 100);
-                            this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, new Color32(255, 0, 0, 255));
-                            this.startingStressValue = Mathf.RoundToInt(val);
-                            this.stressPercentageText.SetText($"{this.startingStressValue}<size=40>%</size>");
-                        }).setOnComplete(() =>
-                        {
+                    //number changing animation
+                    LeanTween.value(gameObject, this.startingStressValue, _currentStressValue, textAnimationDuration)
+                            .setOnUpdate((float val) =>
+                            {
+                                this.stressValueStatus.material.SetFloat("_Slide", val / 100);
+                                this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, new Color32(255, 0, 0, 255));
+                                this.startingStressValue = Mathf.RoundToInt(val);
+                                this.stressPercentageText.SetText($"{this.startingStressValue}<size=40>%</size>");
+                            }).setOnComplete(() =>
+                            {
                             //stress value status animation
                             if (_currentStressValue >= 0)
-                            {
-                                stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
-                                stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color2_G_Percentage");
-                                stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color1_B_Percentage");
-                            }
-                            if (_currentStressValue >= 70)
-                            {
-                                stressValueStatusAnimation(this.orangeColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
-                            }
-                            if (_currentStressValue >= 80)
-                            {
-                                stressValueStatusAnimation(this.redColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
-                            }
-                        });
+                                {
+                                    stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
+                                    stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color2_G_Percentage");
+                                    stressValueStatusAnimation(defaultColor, this.stressValueStatusDuration, "_Color1_B_Percentage");
+                                }
+                                if (_currentStressValue >= 70)
+                                {
+                                    stressValueStatusAnimation(this.orangeColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
+                                }
+                                if (_currentStressValue >= 80)
+                                {
+                                    stressValueStatusAnimation(this.redColor, this.stressValueStatusDuration, "_Color1_G_Percentage");
+                                }
+                            });
 
-                //number outline animation
-                this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, redColor);
+                    //number outline animation
+                    this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, redColor);
 
-                _sequence.append(LeanTween.value(gameObject, new Vector3(blueR, blueG, blueB), new Vector3(redR, redG, redB), this.textAnimationDuration)
-                    .setOnUpdate((Vector3 color) =>
-                    {
-                        Color32 currentColor = new Color32((byte)(color.x), (byte)(color.y), (byte)(color.z), 255);
-                        this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, currentColor);
-                    }));
+                    _sequence.append(LeanTween.value(gameObject, new Vector3(blueR, blueG, blueB), new Vector3(redR, redG, redB), this.textAnimationDuration)
+                        .setOnUpdate((Vector3 color) =>
+                        {
+                            Color32 currentColor = new Color32((byte)(color.x), (byte)(color.y), (byte)(color.z), 255);
+                            this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, currentColor);
+                        }));
 
-                _sequence.append(LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), this.textAnimationDuration)
-                    .setOnUpdate((Vector3 color) =>
-                    {
-                        Color32 currentColor = new Color32((byte)(color.x), (byte)(color.y), (byte)(color.z), 255);
-                        this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, currentColor);
-                    }));
+                    _sequence.append(LeanTween.value(gameObject, new Vector3(redR, redG, redB), new Vector3(blueR, blueG, blueB), this.textAnimationDuration)
+                        .setOnUpdate((Vector3 color) =>
+                        {
+                            Color32 currentColor = new Color32((byte)(color.x), (byte)(color.y), (byte)(color.z), 255);
+                            this.stressPercentageText.fontMaterial.SetColor(ShaderUtilities.ID_GlowColor, currentColor);
+                        }));
+                }
             }
         }
     }

@@ -458,7 +458,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5677165813010128528}
   - component: {fileID: 557852181107011184}
-  - component: {fileID: 3634664496968760091}
+  - component: {fileID: 4383166543616973568}
   m_Layer: 5
   m_Name: PreparationSection
   m_TagString: Untagged
@@ -505,7 +505,7 @@ MonoBehaviour:
   showBackendSkillSelectionPanelButton: {fileID: 3829905402327300158}
   switchingButton: {fileID: 5726088102663145803}
   executeButton: {fileID: 7335719149696745570}
---- !u!95 &3634664496968760091
+--- !u!95 &4383166543616973568
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0

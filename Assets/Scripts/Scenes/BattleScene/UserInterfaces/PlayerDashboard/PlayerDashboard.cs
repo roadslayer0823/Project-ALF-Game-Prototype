@@ -8,11 +8,13 @@ public class PlayerDashboard : MonoBehaviour
     [SerializeField] private CharacterInfoPanelV2 characterInfoPanelV2 = null;
     [SerializeField] private GameObject executeButtonContainer = null;
     [SerializeField] private Button executeButton = null;
-    [SerializeField] private Animator characterInfoPanelAnimator;
+    [SerializeField] private Animator characterInfoPanelAnimator = null;
+    [SerializeField] private CharacterInfoPanelV2 characterInfoPanel = null;
+    [SerializeField] private PlayerCharacter playerCharacter = null;
 
     private Action onExecuteButtonClickedCallback = null;
     private const string AUDIO_ID_EXECUTE = "execute";
-    private const string ANIMATION_ID_CHARACTER_INFO_SETUP = "CharacterInfoPanelSetup";
+    private const string ANIMATION_ID_CHARACTER_INFO_PANEL = "CharacterInfoPanelSetup";
 
     public void Initialize(Action onExecuteButtonClickedCallback)
     {
@@ -40,9 +42,19 @@ public class PlayerDashboard : MonoBehaviour
         }
     }
 
-    public void PlayCharacterInfoPanelSetupAnimation()
+    public void CharacterInfoPanelSetupAnimation()
     {
-        this.characterInfoPanelAnimator.Play(ANIMATION_ID_CHARACTER_INFO_SETUP, 0, 0);
+        this.characterInfoPanelAnimator.Play(ANIMATION_ID_CHARACTER_INFO_PANEL, 0, 0);
+    }
+
+    public void CharacterInfoStressValueSetup()
+    {
+        this.characterInfoPanel.SetupStressValueText();
+    }
+
+    public void CharacterInfoValueSetup()
+    {
+        characterInfoPanel.SetSelectedCharacter(this.playerCharacter);
     }
 
     public void ShowExecuteButtonContainer()

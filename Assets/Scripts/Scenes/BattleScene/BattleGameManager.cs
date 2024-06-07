@@ -103,7 +103,7 @@ public class BattleGameManager : MonoBehaviour
             }
             else
             {
-                this.battleUiManager.GetCharacterInfoPanelV2().SetSelectedCharacter( this.playerCharacter );
+                //this.battleUiManager.GetCharacterInfoPanelV2().SetSelectedCharacter( this.playerCharacter );
             }
 
             if (this.battleFlowManager_V2 == null)
