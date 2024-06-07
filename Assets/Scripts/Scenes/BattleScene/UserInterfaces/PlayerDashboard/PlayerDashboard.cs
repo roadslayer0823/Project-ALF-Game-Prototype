@@ -8,8 +8,7 @@ public class PlayerDashboard : MonoBehaviour
     [SerializeField] private CharacterInfoPanelV2 characterInfoPanelV2 = null;
     [SerializeField] private GameObject executeButtonContainer = null;
     [SerializeField] private Button executeButton = null;
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     [SerializeField] private Animator characterInfoPanelAnimator = null;
     [SerializeField] private CharacterInfoPanelV2 characterInfoPanel = null;
     [SerializeField] private PlayerCharacter playerCharacter = null;
@@ -17,16 +16,6 @@ public class PlayerDashboard : MonoBehaviour
     private Action onExecuteButtonClickedCallback = null;
     private const string AUDIO_ID_EXECUTE = "execute";
     private const string ANIMATION_ID_CHARACTER_INFO_PANEL = "CharacterInfoPanelSetup";
-=======
-
-    private Action onExecuteButtonClickedCallback = null;
-    private const string AUDIO_ID_EXECUTE = "execute";
->>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
-=======
-
-    private Action onExecuteButtonClickedCallback = null;
-    private const string AUDIO_ID_EXECUTE = "execute";
->>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
 
     public void Initialize(Action onExecuteButtonClickedCallback)
     {
@@ -54,8 +43,6 @@ public class PlayerDashboard : MonoBehaviour
         }
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     public void CharacterInfoPanelSetupAnimation()
     {
         this.characterInfoPanelAnimator.Play(ANIMATION_ID_CHARACTER_INFO_PANEL, 0, 0);
@@ -71,10 +58,6 @@ public class PlayerDashboard : MonoBehaviour
         characterInfoPanel.SetSelectedCharacter(this.playerCharacter);
     }
 
-=======
->>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
-=======
->>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
     public void ShowExecuteButtonContainer()
     {
         this.executeButtonContainer.SetActive( true );
