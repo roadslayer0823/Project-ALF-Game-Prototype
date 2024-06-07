@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using SkillType = BattleSkillManager.SkillType;
+using System.Collections;
 
 public class BattleUiManager : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class BattleUiManager : MonoBehaviour
     [System.Obsolete][SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
     [SerializeField] private CharacterInfoPanel characterInfoPanel = null;
     [SerializeField] private BattleResultPanel battleResultPanel = null;
-    [SerializeField] private TMP_Text instructionLabel = null;
+    //[SerializeField] private TMP_Text instructionLabel = null;
     [SerializeField] private TMP_Text messageLabel = null;
 
     [Header( "Version 2" )]
@@ -26,6 +27,8 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private GameObject enemyCharacterInfoBoxUI = null;
     [SerializeField] private GameObject enemyCharacterInfoBoxHUD = null;
     [SerializeField] private GameObject darkLayer = null;
+    [SerializeField] private Animator battleStartUiAnimator = null;
+    [SerializeField] private TMP_Text turnText = null;
 
     [Header( "Debug" )]
     [SerializeField] private EnemyDebugMenuPanel enemyDebugMenuPanel = null;
@@ -187,11 +190,12 @@ public class BattleUiManager : MonoBehaviour
 
     public void PlayInstructionAnimation()
     {
-        this.instructionLabel.transform.localScale = Vector3.zero;
-        LeanTween.scale( this.instructionLabel.gameObject, Vector3.one, 0.9f ).setEaseOutCubic().setLoopPingPong( 1 ).setOnComplete( () =>
-        {
-            this.instructionLabel.gameObject.SetActive( false );
-        } );
+        //this.instructionLabel.transform.localScale = Vector3.zero;
+        //LeanTween.scale( this.instructionLabel.gameObject, Vector3.one, 0.9f ).setEaseOutCubic().setLoopPingPong( 1 ).setOnComplete( () =>
+        //{
+        //    this.instructionLabel.gameObject.SetActive( false );
+        //} );
+        this.battleStartUiAnimator.Play("CrossingActionMode");
     }
 
     public void ShowMessage( string message )
@@ -248,11 +252,18 @@ public class BattleUiManager : MonoBehaviour
 
     public void OnExecuteButtonClicked()
     {
+        this.turnText.text = "Turn " + this.battleGameManager.GetBattleFlowManager_V2().GetCurrentRound().GetRoundNumber();
+        this.battleStartUiAnimator.Play("TurnStart");
+        StartCoroutine(WaitForTurnStartAnimation());
         HideDarkLayer();
         this.skillSelectionPanel.CheckForNecessarySkill();
         this.battleGameManager.StartExecution();
     }
 
+    public IEnumerator WaitForTurnStartAnimation()
+    {
+        yield return new WaitUntil(() => this.battleStartUiAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f);
+    }
     private void ShowActiveSkillSelectionPanel()
     {
         if (this.preparationSection == null)
