@@ -458,13 +458,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5677165813010128528}
   - component: {fileID: 557852181107011184}
-<<<<<<< HEAD
-<<<<<<< HEAD
-  - component: {fileID: 4383166543616973568}
-=======
->>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
-=======
->>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
   m_Layer: 5
   m_Name: PreparationSection
   m_TagString: Untagged
@@ -511,35 +504,7 @@ MonoBehaviour:
   showBackendSkillSelectionPanelButton: {fileID: 3829905402327300158}
   switchingButton: {fileID: 5726088102663145803}
   executeButton: {fileID: 7335719149696745570}
-<<<<<<< HEAD
-<<<<<<< HEAD
---- !u!95 &4383166543616973568
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7387205800100999300}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8f7cfb0213b8242778ac928bc4cfa961, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
-=======
   darkLayer: {fileID: 0}
->>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
-=======
-  darkLayer: {fileID: 0}
->>>>>>> 4121d6bb200ce4057d97fdebdd49377e197d4cc7
 --- !u!1 &7547386475595494675
 GameObject:
   m_ObjectHideFlags: 0
