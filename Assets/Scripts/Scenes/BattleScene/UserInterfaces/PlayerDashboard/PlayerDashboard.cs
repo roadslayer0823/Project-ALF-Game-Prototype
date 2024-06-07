@@ -8,9 +8,11 @@ public class PlayerDashboard : MonoBehaviour
     [SerializeField] private CharacterInfoPanelV2 characterInfoPanelV2 = null;
     [SerializeField] private GameObject executeButtonContainer = null;
     [SerializeField] private Button executeButton = null;
+    [SerializeField] private Animator characterInfoPanelAnimator;
 
     private Action onExecuteButtonClickedCallback = null;
     private const string AUDIO_ID_EXECUTE = "execute";
+    private const string ANIMATION_ID_CHARACTER_INFO_SETUP = "CharacterInfoPanelSetup";
 
     public void Initialize(Action onExecuteButtonClickedCallback)
     {
@@ -36,6 +38,11 @@ public class PlayerDashboard : MonoBehaviour
         {
             Debug.Log( "The value for 'onExecuteButtonClickedCallback' is not assigned." );
         }
+    }
+
+    public void PlayCharacterInfoPanelSetupAnimation()
+    {
+        this.characterInfoPanelAnimator.Play(ANIMATION_ID_CHARACTER_INFO_SETUP, 0, 0);
     }
 
     public void ShowExecuteButtonContainer()
