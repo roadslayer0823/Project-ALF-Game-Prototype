@@ -21,6 +21,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private SkillInfoPanel skillInfoPanel = null;
     [SerializeField] private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
     [SerializeField] private BackendSkillSlotListPanel backendSkillSlotListPanel = null;
+    [SerializeField] private BattleLog battleLog = null;
     [System.Obsolete][SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
     [SerializeField] private PlayerDashboard playerDashboard = null;
     [SerializeField] private SkillPromptPanelV2 skillPromptPanel = null;
@@ -186,6 +187,7 @@ public class BattleUiManager : MonoBehaviour
         }
 
         this.battleResultPanel.gameObject.SetActive( value );
+        this.battleLog.gameObject.SetActive (value);
     }
 
     public void PlayInstructionAnimation()
