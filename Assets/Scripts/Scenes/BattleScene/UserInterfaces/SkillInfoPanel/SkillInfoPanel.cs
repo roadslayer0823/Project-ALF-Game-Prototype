@@ -10,6 +10,7 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private SubSkillType skillType = SubSkillType.none;
     [SerializeField] private RectTransform skillInfoPanel;
     [SerializeField] private GameObject skillInfomation;
+    [SerializeField] private Animator skillInfoPanelAnimator = null;
 
     [Header("SkillTabButtons")]
     [SerializeField] private Image skillInfoPanelBackground = null;
@@ -166,6 +167,11 @@ public class SkillInfoPanel : MonoBehaviour
     public void Hide()
     {
         this.skillInfoPanel.gameObject.SetActive(false);
+    }
+
+    public void PlaySkillInfoPanelAnimation(string animationID)
+    {
+        this.skillInfoPanelAnimator.Play(animationID);
     }
 
     private void SetupSkillInfomation(CharacterSkill characterSkill, CharacterSkill activeSkill)

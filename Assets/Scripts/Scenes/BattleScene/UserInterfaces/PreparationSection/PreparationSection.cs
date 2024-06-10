@@ -9,6 +9,7 @@ public class PreparationSection : MonoBehaviour
     [Header("SkillSelectionPanel button")]
     [SerializeField] private Button showActiveSkillSelectionPanelButton = null;
     [SerializeField] private Button showBackendSkillSelectionPanelButton = null;
+    [SerializeField] private SkillSelectionPanelV2 skillSelectionPanelV2 = null;
     [SerializeField] private Button switchingButton = null;
     [SerializeField] private Button executeButton = null;
 
@@ -104,6 +105,7 @@ public class PreparationSection : MonoBehaviour
         if (this.onActiveSkillButtonClickedCallback != null)
         {
             this.onActiveSkillButtonClickedCallback();
+            this.skillSelectionPanelV2.PlayAttackSkillSelectionPanelAnimation();
         }
         else
         {
@@ -120,6 +122,7 @@ public class PreparationSection : MonoBehaviour
         if (this.onBackendSkillButtonClickedCallback != null)
         {
             this.onBackendSkillButtonClickedCallback();
+            this.skillSelectionPanelV2.PlayBackendSkillSelectionPanelAnimation();
         }
         else
         {

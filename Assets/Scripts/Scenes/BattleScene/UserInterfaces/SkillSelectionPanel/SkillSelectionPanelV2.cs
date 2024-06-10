@@ -62,6 +62,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     [Header("")]
     [SerializeField] private Button returnButton = null;
     [SerializeField] private SkillInfoPanel skillInfoPanel = null;
+    [SerializeField] private Animator skillSelectionPanelAnimation = null;
 
     private BattleUiManager battleUiManager = null;
     private Action<SkillSelectionBoxV2> onSkillSelectedCallback = null;
@@ -70,6 +71,12 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
     private GameCharacter gameCharacter = null;
 
+    private const string ANIMATION_ID_SHOW_ATTACK_SKILL_SELECTION_PANEL = "ShowAttackSkillSelectionPanel";
+    private const string ANIMATION_ID_SHOW_BACKEND_SKILL_SELECTION_PANEL = "ShowBackendSkillSelectionPanel";
+    private const string ANIMATION_ID_HIDE_ATTACK_SKILL_SELECTION_PANEL = "HideAttackSkillSelectionPanel";
+    private const string ANIMATION_ID_HIDE_BACKEND_SKILL_SELECTION_PANEL = "HideBackendSkillSelectionPanel";
+    private const string ANIMATION_ID_SHOW_ATTACK_INFO_PANEL = "ShowAttackInfoPanel";
+    private const string ANIMATION_ID_SHOW_BACKEND_INFO_PANEL = "ShowBackendPanel";
     private const string AUDIO_ID_SKILL_OFF = "skill_off";
     private const string AUDIO_ID_SKILL_ON = "skill_on";
     private const string AUDIO_ID_CLICK = "click";
@@ -139,16 +146,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     // when click the active skill list box button
     private void OnActiveSkillListBoxButtonClick()
     {
-        if (this.activeSkillSelectionListGO.activeSelf)
-        {
-            ShowActiveSkillSelectionList(false);
-            HideSkillInfoPanel();
-        }
-        else
-        {
-            ShowActiveSkillSelectionList(true);
-        }
-
+        PlayAttackSkillSelectionPanelAnimation();
+        ShowActiveSkillSelectionList(true);
         ShowBackendSkillSelectionList(false);
 
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
@@ -158,20 +157,29 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     // when click the backend skill list box button
     private void OnBackendSkillListBoxButtonClick()
     {
-        if (this.backendSkillSelectionListGO.activeSelf)
-        {
-            ShowBackendSkillSelectionList(false);
-            HideSkillInfoPanel();
-        }
-        else
-        {
-            ShowBackendSkillSelectionList(true);
-        }
-
+        PlayBackendSkillSelectionPanelAnimation();
+        ShowBackendSkillSelectionList(true);
         ShowActiveSkillSelectionList(false);
 
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
         this.battleUiManager.ShowDarkLayer();
+    }
+
+    public void PlayAttackSkillSelectionPanelAnimation()
+    {
+        this.skillSelectionPanelAnimation.Play(ANIMATION_ID_SHOW_ATTACK_SKILL_SELECTION_PANEL);
+        this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_SHOW_ATTACK_INFO_PANEL);
+    }
+
+    public void PlayBackendSkillSelectionPanelAnimation()
+    {
+        this.skillSelectionPanelAnimation.Play(ANIMATION_ID_SHOW_BACKEND_SKILL_SELECTION_PANEL);
+        this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_SHOW_BACKEND_INFO_PANEL);
+    }
+
+    public void ShowAttackSkillSelectionBox()
+    {
+        this.skillSelectionPanelAnimation.Play(ANIMATION_ID_SHOW_BACKEND_SKILL_SELECTION_PANEL);
     }
 
     // when click the return button
