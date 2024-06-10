@@ -24,6 +24,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private BattleLog battleLog = null;
     [System.Obsolete][SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
     [SerializeField] private PlayerDashboard playerDashboard = null;
+    [SerializeField] private EnemyCharacterInfoBox_UI_V2 enemyCharacterInfoBox = null;
     [SerializeField] private SkillPromptPanelV2 skillPromptPanel = null;
     [SerializeField] private GameObject enemyCharacterInfoBoxUI = null;
     [SerializeField] private GameObject enemyCharacterInfoBoxHUD = null;
@@ -188,6 +189,7 @@ public class BattleUiManager : MonoBehaviour
 
         this.battleResultPanel.gameObject.SetActive( value );
         this.battleLog.gameObject.SetActive (value);
+        this.enemyCharacterInfoBox.gameObject.SetActive(value);
     }
 
     public void PlayInstructionAnimation()

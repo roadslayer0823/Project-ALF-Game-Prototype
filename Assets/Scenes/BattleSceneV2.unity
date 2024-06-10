@@ -275,7 +275,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3872705662303918340, guid: e121d1c8ebf9d49e480ce76186639700, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6674149797097623529, guid: e121d1c8ebf9d49e480ce76186639700, type: 3}
       propertyPath: m_Pivot.x
@@ -368,6 +368,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6674149797097623529, guid: e121d1c8ebf9d49e480ce76186639700, type: 3}
   m_PrefabInstance: {fileID: 40247286}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &40247288 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2023521671941314727, guid: e121d1c8ebf9d49e480ce76186639700, type: 3}
+  m_PrefabInstance: {fileID: 40247286}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 553b8290e88f942be8274b8b0350be9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &53259904
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1830,6 +1841,7 @@ MonoBehaviour:
   battleLog: {fileID: 427660633210879994}
   atlSlotListPanelV2: {fileID: 962829249}
   playerDashboard: {fileID: 382977991}
+  enemyCharacterInfoBox: {fileID: 40247288}
   skillPromptPanel: {fileID: 880286386}
   enemyCharacterInfoBoxUI: {fileID: 1862054395}
   enemyCharacterInfoBoxHUD: {fileID: 794300706}
