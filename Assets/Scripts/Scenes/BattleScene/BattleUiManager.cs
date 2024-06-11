@@ -256,18 +256,21 @@ public class BattleUiManager : MonoBehaviour
 
     public void OnExecuteButtonClicked()
     {
-        this.turnText.text = "Turn " + this.battleGameManager.GetBattleFlowManager_V2().GetCurrentRound().GetRoundNumber();
-        this.battleStartUiAnimator.Play("TurnStart");
+        ReturnToSkillMenu();
         StartCoroutine(WaitForTurnStartAnimation());
-        HideDarkLayer();
-        this.skillSelectionPanel.CheckForNecessarySkill();
-        this.battleGameManager.StartExecution();
     }
 
     public IEnumerator WaitForTurnStartAnimation()
     {
-        yield return new WaitUntil(() => this.battleStartUiAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 1.0f);
+        this.turnText.text = "Turn " + this.battleGameManager.GetBattleFlowManager_V2().GetCurrentRound().GetRoundNumber();
+        this.battleStartUiAnimator.Play("TurnStart");
+        HideDarkLayer();
+        this.skillSelectionPanel.CheckForNecessarySkill();
+
+        yield return new WaitForSeconds(2f);
+        this.battleGameManager.StartExecution();
     }
+
     private void ShowActiveSkillSelectionPanel()
     {
         if (this.preparationSection == null)

@@ -6,6 +6,7 @@ public class BattleVisualEffectManager : MonoBehaviour
 {
     [SerializeField] private CameraRadiusBlur cameraRadiusBlur = null;
     [SerializeField] private CutScreenHandlerV2 cutScreenHandler = null;
+    [SerializeField] private CombatCommandAnimationHandler combatCommandAnimationHandler = null;
     [SerializeField] private Animator darkEffectAnimator = null;
 
     public void SetUp()
@@ -18,6 +19,11 @@ public class BattleVisualEffectManager : MonoBehaviour
         if (this.cutScreenHandler != null)
         {
             this.cutScreenHandler.Initialize();
+        }
+
+        if(this.combatCommandAnimationHandler != null)
+        {
+            this.combatCommandAnimationHandler.Initialize();
         }
     }
 
@@ -86,6 +92,21 @@ public class BattleVisualEffectManager : MonoBehaviour
         this.darkEffectAnimator.SetTrigger("darkenPartB");
     }
 
+    #endregion
+
+#region Combat Command Time Cut In Animation
+
+    public void TriggerCombatCommandCutIn()
+    {
+        this.combatCommandAnimationHandler.VerticalCutIn();
+    }
+
+    public void TriggerCombatCommandCutOut()
+    {
+        StartCoroutine(this.combatCommandAnimationHandler.VerticalCutOut());
+    }
+
 #endregion
+
 }
 
