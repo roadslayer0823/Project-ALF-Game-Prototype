@@ -92,7 +92,7 @@ public class BattleVisualEffectManager : MonoBehaviour
         this.darkEffectAnimator.SetTrigger("darkenPartB");
     }
 
-    #endregion
+#endregion
 
 #region Combat Command Time Cut In Animation
 
@@ -104,6 +104,11 @@ public class BattleVisualEffectManager : MonoBehaviour
     public void TriggerCombatCommandCutOut()
     {
         StartCoroutine(this.combatCommandAnimationHandler.VerticalCutOut());
+    }
+
+    public void CancelCombatCommandAnimation()
+    {
+        this.combatCommandAnimationHandler.ResetVerticalCutScreen();
     }
 
 #endregion
