@@ -17,6 +17,8 @@ public class CombatCommandAnimationHandler : MonoBehaviour
     [SerializeField] private Image leftDarkLayer = null;
     [SerializeField] private Animator playerAnimator = null;
 
+    private bool isShowing = false;
+
     public void Initialize()
     {
         ResetVerticalCutScreen();
@@ -24,6 +26,8 @@ public class CombatCommandAnimationHandler : MonoBehaviour
 
     public IEnumerator VerticalCutIn( Action onCompleteCallback = null )
     {
+        isShowing = true;
+
         ResetVerticalCutScreen();
 
         this.rightPartGo.SetActive(true);
@@ -43,6 +47,8 @@ public class CombatCommandAnimationHandler : MonoBehaviour
 
     public IEnumerator VerticalCutOut( bool hasPlayerAnimation, Action onCompleteCallback = null)
     {
+        isShowing = false;
+
         this.rightPartGo.SetActive(true);
         this.leftPartGo.SetActive(true);
 
@@ -91,5 +97,10 @@ public class CombatCommandAnimationHandler : MonoBehaviour
             tempColor.a = var;
             darkLayer.color = tempColor;
         });
+    }
+
+    public bool GetIsShowing()
+    {
+        return this.isShowing;
     }
 }

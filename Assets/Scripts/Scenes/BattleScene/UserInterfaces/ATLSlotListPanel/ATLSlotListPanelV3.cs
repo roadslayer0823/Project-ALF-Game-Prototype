@@ -248,7 +248,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
         }
     }
 
-    private void Reset()
+    public void Reset()
     {
         this.blueProgressBarLastPosition = this.blueProgressBarStartPointX;
         this.yellowProgressBarLastPosition = this.yellowProgressBarStartPointX;
