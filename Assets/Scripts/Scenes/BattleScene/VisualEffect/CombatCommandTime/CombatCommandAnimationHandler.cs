@@ -41,12 +41,12 @@ public class CombatCommandAnimationHandler : MonoBehaviour
         onCompleteCallback?.Invoke();
     }
 
-    public IEnumerator VerticalCutOut( bool triggerAnimation, Action onCompleteCallback = null)
+    public IEnumerator VerticalCutOut( bool hasPlayerAnimation, Action onCompleteCallback = null)
     {
         this.rightPartGo.SetActive(true);
         this.leftPartGo.SetActive(true);
 
-        if(triggerAnimation)
+        if(hasPlayerAnimation)
         {
             this.playerAnimator.SetTrigger("isPlayer");
             yield return new WaitForSeconds(1f);
@@ -57,7 +57,7 @@ public class CombatCommandAnimationHandler : MonoBehaviour
 
         LeanTween.move(this.rightPartGo, _movingRightPosition, this.cutScreenMoveDuration).setOnComplete(() => {
             ResetVerticalCutScreen();
-            if(triggerAnimation)
+            if(hasPlayerAnimation)
             {
                 this.playerAnimator.SetTrigger("reset");
             }
