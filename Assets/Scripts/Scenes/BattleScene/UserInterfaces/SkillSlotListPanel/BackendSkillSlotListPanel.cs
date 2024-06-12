@@ -163,7 +163,8 @@ public class BackendSkillSlotListPanel : MonoBehaviour
                 if (( _isAbleToDefend && _subskillData.IsDefendingSkill )
                    || ( _isAbleToEvade && _subskillData.IsEvadingSkill ))
                 {
-                    _backendSkillSlot.SetCurrentStateType( ( _backendSkill == this.selectedGameCharacter.GetAssignedSkill() ) ? StateType.Selected : StateType.Enabled );
+                    _backendSkillSlot.SetCurrentStateType( StateType.Enabled );
+                    _backendSkillSlot.SetIsSelected( _backendSkill == this.selectedGameCharacter.GetAssignedSkill() );
                 }
                 else if (_isAbleToObserve && _subskillData.IsObservingSkill)
                 {
@@ -182,14 +183,15 @@ public class BackendSkillSlotListPanel : MonoBehaviour
                         }
                     }
 
-                    _backendSkillSlot.SetCurrentStateType( ( _isSelected ) ? StateType.Selected : StateType.Enabled );
+                    _backendSkillSlot.SetCurrentStateType( StateType.Enabled );
+                    _backendSkillSlot.SetIsSelected( _isSelected );
                 }
                 else
                 {
                     _backendSkillSlot.SetCurrentStateType( StateType.Disabled );
                 }
 
-                if (_backendSkillSlot.GetCurrentStateType() == StateType.Selected)
+                if (_backendSkillSlot.GetIsSelected())
                 {
                     OnSkillSlotSelected( _backendSkillSlot, false );
                 }
@@ -278,7 +280,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
         for (int i = 0; i < this.backendSkillSlots.Length; i++)
         {
             SkillSlotV2 _skillSlot = this.backendSkillSlots[ i ];
-            if (_skillSlot.GetCurrentStateType() == StateType.Selected)
+            if (_skillSlot.GetIsSelected())
             {
                 return _skillSlot;
             }

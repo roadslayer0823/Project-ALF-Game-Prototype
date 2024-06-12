@@ -38,7 +38,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         SetActiveRecursively(this.skillInformation[2].transform, false);
 
         this.middleSkillSlot = this.skillSlots[ 0 ];
-        this.middleSkillSlot.SetCurrentIsMiddleSlot(true);
+        this.middleSkillSlot.SetIsMiddleSlot(true);
         ArrangeSkillSlot(1);
     }
 
@@ -47,7 +47,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         base.gameObject.SetActive(true);
         for (int i = 0; i < skillSlots.Length; i++)
         {
-            skillSlots[i].isActivated = true;
+            skillSlots[ i ].SetIsActivated( true );
         }
     }
 
@@ -56,7 +56,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         base.gameObject.SetActive(false);
         for (int i = 0; i < skillSlots.Length; i++)
         {
-            skillSlots[i].isActivated = false;
+            skillSlots[ i ].SetIsActivated( false );
         }
     }
 
@@ -256,7 +256,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         for (int i = 0; i < this.skillSlots.Length; i++)
         {
             SkillSlotV2 _skillSlot = this.skillSlots[ i ];
-            if (_skillSlot.GetCurrentStateType() == SkillSlotV2.StateType.Selected)
+            if (_skillSlot.GetIsSelected())
             {
                 return _skillSlot;
             }
@@ -335,7 +335,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                     SetActiveRecursively(this.skillInformation[i].transform, true);
                     currentSlot.UpdateCharacterSkillLevel(currentSlot.skillLevel);
                     this.middleSkillSlot = skillSlotList[i].GetComponent<SkillSlotV2>();
-                    this.currentSkillSlotPosition[i].SetCurrentIsMiddleSlot(true);
+                    this.currentSkillSlotPosition[i].SetIsMiddleSlot(true);
                 }
                 else
                 {
@@ -343,7 +343,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                     this.skillSlotsButton[i].interactable = false;
                     this.skillSlotList[i].transform.SetParent(this.bottomTopContainer.transform, false);
                     SetActiveRecursively(this.skillInformation[i].transform, false);
-                    this.currentSkillSlotPosition[i].SetCurrentIsMiddleSlot(false);
+                    this.currentSkillSlotPosition[i].SetIsMiddleSlot(false);
                 }
 
                 // Use LeanTween to move the slot to the new position

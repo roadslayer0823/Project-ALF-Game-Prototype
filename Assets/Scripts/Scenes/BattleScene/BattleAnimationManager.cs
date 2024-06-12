@@ -726,6 +726,10 @@ public class BattleAnimationManager : MonoBehaviour
             //this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, false );
             BattleLog.Instance.AddOnScreenBattleLog( $"雙方進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
 
+            bool _isPlayingCombatCommandAnimation = true;
+            battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutIn( () => { _isPlayingCombatCommandAnimation = false; } );
+            yield return new WaitUntil( () => !_isPlayingCombatCommandAnimation );
+
             battleGameManager.ShowPreparationView();
             _playerCharacter.TriggerEvent( AnimationEvent.OnCombatCommandTimeStarted );
             _enemyCharacter.TriggerEvent( AnimationEvent.OnCombatCommandTimeStarted );
@@ -736,6 +740,10 @@ public class BattleAnimationManager : MonoBehaviour
             _atlSlotListPanel.GoToMiddleAtCurrentAtlSlot( 0.1f );
             this.skillPromptPanel.HideCommandPhase( true );
             this.skillPromptPanel.HideCommandPhase( false );
+
+            _isPlayingCombatCommandAnimation = true;
+            battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutOut( () => { _isPlayingCombatCommandAnimation = false; } );
+            yield return new WaitUntil( () => !_isPlayingCombatCommandAnimation );
         }
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定先後手方</color>" );

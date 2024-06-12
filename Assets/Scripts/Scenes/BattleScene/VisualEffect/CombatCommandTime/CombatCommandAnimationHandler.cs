@@ -22,7 +22,7 @@ public class CombatCommandAnimationHandler : MonoBehaviour
         ResetVerticalCutScreen();
     }
 
-    public void VerticalCutIn()
+    public IEnumerator VerticalCutIn( Action onCompleteCallback = null )
     {
         ResetVerticalCutScreen();
 
@@ -36,11 +36,13 @@ public class CombatCommandAnimationHandler : MonoBehaviour
 
         LeanTween.move(this.rightPartGo, _movingLeftPosition, this.cutScreenMoveDuration);
         LeanTween.move(this.leftPartGo, _movingRightPosition, this.cutScreenMoveDuration);
+
+        yield return new WaitForSeconds( this.cutScreenMoveDuration );
+        onCompleteCallback?.Invoke();
     }
 
-    public IEnumerator VerticalCutOut()
+    public IEnumerator VerticalCutOut( Action onCompleteCallback = null )
     {
-        ResetVerticalCutScreen();
         this.rightPartGo.SetActive(true);
         this.leftPartGo.SetActive(true);
 
@@ -57,9 +59,12 @@ public class CombatCommandAnimationHandler : MonoBehaviour
             this.playerAnimator.SetTrigger("reset");
         });
         LeanTween.move(this.leftPartGo, _movingLeftPosition, this.cutScreenMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); });
+
+        yield return new WaitForSeconds( this.cutScreenMoveDuration );
+        onCompleteCallback?.Invoke();
     }
 
-    private void ResetVerticalCutScreen()
+    public void ResetVerticalCutScreen()
     {
         LeanTween.cancel(this.rightPartGo);
         LeanTween.cancel(this.leftPartGo);
@@ -69,8 +74,6 @@ public class CombatCommandAnimationHandler : MonoBehaviour
         this.rightPartGo.SetActive(false);
         this.leftPartGo.SetActive(false);
 
-        //this.leftPartGo.transform.position = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0);
-        //this.rightPartGo.transform.position = new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0);
         this.leftPartGo.transform.position = new Vector3(Screen.width * 0.4f - Screen.width, Screen.height * 0.5f, 0);
         this.rightPartGo.transform.position = new Vector3(Screen.width * 0.4f + Screen.width, Screen.height * 0.5f, 0);
     }
@@ -85,5 +88,4 @@ public class CombatCommandAnimationHandler : MonoBehaviour
             darkLayer.color = tempColor;
         });
     }
-
 }

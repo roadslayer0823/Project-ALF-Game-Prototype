@@ -454,7 +454,9 @@ public class BattleUiManager : MonoBehaviour
             _skillSlotList = GetMatchedSkillSlotList( this.selectedSkill );
             for (int i = 0; i < _skillSlotList.Count; i++)
             {
-                _skillSlotList[ i ].SetCurrentStateType( SkillSlotV2.StateType.Enabled );
+                SkillSlotV2 _skillSlot = _skillSlotList[ i ];
+                _skillSlot.SetCurrentStateType( SkillSlotV2.StateType.Enabled );
+                _skillSlot.SetIsSelected( false );
             }
 
             this.selectedSkill = null;
@@ -468,7 +470,7 @@ public class BattleUiManager : MonoBehaviour
             for (int i = 0; i < _skillSlotList.Count; i++)
             {
                 SkillSlotV2 _skillSlot = _skillSlotList[ i ];
-                _skillSlot.SetCurrentStateType( SkillSlotV2.StateType.Selected );
+                _skillSlot.SetIsSelected( true );
 
                 if (isSelectingSkill)
                 {

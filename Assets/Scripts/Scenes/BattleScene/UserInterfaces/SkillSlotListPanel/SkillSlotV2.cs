@@ -86,9 +86,9 @@ public class SkillSlotV2 : MonoBehaviour
     private bool isObserving = false;
 
     //public variable
-    public bool isMiddleSlot = false;
-    public bool isActivated = false;
-    public bool isSelected;
+    private bool isMiddleSlot = false;
+    private bool isActivated = false;
+    private bool isSelected = false;
 
     //audio and animation clip id
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
@@ -122,7 +122,6 @@ public class SkillSlotV2 : MonoBehaviour
         None,
         Enabled,
         Disabled,
-        Selected,
         Activated
     }
 
@@ -164,7 +163,8 @@ public class SkillSlotV2 : MonoBehaviour
 
     public void SelectSkill()
     {
-        if (this.currentStateType == StateType.Enabled)
+        if (this.currentStateType == StateType.Enabled
+            && !this.isSelected)
         {
             GameCharacter _selectedGameCharacter = null;
             bool _isObservingSkill = this.selectedSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill;
@@ -188,7 +188,7 @@ public class SkillSlotV2 : MonoBehaviour
             if (_isObservingSkill)
             {
                 _selectedGameCharacter.SetCurrentObservingSkill( this.selectedSkill, true );
-                SetCurrentStateType( StateType.Selected );
+                SetIsSelected( true );
             }
             else
             {
@@ -455,7 +455,7 @@ public class SkillSlotV2 : MonoBehaviour
                     ShowActivateSkillFrame(this.selectedSkill);
                     UpdateSkillIcon(true);
                 }
-                if (isSelected == false)
+                else
                 {
                     this.selectedSkillEffect.SetActive(false);
                     ShowSkillFrame(this.selectedSkill);
@@ -472,7 +472,7 @@ public class SkillSlotV2 : MonoBehaviour
                     UpdateSkillIcon(true);
                     swipeDetector.enabled = true;
                 }
-                if (isSelected == false)
+                else
                 {
                     this.selectedSkillEffect.SetActive(false);
                     SetBlankFrame(this.skillType);
@@ -483,6 +483,7 @@ public class SkillSlotV2 : MonoBehaviour
 
             case StateType.Activated:
 
+                this.isSelected = false;
                 this.selectedSkillEffect.SetActive( false );
                 SetBlankFrame(this.skillType);
                 UpdateSkillIcon( false );
@@ -633,11 +634,6 @@ public class SkillSlotV2 : MonoBehaviour
        }
     }
 
-    public void SetCurrentIsMiddleSlot(bool isMiddleSlot)
-    {
-        this.isMiddleSlot = isMiddleSlot;
-    }
-
     public void ClickToSelectSkill()
     {
         if (!isSwipeable)
@@ -666,9 +662,20 @@ public class SkillSlotV2 : MonoBehaviour
         return this.isObserving;
     }
 
+    public void SetIsMiddleSlot( bool isMiddleSlot )
+    {
+        this.isMiddleSlot = isMiddleSlot;
+    }
+
+    public void SetIsActivated( bool isActivated )
+    {
+        this.isActivated = isActivated;
+    }
+
     public void SetIsSelected(bool isSelected)
     {
         this.isSelected = isSelected;
+        UpdateDisplay();
     }
 
     public bool GetIsSelected()

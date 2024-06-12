@@ -96,17 +96,15 @@ public class BattleVisualEffectManager : MonoBehaviour
 
 #region Combat Command Time Cut In Animation
 
-    public void TriggerCombatCommandCutIn()
+    public void TriggerCombatCommandCutIn( Action onCompleteCallback = null )
     {
-        this.combatCommandAnimationHandler.VerticalCutIn();
+        StartCoroutine( this.combatCommandAnimationHandler.VerticalCutIn( onCompleteCallback ) );
     }
 
-    public void TriggerCombatCommandCutOut()
+    public void TriggerCombatCommandCutOut( Action onCompleteCallback = null )
     {
-        StartCoroutine(this.combatCommandAnimationHandler.VerticalCutOut());
+        StartCoroutine( this.combatCommandAnimationHandler.VerticalCutOut( onCompleteCallback ) );
     }
 
 #endregion
-
 }
-
