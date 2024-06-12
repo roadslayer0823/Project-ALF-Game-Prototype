@@ -41,21 +41,26 @@ public class CombatCommandAnimationHandler : MonoBehaviour
         onCompleteCallback?.Invoke();
     }
 
-    public IEnumerator VerticalCutOut( Action onCompleteCallback = null )
+    public IEnumerator VerticalCutOut( bool triggerAnimation, Action onCompleteCallback = null)
     {
         this.rightPartGo.SetActive(true);
         this.leftPartGo.SetActive(true);
 
-        this.playerAnimator.SetTrigger("isPlayer");
-
-        yield return new WaitForSeconds(1f);
+        if(triggerAnimation)
+        {
+            this.playerAnimator.SetTrigger("isPlayer");
+            yield return new WaitForSeconds(1f);
+        }
 
         Vector3 _movingRightPosition = new Vector3((Screen.width * 0.4f) + Screen.width, Screen.height * 0.5f, 0);
         Vector3 _movingLeftPosition = new Vector3((Screen.width * 0.4f) - Screen.width, Screen.height * 0.5f, 0);
 
         LeanTween.move(this.rightPartGo, _movingRightPosition, this.cutScreenMoveDuration).setOnComplete(() => {
             ResetVerticalCutScreen();
-            this.playerAnimator.SetTrigger("reset");
+            if(triggerAnimation)
+            {
+                this.playerAnimator.SetTrigger("reset");
+            }
         });
         LeanTween.move(this.leftPartGo, _movingLeftPosition, this.cutScreenMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); });
 
