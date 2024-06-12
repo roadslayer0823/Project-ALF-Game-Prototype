@@ -50,9 +50,8 @@ public class CombatCommandAnimationHandler : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        // separate the cut screen
-        Vector3 _movingRightPosition = new Vector3((Screen.width * 0.5f) + Screen.width, Screen.height * 0.5f, 0);
-        Vector3 _movingLeftPosition = new Vector3((Screen.width * 0.5f) - Screen.width, Screen.height * 0.5f, 0);
+        Vector3 _movingRightPosition = new Vector3((Screen.width * 0.4f) + Screen.width, Screen.height * 0.5f, 0);
+        Vector3 _movingLeftPosition = new Vector3((Screen.width * 0.4f) - Screen.width, Screen.height * 0.5f, 0);
 
         LeanTween.move(this.rightPartGo, _movingRightPosition, this.cutScreenMoveDuration).setOnComplete(() => {
             ResetVerticalCutScreen();
