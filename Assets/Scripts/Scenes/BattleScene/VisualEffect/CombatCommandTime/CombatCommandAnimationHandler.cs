@@ -75,7 +75,7 @@ public class CombatCommandAnimationHandler : MonoBehaviour
         this.rightPartGo.transform.position = new Vector3(Screen.width * 0.4f + Screen.width, Screen.height * 0.5f, 0);
     }
 
-    public void BrightnessLoopAnimation(Image darkLayer)
+    private void BrightnessLoopAnimation(Image darkLayer)
     {
         LeanTween.value(darkLayer.gameObject, 0.8f, 1f, 1f).setLoopPingPong().
         setOnUpdate((float var) =>
