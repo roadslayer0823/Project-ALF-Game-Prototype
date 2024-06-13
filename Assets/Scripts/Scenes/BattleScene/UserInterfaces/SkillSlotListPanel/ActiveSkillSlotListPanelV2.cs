@@ -9,12 +9,15 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     [SerializeField] private GameObject clickAreaBottom;
     [SerializeField] private GameObject bottomTopContainer = null;
     [SerializeField] private GameObject middleContainer = null;
-    [SerializeField] private Animator skillSlotListPanel = null;
+    [SerializeField] private Image skillSlotBackground = null;
     [SerializeField] private SkillSlotV2[] skillSlots = new SkillSlotV2[0];
     [SerializeField] private List<SkillSlotV2> currentSkillSlotPosition;
     [SerializeField] private List<Button> skillSlotsButton = null;
     [SerializeField] private List<GameObject> skillSlotList;
     [SerializeField] private List<Transform> fixedSlotPosition;
+    [SerializeField] private List<Transform> fixedTopSlotAnimationPosition;
+    [SerializeField] private List<Transform> fixedMiddleSlotAnimationPosition;
+    [SerializeField] private List<Transform> fixedBottomSlotAnimationPosition;
     [SerializeField] private List<GameObject> skillInformation;
 
     private Vector3 initialScale = new Vector3(1f, 1f, 1f);
@@ -52,7 +55,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         {
             skillSlots[ i ].SetIsActivated( true );
         }
-        this.skillSlotListPanel.Play(ANIMATION_ID_SHOW_ATTACK_SKILL_SLOT);
+        PlayShowAnimation();
     }
 
     public void Hide()
@@ -65,18 +68,10 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         for (int i = 0; i < skillSlots.Length; i++)
         {
             skillSlots[ i ].SetIsActivated( false );
+            LeanTween.cancel(skillSlots[i].gameObject);
         }
-        this.skillSlotListPanel.Play(ANIMATION_ID_HIDE_ATTACK_SKILL_SLOT);
-    }
-
-    public void CloseAnimator()
-    {
-        this.skillSlotListPanel.enabled = false;
-    }
-
-    public void OpenAnimator()
-    {
-        this.skillSlotListPanel.enabled = true;
+        PlayHideAnimation();
+        Hide();
     }
 
     public void EnableInteraction()
@@ -420,6 +415,33 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
             this.skillInformation[this.skillInformation.Count - 1] = tempSkillInformation;
             this.currentSkillSlotPosition[this.currentSkillSlotPosition.Count - 1] = tempPosition;
         }
+    }
+
+    public void PlayShowAnimation()
+    {
+        PlayHideAnimation();
+        float _skillslotBackgroundAlpha = this.skillSlotBackground.color.a;
+        LeanTween.value(gameObject, 0, 1, 0.1f)
+            .setOnUpdate((float val) =>
+            {
+                _skillslotBackgroundAlpha = val;
+            });
+        LeanTween.move(skillSlotList[0], fixedTopSlotAnimationPosition[0], 0.1f);
+        LeanTween.move(skillSlotList[1], fixedMiddleSlotAnimationPosition[0], 0.1f);
+        LeanTween.move(skillSlotList[2], fixedBottomSlotAnimationPosition[0], 0.1f);
+    }
+
+    public void PlayHideAnimation()
+    {
+        float _skillslotBackgroundAlpha = this.skillSlotBackground.color.a;
+        LeanTween.value(gameObject, 1, 0, 0.1f)
+            .setOnUpdate((float val) =>
+            {
+                _skillslotBackgroundAlpha = val;
+            });
+        LeanTween.move(skillSlotList[0], fixedTopSlotAnimationPosition[1], 0.1f);
+        LeanTween.move(skillSlotList[1], fixedMiddleSlotAnimationPosition[1], 0.1f);
+        LeanTween.move(skillSlotList[2], fixedBottomSlotAnimationPosition[1], 0.1f);
     }
 
     public GameCharacter GetSelectedGameCharacter()

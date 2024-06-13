@@ -461,6 +461,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 0.34693146
       objectReference: {fileID: 0}
+    - target: {fileID: 7342845556055567331, guid: 64fdb1b56593445a69eed289cc35997e, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7543911660705201556, guid: 64fdb1b56593445a69eed289cc35997e, type: 3}
       propertyPath: m_SortingLayer
       value: 0
@@ -655,6 +659,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4076745988354898789}
     m_Modifications:
+    - target: {fileID: 697367887698197805, guid: 52c8909fa7961401a91717341276e706, type: 3}
+      propertyPath: m_Colors.m_DisabledColor.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 828969577445833471, guid: 52c8909fa7961401a91717341276e706, type: 3}
       propertyPath: m_SortingLayer
       value: 32709

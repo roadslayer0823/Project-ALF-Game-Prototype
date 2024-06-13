@@ -407,7 +407,6 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             this.activeSkillSlotListPanelV2.Show();
-
             this.backendSkillSlotListPanel.Show();
         }
     }
@@ -427,7 +426,6 @@ public class BattleUiManager : MonoBehaviour
 
     public void PlayHideSkillSlotListPanelAnimation()
     {
-        this.activeSkillSlotListPanelV2.OpenAnimator();
         this.activeSkillSlotListPanelV2.HideAnimation();
         this.backendSkillSlotListPanel.HideAnimation();
     }

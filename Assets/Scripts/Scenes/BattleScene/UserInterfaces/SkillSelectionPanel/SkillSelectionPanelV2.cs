@@ -179,14 +179,28 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
     public void PlayAttackSkillSelectionPanelAnimation()
     {
+        SetAttackButtonInteractable();
         this.skillSelectionPanelAnimation.Play(ANIMATION_ID_SHOW_ATTACK_SKILL_SELECTION_PANEL);
         this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_SHOW_ATTACK_INFO_PANEL);
     }
 
     public void PlayBackendSkillSelectionPanelAnimation()
     {
+        SetBackendButtonInteractable();
         this.skillSelectionPanelAnimation.Play(ANIMATION_ID_SHOW_BACKEND_SKILL_SELECTION_PANEL);
         this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_SHOW_BACKEND_INFO_PANEL);
+    }
+
+    public void SetAttackButtonInteractable()
+    {
+        this.activeSkillListBoxButton.interactable = false;
+        this.backendSkillListBoxButton.interactable = true;
+    }
+
+    public void SetBackendButtonInteractable()
+    {
+        this.activeSkillListBoxButton.interactable = true;
+        this.backendSkillListBoxButton.interactable = false;
     }
 
     public void ShowAttackSkillSelectionBox()
@@ -831,6 +845,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         }
         else if (this.backendSkillListBoxGO.activeSelf)
         {
+            this.activeSkillListBoxButton.interactable = true;
+            this.backendSkillListBoxButton.interactable = false;
             this.skillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE_BACKEND_SKILL_SELECTION_PANEL);
             this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_HIDE_BACKEND_INFO_PANEL);
             yield return new WaitForSeconds(0.2f);
