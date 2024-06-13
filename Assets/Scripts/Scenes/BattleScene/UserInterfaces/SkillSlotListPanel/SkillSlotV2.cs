@@ -446,7 +446,8 @@ public class SkillSlotV2 : MonoBehaviour
         {
             case StateType.Enabled:
 
-                if (!this.isMiddleSlot)
+                if (this.skillType == SkillType.ActiveSkill
+                    && !this.isMiddleSlot)
                 {
                     goto case StateType.Disabled;
                 }
