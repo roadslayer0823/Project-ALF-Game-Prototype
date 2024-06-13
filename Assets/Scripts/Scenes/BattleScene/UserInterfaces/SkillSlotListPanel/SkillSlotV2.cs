@@ -445,6 +445,12 @@ public class SkillSlotV2 : MonoBehaviour
         switch ( this.currentStateType )
         {
             case StateType.Enabled:
+
+                if (!this.isMiddleSlot)
+                {
+                    goto case StateType.Disabled;
+                }
+
                 ActivateSkillFrame();
                 if (isMiddleSlot)
                 {
@@ -585,7 +591,7 @@ public class SkillSlotV2 : MonoBehaviour
         }
     }
 
-    private void UpdateSkillIcon( bool isOn)
+    private void UpdateSkillIcon( bool isOn )
     {
         Subskill _subskillData = this.selectedSkill.GetCharacterSubskillData().GetSubskillData();
         this.skillIcon.sprite = Resources.Load<Sprite>( ( isOn ) ? _subskillData.IconFilePathOn : _subskillData.IconFilePathOff );
@@ -665,9 +671,14 @@ public class SkillSlotV2 : MonoBehaviour
         return this.isObserving;
     }
 
-    public void SetIsMiddleSlot( bool isMiddleSlot )
+    public void SetIsMiddleSlot( bool isMiddleSlot, bool needToUpdateDisplay = true )
     {
         this.isMiddleSlot = isMiddleSlot;
+
+        if (needToUpdateDisplay)
+        {
+            UpdateDisplay();
+        }
     }
 
     public void SetIsActivated( bool isActivated )
@@ -675,7 +686,7 @@ public class SkillSlotV2 : MonoBehaviour
         this.isActivated = isActivated;
     }
 
-    public void SetIsSelected(bool isSelected)
+    public void SetIsSelected( bool isSelected )
     {
         this.isSelected = isSelected;
         UpdateDisplay();

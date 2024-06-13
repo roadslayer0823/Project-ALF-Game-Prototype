@@ -14,6 +14,7 @@ public class PlayerCharacter : GameCharacter
             case AnimationEvent.SetCharacter:
 
                 _playerActionPanel.SetSelectedGameCharacter( this );
+                _battleUiManager.UpdateSkillButtons();
 
                 break;
 

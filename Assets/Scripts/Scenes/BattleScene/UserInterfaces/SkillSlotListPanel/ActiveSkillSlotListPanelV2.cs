@@ -41,7 +41,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         SetActiveRecursively(this.skillInformation[2].transform, false);
 
         this.middleSkillSlot = this.skillSlots[ 0 ];
-        this.middleSkillSlot.SetIsMiddleSlot(true);
+        this.middleSkillSlot.SetIsMiddleSlot( true, false );
         ArrangeSkillSlot(1);
     }
 
@@ -355,7 +355,6 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                     currentSlot.UpdateCharacterSkillLevel(currentSlot.skillLevel);
                     this.middleSkillSlot = skillSlotList[i].GetComponent<SkillSlotV2>();
                     this.currentSkillSlotPosition[i].SetIsMiddleSlot(true);
-                    this.currentSkillSlotPosition[i].SetCurrentStateType(SkillSlotV2.StateType.Enabled);
                 }
                 else
                 {
@@ -364,7 +363,6 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                     this.skillSlotList[i].transform.SetParent(this.bottomTopContainer.transform, false);
                     SetActiveRecursively(this.skillInformation[i].transform, false);
                     this.currentSkillSlotPosition[i].SetIsMiddleSlot(false);
-                    this.currentSkillSlotPosition[i].SetCurrentStateType(SkillSlotV2.StateType.Disabled);
                 }
 
                 // Use LeanTween to move the slot to the new position
