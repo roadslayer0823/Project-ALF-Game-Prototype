@@ -763,9 +763,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen())
         {
-            _isPlayingCombatCommandAnimation = true;
-            battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutOut( true, () => { _isPlayingCombatCommandAnimation = false; } );
-            yield return new WaitUntil( () => !_isPlayingCombatCommandAnimation );
+            battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutOut( true );
         }
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定結果</color>為"
