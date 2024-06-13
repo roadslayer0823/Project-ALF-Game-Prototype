@@ -503,6 +503,8 @@ MonoBehaviour:
   skillMenuContainer: {fileID: 1029035352398447092}
   showActiveSkillSelectionPanelButton: {fileID: 5280124831437089428}
   showBackendSkillSelectionPanelButton: {fileID: 3829905402327300158}
+  skillSelectionPanelV2: {fileID: 0}
+  preparationSectionAnimation: {fileID: 5887496938408074375}
   switchingButton: {fileID: 5726088102663145803}
   executeButton: {fileID: 7335719149696745570}
 --- !u!95 &5887496938408074375

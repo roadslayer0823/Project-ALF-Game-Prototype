@@ -292,7 +292,7 @@ public class BattleGameManager : MonoBehaviour
             }
         }
 
-        this.battleUiManager.HideSkillSlotListPanel();
+        this.battleUiManager.PlayHideSkillSlotListPanelAnimation();
         this.battleUiManager.HideATLSlotListPanel();
         this.battleUiManager.GetSkillSlotListPanel().SetIsSkillSlotListScrollable( false );
 

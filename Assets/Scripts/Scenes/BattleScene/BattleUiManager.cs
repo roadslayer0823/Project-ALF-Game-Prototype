@@ -257,6 +257,15 @@ public class BattleUiManager : MonoBehaviour
     public void OnExecuteButtonClicked()
     {
         ReturnToSkillMenu();
+        if (this.skillSelectionPanelV2.GetIsAnimationPlayable())
+        {
+            this.skillSelectionPanelV2.gameObject.SetActive(true);
+            this.skillSelectionPanelV2.StartHideSkillSelectionPanel();
+        }
+        else
+        {
+            this.preparationSection.HideAnimation();
+        }
         StartCoroutine(WaitForTurnStartAnimation());
     }
 
@@ -396,6 +405,7 @@ public class BattleUiManager : MonoBehaviour
         else
         {
             this.activeSkillSlotListPanelV2.Show();
+
             this.backendSkillSlotListPanel.Show();
         }
     }
@@ -411,6 +421,13 @@ public class BattleUiManager : MonoBehaviour
             this.activeSkillSlotListPanelV2.Hide();
             this.backendSkillSlotListPanel.Hide();
         }
+    }
+
+    public void PlayHideSkillSlotListPanelAnimation()
+    {
+        this.activeSkillSlotListPanelV2.OpenAnimator();
+        this.activeSkillSlotListPanelV2.HideAnimation();
+        this.backendSkillSlotListPanel.HideAnimation();
     }
 
     public void UpdateSkillSlotListPanel( GameCharacter gameCharacter )

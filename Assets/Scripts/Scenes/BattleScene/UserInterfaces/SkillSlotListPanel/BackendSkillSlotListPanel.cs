@@ -11,12 +11,15 @@ public class BackendSkillSlotListPanel : MonoBehaviour
     [SerializeField] private SkillSlotV2[] backendSkillSlots = new SkillSlotV2[ 0 ];
     [SerializeField] private SkillSlotV2 qteSkillSlot = null;
     [SerializeField] private GameObject qteButton = null;
+    [SerializeField] private Animator skillSlotListAnimator = null;
 
     private CharacterSkill qteSkill = null;
     private GameCharacter selectedGameCharacter = null;
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
 
     private Action<SkillSlotV2,bool> onSkillSlotSelectedCallback = null;
+    private const string ANIMATION_ID_SHOW_BACKEND_SKILL_SLOT = "ShowBackendSkillList";
+    private const string ANIMATION_ID_HIDE_BACKEND_SKILL_SLOT = "HideBackendSkillList";
 
     public void Initialize( Action<SkillSlotV2,bool> onSkillSlotSelectedCallback )
     {
@@ -33,11 +36,17 @@ public class BackendSkillSlotListPanel : MonoBehaviour
     public void Show()
     {
         base.gameObject.SetActive(true);
+        this.skillSlotListAnimator.Play(ANIMATION_ID_SHOW_BACKEND_SKILL_SLOT);
     }
 
     public void Hide()
     {
         base.gameObject.SetActive(false);
+    }
+
+    public void HideAnimation()
+    {
+        this.skillSlotListAnimator.Play(ANIMATION_ID_HIDE_BACKEND_SKILL_SLOT);
     }
 
     public void HideQTEButton()

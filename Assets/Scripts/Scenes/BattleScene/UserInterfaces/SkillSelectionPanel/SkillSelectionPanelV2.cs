@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
+using System.Collections;
 
 public class SkillSelectionPanelV2 : MonoBehaviour
 {
@@ -62,12 +63,19 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     [Header("")]
     [SerializeField] private Button returnButton = null;
     [SerializeField] private SkillInfoPanel skillInfoPanel = null;
+    [SerializeField] private PreparationSection preparationSection = null;
+    [SerializeField] private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
+    [SerializeField] private BackendSkillSlotListPanel backendSkillSlotListPanel = null;
     [SerializeField] private Animator skillSelectionPanelAnimation = null;
+    [SerializeField] private Animator preparationSectionAnimation = null;
+    [SerializeField] private Animator attackSkillSlotListPanelAnimation = null;
+    [SerializeField] private Animator backendSkillSlotListPanelAnimation = null;
 
     private BattleUiManager battleUiManager = null;
     private Action<SkillSelectionBoxV2> onSkillSelectedCallback = null;
     private Action<SkillSelectionBoxV2> onSkillDeselectedCallback = null;
     private Action onReturnedCallback = null;
+    private bool isAnimationPlayable = false;
 
     private GameCharacter gameCharacter = null;
 
@@ -77,6 +85,9 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     private const string ANIMATION_ID_HIDE_BACKEND_SKILL_SELECTION_PANEL = "HideBackendSkillSelectionPanel";
     private const string ANIMATION_ID_SHOW_ATTACK_INFO_PANEL = "ShowAttackInfoPanel";
     private const string ANIMATION_ID_SHOW_BACKEND_INFO_PANEL = "ShowBackendPanel";
+    private const string ANIMATION_ID_HIDE_ATTACK_INFO_PANEL = "HideAttackInfoPanel";
+    private const string ANIMATION_ID_HIDE_BACKEND_INFO_PANEL = "HideBackendInfoPanel";
+    private const string ANIMATION_ID_HIDE_MENU_PANEL = "HideMenuPanel";
     private const string AUDIO_ID_SKILL_OFF = "skill_off";
     private const string AUDIO_ID_SKILL_ON = "skill_on";
     private const string AUDIO_ID_CLICK = "click";
@@ -788,6 +799,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     public void ShowSkillSelectionPanel( SkillType skillType )
     {
         this.gameObject.SetActive( true );
+        SetIsAnimationPlayable(true);
         ShowActiveSkillSelectionList( skillType == SkillType.Active );
         ShowBackendSkillSelectionList( skillType == SkillType.Backend );
     }
@@ -796,6 +808,34 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     public void HideSkillSelectionPanel()
     {
         this.gameObject.SetActive(false);
+        SetIsAnimationPlayable(false);
+    }
+
+    public void StartHideSkillSelectionPanel()
+    {
+        StartCoroutine(PlayMenuPanelAnimation());
+    }
+
+    public IEnumerator PlayMenuPanelAnimation()
+    {
+        if (this.activeSkillSelectionListGO.activeSelf)
+        {
+            this.skillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE_ATTACK_SKILL_SELECTION_PANEL);
+            this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_HIDE_ATTACK_INFO_PANEL);
+            yield return new WaitForSeconds(0.25f);
+            this.preparationSection.ShowSkillMenu();
+            yield return new WaitForSeconds(0.1f);
+            this.preparationSectionAnimation.Play(ANIMATION_ID_HIDE_MENU_PANEL);
+        }
+        else if (this.backendSkillListBoxGO.activeSelf)
+        {
+            this.skillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE_BACKEND_SKILL_SELECTION_PANEL);
+            this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_HIDE_BACKEND_INFO_PANEL);
+            yield return new WaitForSeconds(0.2f);
+            this.preparationSection.ShowSkillMenu();
+            yield return new WaitForSeconds(0.1f);
+            this.preparationSectionAnimation.Play(ANIMATION_ID_HIDE_MENU_PANEL);
+        }
     }
 
     // show the skill info panel
@@ -810,9 +850,29 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         this.skillInfoPanel.Hide();
     }
 
+    public void HideAttackSkillSelectionPanel()
+    {
+        this.activeSkillSelectionListGO.SetActive(false);
+    }
+
+    public void HideBackendSkillSelectionPanel()
+    {
+        this.backendSkillSelectionListGO.SetActive(false);
+    }
+
     public SkillSelectionBoxV2 GetLastSelectedActiveSkillSelectionBox()
     {
         return this.lastSelectedActiveSkillSelectionBox;
+    }
+
+    public void SetIsAnimationPlayable(bool isPlayable)
+    {
+        this.isAnimationPlayable = isPlayable;
+    }
+
+    public bool GetIsAnimationPlayable()
+    {
+        return this.isAnimationPlayable;
     }
 
     public void SetLastSelectedActiveSkillSelectionBox(SkillSelectionBoxV2 skillSelectionBox)

@@ -46,6 +46,7 @@ public class SkillSelectionBoxV2 : MonoBehaviour
     [SerializeField] private DoubleTapDetector doubleTapDetector = null;
 
     private SkillSelectionPanelV2 skillSelectionPanel = null;
+    private PreparationSection preparationSectionAnimation = null;
     private CharacterSkill characterSkill = null;
     private bool isSelected = false;
     private int skillLevel = 0;

@@ -135,6 +135,8 @@ public class SkillSlotV2 : MonoBehaviour
         SetSelectedSkill(this.selectedSkill);
         this.activeSkillSlotListPanelV2 = activeSkillSlotListPanelV2;
         this.SetBlankFrame( this.skillType );
+        this.skillFrame.SetNativeSize();
+        this.unSelectSkillFrame.SetNativeSize();
         this.skillFrame.material.SetFloat("_Brightness", 1);
         this.skillIcon.transform.localScale = new Vector3( this.skillIconScale, this.skillIconScale, 1.0f );
     }
@@ -143,6 +145,8 @@ public class SkillSlotV2 : MonoBehaviour
     {
         this.backendSkillSlotListPanel = backendSkillSlotListPanel;
         this.SetBlankFrame(this.skillType);
+        this.skillFrame.SetNativeSize();
+        this.unSelectSkillFrame.SetNativeSize();
         this.skillIcon.transform.localScale = new Vector3(this.skillIconScale, this.skillIconScale, 1.0f);
     }
 
@@ -415,7 +419,6 @@ public class SkillSlotV2 : MonoBehaviour
             SkillType.None => (null, false),
             _ => throw new NotImplementedException()
         };
-        this.skillFrame.SetNativeSize();
         this.unSelectSkillFrame.SetNativeSize();
         this.skillFrame.sprite = frameSprite;
         this.unSelectSkillFrame.sprite = frameSprite;

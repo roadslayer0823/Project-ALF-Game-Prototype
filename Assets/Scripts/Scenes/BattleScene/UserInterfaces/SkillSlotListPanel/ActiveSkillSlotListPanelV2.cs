@@ -9,6 +9,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     [SerializeField] private GameObject clickAreaBottom;
     [SerializeField] private GameObject bottomTopContainer = null;
     [SerializeField] private GameObject middleContainer = null;
+    [SerializeField] private Animator skillSlotListPanel = null;
     [SerializeField] private SkillSlotV2[] skillSlots = new SkillSlotV2[0];
     [SerializeField] private List<SkillSlotV2> currentSkillSlotPosition;
     [SerializeField] private List<Button> skillSlotsButton = null;
@@ -24,6 +25,8 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     public bool isAnimationRunning = true;
 
     private Action<SkillSlotV2,bool> onSkillSlotSelectedCallback = null;
+    private const string ANIMATION_ID_SHOW_ATTACK_SKILL_SLOT = "ShowAttackSkillList";
+    private const string ANIMATION_ID_HIDE_ATTACK_SKILL_SLOT = "HideAttackSkillList";
 
     public void Initialize( Action<SkillSlotV2,bool> onSkillSlotSelectedCallback )
     {
@@ -49,15 +52,31 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         {
             skillSlots[ i ].SetIsActivated( true );
         }
+        this.skillSlotListPanel.Play(ANIMATION_ID_SHOW_ATTACK_SKILL_SLOT);
     }
 
     public void Hide()
     {
         base.gameObject.SetActive(false);
+    }
+
+    public void HideAnimation()
+    {
         for (int i = 0; i < skillSlots.Length; i++)
         {
             skillSlots[ i ].SetIsActivated( false );
         }
+        this.skillSlotListPanel.Play(ANIMATION_ID_HIDE_ATTACK_SKILL_SLOT);
+    }
+
+    public void CloseAnimator()
+    {
+        this.skillSlotListPanel.enabled = false;
+    }
+
+    public void OpenAnimator()
+    {
+        this.skillSlotListPanel.enabled = true;
     }
 
     public void EnableInteraction()
@@ -336,6 +355,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                     currentSlot.UpdateCharacterSkillLevel(currentSlot.skillLevel);
                     this.middleSkillSlot = skillSlotList[i].GetComponent<SkillSlotV2>();
                     this.currentSkillSlotPosition[i].SetIsMiddleSlot(true);
+                    this.currentSkillSlotPosition[i].SetCurrentStateType(SkillSlotV2.StateType.Enabled);
                 }
                 else
                 {
@@ -344,6 +364,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                     this.skillSlotList[i].transform.SetParent(this.bottomTopContainer.transform, false);
                     SetActiveRecursively(this.skillInformation[i].transform, false);
                     this.currentSkillSlotPosition[i].SetIsMiddleSlot(false);
+                    this.currentSkillSlotPosition[i].SetCurrentStateType(SkillSlotV2.StateType.Disabled);
                 }
 
                 // Use LeanTween to move the slot to the new position

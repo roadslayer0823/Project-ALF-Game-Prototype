@@ -155,6 +155,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7665806968079913483}
   - component: {fileID: 2885229096290782620}
+  - component: {fileID: 3344236770459112854}
   m_Layer: 5
   m_Name: ActiveSkillSlotListPanel
   m_TagString: Untagged
@@ -204,6 +205,7 @@ MonoBehaviour:
   clickAreaBottom: {fileID: 3635446616168202603}
   bottomTopContainer: {fileID: 6245479889414334075}
   middleContainer: {fileID: 1183171258271325045}
+  skillSlotListPanel: {fileID: 3344236770459112854}
   skillSlots:
   - {fileID: 612871978455559505}
   - {fileID: 455713211041586561}
@@ -229,6 +231,27 @@ MonoBehaviour:
   - {fileID: 1456189994962866121}
   - {fileID: 4067448536525339153}
   isAnimationRunning: 1
+--- !u!95 &3344236770459112854
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849206529592973445}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 90da0267a79654f098a9707640d4f6a9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1183171258271325045
 GameObject:
   m_ObjectHideFlags: 0
@@ -717,6 +740,10 @@ PrefabInstance:
       propertyPath: skillIconScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: currentStateType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Name
       value: SkillSlotV2_3
@@ -911,6 +938,10 @@ PrefabInstance:
       propertyPath: skillIconScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: currentStateType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: m_Name
       value: SkillSlotV2_2
@@ -1099,6 +1130,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
       propertyPath: skillIconScale
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7490135158555407957, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}
+      propertyPath: currentStateType
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7495925800829592457, guid: 6a1e2da6a605941e8a0e66f53f066623, type: 3}

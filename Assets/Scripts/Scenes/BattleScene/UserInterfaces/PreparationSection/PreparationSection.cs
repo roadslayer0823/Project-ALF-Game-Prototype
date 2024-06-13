@@ -10,6 +10,7 @@ public class PreparationSection : MonoBehaviour
     [SerializeField] private Button showActiveSkillSelectionPanelButton = null;
     [SerializeField] private Button showBackendSkillSelectionPanelButton = null;
     [SerializeField] private SkillSelectionPanelV2 skillSelectionPanelV2 = null;
+    [SerializeField] private Animator preparationSectionAnimation = null;
     [SerializeField] private Button switchingButton = null;
     [SerializeField] private Button executeButton = null;
 
@@ -20,6 +21,8 @@ public class PreparationSection : MonoBehaviour
 
     private const string AUDIO_ID_EXECUTE = "execute";
     private const string AUDIO_ID_POPUP = "popup";
+    private const string ANIMATION_ID_SHOW_MENU_PANEL = "ShowMenuPanel";
+    private const string ANIMATION_ID_HIDE_MENU_PANEL = "HideMenuPanel";
 
     public void Initialize( BattleUiManager battleUiManager, Action onExecuteButtonClickedCallback, Action onShowActiveSkillSelectionPanelCallback, Action onShowBackendSkillSelectionPanelCallback )
     {
@@ -51,12 +54,19 @@ public class PreparationSection : MonoBehaviour
     public void Show()
     {
         this.gameObject.SetActive( true );
+        this.preparationSectionAnimation.Play(ANIMATION_ID_SHOW_MENU_PANEL);
         ShowSkillMenu();
+    }
+
+    public void HideAnimation()
+    {
+        this.preparationSectionAnimation.Play(ANIMATION_ID_HIDE_MENU_PANEL);
     }
 
     public void Hide()
     {
         this.gameObject.SetActive( false );
+        HideSkillMenu();
     }
 
     public void ShowSkillMenu()
