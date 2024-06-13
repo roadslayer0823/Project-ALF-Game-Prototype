@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 88554d8a871d44f77945fed5d98c4e4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cutScreenMoveDuration: 0.5
+  cutScreenMoveDuration: 0.3
   rightPartGo: {fileID: 8893764817805501031}
   leftPartGo: {fileID: 2163012824216581680}
   rightPartImage: {fileID: 4334430656017184088}

@@ -60,6 +60,8 @@ public class BattleAnimationManager : MonoBehaviour
     private const string AUDIO_ID_FIREBALL = "fireball";
     private const string AUDIO_ID_HINTS = "hints";
     private const string AUDIO_ID_HIT = "hit";
+    private const string AUDIO_ID_REPULSE = "repulse";
+    private const string AUDIO_ID_CAMERACHANGE = "camera_change";
 
     public enum AnimationEvent
     {
@@ -151,6 +153,7 @@ public class BattleAnimationManager : MonoBehaviour
 
             if (_attacker.GetIsPlayer())
             {
+                AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
                 ChangeToBackgroundPartA();
             }
             else
@@ -240,6 +243,7 @@ public class BattleAnimationManager : MonoBehaviour
 
             if (_attacker.GetIsPlayer())
             {
+                AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
                 ChangeToBackgroundPartB();
             }
             else
@@ -816,7 +820,7 @@ public class BattleAnimationManager : MonoBehaviour
                 _attackerSkillEffectPartA = "Fireball_Part_A";
                 _attackerSkillEffectPartB = "Fireball_Part_B";
             }
-
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
             ChangeToBackgroundPartA();
         }
         else
@@ -906,6 +910,7 @@ public class BattleAnimationManager : MonoBehaviour
             {
                 this.skillPromptPanel.ShowCommandPhase( TerminologyManager.REPULSE_COMMAND_TIME, true, _skillCountdownTime );
                 ShowCommandPhaseCountdownTimer( false, _attackTarget, _skillCountdownTime );
+                AudioManager.Instance.PlaySoundEffect(AUDIO_ID_REPULSE);           
             }
 
             BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.REPULSE_COMMAND_TIME } 】</color>。" );
@@ -940,6 +945,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (_attacker.GetIsPlayer())
         {
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
             ChangeToBackgroundPartB();
         }
         else
@@ -1423,6 +1429,7 @@ public class BattleAnimationManager : MonoBehaviour
             attacker.ShowCharacterObject();
             ChangeToBackgroundPartA();
             attacker.GetOpponentContainer().SetActive( false );
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
 
             if (isAbleToUseSkill)
             {
@@ -1486,6 +1493,7 @@ public class BattleAnimationManager : MonoBehaviour
         {
             attacker.ShowCharacterObject();
             ChangeToBackgroundPartA();
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
             attacker.GetOpponentContainer().SetActive( false );
 
             if (_battleResultData != null)
@@ -1523,6 +1531,7 @@ public class BattleAnimationManager : MonoBehaviour
         if (attacker.GetIsPlayer())
         {
             ChangeToBackgroundPartB();
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
         }
         else
         {
@@ -1555,6 +1564,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (attacker.GetIsPlayer())
         {
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
             ChangeToBackgroundPartA();
         }
         else
@@ -1570,6 +1580,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (attacker.GetIsPlayer())
         {
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
             ChangeToBackgroundPartB();
         }
         else
@@ -1585,6 +1596,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (attacker.GetIsPlayer())
         {
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
             ChangeToBackgroundPartA();
         }
         else
@@ -1600,6 +1612,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         if (attacker.GetIsPlayer())
         {
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
             ChangeToBackgroundPartB();
         }
         else

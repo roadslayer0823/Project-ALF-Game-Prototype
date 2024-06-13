@@ -89,7 +89,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     private const string ANIMATION_ID_HIDE_BACKEND_INFO_PANEL = "HideBackendInfoPanel";
     private const string ANIMATION_ID_HIDE_MENU_PANEL = "HideMenuPanel";
     private const string AUDIO_ID_SKILL_OFF = "skill_off";
-    private const string AUDIO_ID_SKILL_ON = "skill_on";
+    private const string AUDIO_ID_ACTIVESKILL_ON = "active_skill_on";
+    private const string AUDIO_ID_BACKENDSKILL_ON = "backend_skill_on";
     private const string AUDIO_ID_CLICK = "click";
 
     public enum SkillType
@@ -487,6 +488,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             this.gameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
             this.onSkillSelectedCallback(skillSelectionBox);
             UpdateActiveSkillListBoxV2();
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_ACTIVESKILL_ON);
         }
 
         else if (_skillType == Skill.SkillType.backend)
@@ -546,8 +548,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             this.gameCharacter.AddSelectedSkill(skillSelectionBox.GetCharacterSkill());
             this.onSkillSelectedCallback(skillSelectionBox);
             UpdateBackendSkillListBoxV2();
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BACKENDSKILL_ON);
         }
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_SKILL_ON);
     }
 
     public void UpdateBackendSkillListBoxV2()

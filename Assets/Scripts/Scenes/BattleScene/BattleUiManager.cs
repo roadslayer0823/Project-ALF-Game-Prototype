@@ -42,6 +42,7 @@ public class BattleUiManager : MonoBehaviour
     // Version 2
     private ATLSlotListPanelV3 atlSlotListPanelV3 = null;
     private CharacterInfoPanelV2 characterInfoPanelV2 = null;
+    private const string AUDIO_ID_BACK = "back";
 
     public void Initialize( BattleGameManager battleGameManager )
     {
@@ -320,6 +321,7 @@ public class BattleUiManager : MonoBehaviour
         this.skillInfoPanel.Hide();
         HideSkillSelectionPanel();
         HideDarkLayer();
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BACK);
 
         this.preparationSection.ShowSkillMenu();
     }
