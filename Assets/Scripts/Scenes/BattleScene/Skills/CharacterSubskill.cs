@@ -38,25 +38,32 @@ public class CharacterSubskill
 
     private void SetRepulseSkillList()
     {
-        if (this.subskill.RepulseSkillIds == null)
+        if (this.subskill.RepulseSubskillIds == null)
         {
             return;
         }
 
-        string[] _repulseSkillIds = this.subskill.RepulseSkillIds;
+        string[] _repulseSubskillIds = this.subskill.RepulseSubskillIds;
 
-        for (int i = 0; i < _repulseSkillIds.Length; i++)
+        for (int i = 0; i < _repulseSubskillIds.Length; i++)
         {
-            string _repulseSkillId = _repulseSkillIds[i];
+            string[] _repulseSubskillIdStrings = _repulseSubskillIds[ i ].Split( '_' );
+            string _repulseSkillId = _repulseSubskillIdStrings[ 0 ];
+            int _repulseSkillLevel = int.Parse( _repulseSubskillIdStrings[ 1 ] );
 
             CharacterSkill[] _characterSkill = owner.GetSkills();
             for (int j = 0; j < _characterSkill.Length; j++)
             {
-                CharacterSkill _repulseSkill = _characterSkill[j];
+                CharacterSkill _repulseSkill = _characterSkill[ j ].GetClone();
 
                 if (_repulseSkillId == _repulseSkill.GetSkillData().Id)
                 {
+                    _repulseSkill.SetupCharacterSubskillList();
+                    _repulseSkill.SetSelectedSkillLevel( _repulseSkillLevel );
                     this.repulseSkillList.Add(_repulseSkill);
+
+                    this.owner.AddToAllSkills( _repulseSkill );
+
                     break;
                 }
             }
@@ -70,25 +77,32 @@ public class CharacterSubskill
 
     private void SetDerivedSkillList()
     {
-        if (this.subskill.DerivedSkillIds == null)
+        if (this.subskill.DerivedSubskillIds == null)
         {
             return;
         }
 
-        string[] _derivedSkillIds = this.subskill.DerivedSkillIds;
+        string[] _derivedSubskillIds = this.subskill.DerivedSubskillIds;
 
-        for (int i = 0; i < _derivedSkillIds.Length; i++)
+        for (int i = 0; i < _derivedSubskillIds.Length; i++)
         {
-            string _derivedSkillId = _derivedSkillIds[i];
+            string[] _derivedSubskillIdStrings = _derivedSubskillIds[ i ].Split( '_' );
+            string _derivedSkillId = _derivedSubskillIdStrings[ 0 ];
+            int _derivedSkillLevel = int.Parse( _derivedSubskillIdStrings[ 1 ] );
 
             CharacterSkill[] _characterSkill = owner.GetSkills();
             for (int j = 0; j < _characterSkill.Length; j++)
             {
-                CharacterSkill _derivedSkill = _characterSkill[j];
+                CharacterSkill _derivedSkill = _characterSkill[ j ].GetClone();
 
                 if (_derivedSkillId == _derivedSkill.GetSkillData().Id)
                 {
+                    _derivedSkill.SetupCharacterSubskillList();
+                    _derivedSkill.SetSelectedSkillLevel( _derivedSkillLevel );
                     this.derivedSkillList.Add(_derivedSkill);
+
+                    this.owner.AddToAllSkills( _derivedSkill );
+
                     break;
                 }
             }
@@ -102,25 +116,32 @@ public class CharacterSubskill
 
     private void SetCounterSkillList()
     {
-        if (this.subskill.CounterSkillIds == null)
+        if (this.subskill.CounterSubskillIds == null)
         {
             return;
         }
 
-        string[] _counterSkillIds = this.subskill.CounterSkillIds;
+        string[] _counterSubskillIds = this.subskill.CounterSubskillIds;
 
-        for (int i = 0; i < _counterSkillIds.Length; i++)
+        for (int i = 0; i < _counterSubskillIds.Length; i++)
         {
-            string _counterSkillId = _counterSkillIds[i];
+            string[] _counterSubskillIdStrings = _counterSubskillIds[ i ].Split( '_' );
+            string _counterSkillId = _counterSubskillIdStrings[ 0 ];
+            int _counterSkillLevel = int.Parse( _counterSubskillIdStrings[ 1 ] );
 
             CharacterSkill[] _characterSkill = owner.GetSkills();
             for (int j = 0; j < _characterSkill.Length; j++)
             {
-                CharacterSkill _counterSkill = _characterSkill[j];
+                CharacterSkill _counterSkill = _characterSkill[ j ].GetClone();
 
                 if (_counterSkillId == _counterSkill.GetSkillData().Id)
                 {
+                    _counterSkill.SetupCharacterSubskillList();
+                    _counterSkill.SetSelectedSkillLevel( _counterSkillLevel );
                     this.counterSkillList.Add(_counterSkill);
+
+                    this.owner.AddToAllSkills( _counterSkill );
+
                     break;
                 }
             }

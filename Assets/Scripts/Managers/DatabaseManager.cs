@@ -291,9 +291,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 subskill.IsObservingSkill = bool.Parse(subskill.IsObservingSkillString);
                 subskill.IsInterceptable = bool.Parse(subskill.IsInterceptableString);
                 subskill.WillRemoveEnergyMarker = bool.Parse( subskill.WillRemoveEnergyMarkerString );
-                subskill.RepulseSkillIds = ConvertStringToStringArray(subskill.RepulseSkillIdsString);
-                subskill.DerivedSkillIds = ConvertStringToStringArray(subskill.DerivedSkillIdsString);
-                subskill.CounterSkillIds = ConvertStringToStringArray(subskill.CounterSkillIdsString);
+                subskill.RepulseSubskillIds = ConvertStringToStringArray(subskill.RepulseSubskillIdsString);
+                subskill.DerivedSubskillIds = ConvertStringToStringArray(subskill.DerivedSubskillIdsString);
+                subskill.CounterSubskillIds = ConvertStringToStringArray(subskill.CounterSubskillIdsString);
                 subskill.Effects = ConvertStringToIntArray(subskill.EffectsString);
             }
 
@@ -642,17 +642,17 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("description")]
         public string Description { get; private set; }
 
-        [JsonProperty("repulse_skill_ids")]
-        [HideInInspector] public string RepulseSkillIdsString { get; private set; }
-        public string[] RepulseSkillIds;
+        [JsonProperty("repulse_subskill_ids")]
+        [HideInInspector] public string RepulseSubskillIdsString { get; private set; }
+        public string[] RepulseSubskillIds;
 
-        [JsonProperty("derived_skill_ids")]
-        [HideInInspector] public string DerivedSkillIdsString { get; private set; }
-        public string[] DerivedSkillIds;
+        [JsonProperty("derived_subskill_ids")]
+        [HideInInspector] public string DerivedSubskillIdsString { get; private set; }
+        public string[] DerivedSubskillIds;
 
-        [JsonProperty("counter_skill_ids")]
-        [HideInInspector] public string CounterSkillIdsString { get; private set; }
-        public string[] CounterSkillIds;
+        [JsonProperty("counter_subskill_ids")]
+        [HideInInspector] public string CounterSubskillIdsString { get; private set; }
+        public string[] CounterSubskillIds;
 
         [JsonProperty("range")]
         [HideInInspector] public string RangeString { get; private set; }

@@ -249,6 +249,8 @@ public class BattleGameManager : MonoBehaviour
     {
         this.currentGamePhase = GamePhase.Transition;
 
+        this.playerCharacter.ResetAllSkillSelectedLevelsToPresets();
+
         int _roundNumber = 0;
         if (this.battleFlowManager_V2 == null)
         {

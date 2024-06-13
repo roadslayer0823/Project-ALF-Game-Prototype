@@ -85,6 +85,7 @@ public class GameCharacter : MonoBehaviour
     private int stressBreakStatusRemainingATLs = 0; // 負荷崩潰維持值 (ATL)
     private bool isDead = false;
     private BattleResultData_GameCharacter temporaryBattleResultData = null;
+    private List<CharacterSkill> allSkills = null;
 
     public enum CharacterIdentityType
     {
@@ -159,6 +160,7 @@ public class GameCharacter : MonoBehaviour
         this.currentStressValue = 0.0f;
         this.selectedActiveSkillList = new List<CharacterSkill>();
         this.selectedBackendSkillList = new List<CharacterSkill>();
+        this.allSkills = new List<CharacterSkill>();
 
         List<CharacterSkill> _skillList = new();
         string[] _skillIdArray = characterData.SkillIdArray;
@@ -177,6 +179,8 @@ public class GameCharacter : MonoBehaviour
             {
                 AddSelectedSkill( _characterSkill );
             }
+
+            this.allSkills.Add( _characterSkill );
         }
 
         this.onCharacterInfoUpdated?.Invoke();
@@ -1109,9 +1113,17 @@ public class GameCharacter : MonoBehaviour
 
     public void RecordAllSkillSelectedLevelsAsPresets()
     {
-        for (int i = 0; i < this.skills.Length; i++)
+        for (int i = 0; i < this.allSkills.Count; i++)
         {
-            this.skills[ i ].RecordSelectedSkillLevelAsPreset();
+            this.allSkills[ i ].RecordSelectedSkillLevelAsPreset();
+        }
+    }
+
+    public void ResetAllSkillSelectedLevelsToPresets()
+    {
+        for (int i = 0; i < this.allSkills.Count; i++)
+        {
+            this.allSkills[ i ].ResetSelectedSkillLevelToPreset();
         }
     }
 
@@ -1256,6 +1268,11 @@ public class GameCharacter : MonoBehaviour
     public void InvokeOnCharacterInfoUpdatedCallback()
     {
         this.onCharacterInfoUpdated?.Invoke();
+    }
+
+    public void AddToAllSkills( CharacterSkill characterSkill )
+    {
+        this.allSkills.Add( characterSkill );
     }
 
 #endregion
