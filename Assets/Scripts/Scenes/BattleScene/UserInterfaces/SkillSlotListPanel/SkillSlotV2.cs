@@ -94,6 +94,7 @@ public class SkillSlotV2 : MonoBehaviour
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
     private const string AUDIO_ID_BUTTON_ENABLE = "skill_enabled";
+    private const string AUDIO_ID_HIGHLIGHT = "highlight";
     private const string AUDIO_ID_ACTIVE_SKILL_SELECTED = "active_skill_selected";
     private const string AUDIO_ID_BACKEND_SKILL_SELECTED = "backend_skill_selected";
     private const string ANIMATION_ID_ACTIVE_SKILL_OUTLINE_RESIZE = "ActiveSkillOutlineResize";
@@ -458,6 +459,7 @@ public class SkillSlotV2 : MonoBehaviour
                     EnableButton();
                     BrightnessLoopAnimation();
                     PlayActivateOutlineAnimation();
+                    AudioManager.Instance.PlaySoundEffect(AUDIO_ID_HIGHLIGHT);
                 }
                 if(isSelected == true)
                 {
