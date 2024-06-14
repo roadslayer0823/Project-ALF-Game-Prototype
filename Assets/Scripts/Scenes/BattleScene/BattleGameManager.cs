@@ -90,7 +90,11 @@ public class BattleGameManager : MonoBehaviour
 
         AudioManager.Instance.PlayBackgroundMusic( clip: this.backgroundMusicAudioClip, loopStartTime: 35.142f );
 
-        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CROSSING_ACTION_MODE, () =>
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CROSSING_ACTION_MODE );
+
+        this.battleUiManager.PlayInstructionAnimation();
+
+        LeanTween.delayedCall( 2.2f, () =>
         {
             this.battleUiManager.SetAllActive( true );
             this.battleUiManager.HideSkillSelectionPanel();
@@ -117,8 +121,6 @@ public class BattleGameManager : MonoBehaviour
 
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COMMAND_PHASE );
         } );
-
-        this.battleUiManager.PlayInstructionAnimation();
     }
 
     public void StartExecution()
