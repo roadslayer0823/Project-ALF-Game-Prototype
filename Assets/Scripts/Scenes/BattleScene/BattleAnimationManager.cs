@@ -84,6 +84,7 @@ public class BattleAnimationManager : MonoBehaviour
         OnPartA,
         OnPartB,
         OnAtlEnded,
+        OnTransition,
         OnNormalSkillBeingUsed,
         OnObservingSkillBeingUsed,
         OnDeath
@@ -728,9 +729,14 @@ public class BattleAnimationManager : MonoBehaviour
         }
         else
         {
-            this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true );
-            //this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, false );
-            BattleLog.Instance.AddOnScreenBattleLog( $"雙方進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
+            // ------------------------------ 臨戰指令時間 (前) ------------------------------
+
+            LeanTween.delayedCall( 0.1f, () =>
+            {
+                this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true );
+                //this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, false );
+                BattleLog.Instance.AddOnScreenBattleLog( $"雙方進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
+            } );
 
             if (!battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen())
             {
@@ -744,10 +750,17 @@ public class BattleAnimationManager : MonoBehaviour
 
             battleFlowATL.StartAttackOpportunityCountdownTimer( this.skillPromptPanel );
             _atlSlotListPanel.GoToATL( battleFlowATL.GetATLNumber(), battleFlowATL.GetAttackOpportunityDuration() );
+
             yield return new WaitUntil( () => ( !battleFlowATL.GetIsDuringAttackOpportunityPeriod() || ( _playerCharacter.GetAssignedSkill() != null && _enemyCharacter.GetAssignedSkill() != null ) ) );
+
+            _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
+            _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
+
             _atlSlotListPanel.GoToMiddleAtCurrentAtlSlot( 0.1f );
             this.skillPromptPanel.HideCommandPhase( true );
             this.skillPromptPanel.HideCommandPhase( false );
+
+            // ------------------------------------------------------------------------
         }
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定先後手方</color>" );
@@ -784,6 +797,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         float _skillAnimationLength = 0.0f;
         float _skillCountdownTime = 0.0f;
+        float _skillCountdownTimeStartTime = 0.0f;
         string _log = "";
 
         this.gameCharacterList = new List<GameCharacter>()
@@ -869,8 +883,11 @@ public class BattleAnimationManager : MonoBehaviour
         // 在當前的 ATL 裡，如果“先手方”發動的技能不是派生技能，才會有 Part A 的階段，否則將直接進入 Part B 的階段。
         if (_attackerSkillType != Skill.SkillType.derived)
         {
-            _attacker.TriggerEvent( AnimationEvent.OnPartA );
-            _attackTarget.TriggerEvent( AnimationEvent.OnPartA );
+            LeanTween.delayedCall( 0.3f, () =>
+            {
+                _attacker.TriggerEvent( AnimationEvent.OnPartA );
+                _attackTarget.TriggerEvent( AnimationEvent.OnPartA );
+            } );
         }
 
         yield return StartCoroutine( PlayShowingSkillInformation( _attacker ) );
@@ -901,22 +918,27 @@ public class BattleAnimationManager : MonoBehaviour
         {
             _attackTarget.SetIsInRepulseCommandTime( true );
 
-            _skillAnimationLength = GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f;
-            _skillCountdownTime = _skillAnimationLength * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+            //_skillAnimationLength = GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f;
+            //_skillCountdownTime = _skillAnimationLength * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+            _skillCountdownTime = 1.6f;
             _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
             StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
 
             if (_attackTarget.GetIsPlayer())
             {
+                yield return new WaitForSeconds( 0.1f );
                 this.skillPromptPanel.ShowCommandPhase( TerminologyManager.REPULSE_COMMAND_TIME, true, _skillCountdownTime );
+                yield return new WaitForSeconds( 0.2f );
+
+                _skillCountdownTimeStartTime = Time.time;
                 ShowCommandPhaseCountdownTimer( false, _attackTarget, _skillCountdownTime );
-                AudioManager.Instance.PlaySoundEffect(AUDIO_ID_REPULSE);           
+                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_REPULSE );
             }
 
             BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.REPULSE_COMMAND_TIME } 】</color>。" );
         }
 
-        yield return StartCoroutine( ZoomInCameraToTarget( _attacker, 1.0f ) );
+        yield return StartCoroutine( ZoomInCameraToTarget( _attacker, 0.6f ) );
 
         if (_attackerCharacterPartA != NO_ANIMATION)
         {
@@ -932,6 +954,14 @@ public class BattleAnimationManager : MonoBehaviour
 
             yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartA ) );
         }
+
+        while (Time.time - _skillCountdownTimeStartTime < _skillCountdownTime)
+        {
+            yield return null;
+        }
+
+        _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
+        _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
 
         this.hasTransitionAnimationEnded = false;
         this.battleGameManager.GetBattleVisualEffectManager().TransitionToNextPart( () => { this.hasTransitionAnimationEnded = true; } );
@@ -987,54 +1017,67 @@ public class BattleAnimationManager : MonoBehaviour
             }
         }
 
+        // 進入 Part B 階段。
+        _skillCountdownTime = 1.8f;
+        _skillCountdownTimeStartTime = Time.time;
+        _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
+
         StartPartB( out _battleResultData, out _attackerBattleResultData, out _attackTargetBattleResultData, _attacker, _attackTarget, out GameCharacter _winner, out GameCharacter _loser );
         _attacker.ApplyBattleResultData( _attackerBattleResultData, false );
         _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, false );
 
-        if (_attacker.GetIsPlayer())
+        LeanTween.delayedCall( 0.3f, () =>
         {
-            this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true );
-        }
-
-        BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
-
-        if (_attackTarget.GetCurrentCharacterIdentityType() is CharacterIdentityType.SuccessfulResister
-                                                            or CharacterIdentityType.SuccessfulDefender
-                                                            or CharacterIdentityType.SuccessfulEvader)
-        {
-            _attackTarget.SetIsCounterAttacking( true );
-
-            if (_attackTarget.GetIsPlayer())
-            {
-                this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COUNTER_COMMAND_TIME, true );
-            }
-
-            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COUNTER_COMMAND_TIME } 】</color>。" );
-        }
-        else
-        {
-            if (_attackTarget.GetIsPlayer())
+            if (_attacker.GetIsPlayer())
             {
                 this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true );
             }
 
-            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
-        }
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
+
+            if (_attackTarget.GetCurrentCharacterIdentityType() is CharacterIdentityType.SuccessfulResister
+                                                                or CharacterIdentityType.SuccessfulDefender
+                                                                or CharacterIdentityType.SuccessfulEvader)
+            {
+                _attackTarget.SetIsCounterAttacking( true );
+
+                if (_attackTarget.GetIsPlayer())
+                {
+                    this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COUNTER_COMMAND_TIME, true );
+                }
+
+                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COUNTER_COMMAND_TIME } 】</color>。" );
+            }
+            else
+            {
+                if (_attackTarget.GetIsPlayer())
+                {
+                    this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true );
+                }
+
+                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
+            }
+        } );
+
+        LeanTween.delayedCall( 0.5f, () =>
+        {
+            ShowCommandPhaseCountdownTimer( true, _playerCharacter, 1.3f );
+        } );
 
         switch ( _attackTargetSkillType )
         {
             case Skill.SkillType.none:
 
-                _skillCountdownTime = GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                //_skillCountdownTime = GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
 
-                _attacker.SetSkillCountdownTime( _skillCountdownTime );
+                //_attacker.SetSkillCountdownTime( _skillCountdownTime );
                 //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
                 //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
 
                 //ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
                 //ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
-                ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
-                _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
+                //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
+                //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
                 if (_attackerCharacterPartB != NO_ANIMATION)
                 {
@@ -1052,7 +1095,7 @@ public class BattleAnimationManager : MonoBehaviour
                 this.cameraEffect.Shake();
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
-                yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+                //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
 
                 break;
 
@@ -1070,13 +1113,13 @@ public class BattleAnimationManager : MonoBehaviour
                     StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB + "_" + REPULSE_ANIMATION_NAME ) );
                 }
 
-                _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                //_skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                 //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
 
                 //ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
                 //ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
-                ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
-                _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
+                //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
+                //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
@@ -1092,8 +1135,8 @@ public class BattleAnimationManager : MonoBehaviour
                     {
                         _hasAssault = true;
 
-                        _skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                        _winner.SetSkillCountdownTime( _skillCountdownTime );
+                        //_skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                        //_winner.SetSkillCountdownTime( _skillCountdownTime );
                         //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _winner, AnimationEvent.OnRepulseWin_Cutoff ) );
 
                         this.cameraEffect.Shake();
@@ -1121,7 +1164,7 @@ public class BattleAnimationManager : MonoBehaviour
                     ShowPopUpDisplayInfo( _attackTarget, _attackTargetBattleResultData );
                 }
 
-                yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+                //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
 
                 break;
 
@@ -1129,13 +1172,13 @@ public class BattleAnimationManager : MonoBehaviour
 
                 yield return StartCoroutine( PlayShowingSkillInformation( _attackTarget ) );
 
-                _skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                //_skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                 //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
 
                 //ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
                 //ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
-                ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
-                _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
+                //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
+                //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
                 if (_attackerCharacterPartB != NO_ANIMATION)
                 {
@@ -1166,20 +1209,20 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
                     }
 
-                    _skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                    _attacker.SetSkillCountdownTime( _skillCountdownTime );
+                    //_skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                    //_attacker.SetSkillCountdownTime( _skillCountdownTime );
                     //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
                     this.cameraEffect.Shake();
                     AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                     ShowPopUpDisplayInfo( _attacker, _attackerBattleResultData );
                     yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
-                    yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+                    //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
                 }
                 else if (_winner == _attackTarget)
                 {
-                    _skillCountdownTime = ( GetAttackAnimationLength( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBackendSkillAnimationSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                    _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
+                    //_skillCountdownTime = ( GetAttackAnimationLength( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBackendSkillAnimationSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                    //_attackTarget.SetSkillCountdownTime( _skillCountdownTime );
                     //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefenseWin_Cutoff ) );
 
                     if (_attackTargetSubskillData.IsDefendingSkill)
@@ -1203,11 +1246,19 @@ public class BattleAnimationManager : MonoBehaviour
                         yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, _attackTargetBackendSkillAnimationSkillEffectPartA ) );
                     }
 
-                    yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+                    //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
                 }
 
                 break;
         }
+
+        while (Time.time - _skillCountdownTimeStartTime < _skillCountdownTime)
+        {
+            yield return null;
+        }
+
+        _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
+        _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
 
         if (EndPartB( _attacker, _attackTarget ))
         {
@@ -1274,8 +1325,12 @@ public class BattleAnimationManager : MonoBehaviour
         }
 
         this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtPartB();
-        attacker.TriggerEvent( AnimationEvent.OnPartB );
-        attackTarget.TriggerEvent( AnimationEvent.OnPartB );
+
+        LeanTween.delayedCall( 0.5f, () =>
+        {
+            attacker.TriggerEvent( AnimationEvent.OnPartB );
+            attackTarget.TriggerEvent( AnimationEvent.OnPartB );
+        } );
     }
 
     private bool EndPartB( GameCharacter attacker, GameCharacter attackTarget )

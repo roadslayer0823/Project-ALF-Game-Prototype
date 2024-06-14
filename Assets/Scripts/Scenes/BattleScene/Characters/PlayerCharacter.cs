@@ -133,6 +133,12 @@ public class PlayerCharacter : GameCharacter
 
                 break;
 
+            case AnimationEvent.OnTransition:
+
+                _battleUiManager.UpdateSkillButtons();
+
+                break;
+
             case AnimationEvent.OnNormalSkillBeingUsed:
 
                 _battleUiManager.OnSkillBeingUsed( base.GetCurrentSkill() );

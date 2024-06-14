@@ -264,6 +264,9 @@ public class EnemyCharacter : GameCharacter
 
                 break;
 
+            case AnimationEvent.OnTransition:
+                break;
+
             case AnimationEvent.OnNormalSkillBeingUsed:
                 break;
 
