@@ -6,6 +6,7 @@ public class PauseButton : MonoBehaviour
 {
     [SerializeField] private TMP_Text buttonLabel = null;
     [SerializeField] private Slider timeSpeedSlider = null;
+    [SerializeField] private TMP_Text sliderValue = null;
 
     private bool isPaused = false;
     public static float currentTimeScale = 1.0f;
@@ -31,5 +32,10 @@ public class PauseButton : MonoBehaviour
     public void SliderToggle()
     {
         currentTimeScale = this.timeSpeedSlider.normalizedValue;
+    }
+
+    public void SetSliderValue()
+    {
+        sliderValue.text = timeSpeedSlider.value.ToString("0.##");
     }
 }
