@@ -16,6 +16,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private TMP_Text messageLabel = null;
 
     [Header( "Version 2" )]
+    [SerializeField] private ScreenSizeController screenSizeController = null;
     [SerializeField] private PreparationSection preparationSection = null;
     [SerializeField] private SkillSelectionPanelV2 skillSelectionPanelV2 = null;
     [SerializeField] private SkillInfoPanel skillInfoPanel = null;
@@ -47,6 +48,8 @@ public class BattleUiManager : MonoBehaviour
     public void Initialize( BattleGameManager battleGameManager )
     {
         this.battleGameManager = battleGameManager;
+
+        this.screenSizeController.Initialize();
 
         if (this.preparationSection == null)
         {

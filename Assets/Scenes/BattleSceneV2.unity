@@ -1996,6 +1996,7 @@ MonoBehaviour:
   characterInfoPanel: {fileID: 2121141753}
   battleResultPanel: {fileID: 821837345700175049}
   messageLabel: {fileID: 594183243}
+  screenSizeController: {fileID: 659299215}
   preparationSection: {fileID: 1496856987}
   skillSelectionPanelV2: {fileID: 657785054}
   skillInfoPanel: {fileID: 1263108855}
