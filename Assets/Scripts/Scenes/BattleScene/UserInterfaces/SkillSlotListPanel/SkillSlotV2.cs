@@ -458,7 +458,6 @@ public class SkillSlotV2 : MonoBehaviour
                 {
                     EnableButton();
                     BrightnessLoopAnimation();
-                    PlayActivateOutlineAnimation();
                     AudioManager.Instance.PlaySoundEffect(AUDIO_ID_HIGHLIGHT);
                 }
                 if(isSelected == true)
@@ -474,6 +473,7 @@ public class SkillSlotV2 : MonoBehaviour
                     UpdateSkillIcon(false);
                 }
                 swipeDetector.enabled = true;
+                PlayActivateOutlineAnimation();
                 break;
 
             case StateType.Disabled:
