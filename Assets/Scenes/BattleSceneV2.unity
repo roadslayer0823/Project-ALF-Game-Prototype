@@ -6485,6 +6485,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 659299214}
     m_Modifications:
+    - target: {fileID: 1056598681555020490, guid: 336507279eb094d9b8b5632f9fd17515, type: 3}
+      propertyPath: m_Name
+      value: ImageDown
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056598681653553709, guid: 336507279eb094d9b8b5632f9fd17515, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -928
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056598682504157303, guid: 336507279eb094d9b8b5632f9fd17515, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 935
+      objectReference: {fileID: 0}
     - target: {fileID: 1056598682776813001, guid: 336507279eb094d9b8b5632f9fd17515, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -6572,6 +6584,10 @@ PrefabInstance:
     - target: {fileID: 1056598682776813006, guid: 336507279eb094d9b8b5632f9fd17515, type: 3}
       propertyPath: m_Name
       value: BlackSidePanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 1056598682776813006, guid: 336507279eb094d9b8b5632f9fd17515, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 336507279eb094d9b8b5632f9fd17515, type: 3}
