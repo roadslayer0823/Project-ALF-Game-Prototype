@@ -41,6 +41,7 @@ public class BattleAnimationManager : MonoBehaviour
 
     private List<GameCharacter> gameCharacterList = null;
     private GameCharacter currentCaster = null;
+    private int backgroundIndex = 0;
 
     private bool isDebugMode = false;
     private DebugBattleDialogMenu.ResultType debugModeResultType = DebugBattleDialogMenu.ResultType.None;
@@ -2026,14 +2027,46 @@ public class BattleAnimationManager : MonoBehaviour
         this.isAnimationEventTriggered = true;
     }
 
+    public void SetBackgroundSprites( Sprite backgroundPartA, Sprite backgroundPartB )
+    {
+        this.backgroundPartA = backgroundPartA;
+        this.backgroundPartB = backgroundPartB;
+        UpdateBackground();
+    }
+
     public void ChangeToBackgroundPartA()
     {
-        this.background.sprite = this.backgroundPartA;
+        this.backgroundIndex = 1;
+        UpdateBackground();
     }
 
     public void ChangeToBackgroundPartB()
     {
-        this.background.sprite = this.backgroundPartB;
+        this.backgroundIndex = 2;
+        UpdateBackground();
+    }
+
+    private void UpdateBackground()
+    {
+        switch ( this.backgroundIndex )
+        {
+            case 1:
+
+                this.background.sprite = this.backgroundPartA;
+
+                break;
+
+            case 2:
+
+                this.background.sprite = this.backgroundPartB;
+
+                break;
+        }
+    }
+
+    public int GetBackgroundIndex()
+    {
+        return this.backgroundIndex;
     }
 
     public GameCharacter GetCurrentCaster()

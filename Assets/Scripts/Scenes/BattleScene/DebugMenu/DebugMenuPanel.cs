@@ -27,13 +27,19 @@ public class DebugMenuPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI debugModeButtonLabel = null;
     [SerializeField] private List<char> validateInputWord = null;
 
+    [Header( "Backgrounds" )]
+    [SerializeField] private Sprite backgroundOnePartA = null;
+    [SerializeField] private Sprite backgroundOnePartB = null;
+    [SerializeField] private Sprite backgroundTwoPartA = null;
+    [SerializeField] private Sprite backgroundTwoPartB = null;
+
     //variable name
     private string selectedPlayerStat;
     private string selectedEnemyStat;
     private string newPlayerStatValue;
     private string newEnemyStatValue;
     private char tempChar = '\0';
-    private bool isFirstBackground;
+    private int backgroundId = 1;
 
     private const string AUDIO_ID_CLICK = "click";
 
@@ -69,19 +75,23 @@ public class DebugMenuPanel : MonoBehaviour
         Hide();
     }
 
-    public void SwitchBackground()
+    public void ClickToSwitchBackground()
     {
-        if(isFirstBackground == false)
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+
+        BattleAnimationManager _battleAnimationManager = battleGameManager.GetBattleAnimationManager();
+
+        if (this.backgroundId == 1)
         {
-            Debug.Log("second background");
-            currentBackground.sprite = backgroundTwo;
-            setIsFirstBackground(true);
+            this.backgroundId = 2;
+            this.currentBackground.sprite = this.backgroundTwoPartA;
+            _battleAnimationManager.SetBackgroundSprites( this.backgroundTwoPartA, this.backgroundTwoPartB );
         }
-        else
+        else if (this.backgroundId == 2)
         {
-            Debug.Log("first background");
-            currentBackground.sprite = backgroundOne;
-            setIsFirstBackground(false);
+            this.backgroundId = 1;
+            this.currentBackground.sprite = this.backgroundOnePartA;
+            _battleAnimationManager.SetBackgroundSprites( this.backgroundOnePartA, this.backgroundOnePartB );
         }
     }
 
@@ -352,10 +362,5 @@ public class DebugMenuPanel : MonoBehaviour
         {
             return ' ';
         }
-    }
-
-    public void setIsFirstBackground(bool isFirstBackground)
-    {
-        this.isFirstBackground = isFirstBackground;
     }
 }
