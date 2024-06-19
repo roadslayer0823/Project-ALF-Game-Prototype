@@ -8,43 +8,32 @@ public class ScreenSizeController : MonoBehaviour
     [SerializeField] private GameObject blackSidePanel;
     [SerializeField] private Camera mainCamera;
 
-    private const float ASPECT_RATIO_A = 2f; // 19 / 9
-    private const float ASPECT_RATIO_B = 1.9f; // 16/ 9
-    private const float ASPECT_RATIO_C = 1.6f; // 4 / 3
+    private const float MAXIMUM_ASPECT_RATIO = 19.5f / 9.0f;
+    private const float TARGET_ASPECT_RATIO = 16.0f / 9.0f;
 
     public void Initialize()
     {
+        float _aspectRatio = ( float )Screen.width / ( float )Screen.height;
         float _canvasScalerHeight = this.canvasScaler.referenceResolution.y;
-        if (((float)Screen.width / (float)Screen.height) > ASPECT_RATIO_A)
+
+        this.canvasScaler.matchWidthOrHeight = ( _aspectRatio < TARGET_ASPECT_RATIO ) ? 0.0f : 1.0f;
+        this.uiContainer.SetSizeWithCurrentAnchors( RectTransform.Axis.Vertical, _canvasScalerHeight );
+
+        if (_aspectRatio > MAXIMUM_ASPECT_RATIO)
         {
-            this.mainCamera.orthographicSize = 5.6f;
-            this.canvasScaler.matchWidthOrHeight = 1;
-            this.uiContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _canvasScalerHeight * ASPECT_RATIO_A);
-            this.blackSidePanel.SetActive(true);
+            this.uiContainer.SetSizeWithCurrentAnchors( RectTransform.Axis.Horizontal, _canvasScalerHeight * MAXIMUM_ASPECT_RATIO );
+            this.blackSidePanel.SetActive( true );
         }
         else
         {
-            if (((float)Screen.width / (float)Screen.height) < ASPECT_RATIO_B)
-            {
-                this.canvasScaler.matchWidthOrHeight = 0;
-                if (((float)Screen.width / (float)Screen.height) < ASPECT_RATIO_C)
-                {
-                    this.mainCamera.orthographicSize = 8.0f;
-                }
-                else
-                {
-                    this.mainCamera.orthographicSize = 6.2f;
-                }
-            }
-            else
-            {
-                this.canvasScaler.matchWidthOrHeight = 1;
-            }
             this.uiContainer.anchorMin = Vector2.zero;
             this.uiContainer.anchorMax = Vector2.one;
             this.uiContainer.sizeDelta = Vector2.zero;
-            this.blackSidePanel.SetActive(false);
+            this.blackSidePanel.SetActive( false );
         }
-        this.uiContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _canvasScalerHeight);
+
+        this.mainCamera.orthographicSize = ( _aspectRatio < 1.6f ) ? 8.0f :
+                                           ( _aspectRatio < 1.9f ) ? 6.2f :
+                                                                     5.6f;
     }
 }
