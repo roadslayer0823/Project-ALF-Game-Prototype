@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using TMPro;
 
 public class DebugMenuPanel : MonoBehaviour
@@ -12,6 +13,9 @@ public class DebugMenuPanel : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private GameObject container = null;
+    [SerializeField] private Image currentBackground = null;
+    [SerializeField] private Sprite backgroundOne = null;
+    [SerializeField] private Sprite backgroundTwo = null;
     [SerializeField] private TMP_Dropdown playerStatList = null;
     [SerializeField] private TMP_Dropdown enemyStatList = null;
     [SerializeField] private TMP_InputField playerStatValue = null;
@@ -29,6 +33,7 @@ public class DebugMenuPanel : MonoBehaviour
     private string newPlayerStatValue;
     private string newEnemyStatValue;
     private char tempChar = '\0';
+    private bool isFirstBackground;
 
     private const string AUDIO_ID_CLICK = "click";
 
@@ -62,6 +67,22 @@ public class DebugMenuPanel : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
         Hide();
+    }
+
+    public void SwitchBackground()
+    {
+        if(isFirstBackground == false)
+        {
+            Debug.Log("second background");
+            currentBackground.sprite = backgroundTwo;
+            setIsFirstBackground(true);
+        }
+        else
+        {
+            Debug.Log("first background");
+            currentBackground.sprite = backgroundOne;
+            setIsFirstBackground(false);
+        }
     }
 
     //state value declaration
@@ -331,5 +352,10 @@ public class DebugMenuPanel : MonoBehaviour
         {
             return ' ';
         }
+    }
+
+    public void setIsFirstBackground(bool isFirstBackground)
+    {
+        this.isFirstBackground = isFirstBackground;
     }
 }
