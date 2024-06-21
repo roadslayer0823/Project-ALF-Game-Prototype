@@ -5969,7 +5969,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 28, y: 15}
+  m_Size: {x: 30, y: 30}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -6060,10 +6060,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 535046166}
     m_Modifications:
-    - target: {fileID: 4188225050971708854, guid: 776ddc8f2261c485495afdc7944a9f16, type: 3}
-      propertyPath: m_Color.a
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4774851979821594923, guid: 776ddc8f2261c485495afdc7944a9f16, type: 3}
       propertyPath: m_RootOrder
       value: 5
