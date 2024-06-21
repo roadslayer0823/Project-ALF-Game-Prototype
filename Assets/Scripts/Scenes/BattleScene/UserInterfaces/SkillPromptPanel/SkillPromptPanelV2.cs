@@ -310,7 +310,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
                 }
             }
 
-            LeanTween.moveLocalX(this.playerSkillTagGO, 0.0f, this.skillInfoPopSpeed);
+            LeanTween.moveLocalX(this.playerSkillTagGO, 150.0f, this.skillInfoPopSpeed);
             LeanTween.moveLocalX(this.playerSkillTagGO, 600.0f, this.skillInfoPopSpeed).setDelay(this.skillNameShowingDuration).setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(this.playerSkillTagGO);
         }
         else if (!isPlayer && characterSkill != null && !LeanTween.isTweening(this.enemySkillInfoGO))
