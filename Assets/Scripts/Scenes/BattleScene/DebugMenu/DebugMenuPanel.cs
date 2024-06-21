@@ -93,6 +93,8 @@ public class DebugMenuPanel : MonoBehaviour
             this.currentBackground.sprite = this.backgroundOnePartA;
             _battleAnimationManager.SetBackgroundSprites( this.backgroundOnePartA, this.backgroundOnePartB );
         }
+
+        battleGameManager.GetBattleVisualEffectManager().SwitchCombatCommandBackground(this.backgroundId);
     }
 
     //state value declaration

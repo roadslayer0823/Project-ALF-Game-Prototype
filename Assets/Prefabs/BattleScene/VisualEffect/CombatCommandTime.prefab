@@ -133,9 +133,15 @@ MonoBehaviour:
   leftPartGo: {fileID: 2163012824216581680}
   rightPartImage: {fileID: 4334430656017184088}
   leftPartImage: {fileID: 3443451579418459494}
+  rightPartBackground: {fileID: 4367896959477521934}
+  leftPartBackground: {fileID: 1227530585574767601}
   rightDarkLayer: {fileID: 2072851830884253221}
   leftDarkLayer: {fileID: 8770181173595151952}
   playerAnimator: {fileID: 2713842602195139069}
+  rightPartBackgroundOne: {fileID: 21300000, guid: 4668e922ca189428b9c72ad0c0b02af2, type: 3}
+  rightPartBackgroundTwo: {fileID: 21300000, guid: 1f291eb2cddef49ee9b8a78fb3bcb19e, type: 3}
+  leftPartBackgroundOne: {fileID: 21300000, guid: 374b4b671bbdc43fb8ca1a40d998d8e6, type: 3}
+  leftPartBackgroundTwo: {fileID: 21300000, guid: fdf41a0352ad24814ae99003410163e1, type: 3}
 --- !u!95 &2713842602195139069
 Animator:
   serializedVersion: 5
@@ -208,7 +214,7 @@ GameObject:
   - component: {fileID: 4121661282140703481}
   - component: {fileID: 4367896959477521934}
   m_Layer: 5
-  m_Name: Background
+  m_Name: RightBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -262,7 +268,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a3bd5d8506ec446a2b1a5aef00350ba1, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4668e922ca189428b9c72ad0c0b02af2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -284,7 +290,7 @@ GameObject:
   - component: {fileID: 746818580589784393}
   - component: {fileID: 1227530585574767601}
   m_Layer: 5
-  m_Name: Background
+  m_Name: LeftBackground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -338,7 +344,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: ca2b46d9124144ca895a91b0216840b0, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 374b4b671bbdc43fb8ca1a40d998d8e6, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

@@ -111,5 +111,10 @@ public class BattleVisualEffectManager : MonoBehaviour
         return this.combatCommandAnimationHandler.GetIsShowing();
     }
 
+    public void SwitchCombatCommandBackground(int backgroundId)
+    {
+        this.combatCommandAnimationHandler.SetBackgroundSprites(backgroundId);
+    }
+
 #endregion
 }

@@ -13,9 +13,17 @@ public class CombatCommandAnimationHandler : MonoBehaviour
     [SerializeField] private GameObject leftPartGo = null;
     [SerializeField] private Image rightPartImage = null;
     [SerializeField] private Image leftPartImage = null;
+    [SerializeField] private Image rightPartBackground = null;
+    [SerializeField] private Image leftPartBackground = null;
     [SerializeField] private Image rightDarkLayer = null;
     [SerializeField] private Image leftDarkLayer = null;
     [SerializeField] private Animator playerAnimator = null;
+
+    [Header("Backgrounds")]
+    [SerializeField] private Sprite rightPartBackgroundOne = null;
+    [SerializeField] private Sprite rightPartBackgroundTwo = null;
+    [SerializeField] private Sprite leftPartBackgroundOne = null;
+    [SerializeField] private Sprite leftPartBackgroundTwo = null;
 
     private bool isShowing = false;
 
@@ -102,5 +110,19 @@ public class CombatCommandAnimationHandler : MonoBehaviour
     public bool GetIsShowing()
     {
         return this.isShowing;
+    }
+
+    public void SetBackgroundSprites(int backgroundId = 1)
+    {
+        if(backgroundId == 1)
+        {
+            this.leftPartBackground.sprite = this.leftPartBackgroundOne;
+            this.rightPartBackground.sprite = this.rightPartBackgroundOne;
+        }
+        else if(backgroundId == 2)
+        {
+            this.leftPartBackground.sprite = this.leftPartBackgroundTwo;
+            this.rightPartBackground.sprite = this.rightPartBackgroundTwo;
+        }
     }
 }
