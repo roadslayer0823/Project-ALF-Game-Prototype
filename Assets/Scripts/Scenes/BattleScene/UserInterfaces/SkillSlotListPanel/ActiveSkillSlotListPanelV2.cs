@@ -361,7 +361,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 }
 
                 // Use LeanTween to move the slot to the new position
-                LeanTween.move(slotToMove, targetPosition, 0.5f).setOnComplete(() =>
+                LeanTween.move(slotToMove, targetPosition, 0.1f).setOnComplete(() =>
                 {
                     this.isAnimationRunning = true;
                 }).setEase(LeanTweenType.easeInOutQuad);
