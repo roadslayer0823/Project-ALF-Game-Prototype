@@ -50,6 +50,7 @@ public class BattleUiManager : MonoBehaviour
         this.battleGameManager = battleGameManager;
 
         this.screenSizeController.Initialize();
+        Canvas.ForceUpdateCanvases();
 
         if (this.preparationSection == null)
         {

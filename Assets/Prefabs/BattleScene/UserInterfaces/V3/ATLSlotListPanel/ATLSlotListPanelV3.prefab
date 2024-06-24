@@ -391,7 +391,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 21800511003933320}
-  - component: {fileID: 6040835050766918464}
   - component: {fileID: 4174429710632232176}
   m_Layer: 5
   m_Name: ATLSlotListPanelV3
@@ -421,14 +420,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &6040835050766918464
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3187800957086164492}
-  m_CullTransparentMesh: 1
 --- !u!114 &4174429710632232176
 MonoBehaviour:
   m_ObjectHideFlags: 0

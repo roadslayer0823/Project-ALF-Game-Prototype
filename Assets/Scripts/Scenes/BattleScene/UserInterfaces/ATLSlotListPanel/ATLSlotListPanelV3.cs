@@ -33,6 +33,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
 
         this.blueProgressBarStartPointX = this.blueProgressBarStartPoint.position.x;
         this.blueProgressBarLength = this.blueProgressBarEndPoint.position.x - this.blueProgressBarStartPointX;
+
         Reset();
     }
 
