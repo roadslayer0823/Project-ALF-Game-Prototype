@@ -25,6 +25,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     [SerializeField] private HorizontalLayoutGroup horizontalLayoutGroup;
     [SerializeField] private RectTransform maxStatePointAnimStaringPoint = null;
     [SerializeField] private RectTransform maxStatePointAnimEndingPoint = null;
+    [SerializeField] private GameObject statePointValueObject = null;
     [SerializeField] private TextMeshProUGUI statePointValueText = null;
     [SerializeField] private TextMeshProUGUI[] maxStatePointText = new TextMeshProUGUI[0];
     [SerializeField] private TextMeshProUGUI maxStatePointValueFirstText = null;
@@ -180,14 +181,13 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             }
         }
 
-        (bool isBreakTextActive, bool isValueTextActive, Sprite statePointStatus) = this.selectedCharacter.IsInStateBreakStatus() switch
+        (bool isBreakTextActive, bool isValueTextActive) = this.selectedCharacter.IsInStateBreakStatus() switch
         {
-            true => (true, false, this.statePointBreak),
-            false => (false, true, this.statePointNoBreak)
+            true => (true, false),
+            false => (false, true)
         };
         this.statePointBreakText.gameObject.SetActive(isBreakTextActive);
-        this.statePointValueText.gameObject.SetActive(isValueTextActive);
-        this.statePointStatus.sprite = statePointStatus;
+        this.statePointValueObject.SetActive(isValueTextActive);
     }
 
 
