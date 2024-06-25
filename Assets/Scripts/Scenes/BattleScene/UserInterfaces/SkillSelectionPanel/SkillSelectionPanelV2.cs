@@ -10,6 +10,7 @@ using System.Collections;
 public class SkillSelectionPanelV2 : MonoBehaviour
 {
     [SerializeField] private bool onActiveSkillSlotFollow = false;
+    [SerializeField] private GameObject skillSelectionPanelObject = null;
 
     [Header("UI Images")]
     [SerializeField] private Sprite activeSkillBoxUnselectBackgroundImage = null;
@@ -158,49 +159,64 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     // when click the active skill list box button
     private void OnActiveSkillListBoxButtonClick()
     {
-        PlayAttackSkillSelectionPanelAnimation();
-        ShowActiveSkillSelectionList(true);
-        ShowBackendSkillSelectionList(false);
-
+        if (activeSkillSelectionListGO.activeSelf)
+        {
+            this.skillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE_ATTACK_SKILL_SELECTION_PANEL);
+            this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_HIDE_ATTACK_INFO_PANEL);
+        }
+        else
+        {
+            PlayAttackSkillSelectionPanelAnimation();
+            ShowActiveSkillSelectionList(true);
+            ShowBackendSkillSelectionList(false);
+            this.battleUiManager.ShowDarkLayer();
+        }
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-        this.battleUiManager.ShowDarkLayer();
     }
 
     // when click the backend skill list box button
     private void OnBackendSkillListBoxButtonClick()
     {
-        PlayBackendSkillSelectionPanelAnimation();
-        ShowBackendSkillSelectionList(true);
-        ShowActiveSkillSelectionList(false);
-
+        if (backendSkillSelectionListGO.activeSelf)
+        {
+            this.skillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE_BACKEND_SKILL_SELECTION_PANEL);
+            this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_HIDE_BACKEND_INFO_PANEL);
+        }
+        else
+        {
+            PlayBackendSkillSelectionPanelAnimation();
+            ShowBackendSkillSelectionList(true);
+            ShowActiveSkillSelectionList(false);
+            this.battleUiManager.ShowDarkLayer();
+            Debug.Log("play backend animation");
+        }
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-        this.battleUiManager.ShowDarkLayer();
     }
 
     public void PlayAttackSkillSelectionPanelAnimation()
     {
-        SetAttackButtonInteractable();
         this.skillSelectionPanelAnimation.Play(ANIMATION_ID_SHOW_ATTACK_SKILL_SELECTION_PANEL);
         this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_SHOW_ATTACK_INFO_PANEL);
     }
 
     public void PlayBackendSkillSelectionPanelAnimation()
     {
-        SetBackendButtonInteractable();
         this.skillSelectionPanelAnimation.Play(ANIMATION_ID_SHOW_BACKEND_SKILL_SELECTION_PANEL);
         this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_SHOW_BACKEND_INFO_PANEL);
     }
 
-    public void SetAttackButtonInteractable()
+    public void HideAttackSkillSelectionPanel()
     {
-        this.activeSkillListBoxButton.interactable = false;
-        this.backendSkillListBoxButton.interactable = true;
+        this.activeSkillSelectionListGO.SetActive(false);
+        this.battleUiManager.ReturnToSkillMenu();
+        this.skillInfoPanel.ResetSkillInfo(true);
     }
 
-    public void SetBackendButtonInteractable()
+    public void HideBackendSkillSelectionPanel()
     {
-        this.activeSkillListBoxButton.interactable = true;
-        this.backendSkillListBoxButton.interactable = false;
+        this.backendSkillSelectionListGO.SetActive(false);
+        this.battleUiManager.ReturnToSkillMenu();
+        this.skillInfoPanel.ResetSkillInfo(false);
     }
 
     public void ShowAttackSkillSelectionBox()
@@ -845,8 +861,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
         }
         else if (this.backendSkillListBoxGO.activeSelf)
         {
-            this.activeSkillListBoxButton.interactable = true;
-            this.backendSkillListBoxButton.interactable = false;
             this.skillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE_BACKEND_SKILL_SELECTION_PANEL);
             this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_HIDE_BACKEND_INFO_PANEL);
             yield return new WaitForSeconds(0.2f);
@@ -866,16 +880,6 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     public void HideSkillInfoPanel()
     {
         this.skillInfoPanel.Hide();
-    }
-
-    public void HideAttackSkillSelectionPanel()
-    {
-        this.activeSkillSelectionListGO.SetActive(false);
-    }
-
-    public void HideBackendSkillSelectionPanel()
-    {
-        this.backendSkillSelectionListGO.SetActive(false);
     }
 
     public SkillSelectionBoxV2 GetLastSelectedActiveSkillSelectionBox()
