@@ -166,6 +166,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             this.skillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE_ATTACK_SKILL_SELECTION_PANEL);
             this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_HIDE_ATTACK_INFO_PANEL);
             this.isActiveOpened = false;
+            this.isBackendOpened = true;
         }
         else
         {
@@ -174,6 +175,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             ShowBackendSkillSelectionList(false);
             this.battleUiManager.ShowDarkLayer();
             this.isActiveOpened = true;
+            this.isBackendOpened = false;
         }
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
     }
@@ -186,6 +188,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             this.skillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE_BACKEND_SKILL_SELECTION_PANEL);
             this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_HIDE_BACKEND_INFO_PANEL);
             this.isBackendOpened = false;
+            this.isActiveOpened = true;
         }
         else
         {
@@ -194,6 +197,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             ShowActiveSkillSelectionList(false);
             this.battleUiManager.ShowDarkLayer();
             this.isBackendOpened = true;
+            this.isActiveOpened = false;
         }
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
     }
