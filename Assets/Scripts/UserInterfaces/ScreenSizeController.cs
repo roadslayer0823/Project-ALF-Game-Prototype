@@ -17,7 +17,8 @@ public class ScreenSizeController : MonoBehaviour
         float _canvasScalerHeight = this.canvasScaler.referenceResolution.y;
 
         this.canvasScaler.matchWidthOrHeight = ( _aspectRatio < TARGET_ASPECT_RATIO ) ? 0.0f :
-                                               1.0f - ( ( ( _aspectRatio - TARGET_ASPECT_RATIO ) / ( MAXIMUM_ASPECT_RATIO - TARGET_ASPECT_RATIO ) ) * 0.25f );
+                                               ( _aspectRatio <= MAXIMUM_ASPECT_RATIO ) ? 1.0f - ( ( ( _aspectRatio - TARGET_ASPECT_RATIO ) / ( MAXIMUM_ASPECT_RATIO - TARGET_ASPECT_RATIO ) ) * 0.25f ) :
+                                               0.75f + ( ( ( ( _aspectRatio - TARGET_ASPECT_RATIO ) / ( MAXIMUM_ASPECT_RATIO - TARGET_ASPECT_RATIO ) ) - 1.0f ) * 0.065f );
 
         this.uiContainer.SetSizeWithCurrentAnchors( RectTransform.Axis.Vertical, _canvasScalerHeight );
 
