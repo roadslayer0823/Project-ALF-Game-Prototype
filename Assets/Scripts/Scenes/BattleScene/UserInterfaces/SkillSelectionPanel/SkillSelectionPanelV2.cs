@@ -77,6 +77,8 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     private Action<SkillSelectionBoxV2> onSkillDeselectedCallback = null;
     private Action onReturnedCallback = null;
     private bool isAnimationPlayable = false;
+    public bool isActiveOpened = false;
+    public bool isBackendOpened = false;
 
     private GameCharacter gameCharacter = null;
 
@@ -159,10 +161,11 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     // when click the active skill list box button
     private void OnActiveSkillListBoxButtonClick()
     {
-        if (activeSkillSelectionListGO.activeSelf)
+        if (this.isActiveOpened)
         {
             this.skillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE_ATTACK_SKILL_SELECTION_PANEL);
             this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_HIDE_ATTACK_INFO_PANEL);
+            this.isActiveOpened = false;
         }
         else
         {
@@ -170,6 +173,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             ShowActiveSkillSelectionList(true);
             ShowBackendSkillSelectionList(false);
             this.battleUiManager.ShowDarkLayer();
+            this.isActiveOpened = true;
         }
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
     }
@@ -177,10 +181,11 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     // when click the backend skill list box button
     private void OnBackendSkillListBoxButtonClick()
     {
-        if (backendSkillSelectionListGO.activeSelf)
+        if (this.isBackendOpened)
         {
             this.skillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE_BACKEND_SKILL_SELECTION_PANEL);
             this.skillInfoPanel.PlaySkillInfoPanelAnimation(ANIMATION_ID_HIDE_BACKEND_INFO_PANEL);
+            this.isBackendOpened = false;
         }
         else
         {
@@ -188,7 +193,7 @@ public class SkillSelectionPanelV2 : MonoBehaviour
             ShowBackendSkillSelectionList(true);
             ShowActiveSkillSelectionList(false);
             this.battleUiManager.ShowDarkLayer();
-            Debug.Log("play backend animation");
+            this.isBackendOpened = true;
         }
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
     }
