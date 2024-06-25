@@ -116,6 +116,7 @@ public class PreparationSection : MonoBehaviour
         {
             this.onActiveSkillButtonClickedCallback();
             this.skillSelectionPanelV2.PlayAttackSkillSelectionPanelAnimation();
+            this.skillSelectionPanelV2.isActiveOpened = true;
         }
         else
         {
@@ -133,6 +134,7 @@ public class PreparationSection : MonoBehaviour
         {
             this.onBackendSkillButtonClickedCallback();
             this.skillSelectionPanelV2.PlayBackendSkillSelectionPanelAnimation();
+            this.skillSelectionPanelV2.isBackendOpened = true;
         }
         else
         {
