@@ -29,7 +29,7 @@ AnimationClip:
         inWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
         outWeight: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
       - serializedVersion: 3
-        time: 0.041666668
+        time: 0.16666667
         value: {x: 1, y: 1, z: 1}
         inSlope: {x: 0, y: 0, z: 0}
         outSlope: {x: 0, y: 0, z: 0}
@@ -40,7 +40,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: BackendSkillSelectionTabV2/BackendSkillList/BackendSkillListBox
+    path: BackendSkillSelectionTabV2/BackendSkillList
   m_FloatCurves:
   - curve:
       serializedVersion: 2
@@ -377,7 +377,7 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 1432080990
+      path: 2317500030
       attribute: 3
       script: {fileID: 0}
       typeID: 4
@@ -821,7 +821,7 @@ AnimationClip:
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 0.041666668
+        time: 0.16666667
         value: 1
         inSlope: 0
         outSlope: 0
@@ -833,7 +833,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.x
-    path: BackendSkillSelectionTabV2/BackendSkillList/BackendSkillListBox
+    path: BackendSkillSelectionTabV2/BackendSkillList
     classID: 224
     script: {fileID: 0}
   - curve:
@@ -849,7 +849,7 @@ AnimationClip:
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 0.041666668
+        time: 0.16666667
         value: 1
         inSlope: 0
         outSlope: 0
@@ -861,7 +861,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.y
-    path: BackendSkillSelectionTabV2/BackendSkillList/BackendSkillListBox
+    path: BackendSkillSelectionTabV2/BackendSkillList
     classID: 224
     script: {fileID: 0}
   - curve:
@@ -874,22 +874,13 @@ AnimationClip:
         outSlope: 0
         tangentMode: 136
         weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
-      - serializedVersion: 3
-        time: 0.041666668
-        value: 1
-        inSlope: 0
-        outSlope: 0
-        tangentMode: 136
-        weightedMode: 0
-        inWeight: 0.33333334
-        outWeight: 0.33333334
+        inWeight: 0
+        outWeight: 0
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalScale.z
-    path: BackendSkillSelectionTabV2/BackendSkillList/BackendSkillListBox
+    path: BackendSkillSelectionTabV2/BackendSkillList
     classID: 224
     script: {fileID: 0}
   m_EulerEditorCurves: []

@@ -2757,6 +2757,7 @@ MonoBehaviour:
   skillInfoPanel: {fileID: 2410091350577756149}
   skillInfomation: {fileID: 8411423901594224506}
   skillInfoPanelAnimator: {fileID: 1959276115363691583}
+  MaskingObject: {fileID: 3839306134175462771}
   skillInfoPanelBackground: {fileID: 8122613888787736414}
   activeSkillInfoBackground: {fileID: 21300000, guid: e5a645873c126433d9f4833d96f30e6c, type: 3}
   repulseSkillInfoBackground: {fileID: 21300000, guid: eb310405b37dd4c1497735885c792828, type: 3}
