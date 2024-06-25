@@ -4,9 +4,11 @@ using UnityEngine.UI;
 
 public class PauseButton : MonoBehaviour
 {
-    [SerializeField] private TMP_Text buttonLabel = null;
     [SerializeField] private Slider timeSpeedSlider = null;
     [SerializeField] private TMP_Text sliderValue = null;
+    [SerializeField] private Image buttonImage = null;
+    [SerializeField] private Sprite pauseButton = null;
+    [SerializeField] private Sprite resumeButton = null;
 
     private bool isPaused = false;
     public static float currentTimeScale = 1.0f;
@@ -18,12 +20,12 @@ public class PauseButton : MonoBehaviour
         if (isPaused)
         {
             Time.timeScale = 0.0f;
-            this.buttonLabel.text = "Resume";
+            this.buttonImage.sprite = resumeButton;
         }
         else
         {
             Time.timeScale = 1.0f;
-            this.buttonLabel.text = "Pause";
+            this.buttonImage.sprite = pauseButton;
         }
 
         currentTimeScale = Time.timeScale;
