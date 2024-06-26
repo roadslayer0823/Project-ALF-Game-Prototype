@@ -193,7 +193,18 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
             }
         }
 
-        if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
+        if (this.selectedSkills.Count == 1 && this.skillSlots.Length > 1)
+        {
+            for (int i = 0; i < this.skillSlots.Length; i++)
+            {
+                SkillSlotV2 _skillSlot = this.skillSlots[ i ];
+                if (_skillSlot == this.middleSkillSlot)
+                {
+                    _skillSlot.SetSelectedSkill( this.selectedSkills[ 0 ] );
+                }
+            }
+        }
+        else if (this.selectedSkills.Count == 2 && this.skillSlots.Length > 2)
         {
             int _middleSkillIndex = ( middleSkillSlotSkillIndex < 0 ) ? 0 : middleSkillSlotSkillIndex;
             int _otherSkillIndex = -1;
