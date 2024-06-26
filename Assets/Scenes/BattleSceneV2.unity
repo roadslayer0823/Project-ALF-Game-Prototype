@@ -538,7 +538,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -141, y: -31}
+  m_AnchoredPosition: {x: -141, y: -59.99994}
   m_SizeDelta: {x: 209, y: 55}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &77264933
@@ -627,7 +627,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_RaycastPadding: {x: 10, y: 0, z: 10, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1407,7 +1407,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5459260374220162653, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -7.482666
+      value: -7.482788
       objectReference: {fileID: 0}
     - target: {fileID: 5459260374809095451, guid: f1542f1e218064999929893b4db6bbf4, type: 3}
       propertyPath: skillPromptPanel
@@ -3425,7 +3425,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -344, y: -31}
+  m_AnchoredPosition: {x: -344, y: -59.99994}
   m_SizeDelta: {x: 209, y: 55}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &929449584
@@ -3499,7 +3499,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_RaycastPadding: {x: 0, y: 0, z: 10, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3974,7 +3974,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -36, y: -19}
+  m_AnchoredPosition: {x: -36, y: -48}
   m_SizeDelta: {x: 113, y: 66}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1174228236
@@ -4063,7 +4063,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_RaycastPadding: {x: 10, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -6560,30 +6560,6 @@ PrefabInstance:
     - target: {fileID: 4801009711948923022, guid: 36d673f482f9e4c0da9e3ab19e1d0df4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5853539257976985024, guid: 36d673f482f9e4c0da9e3ab19e1d0df4, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 10.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 9069164044057675083, guid: 36d673f482f9e4c0da9e3ab19e1d0df4, type: 3}
-      propertyPath: m_fontSize
-      value: 72
-      objectReference: {fileID: 0}
-    - target: {fileID: 9069164044057675083, guid: 36d673f482f9e4c0da9e3ab19e1d0df4, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 72
-      objectReference: {fileID: 0}
-    - target: {fileID: 9069164044057675083, guid: 36d673f482f9e4c0da9e3ab19e1d0df4, type: 3}
-      propertyPath: m_enableAutoSizing
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9069164044057675083, guid: 36d673f482f9e4c0da9e3ab19e1d0df4, type: 3}
-      propertyPath: m_fontColor32.rgba
-      value: 3623878655
-      objectReference: {fileID: 0}
-    - target: {fileID: 9069164044057675083, guid: 36d673f482f9e4c0da9e3ab19e1d0df4, type: 3}
-      propertyPath: m_VerticalAlignment
-      value: 512
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 36d673f482f9e4c0da9e3ab19e1d0df4, type: 3}

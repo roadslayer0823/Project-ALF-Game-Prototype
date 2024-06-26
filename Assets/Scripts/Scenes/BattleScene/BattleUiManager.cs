@@ -3,6 +3,7 @@ using UnityEngine;
 using TMPro;
 using SkillType = BattleSkillManager.SkillType;
 using System.Collections;
+using System;
 
 public class BattleUiManager : MonoBehaviour
 {
@@ -735,5 +736,10 @@ public class BattleUiManager : MonoBehaviour
     public void HideDarkLayer()
     {
         this.darkLayer.SetActive( false );
+    }
+
+    public void PlayLineBreakAnimation()
+    {
+        this.battleStartUiAnimator.Play("LineBreak");
     }
 }

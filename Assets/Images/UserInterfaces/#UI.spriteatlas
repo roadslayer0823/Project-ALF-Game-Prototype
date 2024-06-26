@@ -100,7 +100,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: aafc1ea156f2a4a7ab5df070c4deab70, type: 3}
   - {fileID: 21300000, guid: 679e3db17159642a1833c0f5b44034d6, type: 3}
   - {fileID: 21300000, guid: dfc3c0d14c7a746e3a98b40930f7283f, type: 3}
-  - {fileID: 21300000, guid: 96e3e3d14305746e792f38da33a4f4db, type: 3}
   - {fileID: 21300000, guid: fb8ec8d13fafe48268e1873631dad1c9, type: 3}
   - {fileID: 21300000, guid: de76d6e14fb1e4a0e98de40355fdb49a, type: 3}
   - {fileID: 21300000, guid: d2a08fe1b966942d982f6680370ff75f, type: 3}
@@ -168,7 +167,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 9b12a0754eb6549408953f3af390100d, type: 3}
   - {fileID: 21300000, guid: 092ba375ef53d4d548c454078320967a, type: 3}
   - {fileID: 21300000, guid: ce038b85bfe044e3788f6b41b9c7ebd0, type: 3}
-  - {fileID: 21300000, guid: d12acf85c329f4de6822dbd639c0baf6, type: 3}
   - {fileID: 21300000, guid: c28368951db1d40d88bbd93317403f40, type: 3}
   - {fileID: 21300000, guid: 273691a52fd5f4352a79d01ba9583d6c, type: 3}
   - {fileID: 21300000, guid: 67c7b1b5809a8494f8f7e7ad3f31a244, type: 3}
@@ -228,7 +226,6 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 032469f80c924441c8016e31083f698a, type: 3}
   - {fileID: 21300000, guid: 9700def81cffb45f19071c954f8b5ef2, type: 3}
   - {fileID: 21300000, guid: 82d363092e597442bb1943fa62f4369a, type: 3}
-  - {fileID: 21300000, guid: c6e6d119402294d0ba35e43f4b5adb82, type: 3}
   - {fileID: 21300000, guid: 9a4853190f5044feca0d33d8a46a5265, type: 3}
   - {fileID: 21300000, guid: f0eccc193e132469faaf642114479f21, type: 3}
   - {fileID: 21300000, guid: 5ec26a498cb4148a2adfc4c14875e24f, type: 3}
@@ -373,7 +370,6 @@ SpriteAtlas:
   - T_ (2)
   - T_ (55)
   - GodSPD_03
-  - LINEBREAK_000
   - "\u5F8C\u53F0\u6280\u80FD\u5E95\u90E8"
   - "\u6575\u65B9TAG"
   - T_ (5)
@@ -441,7 +437,6 @@ SpriteAtlas:
   - Start__00051
   - 01
   - Start__00032
-  - LINEBREAK_001
   - "\u611F\u6B4E\u865F_025"
   - "\u9032\u5EA6\u689D_\u4E0B\u65B9"
   - LINEBREAK_028
@@ -501,7 +496,6 @@ SpriteAtlas:
   - 02
   - LINEBREAK_003
   - LINEBREAK_022
-  - LINEBREAK_002
   - T_ (1)
   - "\u611F\u6B4E\u865F_007"
   - "\u653B\u64CAICON"
