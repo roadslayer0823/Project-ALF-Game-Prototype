@@ -3,7 +3,12 @@ using UnityEngine.SceneManagement;
 
 public class StartSceneManager : MonoBehaviour
 {
-    private void Start()
+    void Awake()
+    {
+        Input.multiTouchEnabled = false;
+    }
+
+    void Start()
     {
         GoToAdminPage();
     }
