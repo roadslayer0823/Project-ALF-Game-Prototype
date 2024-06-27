@@ -11,7 +11,6 @@ public class SkillInfoPanel : MonoBehaviour
     [SerializeField] private RectTransform skillInfoPanel;
     [SerializeField] private GameObject skillInfomation;
     [SerializeField] private Animator skillInfoPanelAnimator = null;
-    [SerializeField] private GameObject MaskingObject = null;
 
     [Header("SkillTabButtons")]
     [SerializeField] private Image skillInfoPanelBackground = null;
@@ -517,23 +516,5 @@ public class SkillInfoPanel : MonoBehaviour
     public void PlaySkillInfoPanelAnimation(string animationID)
     {
         this.skillInfoPanelAnimator.Play(animationID);
-    }
-
-    public void ResetSkillInfo(bool isActiveSkillInfo)
-    {
-        RectTransform maskingSize = MaskingObject.GetComponent<RectTransform>();
-        Vector2 sizeDelta = maskingSize.sizeDelta;
-        Vector2 maskingPosition = new Vector2(0,0);
-
-        if(isActiveSkillInfo == true)
-        {
-            sizeDelta.x = 1000;
-        }
-        else
-        {
-            sizeDelta.y = 1200;
-        }
-        maskingSize.sizeDelta = sizeDelta;
-        maskingSize.anchoredPosition = maskingPosition;
     }
 }

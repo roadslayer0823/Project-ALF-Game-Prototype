@@ -218,14 +218,12 @@ public class SkillSelectionPanelV2 : MonoBehaviour
     {
         this.activeSkillSelectionListGO.SetActive(false);
         this.battleUiManager.ReturnToSkillMenu();
-        this.skillInfoPanel.ResetSkillInfo(true);
     }
 
     public void HideBackendSkillSelectionPanel()
     {
         this.backendSkillSelectionListGO.SetActive(false);
         this.battleUiManager.ReturnToSkillMenu();
-        this.skillInfoPanel.ResetSkillInfo(false);
     }
 
     public void ShowAttackSkillSelectionBox()
