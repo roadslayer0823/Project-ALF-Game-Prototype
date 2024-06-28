@@ -427,7 +427,7 @@ GameObject:
   - component: {fileID: 7500740973962799525}
   - component: {fileID: 7315363247397335892}
   m_Layer: 5
-  m_Name: DistanceLevelSystem
+  m_Name: BattleDistancePanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

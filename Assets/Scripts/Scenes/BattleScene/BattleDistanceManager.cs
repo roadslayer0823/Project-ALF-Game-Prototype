@@ -1,5 +1,5 @@
 using UnityEngine;
-using System;
+
 using SubSkill = DatabaseManager.Subskill;
 
 public class BattleDistanceManager : MonoBehaviour
@@ -19,55 +19,60 @@ public class BattleDistanceManager : MonoBehaviour
         Recipient
     }
 
-    public static DistanceType currentDistance = DistanceType.None;
+    public DistanceType currentDistance = DistanceType.Normal;
+    private BattleDistancePanel battleDistancePanel = null;
 
-    public static void UpdateHalfwayDistanceResult(DistanceType distanceType, GameCharacter lead)
+    public void UpdateHalfwayDistanceResult(GameCharacter lead)
     {
-        SubSkill leadSubskill = lead.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
-        switch (distanceType)
+        SubSkill.RangeType leadSubskill = lead.GetCurrentSkillRangeType();
+        SubSkill leadAssingedSkill = lead.GetAssignedSkill().GetCharacterSubskillData().GetSubskillData();
+        switch (currentDistance)
         {
             case DistanceType.Near:
-                if (leadSubskill.Range == SubSkill.RangeType.melee)
+                if(leadAssingedSkill.Range == SubSkill.RangeType.melee_or_ranged)
                 {
-                    distanceType = DistanceType.Near;
+                    lead.SetCurrentSkillRangeType(SubSkill.RangeType.melee);
                 }
-                else if (leadSubskill.Range == SubSkill.RangeType.ranged)
+                if (leadSubskill == SubSkill.RangeType.melee)
                 {
-                    distanceType = DistanceType.Normal;
+                    currentDistance = DistanceType.Near;
                 }
                 else
                 {
-                    distanceType = DistanceType.Near;
+                    currentDistance = DistanceType.Normal;
+                    //assign as "近距離遠程方" for attacker
                 }
                 break;
 
             case DistanceType.Normal:
-                if (leadSubskill.Range == SubSkill.RangeType.melee)
+                if(leadAssingedSkill.Range == SubSkill.RangeType.melee_or_ranged)
                 {
-                    distanceType = DistanceType.Near;
+                    lead.SetCurrentSkillRangeType(SubSkill.RangeType.ranged);
                 }
-                else if (leadSubskill.Range == SubSkill.RangeType.ranged)
+                if (leadSubskill == SubSkill.RangeType.melee)
                 {
-                    distanceType = DistanceType.Normal;
+                    currentDistance = DistanceType.Near;
+                    //assign as "中距離近戰方" for attacker
                 }
                 else
                 {
-                    distanceType = DistanceType.Near;
+                    currentDistance = DistanceType.Normal;
                 }
                 break;
 
             case DistanceType.Far:
-                if (leadSubskill.Range == SubSkill.RangeType.melee)
+                if(leadAssingedSkill.Range == SubSkill.RangeType.melee_or_ranged)
                 {
-                    distanceType = DistanceType.Near;
+                    lead.SetCurrentSkillRangeType(SubSkill.RangeType.ranged);
                 }
-                else if (leadSubskill.Range == SubSkill.RangeType.ranged)
+                if (leadSubskill == SubSkill.RangeType.melee)
                 {
-                    distanceType = DistanceType.Far;
+                    currentDistance = DistanceType.Near;
+                    //assign as “中距離近戰方” for attacker
                 }
                 else
                 {
-                    distanceType = DistanceType.Near;
+                    currentDistance = DistanceType.Far;
                 }
                 break;
 
@@ -75,10 +80,11 @@ public class BattleDistanceManager : MonoBehaviour
                 Debug.Log("Error Distance");
                 break;
         }
-        currentDistance = distanceType;
+        SetDistanceType(currentDistance);
+        battleDistancePanel.UpdatBattleeDistanceTypeUI(currentDistance);
     }
 
-    public static void UpdateFinalDistanceResult(GameCharacter lead, GameCharacter improviser, DistanceType finalDistance, GameCharacterStatus gameCharacterStatus)
+    public void UpdateFinalDistanceResult(GameCharacter lead, GameCharacter improviser, DistanceType finalDistance, GameCharacterStatus gameCharacterStatus)
     {
         SubSkill leadSubSkill = lead.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
         SubSkill improviserSubSkill = improviser.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
@@ -97,7 +103,7 @@ public class BattleDistanceManager : MonoBehaviour
                     {
                         finalDistance = DistanceType.Near;
                     }
-
+                    //需要增加判定當前的流向種類和技能
                     else if (improviserSubSkill.IsEvadingSkill)
                     {
                         finalDistance = DistanceType.Near;
@@ -190,13 +196,16 @@ public class BattleDistanceManager : MonoBehaviour
                 break;
         }
         currentDistance = finalDistance;
+        battleDistancePanel.UpdatBattleeDistanceTypeUI(currentDistance);
+    }
+
+    public void SetDistanceType(DistanceType distanceType)
+    {
+        this.currentDistance = distanceType;
+    }
+
+    public DistanceType GetDistanceType()
+    {
+        return this.currentDistance;
     }
 }
-
-/*distanceType = leadSubskill.Range switch
-               {
-                   SubSkill.RangeType.melee => DistanceType.Near,
-                   SubSkill.RangeType.ranged => DistanceType.Normal,
-                   SubSkill.RangeType.none => DistanceType.Near,
-                   _ => throw new NotImplementedException()
-               };*/
