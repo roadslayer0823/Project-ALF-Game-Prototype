@@ -9,7 +9,7 @@ using Character = DatabaseManager.Character;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
 using BattleResultData_GameCharacter = BattleResultData.BattleResultData_GameCharacter;
 
-public class GameCharacter : MonoBehaviour
+public partial class GameCharacter : MonoBehaviour
 {
     [SerializeField] private SortingGroup sortingGroup = null;
     [SerializeField] private Transform pivot = null;
