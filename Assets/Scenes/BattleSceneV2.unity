@@ -2035,6 +2035,7 @@ MonoBehaviour:
   darkLayer: {fileID: 1812108084}
   battleStartUiAnimator: {fileID: 7012849509452498918}
   turnText: {fileID: 7012849509452498917}
+  passiveSkillCategorySelectionPanel: {fileID: 2033466329}
   enemyDebugMenuPanel: {fileID: 1941073823}
 --- !u!4 &528806170
 Transform:
@@ -5387,10 +5388,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: PassiveSkillCategorySelectionPanel
       objectReference: {fileID: 0}
-    - target: {fileID: 7864568228715005285, guid: e8d3fa14d271143709708429fd50eaac, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8094084090006807436, guid: e8d3fa14d271143709708429fd50eaac, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -5432,6 +5429,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8094084090006807436, guid: e8d3fa14d271143709708429fd50eaac, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 215
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094084090006807436, guid: e8d3fa14d271143709708429fd50eaac, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
@@ -5450,6 +5451,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8094084090006807436, guid: e8d3fa14d271143709708429fd50eaac, type: 3}
   m_PrefabInstance: {fileID: 2033466327}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2033466329 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7192831646890658038, guid: e8d3fa14d271143709708429fd50eaac, type: 3}
+  m_PrefabInstance: {fileID: 2033466327}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef9d5c537ee244689d2630eab4485ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2065764078
 GameObject:
   m_ObjectHideFlags: 0

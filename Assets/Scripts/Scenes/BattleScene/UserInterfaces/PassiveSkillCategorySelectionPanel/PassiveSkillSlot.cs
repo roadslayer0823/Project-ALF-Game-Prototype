@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +19,10 @@ public class PassiveSkillSlot : MonoBehaviour
     [SerializeField] private Sprite defaultStressValueSkill;
     [SerializeField] private Sprite defaultHealthPointSkill;
 
-    private PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel;
+    private PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel = null;
+    private bool isSelected = false;
+
+    private const string AUDIO_ID_CLICK = "click";
 
     public enum PassiveSkillType
     {
@@ -30,41 +32,52 @@ public class PassiveSkillSlot : MonoBehaviour
         StressValue
     }
 
-    public void UpdateSelectedPassiveSkillUI()
+    public void Initialize( PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel )
     {
-        if(passiveSkillType == PassiveSkillType.HealthPoint)
+        this.passiveSkillCategorySelectionPanel = passiveSkillCategorySelectionPanel;
+        UpdateDefaultPassiveSkillUI();
+    }
+
+    public void SetIsSelected( bool isSelected )
+    {
+        this.isSelected = isSelected;
+
+        if (this.isSelected)
         {
-            this.passiveSkillSlot.sprite = this.selectedHealthPointSkill;
+            UpdateSelectedPassiveSkillUI();
         }
-        else if(passiveSkillType == PassiveSkillType.StatePoint)
+        else
         {
-            this.passiveSkillSlot.sprite = this.selectedStatePointSkill;
-        }
-        else if(passiveSkillType == PassiveSkillType.StressValue)
-        {
-            this.passiveSkillSlot.sprite = this.selectedStressValueSkill;
+            UpdateDefaultPassiveSkillUI();
         }
     }
 
-    public void UpdateDefaultPassiveSkillUI()
+    private void UpdateDefaultPassiveSkillUI()
     {
-        if (passiveSkillType == PassiveSkillType.HealthPoint)
+        this.passiveSkillSlot.sprite = this.passiveSkillType switch
         {
-            this.passiveSkillSlot.sprite = this.defaultHealthPointSkill;
-        }
-        else if (passiveSkillType == PassiveSkillType.StatePoint)
+            PassiveSkillType.HealthPoint => this.defaultHealthPointSkill,
+            PassiveSkillType.StatePoint => this.defaultStatePointSkill,
+            PassiveSkillType.StressValue => this.defaultStressValueSkill,
+            _ => null
+        };
+    }
+
+    private void UpdateSelectedPassiveSkillUI()
+    {
+        this.passiveSkillSlot.sprite = this.passiveSkillType switch
         {
-            this.passiveSkillSlot.sprite = this.defaultStatePointSkill;
-        }
-        else if (passiveSkillType == PassiveSkillType.StressValue)
-        {
-            this.passiveSkillSlot.sprite = this.defaultStressValueSkill;
-        }
+            PassiveSkillType.HealthPoint => this.selectedHealthPointSkill,
+            PassiveSkillType.StatePoint => this.selectedStatePointSkill,
+            PassiveSkillType.StressValue => this.selectedStressValueSkill,
+            _ => null
+        };
     }
 
     public void ClickOption()
     {
-        UpdateSelectedPassiveSkillUI();
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+        this.passiveSkillCategorySelectionPanel.OnPassiveSkillSlotSelected( this );
     }
 
     public void OptionEnter()
@@ -74,6 +87,14 @@ public class PassiveSkillSlot : MonoBehaviour
 
     public void OptionExit()
     {
-        UpdateDefaultPassiveSkillUI();
+        if (!this.isSelected)
+        {
+            UpdateDefaultPassiveSkillUI();
+        }
+    }
+
+    public PassiveSkillType GetPassiveSkillType()
+    {
+        return this.passiveSkillType;
     }
 }

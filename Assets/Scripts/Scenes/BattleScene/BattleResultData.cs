@@ -61,9 +61,9 @@ public class BattleResultData
             return ( this.energyMarkerRemainingATLs > 0 );
         }
 
-        public void SetCurrentHealthPoint( float value, bool needToUpdateVirtualHealthPoint )
+        public void SetCurrentHealthPoint( float value, bool needToUpdateVirtualHealthPoint, bool forVirtualDamageOnly = false )
         {
-            this.currentHealthPoint = Mathf.Clamp( value, 0.0f, this.maximumHealthPoint );
+            this.currentHealthPoint = Mathf.Clamp( value, 0.0f, ( forVirtualDamageOnly ) ? this.virtualHealthPoint : this.maximumHealthPoint );
 
             if (needToUpdateVirtualHealthPoint)
             {
@@ -106,6 +106,16 @@ public class BattleResultData
         {
             this.currentStressValue = Mathf.Clamp( value, 0.0f, this.maximumStressValue );
         }
+
+        public float GetVirtualDamage()
+        {
+            if (this.virtualHealthPoint > this.currentHealthPoint)
+            {
+                return ( this.virtualHealthPoint - this.currentHealthPoint );
+            }
+
+            return 0.0f;
+        }
     }
 
     private void AddNewElementIntoGameCharacterResultDataList( BattleResultData_GameCharacter gameCharacterResultData, bool isNewElement )
@@ -120,7 +130,16 @@ public class BattleResultData
     public BattleResultData AddGameCharacterResultData_VirtualHealthPointDamageRecovered( GameCharacter gameCharacter, float virtualHealthPointDamageRecovered, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
-        gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint + virtualHealthPointDamageRecovered, true );
+        gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint + virtualHealthPointDamageRecovered, false, true );
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
+    }
+
+    // 回復受到的“實傷”。
+    public BattleResultData AddGameCharacterResultData_ActualHealthPointDamageRecovered( GameCharacter gameCharacter, float actualHealthPointDamageRecovered, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint + actualHealthPointDamageRecovered, true );
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -258,7 +277,7 @@ public class BattleResultData
     }
 
     // 消去能量殘響。
-    public BattleResultData AddGameCharacterResultData_RemoveEnergyMarker( GameCharacter gameCharacter,out BattleResultData_GameCharacter gameCharacterResultData )
+    public BattleResultData AddGameCharacterResultData_RemoveEnergyMarker( GameCharacter gameCharacter, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.energyMarkerRemainingATLs = 0;
@@ -267,10 +286,10 @@ public class BattleResultData
     }
 
     // 當前以太值回復至最大以太值的100%。
-    public BattleResultData AddGameCharacterResultData_FullyRestoreCurrentStatePoint( GameCharacter gameCharacter, out BattleResultData_GameCharacter gameCharacterResultData )
+    public BattleResultData AddGameCharacterResultData_RestoreCurrentStatePoint( GameCharacter gameCharacter, float restorationPercentage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
-        gameCharacterResultData.SetCurrentStatePoint( gameCharacterResultData.maximumStatePoint );
+        gameCharacterResultData.SetCurrentStatePoint( gameCharacterResultData.maximumStatePoint * Mathf.Clamp01( restorationPercentage ) );
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }

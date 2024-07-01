@@ -72,7 +72,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 }
                 if (!gameCharacterData.IsInStateBreakStatus()) //"己方"是否"以太崩潰狀態" ?
                 {
-                    battleResultData.AddGameCharacterResultData_FullyRestoreCurrentStatePoint(gameCharacter, out gameCharacterData); //["己方"當前以太值] =["己方"最大以太值] 
+                    battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint( gameCharacter, 1.0f, out gameCharacterData ); //["己方"當前以太值] =["己方"最大以太值] 
                 }
                 break;
 

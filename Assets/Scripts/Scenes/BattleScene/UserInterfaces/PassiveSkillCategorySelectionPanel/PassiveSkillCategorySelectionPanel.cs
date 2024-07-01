@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using PassiveSkillType = PassiveSkillSlot.PassiveSkillType;
+
 public class PassiveSkillCategorySelectionPanel : MonoBehaviour
 {
     [Header("Reference")]
@@ -15,11 +17,18 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     private float lastHoldingTime = 0f;
     private float holdingDelay = 0.2f;
 
-    public void Start()
+    private PassiveSkillSlot selectedPassiveSkillSlot = null;
+    private Action<PassiveSkillType> onPassiveSkillTypeUpdated = null;
+
+    public void Initialize( Action<PassiveSkillType> onPassiveSkillTypeUpdated )
     {
-        for(int i=0; i < passiveSkillSlotsList.Length; i++)
+        this.onPassiveSkillTypeUpdated = onPassiveSkillTypeUpdated;
+
+        for (int i = 0; i < passiveSkillSlotsList.Length; i++)
         {
-            passiveSkillSlotsList[i].UpdateDefaultPassiveSkillUI();
+            PassiveSkillSlot _passiveSkillSlot = passiveSkillSlotsList[ i ];
+            _passiveSkillSlot.Initialize( this );
+            _passiveSkillSlot.SetIsSelected( false );
         }
     }
 
@@ -59,5 +68,28 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
                 ClickButton();
             }
         }
+    }
+
+    public void OnPassiveSkillSlotSelected( PassiveSkillSlot passiveSkillSlot )
+    {
+        PassiveSkillType _passiveSkillType = PassiveSkillType.None;
+
+        if (this.selectedPassiveSkillSlot != null)
+        {
+            this.selectedPassiveSkillSlot.SetIsSelected( false );
+        }
+
+        if (this.selectedPassiveSkillSlot != passiveSkillSlot)
+        {
+            this.selectedPassiveSkillSlot = passiveSkillSlot;
+            this.selectedPassiveSkillSlot.SetIsSelected( true );
+            _passiveSkillType = this.selectedPassiveSkillSlot.GetPassiveSkillType();
+        }
+        else
+        {
+            this.selectedPassiveSkillSlot = null;
+        }
+
+        this.onPassiveSkillTypeUpdated?.Invoke( _passiveSkillType );
     }
 }

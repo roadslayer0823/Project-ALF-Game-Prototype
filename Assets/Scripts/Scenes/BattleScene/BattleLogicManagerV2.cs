@@ -1004,6 +1004,8 @@ public class BattleLogicManagerV2
         for (int i = 0; i < gameCharacters.Length; i++)
         {
             GameCharacter _gameCharacter = gameCharacters[ i ];
+
+            /*
             float _virtualHealthPointDamageRecovered = _gameCharacter.GetMaximumHealthPoint() * _healthPointRegenerationRateOnRoundStart;
             float _currentStatePoint = _gameCharacter.GetCurrentStatePoint();
             float _maximumStatePointDecrease = ( _currentStatePoint < 0 ) ? Mathf.Abs( _currentStatePoint ) : 0.0f;
@@ -1023,7 +1025,7 @@ public class BattleLogicManagerV2
                 .AddGameCharacterResultData_StressValueDamageRecovered( _gameCharacter, _stressValueDamageRecovered, out _ )
 
                 // 當前以太值回復至最大以太值的100%。
-                .AddGameCharacterResultData_FullyRestoreCurrentStatePoint( _gameCharacter, out _ );
+                .AddGameCharacterResultData_RestoreCurrentStatePoint( _gameCharacter, 1.0f, out _ );
 
             BattleResultData_GameCharacter _gameCharacterResultData = _battleResultData.GetGameCharacterResultData( _gameCharacter );
 
@@ -1048,6 +1050,11 @@ public class BattleLogicManagerV2
                         + "。";
 
             resultLogList.Add( _resultLog );
+            */
+
+            CategorizedPassiveSkillManager.RunBasicRecoveryEffects( ref _battleResultData, ref resultLogList, _gameCharacter );
+
+            string _resultLog = "";
 
             // 看破技能記錄裡鎖定的看破 ID 的儲蓄值的減算。
             CharacterSkill[] _skills = _gameCharacter.GetSkills();

@@ -1,9 +1,9 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using SkillType = BattleSkillManager.SkillType;
-using System.Collections;
-using System;
+using PassiveSkillType = PassiveSkillSlot.PassiveSkillType;
 
 public class BattleUiManager : MonoBehaviour
 {
@@ -33,6 +33,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private GameObject darkLayer = null;
     [SerializeField] private Animator battleStartUiAnimator = null;
     [SerializeField] private TMP_Text turnText = null;
+    [SerializeField] private PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel = null;
 
     [Header( "Debug" )]
     [SerializeField] private EnemyDebugMenuPanel enemyDebugMenuPanel = null;
@@ -98,6 +99,8 @@ public class BattleUiManager : MonoBehaviour
             this.characterInfoPanelV2 = this.playerDashboard.GetCharacterInfoPanelV2();
             this.characterInfoPanelV2.Initialize();
         }
+
+        this.passiveSkillCategorySelectionPanel.Initialize( OnPassiveSkillTypeUpdated );
     }
 
     public void SetSelectedGameCharacter( GameCharacter gameCharacter )
@@ -691,6 +694,23 @@ public class BattleUiManager : MonoBehaviour
         }
 
         return _matchedSkillSlotList;
+    }
+
+#endregion
+
+#region Categorized Passive Skill Manager
+
+    public void OnPassiveSkillTypeUpdated( PassiveSkillSlot.PassiveSkillType passiveSkillType )
+    {
+        CategorizedPassiveSkillManager.CategoryType _categoryType = passiveSkillType switch
+        {
+            PassiveSkillType.HealthPoint => CategorizedPassiveSkillManager.CategoryType.Life,
+            PassiveSkillType.StatePoint => CategorizedPassiveSkillManager.CategoryType.State,
+            PassiveSkillType.StressValue => CategorizedPassiveSkillManager.CategoryType.Stress,
+            _ => CategorizedPassiveSkillManager.CategoryType.None
+        };
+
+        this.selectedGameCharacter.SetSelectedPassiveSkillCategoryType( _categoryType );
     }
 
 #endregion
