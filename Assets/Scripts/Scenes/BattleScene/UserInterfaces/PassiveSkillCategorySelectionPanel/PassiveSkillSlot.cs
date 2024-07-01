@@ -20,6 +20,8 @@ public class PassiveSkillSlot : MonoBehaviour
     [SerializeField] private Sprite defaultStressValueSkill;
     [SerializeField] private Sprite defaultHealthPointSkill;
 
+    private PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel;
+
     public enum PassiveSkillType
     {
         None,
@@ -30,22 +32,48 @@ public class PassiveSkillSlot : MonoBehaviour
 
     public void UpdateSelectedPassiveSkillUI()
     {
-        AssignCurrentPassiveSkillUI(this.selectedHealthPointSkill, this.selectedStatePointSkill, this.selectedStressValueSkill);
+        if(passiveSkillType == PassiveSkillType.HealthPoint)
+        {
+            this.passiveSkillSlot.sprite = this.selectedHealthPointSkill;
+        }
+        else if(passiveSkillType == PassiveSkillType.StatePoint)
+        {
+            this.passiveSkillSlot.sprite = this.selectedStatePointSkill;
+        }
+        else if(passiveSkillType == PassiveSkillType.StressValue)
+        {
+            this.passiveSkillSlot.sprite = this.selectedStressValueSkill;
+        }
     }
 
     public void UpdateDefaultPassiveSkillUI()
     {
-        AssignCurrentPassiveSkillUI(this.defaultHealthPointSkill, this.defaultStatePointSkill, this.defaultStressValueSkill);
+        if (passiveSkillType == PassiveSkillType.HealthPoint)
+        {
+            this.passiveSkillSlot.sprite = this.defaultHealthPointSkill;
+        }
+        else if (passiveSkillType == PassiveSkillType.StatePoint)
+        {
+            this.passiveSkillSlot.sprite = this.defaultStatePointSkill;
+        }
+        else if (passiveSkillType == PassiveSkillType.StressValue)
+        {
+            this.passiveSkillSlot.sprite = this.defaultStressValueSkill;
+        }
     }
 
-    public void AssignCurrentPassiveSkillUI(Sprite healthPointSkill, Sprite statePointSkill, Sprite stressPointSkill)
+    public void ClickOption()
     {
-        this.passiveSkillSlot.sprite = passiveSkillType switch
-        {
-            PassiveSkillType.HealthPoint => healthPointSkill,
-            PassiveSkillType.StatePoint => statePointSkill,
-            PassiveSkillType.StressValue => stressPointSkill,
-            _ => throw new NotImplementedException()
-        };
+        UpdateSelectedPassiveSkillUI();
+    }
+
+    public void OptionEnter()
+    {
+        UpdateSelectedPassiveSkillUI();
+    }
+
+    public void OptionExit()
+    {
+        UpdateDefaultPassiveSkillUI();
     }
 }

@@ -4,81 +4,59 @@ using TMPro;
 public class PassiveSkillCategorySelectionPanel : MonoBehaviour
 {
     [Header("Reference")]
-    [SerializeField] private PassiveSkillSlot[] passiveSkillSlots = new PassiveSkillSlot[0];
+    [SerializeField] private PassiveSkillSlot[] passiveSkillSlotsList = new PassiveSkillSlot[0];
     [SerializeField] private GameObject passiveSkillHolder;
     [SerializeField] private GameObject passiveSkillInfoBox;
     [SerializeField] private Image passiveSkillButton;
 
-    private bool isHolding = false;
     private bool isClicked = false;
+    private bool isHolding = false;
+    private bool isPointerDown;
+    private float lastHoldingTime = 0f;
+    private float holdingDelay = 0.2f;
 
     public void Start()
     {
-        for(int i = 0; i<passiveSkillSlots.Length; i++)
+        for(int i=0; i < passiveSkillSlotsList.Length; i++)
         {
-            passiveSkillSlots[i].UpdateDefaultPassiveSkillUI();
+            passiveSkillSlotsList[i].UpdateDefaultPassiveSkillUI();
         }
-    }
-
-    public void HoldButton()
-    {
-        isHolding = true;
-        passiveSkillButton.gameObject.SetActive(false);
-        passiveSkillHolder.SetActive(true);
-    }
-
-    public void ReleaseHoldButton()
-    {
-        isHolding = false;
-        passiveSkillButton.gameObject.SetActive(true);
-        passiveSkillHolder.SetActive(false);
     }
 
     public void ClickButton()
     {
-        if(isClicked == false)
+        if (isClicked == false)
         {
             isClicked = true;
-            passiveSkillButton.gameObject.SetActive(false);
             passiveSkillHolder.SetActive(true);
         }
-        else if(isClicked == true)
+        else
         {
             isClicked = false;
-            passiveSkillButton.gameObject.SetActive(true);
             passiveSkillHolder.SetActive(false);
         }
     }
 
-    public void ClickOption()
+    public void StartHolding()
     {
-        if(isClicked == true)
-        {
-            for (int i = 0; i < passiveSkillSlots.Length; i++)
-            {
-                passiveSkillSlots[i].UpdateSelectedPassiveSkillUI();
-            }
-        }
+        lastHoldingTime = Time.time;
+        isPointerDown = true;
+        this.passiveSkillHolder.SetActive(true);
     }
 
-    public void OptionEnter()
+    public void ReleaseButton()
     {
-        if (isHolding == true && isClicked == false)
+        if (isPointerDown)
         {
-            for (int i = 0; i < passiveSkillSlots.Length; i++)
+            isPointerDown = false;
+            float holdingDuration = Time.time - lastHoldingTime;
+            if(holdingDuration >= holdingDelay)
             {
-                passiveSkillSlots[i].UpdateSelectedPassiveSkillUI();
+                passiveSkillHolder.SetActive(false);
             }
-        }
-    }
-
-    public void OptionExit()
-    {
-        if(isHolding == true)
-        {
-            for (int i = 0; i < passiveSkillSlots.Length; i++)
+            else
             {
-                passiveSkillSlots[i].UpdateDefaultPassiveSkillUI();
+                ClickButton();
             }
         }
     }
