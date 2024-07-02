@@ -232,11 +232,11 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnPartA:
 
-                if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
+                if (_enemyCharacter.HasCharacterIdentityType( CharacterIdentityType.Lead ))
                 {
                     _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( battleGameManager, BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
-                else if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
+                else if (_enemyCharacter.HasCharacterIdentityType( CharacterIdentityType.Improviser ))
                 {
                     _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( battleGameManager, BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
@@ -245,8 +245,7 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnPartB:
 
-                if (_enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulDefender
-                    || _enemyCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulEvader)
+                if (_enemyCharacter.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
                 {
                     _enemyCharacter.SetRandomAvailableSkillAsCurrentSkill( battleGameManager, BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CounterAttackCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
@@ -452,7 +451,7 @@ public class EnemyCharacter : GameCharacter
         {
             List<CharacterSkill> _availableSkillList = null;
 
-            if (base.GetCurrentCharacterIdentityType() == CharacterIdentityType.None)
+            if (base.IsCharacterIdentityTypeListEmpty())
             {
                 if (_activeSkillList.Count > 0 && ( _backendSkillList.Count <= 0 || Random.value < 0.8f ))
                 {

@@ -75,6 +75,7 @@ public class BattleGameManager : MonoBehaviour
         this.playerCharacterList = new List<PlayerCharacter>();
         this.playerCharacter.SetUp( this.battleAnimationEventManager );
         this.playerCharacter.Initialize( DatabaseManager.Instance.GetCharacterDataById( "C1" ), true, this.playerContainer, this.opponentContainer, OnCharacterEventTriggered );
+        this.playerCharacter.AddPermanentCharacterIdentityType( GameCharacter.CharacterIdentityType.PlayerOne );
         this.playerCharacterList.Add( this.playerCharacter );
 
         // ------------------------------------------------------------------------
@@ -84,6 +85,7 @@ public class BattleGameManager : MonoBehaviour
         this.enemyCharacterList = new List<EnemyCharacter>();
         this.enemyCharacter.SetUp( this.battleAnimationEventManager );
         this.enemyCharacter.Initialize( DatabaseManager.Instance.GetCharacterDataById( "E1" ), false, this.opponentContainer, this.playerContainer, OnCharacterEventTriggered );
+        this.enemyCharacter.AddPermanentCharacterIdentityType( GameCharacter.CharacterIdentityType.PlayerTwo );
         this.enemyCharacterList.Add( this.enemyCharacter );
 
         // -----------------------------------------------------------------------

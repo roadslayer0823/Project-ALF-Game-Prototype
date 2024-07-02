@@ -96,11 +96,11 @@ public class PlayerCharacter : GameCharacter
 
             case AnimationEvent.OnPartA:
 
-                if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
+                if (_playerCharacter.HasCharacterIdentityType( CharacterIdentityType.Lead ))
                 {
                     _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.Part_A, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
-                else if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
+                else if (_playerCharacter.HasCharacterIdentityType( CharacterIdentityType.Improviser ))
                 {
                     _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.RepulseCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }
@@ -109,8 +109,7 @@ public class PlayerCharacter : GameCharacter
 
             case AnimationEvent.OnPartB:
 
-                if (_playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulDefender
-                   || _playerCharacter.GetCurrentCharacterIdentityType() == CharacterIdentityType.SuccessfulEvader)
+                if (_playerCharacter.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
                 {
                     _battleUiManager.UpdateSkillButtons( BattleSkillManager.GetSkillTypeList( this, BattleSkillManager.BattlePhaseType.CounterAttackCommandTime, _currentATLNumber, base.GetCurrentAttacker() ) );
                 }

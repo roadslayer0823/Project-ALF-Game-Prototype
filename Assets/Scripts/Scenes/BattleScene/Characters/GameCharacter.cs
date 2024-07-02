@@ -50,7 +50,6 @@ public partial class GameCharacter : MonoBehaviour
     private Action<string> onSkillEffectAnimationTriggeredCallback = null;
     private Action onCharacterInfoUpdated = null;
 
-    private CharacterIdentityType currentCharacterIdentityType = CharacterIdentityType.None;
     private CharacterSkill currentSkill = null;
     private RangeType currentSkillRangeType = RangeType.none;
     private CharacterSkill currentObservingSkill = null;
@@ -85,6 +84,8 @@ public partial class GameCharacter : MonoBehaviour
     private int stressBreakStatusRemainingATLs = 0; // 負荷崩潰維持值 (ATL)
     private bool isDead = false;
     private BattleResultData_GameCharacter temporaryBattleResultData = null;
+    private List<CharacterIdentityType> characterIdentityTypeList = null; // 暫時性身份列表
+    private List<CharacterIdentityType> permanentCharacterIdentityTypeList = null; // 永久性身份列表
     private List<CharacterSkill> allSkills = null;
 
     public enum CharacterIdentityType
@@ -92,11 +93,23 @@ public partial class GameCharacter : MonoBehaviour
         // 無身份
         None,
 
+        // 玩家 1
+        PlayerOne,
+
+        // 玩家 2
+        PlayerTwo,
+
         // 先手方
         Lead,
 
         // 後手方
         Improviser,
+
+        // 平手方
+        Deuce,
+
+        // 抵抗成功方
+        SuccessfulResister,
 
         // 直擊方
         Assaulter,
@@ -114,19 +127,7 @@ public partial class GameCharacter : MonoBehaviour
         LightRecipient,
 
         // 重受擊方
-        HeavyRecipient,
-
-        // 抵抗成功方
-        SuccessfulResister,
-
-        // 防禦成功方
-        SuccessfulDefender,
-
-        // 迴避成功方
-        SuccessfulEvader,
-
-        // 平手方
-        Deuce
+        HeavyRecipient
     }
 
     public enum CharacterActionType
@@ -160,6 +161,8 @@ public partial class GameCharacter : MonoBehaviour
         this.currentStressValue = 0.0f;
         this.selectedActiveSkillList = new List<CharacterSkill>();
         this.selectedBackendSkillList = new List<CharacterSkill>();
+        this.characterIdentityTypeList = new List<CharacterIdentityType>();
+        this.permanentCharacterIdentityTypeList = new List<CharacterIdentityType>();
         this.allSkills = new List<CharacterSkill>();
 
         List<CharacterSkill> _skillList = new();
@@ -1101,7 +1104,6 @@ public partial class GameCharacter : MonoBehaviour
 
     public void Reset()
     {
-        SetCurrentCharacterIdentityType( CharacterIdentityType.None );
         SetCurrentSkill( null );
         SetCurrentSkillRangeType( RangeType.none );
         ResetCurrentObservingSkill();
@@ -1160,14 +1162,47 @@ public partial class GameCharacter : MonoBehaviour
         this.temporaryBattleResultData = null;
     }
 
-    public void SetCurrentCharacterIdentityType( CharacterIdentityType currentCharacterIdentityType )
+    public void AddCharacterIdentityType( CharacterIdentityType characterIdentityType )
     {
-        this.currentCharacterIdentityType = currentCharacterIdentityType;
+        this.characterIdentityTypeList.Add( characterIdentityType );
     }
 
-    public CharacterIdentityType GetCurrentCharacterIdentityType()
+    public void AddPermanentCharacterIdentityType( CharacterIdentityType characterIdentityType )
     {
-        return this.currentCharacterIdentityType;
+        this.permanentCharacterIdentityTypeList.Add( characterIdentityType );
+    }
+
+    public void RemoveCharacterIdentityType( CharacterIdentityType characterIdentityType )
+    {
+        this.characterIdentityTypeList.Remove( characterIdentityType );
+    }
+
+    public bool HasCharacterIdentityType( CharacterIdentityType characterIdentityType )
+    {
+        return this.characterIdentityTypeList.Contains( characterIdentityType );
+    }
+
+    public bool HasCharacterIdentityTypes( CharacterIdentityType[] characterIdentityTypes )
+    {
+        for (int i = 0; i < characterIdentityTypes.Length; i++)
+        {
+            if (this.characterIdentityTypeList.Contains( characterIdentityTypes[ i ] ))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void ClearCharacterIdentityTypeList()
+    {
+        this.characterIdentityTypeList.Clear();
+    }
+
+    public bool IsCharacterIdentityTypeListEmpty()
+    {
+        return ( this.characterIdentityTypeList.Count <= 0 );
     }
 
     public void SetAssignedSkill( CharacterSkill assignedSkill )

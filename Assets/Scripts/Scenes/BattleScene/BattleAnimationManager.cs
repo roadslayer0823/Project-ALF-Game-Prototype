@@ -779,6 +779,8 @@ public class BattleAnimationManager : MonoBehaviour
 
         // 有“先手方”和“後手方”。
 
+        // TODO: 調用“判定距離中途結果”。BattleDistanceManager.UpdateHalfwayDistanceResult();
+
         if (battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen())
         {
             battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutOut( true );
@@ -1036,9 +1038,7 @@ public class BattleAnimationManager : MonoBehaviour
 
             BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
 
-            if (_attackTarget.GetCurrentCharacterIdentityType() is CharacterIdentityType.SuccessfulResister
-                                                                or CharacterIdentityType.SuccessfulDefender
-                                                                or CharacterIdentityType.SuccessfulEvader)
+            if (_attackTarget.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
             {
                 _attackTarget.SetIsCounterAttacking( true );
 
@@ -1131,8 +1131,12 @@ public class BattleAnimationManager : MonoBehaviour
                 bool _hasAssault = false;
                 if (_winner != null)
                 {
-                    if (_winner.GetCurrentCharacterIdentityType() is CharacterIdentityType.LightAssaulter
-                                                                  or CharacterIdentityType.HeavyAssaulter)
+                    if (_winner.HasCharacterIdentityTypes( new CharacterIdentityType[]
+                                                           {
+                                                               CharacterIdentityType.LightAssaulter,
+                                                               CharacterIdentityType.HeavyAssaulter
+                                                           }
+                                                           ))
                     {
                         _hasAssault = true;
 

@@ -7,7 +7,7 @@ using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
 using BattleResultData_GameCharacter = BattleResultData.BattleResultData_GameCharacter;
 
-public class BattleLogicManagerV2
+public partial class BattleLogicManagerV2
 {
     public enum ActionType
     {
@@ -162,13 +162,13 @@ public class BattleLogicManagerV2
             // 對比雙方技能的速度。
             if (_gameCharacterOne_Skill_Speed > _gameCharacterTwo_Skill_Speed)
             {
-                gameCharacterOne.SetCurrentCharacterIdentityType( CharacterIdentityType.Lead );
-                gameCharacterTwo.SetCurrentCharacterIdentityType( CharacterIdentityType.Improviser );
+                gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Lead );
+                gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Improviser );
             }
             else if (_gameCharacterOne_Skill_Speed < _gameCharacterTwo_Skill_Speed)
             {
-                gameCharacterOne.SetCurrentCharacterIdentityType( CharacterIdentityType.Improviser );
-                gameCharacterTwo.SetCurrentCharacterIdentityType( CharacterIdentityType.Lead );
+                gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Improviser );
+                gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Lead );
             }
             // 如果雙方的技能速度相同：
             else
@@ -181,8 +181,8 @@ public class BattleLogicManagerV2
                 // 如果有一方在【 反擊指令時間 】階段按下主動技能或反擊技能：
                 if (_isGameCharacterOneCounterAttacking || _isGameCharacterTwoCounterAttacking)
                 {
-                    gameCharacterOne.SetCurrentCharacterIdentityType( ( _isGameCharacterOneCounterAttacking ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
-                    gameCharacterTwo.SetCurrentCharacterIdentityType( ( _isGameCharacterTwoCounterAttacking ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
+                    gameCharacterOne.AddCharacterIdentityType( ( _isGameCharacterOneCounterAttacking ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
+                    gameCharacterTwo.AddCharacterIdentityType( ( _isGameCharacterTwoCounterAttacking ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
                 }
                 // 否則：
                 else
@@ -207,13 +207,13 @@ public class BattleLogicManagerV2
                     // 對比雙方的當前以太值（扣除了按下的技能的以太值消耗後的數值）：
                     if (_gameCharacterOne_StatePoint > _gameCharacterTwo_StatePoint)
                     {
-                        gameCharacterOne.SetCurrentCharacterIdentityType( CharacterIdentityType.Lead );
-                        gameCharacterTwo.SetCurrentCharacterIdentityType( CharacterIdentityType.Improviser );
+                        gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Lead );
+                        gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Improviser );
                     }
                     else if (_gameCharacterOne_StatePoint < _gameCharacterTwo_StatePoint)
                     {
-                        gameCharacterOne.SetCurrentCharacterIdentityType( CharacterIdentityType.Improviser );
-                        gameCharacterTwo.SetCurrentCharacterIdentityType( CharacterIdentityType.Lead );
+                        gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Improviser );
+                        gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Lead );
                     }
                     // 如果雙方的當前以太值（扣除了按下的技能的以太值消耗後的數值）也是相同:
                     else
@@ -222,13 +222,13 @@ public class BattleLogicManagerV2
 
                         if (Random.value < 0.5f)
                         {
-                            gameCharacterOne.SetCurrentCharacterIdentityType( CharacterIdentityType.Lead );
-                            gameCharacterTwo.SetCurrentCharacterIdentityType( CharacterIdentityType.Improviser );
+                            gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Lead );
+                            gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Improviser );
                         }
                         else
                         {
-                            gameCharacterOne.SetCurrentCharacterIdentityType( CharacterIdentityType.Improviser );
-                            gameCharacterTwo.SetCurrentCharacterIdentityType( CharacterIdentityType.Lead );
+                            gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Improviser );
+                            gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Lead );
                         }
                     }
                 }
@@ -239,26 +239,23 @@ public class BattleLogicManagerV2
         {
             BattleLog.Instance.AddOnScreenBattleLog( "只有一方按下主動技能或反擊技能。" );
 
-            gameCharacterOne.SetCurrentCharacterIdentityType( ( _isGameCharacterOneUsingAttackingSkill ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
-            gameCharacterTwo.SetCurrentCharacterIdentityType( ( _isGameCharacterTwoUsingAttackingSkill ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
+            gameCharacterOne.AddCharacterIdentityType( ( _isGameCharacterOneUsingAttackingSkill ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
+            gameCharacterTwo.AddCharacterIdentityType( ( _isGameCharacterTwoUsingAttackingSkill ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
         }
         // 否則：
         else
         {
             BattleLog.Instance.AddOnScreenBattleLog( "雙方都沒有按下主動技能或反擊技能。" );
-
-            gameCharacterOne.SetCurrentCharacterIdentityType( CharacterIdentityType.None );
-            gameCharacterTwo.SetCurrentCharacterIdentityType( CharacterIdentityType.None );
         }
 
-        if (gameCharacterOne.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead
-            && gameCharacterTwo.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser)
+        if (gameCharacterOne.HasCharacterIdentityType( CharacterIdentityType.Lead )
+            && gameCharacterTwo.HasCharacterIdentityType( CharacterIdentityType.Improviser ))
         {
             return ( lead: gameCharacterOne, improviser: gameCharacterTwo );
         }
 
-        if (gameCharacterOne.GetCurrentCharacterIdentityType() == CharacterIdentityType.Improviser
-            && gameCharacterTwo.GetCurrentCharacterIdentityType() == CharacterIdentityType.Lead)
+        if (gameCharacterOne.HasCharacterIdentityType( CharacterIdentityType.Improviser )
+            && gameCharacterTwo.HasCharacterIdentityType( CharacterIdentityType.Lead ))
         {
             return ( lead: gameCharacterTwo, improviser: gameCharacterOne );
         }
@@ -268,8 +265,8 @@ public class BattleLogicManagerV2
 
     public static void DeclareAssaulterAndRecipient( GameCharacter assaulter, GameCharacter recipient )
     {
-        assaulter.SetCurrentCharacterIdentityType( CharacterIdentityType.Assaulter );
-        recipient.SetCurrentCharacterIdentityType( CharacterIdentityType.Recipient );
+        assaulter.AddCharacterIdentityType( CharacterIdentityType.Assaulter );
+        recipient.AddCharacterIdentityType( CharacterIdentityType.Recipient );
 
         DetermineLightOrHeavyRecipient( recipient: recipient, assaulter: assaulter );
     }
@@ -277,8 +274,8 @@ public class BattleLogicManagerV2
     public static void DetermineLightOrHeavyRecipient( GameCharacter recipient, GameCharacter assaulter )
     {
         // TODO: Temporarily determine that the recipient is a heavy recipient.
-        recipient.SetCurrentCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
-        assaulter.SetCurrentCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
+        recipient.AddCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
+        assaulter.AddCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
     }
 
     public static void DetermineResultForPartA( GameCharacter lead, GameCharacter improviser )
@@ -342,6 +339,16 @@ public class BattleLogicManagerV2
                 resultLogList.Add( _repulseResultLog );
 
                 // ----------------------------------------------------------------------------------------------------
+
+                if (winner == null)
+                {
+                    // 迎擊結果為雙方打平，雙方得到"平手方"。
+                    lead.AddCharacterIdentityType( CharacterIdentityType.Deuce );
+                    improviser.AddCharacterIdentityType( CharacterIdentityType.Deuce );
+
+                    // 進入“迎擊平手方結算”。
+                    SettleResultForRepulseDraw( ref _battleResultData, ref resultLogList, lead, improviser );
+                }
 
                 if (_leadRangeType == RangeType.melee)
                 {
@@ -469,16 +476,7 @@ public class BattleLogicManagerV2
                 }
                 else if (winner == improviser)
                 {
-                    lead.SetCurrentCharacterIdentityType( CharacterIdentityType.Deuce );
-
-                    if (_improviserSubskillData.IsDefendingSkill)
-                    {
-                        improviser.SetCurrentCharacterIdentityType( CharacterIdentityType.SuccessfulDefender );
-                    }
-                    else if (_improviserSubskillData.IsEvadingSkill)
-                    {
-                        improviser.SetCurrentCharacterIdentityType( CharacterIdentityType.SuccessfulEvader );
-                    }
+                    lead.AddCharacterIdentityType( CharacterIdentityType.Deuce );
                 }
 
                 ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: winner == lead, hasStatePointDamage: true, hasStressValueDamage: true );
@@ -672,7 +670,7 @@ public class BattleLogicManagerV2
                 // 如果該角色是“輕受擊方”，該直擊傷害為“虛傷”。
                 // 如果該角色是“重受擊方”，該直擊傷害為“實傷”。
 
-                bool _isActualDamage = ( target.GetCurrentCharacterIdentityType() == CharacterIdentityType.HeavyRecipient );
+                bool _isActualDamage = target.HasCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
 
                 /*
                 // When the target takes damage, if the target is not using the Repulse skill
@@ -828,14 +826,24 @@ public class BattleLogicManagerV2
 
         switch ( actionType )
         {
+            // 頁面：判定迎擊結果及結算
             case ActionType.Repulse:
 
+                // Case B: 先手方的攻擊速度 > 後手方的迎擊速度。
                 if (_leadSkillSpeed > _improviserSkillSpeed)
                 {
                     winner = lead;
                 }
+                // Case A: 先手方的攻擊速度 <= 後手方的迎擊速度。
                 else
                 {
+                    // TODO:
+                    /*
+                    強度較高一方得到"強度勝方"&
+                    "勝利優惠機制方"
+                    強度較低一方得到"強度負方"
+                    */
+
                     if (_leadSkillStrength > _improviserSkillStrength)
                     {
                         winner = lead;
@@ -845,6 +853,8 @@ public class BattleLogicManagerV2
                         winner = improviser;
                     }
                 }
+
+                // 如果沒有winner，就是雙方的強度相同。
 
                 break;
 
@@ -976,6 +986,9 @@ public class BattleLogicManagerV2
                 }
             }
 
+            // 取消所有身份。
+            _gameCharacter.ClearCharacterIdentityTypeList();
+
             if (_gameCharacter.GetIsDead())
             {
                 _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnDeath );
@@ -1102,14 +1115,16 @@ public class BattleLogicManagerV2
 
     public static void OnGameCharacterBeingInBreakStatus( GameCharacter gameCharacter )
     {
-        if (gameCharacter.GetCurrentCharacterIdentityType() is CharacterIdentityType.Recipient
-                                                            or CharacterIdentityType.LightRecipient
-                                                            or CharacterIdentityType.SuccessfulResister
-                                                            or CharacterIdentityType.SuccessfulDefender
-                                                            or CharacterIdentityType.SuccessfulEvader)
+        if (gameCharacter.HasCharacterIdentityTypes( new CharacterIdentityType[]
+                                                     {
+                                                         CharacterIdentityType.Recipient,
+                                                         CharacterIdentityType.LightRecipient,
+                                                         CharacterIdentityType.SuccessfulResister
+                                                     }
+                                                     ))
         {
-            gameCharacter.SetCurrentCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
-            gameCharacter.GetCurrentAttacker().SetCurrentCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
+            gameCharacter.AddCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
+            gameCharacter.GetCurrentAttacker().AddCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
         }
     }
 }

@@ -46,14 +46,13 @@ public class BattleSkillManager : MonoBehaviour
             }
         }
 
-        CharacterIdentityType _characterIdentityType = gameCharacter.GetCurrentCharacterIdentityType();
         CharacterSkill _currentSkill = gameCharacter.GetCurrentSkill();
 
         switch ( battlePhaseType )
         {
             case BattlePhaseType.CombatCommandTime_Before:
 
-                if (_characterIdentityType is CharacterIdentityType.None)
+                if (gameCharacter.IsCharacterIdentityTypeListEmpty())
                 {
                     _skillTypeList = new List<SkillType> { SkillType.Active, SkillType.Defend, SkillType.Evade };
                 }
@@ -62,7 +61,7 @@ public class BattleSkillManager : MonoBehaviour
 
             case BattlePhaseType.Part_A:
 
-                if (_characterIdentityType is CharacterIdentityType.Lead)
+                if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.Lead ))
                 {
                     _skillTypeList = new List<SkillType>();
                 }
@@ -71,7 +70,7 @@ public class BattleSkillManager : MonoBehaviour
 
             case BattlePhaseType.RepulseCommandTime:
 
-                if (_characterIdentityType is CharacterIdentityType.Improviser)
+                if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.Improviser ))
                 {
                     _skillTypeList = new List<SkillType> { SkillType.Repulse, SkillType.Defend, SkillType.Evade };
                 }
@@ -82,33 +81,41 @@ public class BattleSkillManager : MonoBehaviour
 
                 if (atlNumber <= 4)
                 {
-                    if (_characterIdentityType is CharacterIdentityType.Lead
-                                               or CharacterIdentityType.LightAssaulter
-                                               or CharacterIdentityType.Improviser
-                                               or CharacterIdentityType.LightRecipient
-                                               or CharacterIdentityType.HeavyAssaulter
-                                               or CharacterIdentityType.Deuce)
+                    if (gameCharacter.HasCharacterIdentityTypes( new CharacterIdentityType[]
+                                                                 {
+                                                                     CharacterIdentityType.Lead,
+                                                                     CharacterIdentityType.LightAssaulter,
+                                                                     CharacterIdentityType.Improviser,
+                                                                     CharacterIdentityType.LightRecipient,
+                                                                     CharacterIdentityType.HeavyAssaulter,
+                                                                     CharacterIdentityType.Deuce
+                                                                 }
+                                                                 ))
                     {
                         _skillTypeList = new List<SkillType> { SkillType.Active, SkillType.Defend, SkillType.Evade };
                     }
-                    else if (_characterIdentityType is CharacterIdentityType.HeavyRecipient)
+                    else if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.HeavyRecipient ))
                     {
                         _skillTypeList = new List<SkillType> { SkillType.Defend, SkillType.Evade };
                     }
                 }
                 else
                 {
-                    if (_characterIdentityType is CharacterIdentityType.Lead
-                                               or CharacterIdentityType.LightAssaulter
-                                               or CharacterIdentityType.Improviser
-                                               or CharacterIdentityType.LightRecipient
-                                               or CharacterIdentityType.HeavyAssaulter)
+                    if (gameCharacter.HasCharacterIdentityTypes( new CharacterIdentityType[]
+                                                                 {
+                                                                     CharacterIdentityType.Lead,
+                                                                     CharacterIdentityType.LightAssaulter,
+                                                                     CharacterIdentityType.Improviser,
+                                                                     CharacterIdentityType.LightRecipient,
+                                                                     CharacterIdentityType.HeavyAssaulter
+                                                                 }
+                                                                 ))
                     {
                         _skillTypeList = new List<SkillType>();
                     }
                 }
 
-                if (_characterIdentityType is CharacterIdentityType.HeavyAssaulter)
+                if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.HeavyAssaulter ))
                 {
                     if (_currentSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() != null)
                     {
@@ -120,8 +127,7 @@ public class BattleSkillManager : MonoBehaviour
 
             case BattlePhaseType.CounterAttackCommandTime:
 
-                if (_characterIdentityType is CharacterIdentityType.SuccessfulDefender
-                                           or CharacterIdentityType.SuccessfulEvader)
+                if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
                 {
                     if (atlNumber <= 4)
                     {
