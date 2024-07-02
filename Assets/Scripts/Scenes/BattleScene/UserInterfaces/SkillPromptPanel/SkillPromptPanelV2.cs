@@ -156,6 +156,8 @@ public class SkillPromptPanelV2 : MonoBehaviour
             this.skillNameBackgroundImage.sprite = this.backendSkillBackgroundImage;
         }
 
+        this.skillNameBackgroundImage.SetNativeSize();
+        this.skillNameBackgroundImage.rectTransform.anchoredPosition = new Vector3(0f, 0f, 0f);
         this.skillNameText.SetText(_characterSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
 
         int _speed = _characterSkill.GetCharacterSubskillData().GetSubskillData().Speed;

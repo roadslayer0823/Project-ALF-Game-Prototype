@@ -86,6 +86,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 1892c6c01aa6149d3b3ae98fd2c7f680, type: 3}
   - {fileID: 21300000, guid: e9f239c05dfdc43e5ab4a128fa1e1d38, type: 3}
   - {fileID: 21300000, guid: a46ff0d0d15cb4c2d87fbdf5bc953686, type: 3}
+  - {fileID: 21300000, guid: d3da64d0fd9724a6bad66e2d7db9f2d7, type: 3}
   - {fileID: 21300000, guid: 1754cd2171ad840d4abce9a47079d434, type: 3}
   - {fileID: 21300000, guid: 4a7f25310360e4789ba6a1544c6e46e8, type: 3}
   - {fileID: 21300000, guid: 9f4d2e31a2db14cd697a3a736faf937e, type: 3}
@@ -95,6 +96,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 6b4bc961b9a93419fb117b398f9b6c7c, type: 3}
   - {fileID: 21300000, guid: 9c240c61a9cf5408b9aa227e13affe0c, type: 3}
   - {fileID: 21300000, guid: 20bd3281f12714178a6de3e2428ab1c3, type: 3}
+  - {fileID: 21300000, guid: 52520491b8ce2478eb5acff4aca13600, type: 3}
   - {fileID: 21300000, guid: cde3b491134b14db2af4cfb9e64a8487, type: 3}
   - {fileID: 21300000, guid: 710830a1c966940ab9ac2d1075e8a35f, type: 3}
   - {fileID: 21300000, guid: aafc1ea156f2a4a7ab5df070c4deab70, type: 3}
@@ -356,6 +358,7 @@ SpriteAtlas:
   - "\u8499\u7248\u4E0B"
   - Start__00042
   - "\u611F\u6B4E\u865F_012"
+  - "\u653B\u64CA\u6280\u80FD"
   - "\u8D1F\u8377\u6D41\u672A\u9009\u4E2D"
   - BGB022
   - LINEBREAK_024
@@ -365,6 +368,7 @@ SpriteAtlas:
   - 21
   - STG2_02
   - LINEBREAK_030
+  - "\u8FCE\u64CA\u6280\u80FD"
   - SettingButton
   - "\u5E95\u90E8\u88DD\u98FE"
   - T_ (2)
