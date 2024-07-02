@@ -36,10 +36,14 @@ public class BattleResultData
         public float maximumStatePointIncrease = 0.0f;
 
         // 改變參數（命中目標時）
-        public float actualHealthPointDamage = 0.0f;
-        public float virtualHealthPointDamage = 0.0f;
-        public float statePointDamage = 0.0f;
-        public float stressValueDamage = 0.0f;
+        public float actualHealthPointDamageDealt = 0.0f;       // 給予的HP值傷害點數(實傷)
+        public float virtualHealthPointDamageDealt = 0.0f;      // 給予的HP值傷害點數(虛傷)
+        public float statePointDamageDealt = 0.0f;              // 給予的以太值傷害點數
+        public float stressValueDamageDealt = 0.0f;             // 給予的負荷值傷害點數
+        public float actualHealthPointDamageReceived = 0.0f;    // 受到的HP值傷害點數(實傷)
+        public float virtualHealthPointDamageReceived = 0.0f;   // 受到的HP值傷害點數(虛傷)
+        public float statePointDamageReceived = 0.0f;           // 受到的以太值傷害點數
+        public float stressValueDamageReceived = 0.0f;          // 受到的負荷值傷害點數
 
         public bool IsInBreakStatus()
         {
@@ -195,11 +199,18 @@ public class BattleResultData
     // 以太值傷害
     public BattleResultData AddGameCharacterResultData_StatePointDamage( GameCharacter gameCharacter, float statePointDamage, bool isBreakStatusAvailable, out BattleResultData_GameCharacter gameCharacterResultData )
     {
+        GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
+        if (_currentAttacker != null)
+        {
+            BattleResultData_GameCharacter _attackerResultData = GetGameCharacterResultData( _currentAttacker );
+            _attackerResultData.statePointDamageDealt += statePointDamage;
+        }
+
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
 
         if (!gameCharacterResultData.IsInStateBreakStatus())
         {
-            gameCharacterResultData.statePointDamage += statePointDamage;
+            gameCharacterResultData.statePointDamageReceived += statePointDamage;
             gameCharacterResultData.SetCurrentStatePoint( gameCharacterResultData.currentStatePoint - statePointDamage );
 
             if (isBreakStatusAvailable && gameCharacterResultData.currentStatePoint < 0)
@@ -217,11 +228,18 @@ public class BattleResultData
     // 負荷值傷害
     public BattleResultData AddGameCharacterResultData_StressValueDamage( GameCharacter gameCharacter, float stressValueDamage, bool isBreakStatusAvailable, out BattleResultData_GameCharacter gameCharacterResultData )
     {
+        GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
+        if (_currentAttacker != null)
+        {
+            BattleResultData_GameCharacter _attackerResultData = GetGameCharacterResultData( _currentAttacker );
+            _attackerResultData.stressValueDamageDealt += stressValueDamage;
+        }
+
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
 
         if (!gameCharacterResultData.IsInStressBreakStatus())
         {
-            gameCharacterResultData.stressValueDamage += stressValueDamage;
+            gameCharacterResultData.stressValueDamageReceived += stressValueDamage;
             gameCharacterResultData.SetCurrentStressValue( gameCharacterResultData.currentStressValue + stressValueDamage );
 
             if (gameCharacterResultData.currentStressValue >= gameCharacterResultData.maximumStressValue)
@@ -236,7 +254,7 @@ public class BattleResultData
                 {
                     // 由於不會陷入崩潰狀態，該角色的負荷值只能達到最高 99% 而已。
                     float _stressValueReduction = gameCharacterResultData.currentStressValue - ( gameCharacterResultData.maximumStressValue - 1 );
-                    gameCharacterResultData.stressValueDamage -= _stressValueReduction;
+                    gameCharacterResultData.stressValueDamageReceived -= _stressValueReduction;
                     gameCharacterResultData.currentStressValue -= _stressValueReduction;
                 }
             }
@@ -249,8 +267,15 @@ public class BattleResultData
     // HP 傷害（實傷）
     public BattleResultData AddGameCharacterResultData_ActualHealthPointDamage( GameCharacter gameCharacter, float actualHealthPointDamage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
+        GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
+        if (_currentAttacker != null)
+        {
+            BattleResultData_GameCharacter _attackerResultData = GetGameCharacterResultData( _currentAttacker );
+            _attackerResultData.actualHealthPointDamageDealt += actualHealthPointDamage;
+        }
+
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
-        gameCharacterResultData.actualHealthPointDamage += actualHealthPointDamage;
+        gameCharacterResultData.actualHealthPointDamageReceived += actualHealthPointDamage;
         gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint - actualHealthPointDamage, false );
         gameCharacterResultData.SetVirtualHealthPoint( gameCharacterResultData.virtualHealthPoint - actualHealthPointDamage );
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
@@ -260,8 +285,15 @@ public class BattleResultData
     // HP 傷害（虛傷）
     public BattleResultData AddGameCharacterResultData_VirtualHealthPointDamage( GameCharacter gameCharacter, float virtualHealthPointDamage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
+        GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
+        if (_currentAttacker != null)
+        {
+            BattleResultData_GameCharacter _attackerResultData = GetGameCharacterResultData( _currentAttacker );
+            _attackerResultData.virtualHealthPointDamageDealt += virtualHealthPointDamage;
+        }
+
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
-        gameCharacterResultData.virtualHealthPointDamage += virtualHealthPointDamage;
+        gameCharacterResultData.virtualHealthPointDamageReceived += virtualHealthPointDamage;
         gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint - virtualHealthPointDamage, true );
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;

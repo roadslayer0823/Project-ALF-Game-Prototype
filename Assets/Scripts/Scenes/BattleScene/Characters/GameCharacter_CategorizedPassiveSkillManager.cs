@@ -4,6 +4,16 @@ using CategoryType = CategorizedPassiveSkillManager.CategoryType;
 
 public partial class GameCharacter : MonoBehaviour
 {
+    private CategoryType selectedPassiveSkillCategoryType = CategoryType.None;
+    private List<string> selectedCategorizedPassiveSkillList = null;
+
+    private int lifeScore = 0;      // 生命積分
+    private int lifeCyclePoint = 0; // 循環點
+    private int stressScore = 0;    // 負荷積分
+    private int stressLevel = 0;    // 負荷等級
+
+    private int lifeScoreTarget = 0;    // 得到一個循環點的生命積分目標
+
     private readonly List<string> lifePassiveSkillList = new()
     {
         CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL1,
@@ -52,9 +62,6 @@ public partial class GameCharacter : MonoBehaviour
         CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS12
     };
 
-    private CategoryType selectedPassiveSkillCategoryType = CategoryType.None;
-    private List<string> selectedCategorizedPassiveSkillList = null;
-
     public void SetSelectedPassiveSkillCategoryType( CategoryType selectedCategoryType )
     {
         this.selectedPassiveSkillCategoryType = selectedCategoryType;
@@ -81,5 +88,63 @@ public partial class GameCharacter : MonoBehaviour
         }
 
         return this.selectedCategorizedPassiveSkillList.Contains( skillId );
+    }
+
+    public void AddLifeScore( int score )
+    {
+        this.lifeScore += score;
+
+        if (this.lifeScore >= this.lifeScoreTarget)
+        {
+            if (this.lifeScoreTarget < 3)
+            {
+                this.lifeCyclePoint += 1;
+            }
+
+            this.lifeScoreTarget += 12;
+        }
+    }
+
+    public int GetLifeScore()
+    {
+        return this.lifeScore;
+    }
+
+    public void ResetCyclePoint()
+    {
+        this.lifeCyclePoint = 0;
+    }
+
+    public int GetLifeCyclePoint()
+    {
+        return this.lifeCyclePoint;
+    }
+
+    public void AddStressScore( int score )
+    {
+        this.stressScore += score;
+
+        if (this.stressScore >= 350)
+        {
+            this.stressLevel = 3;
+        }
+        else if (this.stressScore >= 200)
+        {
+            this.stressLevel = 2;
+        }
+        else if (this.stressScore >= 150)
+        {
+            this.stressLevel = 1;
+        }
+    }
+
+    public int GetStressScore()
+    {
+        return this.stressScore;
+    }
+
+    public int GetStressLevel()
+    {
+        return this.stressLevel;
     }
 }
