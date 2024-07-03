@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,21 +14,19 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         float pSL3_MengLie_value = (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL3)) ? 0.2f : 0.0f;
         float pSL12_ShengShengBuXi_value = gameCharacterOne.GetLifeScore() >= 250 && (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL12)) ? 0.2f : 0.0f;
         float energyMarker_value = (gameCharacterTwo_BattleResultData.HasEnergyMarker()) ? 0.5f : 0.0f;
-        float pSL4_JianRen_value = ((gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategoryType.Life) && gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL4)) ? 0.2f : 0.0f;
-        float pSE12_NiFeng = ((gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategoryType.State) && gameCharacterTwo_BattleResultData.maximumStatePoint < 80) ? 0.1f : 0.0f;
+        float pSL4_JianRen_value = (gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategoryType.Life && gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL4)) ? 0.2f : 0.0f;
+        float pSE12_NiFeng = (gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategoryType.State && gameCharacterTwo_BattleResultData.maximumStatePoint < 80) ? 0.1f : 0.0f;
 
         float gameCharacterOneSkillDamage = gameCharacterOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().AttackDamage * 0.3f;
         float gameCharacterTwoSkillDamage = gameCharacterTwo.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().AttackDamage * 0.3f;
 
         //["玩家1"生命值]-["玩家1"直擊傷害*0.3]*[1+0.2+n]*[1-0.2-n]
         float gameCharacterOneHealthPointDamage = gameCharacterTwoSkillDamage * (1 + pSL3_MengLie_value + pSL12_ShengShengBuXi_value) * (1 - 0.2f - pSL12_ShengShengBuXi_value);
-        battleResultData.AddGameCharacterResultData_ActualHealthPointDamage(gameCharacterOne, gameCharacterOneHealthPointDamage, out _);
-        Debug.Log("gameCharacterOneHealthPointDamage: " + gameCharacterOneHealthPointDamage);
+        battleResultData.AddGameCharacterResultData_ActualHealthPointDamage(gameCharacterOne, Mathf.Round(gameCharacterOneHealthPointDamage), out _);
 
         //["玩家2"生命值]-["玩家1"直擊傷害*0.3]*[1+0.2+n+n]*[1-n-n-n]
         float gameCharacterTwoHealthPointDamage = gameCharacterOneSkillDamage * (1 + pSL3_MengLie_value + pSL12_ShengShengBuXi_value + energyMarker_value) * (1 - pSL4_JianRen_value - pSL12_ShengShengBuXi_value - pSE12_NiFeng);
-        battleResultData.AddGameCharacterResultData_ActualHealthPointDamage(gameCharacterTwo, gameCharacterTwoHealthPointDamage, out _);
-        Debug.Log("gameCharacterTwoHealthPointDamage: " + gameCharacterTwoHealthPointDamage);
+        battleResultData.AddGameCharacterResultData_ActualHealthPointDamage(gameCharacterTwo, Mathf.Round(gameCharacterTwoHealthPointDamage), out _);
     }
 
     // 判定輕重受擊方
@@ -174,8 +173,61 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             recipientHealthPointDamage = assaulterSkillDamage * (1 + pSL3_MengLie_value + assaulter_pSL12_ShengShengBuXi_value + energyMarker_value) * (1 - pSL4_JianRen_value - recipient_pSL12_ShengShengBuXi_value - pSE12_NiFeng_value) - failedRepulseDamageRate;
         }
 
+        // 如果是重受擊方 = 傷害 * n
         float finalHealthPointDamage = recipient.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient) ? recipientHealthPointDamage * breakStatus_value : recipientHealthPointDamage;
-        battleResultData.AddGameCharacterResultData_ActualHealthPointDamage(recipient, finalHealthPointDamage, out _);
+        battleResultData.AddGameCharacterResultData_ActualHealthPointDamage(recipient, Mathf.Round(finalHealthPointDamage), out _);
     }
 
+    // 生命流能量循環負荷循環相關數值結算
+    public static void RunCyclePointConvert(ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter gameCharacter)
+    {
+        // 上個是生命流 && 現在不是生命流
+        // "己方"的循環點是否>=1?
+        if (gameCharacter.GetLastSelectedPassiveSkillCategoryType() == CategoryType.Life && gameCharacter.GetSelectedPassiveSkillCategoryType() != CategoryType.Life && gameCharacter.GetLifeCyclePoint() > 0)
+        {
+            int cyclePointConvert = 0;
+
+            /*
+             * 0個循環點=0
+                1個循環點=15
+                2個循環點=35
+                3個循環點=70
+             */
+
+            switch (gameCharacter.GetLifeCyclePoint())
+            {
+                case 1:
+                    cyclePointConvert = 15;
+                    break;
+                case 2:
+                    cyclePointConvert = 35;
+                    break;
+                case 3:
+                    cyclePointConvert = 70;
+                    break;                   
+            }
+
+            // Case A: "生命流"》"以太流"。
+            if (gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.State)
+            {
+                // [最大以太值]+[6.能量循環]
+                gameCharacter.AddMaximumStatePoint(cyclePointConvert);
+
+                // [當前以太值] +[6.能量循環]
+                gameCharacter.AddCurrentStatePoint(cyclePointConvert);
+            }
+            // Case B: "生命流"》"負荷流"。
+            else if (gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress)
+            {
+                // [負荷值] -[7.負荷循環]
+                gameCharacter.MinusCurrentStressValue(cyclePointConvert);
+            }
+
+            /*
+             * 消耗所有循環點
+               發動生命流效果
+            */
+            gameCharacter.ResetCyclePoint();
+        }
+    }
 }
