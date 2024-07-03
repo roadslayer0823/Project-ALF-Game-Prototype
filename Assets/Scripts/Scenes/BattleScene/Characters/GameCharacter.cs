@@ -56,6 +56,7 @@ public partial class GameCharacter : MonoBehaviour
     [Obsolete] private CharacterSkill currentObservedSkill = null;
     [Obsolete] private int currentSkillStatIncrement = 0;
     private GameCharacter currentAttacker = null;
+    private GameCharacter currentAttackTarget = null;
     private float skillCountdownTime = 0.0f;
     private int counterAttacks = 0;
     private bool isAbleToUseSkill = false;
@@ -990,12 +991,32 @@ public partial class GameCharacter : MonoBehaviour
 
     public void SetCurrentAttacker( GameCharacter currentAttacker )
     {
+        if (this.currentAttacker != null)
+        {
+            this.currentAttacker.SetCurrentAttackTarget( null );
+        }
+
         this.currentAttacker = currentAttacker;
+
+        if (this.currentAttacker != null)
+        {
+            this.currentAttacker.SetCurrentAttackTarget( this );
+        }
     }
 
     public GameCharacter GetCurrentAttacker()
     {
         return this.currentAttacker;
+    }
+
+    public void SetCurrentAttackTarget( GameCharacter currentAttackTarget )
+    {
+        this.currentAttackTarget = currentAttackTarget;
+    }
+
+    public GameCharacter GetCurrentAttackTarget()
+    {
+        return this.currentAttackTarget;
     }
 
     public void SetIsAbleToUseSkill( bool isAbleToUseSkill )

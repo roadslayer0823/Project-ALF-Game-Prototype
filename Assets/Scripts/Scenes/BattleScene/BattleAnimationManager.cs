@@ -1714,16 +1714,16 @@ public class BattleAnimationManager : MonoBehaviour
     private IEnumerator PlayCharacterAnimation( GameCharacter gameCharacter, string animationName, BattleResultData.BattleResultData_GameCharacter battleResultData )
     {
         float _damageTaken = 0.0f;
-        if (battleResultData.actualHealthPointDamageReceived > 0)
+        if (battleResultData.actualHealthPointDamageTaken > 0)
         {
-            _damageTaken = battleResultData.actualHealthPointDamageReceived;
+            _damageTaken = battleResultData.actualHealthPointDamageTaken;
         }
-        else if (battleResultData.virtualHealthPointDamageReceived > 0)
+        else if (battleResultData.virtualHealthPointDamageTaken > 0)
         {
-            _damageTaken = battleResultData.virtualHealthPointDamageReceived;
+            _damageTaken = battleResultData.virtualHealthPointDamageTaken;
         }
 
-        yield return StartCoroutine( PlayCharacterAnimation( gameCharacter, animationName, _damageTaken, battleResultData.stressValueDamageReceived, battleResultData.statePointDamageReceived ) );
+        yield return StartCoroutine( PlayCharacterAnimation( gameCharacter, animationName, _damageTaken, battleResultData.stressValueDamageTaken, battleResultData.statePointDamageTaken ) );
     }
 
     private IEnumerator PlayCharacterAnimation( GameCharacter gameCharacter, string animationName,
@@ -1743,17 +1743,17 @@ public class BattleAnimationManager : MonoBehaviour
     private void ShowPopUpDisplayInfo( GameCharacter gameCharacter, BattleResultData.BattleResultData_GameCharacter battleResultData )
     {
         float _damageTaken = 0.0f;
-        if (battleResultData.actualHealthPointDamageReceived > 0)
+        if (battleResultData.actualHealthPointDamageTaken > 0)
         {
-            _damageTaken = battleResultData.actualHealthPointDamageReceived;
+            _damageTaken = battleResultData.actualHealthPointDamageTaken;
         }
-        else if (battleResultData.virtualHealthPointDamageReceived > 0)
+        else if (battleResultData.virtualHealthPointDamageTaken > 0)
         {
-            _damageTaken = battleResultData.virtualHealthPointDamageReceived;
+            _damageTaken = battleResultData.virtualHealthPointDamageTaken;
         }
 
         //StartCoroutine( ShowPopUpDisplayInfo( gameCharacter, _damageTaken, battleResultData.stressValueDamage, battleResultData.statePointDamage ) );
-        gameCharacter.ShowPopUpDisplayInfoV2( healthPointDamage: _damageTaken, stressValueDamage: battleResultData.stressValueDamageReceived, statePointDamage: battleResultData.statePointDamageReceived );
+        gameCharacter.ShowPopUpDisplayInfoV2( healthPointDamage: _damageTaken, stressValueDamage: battleResultData.stressValueDamageTaken, statePointDamage: battleResultData.statePointDamageTaken );
     }
 
     private IEnumerator ShowPopUpDisplayInfo( GameCharacter gameCharacter,
