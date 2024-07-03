@@ -78,6 +78,7 @@ public class PassiveSkillSlot : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
         this.passiveSkillCategorySelectionPanel.OnPassiveSkillSlotSelected( this );
+        Debug.Log("current passive skill type:" + GetPassiveSkillType());
     }
 
     public void OptionEnter()
