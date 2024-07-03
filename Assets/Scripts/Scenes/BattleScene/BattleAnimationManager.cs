@@ -1011,7 +1011,11 @@ public class BattleAnimationManager : MonoBehaviour
             _attackTargetSkillType = _attackTarget.GetCurrentSkill().GetSkillData().skillType;
             _attackTargetSubskillData = _attackTarget.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
 
-            if (_attackTargetSkillType == Skill.SkillType.backend)
+            if (_attackTargetSkillType == Skill.SkillType.repulse)
+            {
+                _attacker.SetCurrentAttacker( _attackTarget );
+            }
+            else if (_attackTargetSkillType == Skill.SkillType.backend)
             {
                 if (!_attackTargetSubskillData.IsDefendingSkill && !_attackTargetSubskillData.IsEvadingSkill)
                 {

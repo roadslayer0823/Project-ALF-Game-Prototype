@@ -486,11 +486,50 @@ public partial class BattleLogicManagerV2
         }
         else
         {
+            // 後手方得到"受擊方"&“重受擊方”&"未能抵抗方"先手方得到 “重直擊方”。
+
             DeclareAssaulterAndRecipient( assaulter: lead, recipient: improviser );
             ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true );
 
             winner = lead;
             loser = improviser;
+
+            // 重受擊方當前以太值結算
+
+            // 重受擊方生命值結算
+            CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult( ref _battleResultData, ref resultLogList, lead, improviser );
+        }
+
+        // "己方"是否有給予"對方"HP傷害 / 受到"對方"HP傷害?
+
+        BattleResultData_GameCharacter _lead_BattleResultData = lead.GetTemporaryBattleResultData();
+        if (_lead_BattleResultData != null)
+        {
+            if (_lead_BattleResultData.actualHealthPointDamageDealt > 0
+                || _lead_BattleResultData.virtualHealthPointDamageDealt > 0)
+            {
+                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, ref resultLogList, lead, true );
+            }
+            else if (_lead_BattleResultData.actualHealthPointDamageTaken > 0
+                || _lead_BattleResultData.virtualHealthPointDamageTaken > 0)
+            {
+                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, ref resultLogList, lead, false );
+            }
+        }
+
+        BattleResultData_GameCharacter _improviser_BattleResultData = improviser.GetTemporaryBattleResultData();
+        if (_improviser_BattleResultData != null)
+        {
+            if (_improviser_BattleResultData.actualHealthPointDamageDealt > 0
+                || _improviser_BattleResultData.virtualHealthPointDamageDealt > 0)
+            {
+                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, ref resultLogList, improviser, true );
+            }
+            else if (_improviser_BattleResultData.actualHealthPointDamageTaken > 0
+                || _improviser_BattleResultData.virtualHealthPointDamageTaken > 0)
+            {
+                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, ref resultLogList, improviser, false );
+            }
         }
 
         return _battleResultData;

@@ -184,7 +184,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         bool isRecipientLifePassiveSkill = recipient.GetSelectedPassiveSkillCategoryType() == CategoryType.Life;
 
         float recipientHealthPointDamage = 0;
-        float assaulterSkillDamage = assaulter.GetAssignedSkill().GetCharacterSubskillData().GetSubskillData().AttackDamage;
+        float assaulterSkillDamage = assaulter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().AttackDamage;
         float energyMarker_value = recipient_BattleResultData.HasEnergyMarker() ? 0.5f : 0.0f;
         float breakStatus_value = recipient_BattleResultData.IsInBreakStatus() ? 1.5f : 1.0f;
 
@@ -195,7 +195,13 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         float assaulter_pSL12_ShengShengBuXi_value = (assaulter.GetLifeScore() >= 250 && isAssaulterLifePassiveSkill && recipient.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL12)) ? 0.2f : 0.0f;
         float recipient_pSL12_ShengShengBuXi_value = (recipient.GetLifeScore() >= 250 && isRecipientLifePassiveSkill && recipient.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL12)) ? 0.2f : 0.0f;
 
-        float failedRepulseDamageRate = recipient.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().FailedRepulseDamageRate;
+        float failedRepulseDamageRate = 0.0f;
+
+        CharacterSkill _recipientCurrentSkill = recipient.GetCurrentSkill();
+        if (_recipientCurrentSkill != null)
+        {
+            failedRepulseDamageRate = _recipientCurrentSkill.GetCharacterSubskillData().GetSubskillData().FailedRepulseDamageRate;
+        }
 
         // CASE A:"雙方"當前流向為"負荷流"/無流向
         // (assaulter == 負荷流 && recipient == 負荷流) || (assaulter == 無流向 && recipient == 無流向) ||  (assaulter == 無流向 && recipient == 負荷流) ||  (assaulter == 負荷流 && recipient == 無流向)

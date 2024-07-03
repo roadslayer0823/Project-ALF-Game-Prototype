@@ -191,12 +191,12 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         float skill_PSL8_NiJingliuZhuan_Value150 = gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL8) ? 1.5f : 0.0f;
         float skill_PSL8_NiJingliuZhuan_Value100 = gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL8) ? 1.0f : 0.0f;
-        float attackTargetMaxHealthPoint = gameCharacter.GetCurrentAttackTarget().GetMaximumHealthPoint() * 0.01f;
-        float damageTakerMaxHealthPoint = gameCharacterData.maximumHealthPoint * 0.01f;
         float gainLifeScore = 0;
 
         if (isDeallingHealthPointDamage == true)  //"己方"給予HP傷害後(包括實傷 & 虛傷)
         {
+            float attackTargetMaxHealthPoint = gameCharacter.GetCurrentAttackTarget().GetMaximumHealthPoint() * 0.01f;
+
             //[給予HP總傷害]每達到[對方最大生命值]的1 %="己方"生命積分 + 1。
             if (gameCharacterData.actualHealthPointDamageDealt > 0)
             {
@@ -211,6 +211,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         }
         else //"己方"受到HP傷害後(包括實傷 & 虛傷)
         {
+            float damageTakerMaxHealthPoint = gameCharacterData.maximumHealthPoint * 0.01f;
+
             //[受到HP總傷害]每達到[己方最大生命值]的1 %="己方"生命積分 + 1。
             if (gameCharacterData.actualHealthPointDamageTaken > 0)
             {

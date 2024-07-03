@@ -111,9 +111,9 @@ public partial class GameCharacter : MonoBehaviour
     {
         this.lifeScore += score;
 
-        if (this.lifeScore >= this.lifeScoreTarget)
+        while (this.lifeScore >= this.lifeScoreTarget)
         {
-            if (this.lifeScoreTarget < 3)
+            if (this.lifeCyclePoint < 3)
             {
                 this.lifeCyclePoint += 1;
             }
