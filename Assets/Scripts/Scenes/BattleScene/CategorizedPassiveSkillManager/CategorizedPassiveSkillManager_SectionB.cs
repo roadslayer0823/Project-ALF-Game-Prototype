@@ -32,10 +32,13 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
     // 判定輕重受擊方
-    public static void RunDeterminingLightOrHeavyRecipient( ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter assaulter, GameCharacter recipient )
+    public static void RunDeterminingLightOrHeavyRecipient(ref List<string> resultLogList, GameCharacter assaulter, GameCharacter recipient)
     {
+        CategoryType recipientCategoryType = recipient.GetSelectedPassiveSkillCategoryType();
+        CategoryType assaulterCategoryType = assaulter.GetSelectedPassiveSkillCategoryType();
+
         // CASE A:"受擊方"當前流向為"生命流"
-        if (recipient)
+        if (recipientCategoryType == CategoryType.Life)
         {
             /*
              * "直擊方"是否
@@ -48,6 +51,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                  * "受擊方"得到重受擊方,
                    "直擊方"得到重直擊方
                  */
+                recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
+                assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
             }
             else
             {
@@ -55,10 +60,12 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                  * "受擊方"得到輕受擊方,
                     "直擊方"得到輕直擊方
                  */
+                recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient);
+                assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightAssaulter);
             }
         }
         // CASE B:"受擊方"當前流向為"以太流"
-        else if (recipient)
+        else if (recipientCategoryType == CategoryType.State)
         {
             /*
              * "直擊方"是否
@@ -77,6 +84,9 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                  * "受擊方"得到重受擊方,
                    "直擊方"得到重直擊方
                  */
+
+                recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
+                assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
             }
 
             else
@@ -85,12 +95,15 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                  * "受擊方"得到輕受擊方,
                     "直擊方"得到輕直擊方
                  */
+
+                recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient);
+                assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightAssaulter);
             }
 
         }
 
         // CASE C:"受擊方"當前流向為"負荷流"
-        else if (recipient)
+        else if (recipientCategoryType == CategoryType.Stress)
         {
             /*
              * "直擊方"是否
@@ -105,12 +118,15 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             是否>=2?
             */
 
-            if (assaulter || (recipient && recipient)) // if (assaulter == yes || (recipient.speed == yes && recipient.stress < 2))
+            if (assaulter || (recipient && recipient.GetStressLevel() > 1)) // if (assaulter == yes || (recipient.speed == yes && recipient.stress < 2))
             {
                 /*
                  * "受擊方"得到重受擊方,
                    "直擊方"得到重直擊方
                  */
+
+                recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
+                assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
             }
             else
             {
@@ -118,17 +134,21 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                  * "受擊方"得到輕受擊方,
                     "直擊方"得到輕直擊方
                  */
+
+                recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient);
+                assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightAssaulter);
             }
         }
 
         // CASE D:"受擊方"當前流向為無流向
-        else if (recipient)
+        else if (recipientCategoryType == CategoryType.None)
         {
             /*
              * "受擊方"得到重受擊方,
                "直擊方"得到重直擊方
              */
-
+            recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
+            assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
         }
     }
 
@@ -181,7 +201,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
     // 生命流能量循環負荷循環相關數值結算
-    public static void RunCyclePointConvert(ref List<string> resultLogList, GameCharacter gameCharacter)
+    public static void RunCyclePointConvert(ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter gameCharacter)
     {
         // 上個是生命流 && 現在不是生命流
         // "己方"的循環點是否>=1?
@@ -213,16 +233,17 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             if (gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.State)
             {
                 // [最大以太值]+[6.能量循環]
-                gameCharacter.AddMaximumStatePoint(cyclePointConvert);
+                battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, cyclePointConvert,out _);
+
 
                 // [當前以太值] +[6.能量循環]
-                gameCharacter.AddCurrentStatePoint(cyclePointConvert);
+                battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacter, cyclePointConvert, out _);
             }
             // Case B: "生命流"》"負荷流"。
             else if (gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress)
             {
                 // [負荷值] -[7.負荷循環]
-                gameCharacter.MinusCurrentStressValue(cyclePointConvert);
+                battleResultData.AddGameCharacterResultData_StressValueDamageRecovered(gameCharacter, cyclePointConvert, out _);
             }
             resultLogList.Add("gameCharacter.GetLifeCyclePoint(): " + gameCharacter.GetLifeCyclePoint() + " convert to cyclePointConvert: " + cyclePointConvert);
 
@@ -252,7 +273,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
     // 發動流向效果B
-    public static void RunPassiveSkillEffectB(ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
+    public static void RunPassiveSkillEffectB(ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo, bool isBreakStatusAvailable)
     {
         BattleResultData.BattleResultData_GameCharacter gameCharacterOne_BattleResultData = battleResultData.GetGameCharacterResultData(gameCharacterOne);
         BattleResultData.BattleResultData_GameCharacter gameCharacterTwo_BattleResultData = battleResultData.GetGameCharacterResultData(gameCharacterTwo);
@@ -274,9 +295,14 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 給予"對方"HP傷害/
                 受到"對方"HP傷害?
              */
-            if (gameCharacterOne_BattleResultData.actualHealthPointDamageDealt > 0 || gameCharacterOne_BattleResultData.actualHealthPointDamageTaken > 0)
+            if (gameCharacterOne_BattleResultData.actualHealthPointDamageDealt > 0)
             {
                 // 生命流系統數值相關結算
+                CalculateLifeScoreEffect(ref battleResultData, ref resultLogList, gameCharacterOne, true);
+            }
+            else if (gameCharacterOne_BattleResultData.actualHealthPointDamageTaken > 0)
+            {
+                CalculateLifeScoreEffect(ref battleResultData, ref resultLogList, gameCharacterOne, false);
             }
         }
 
@@ -291,7 +317,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             if (stressLevel > 0)
             {
                 //["己方"當前以太值]+["己方"此ATL給予"對方"的負荷傷害]
-                gameCharacterOne.AddCurrentStatePoint(gameCharacterOne_BattleResultData.stressValueDamageDealt);
+                battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacterOne, gameCharacterOne_BattleResultData.stressValueDamageDealt, out _);
             }
 
             /*
@@ -302,8 +328,47 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             {
                 //["己方"負荷值]-["己方"最大HP]÷["對方"此ATL給予"己方"的HP傷害]
                 float minusValue = gameCharacterOne.GetMaximumHealthPoint() / gameCharacterTwo_BattleResultData.actualHealthPointDamageDealt;
-                gameCharacterOne.MinusCurrentStressValue(minusValue);
+                battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacterOne, minusValue, isBreakStatusAvailable, out _);
             }
+        }
+    }
+
+    // 先手方使用技能時當前以太值結算
+    public static void CalculateLeadCurrentStatePoint(ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter lead, GameCharacter improviser)
+    {
+        BattleResultData.BattleResultData_GameCharacter gameCharacter_BattleResultData = battleResultData.GetGameCharacterResultData(lead);
+        CategoryType gameCharacterCategoryType = lead.GetSelectedPassiveSkillCategoryType();
+        //float nearRangeAttack = gameCharacter.HasCharacterIdentityType(近距離遠程方) ? 0.2f : 0;
+        //bool isLeadHealthMoreThanImproviser = 
+        //float pSL9_ShengMingYaZhi_value =(lead.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL9) && lead.GetLifeScore() >= 100 && ) ? 0.2f : 0.0f;
+
+        // CASE A:當前流向為"負荷流"/無流向
+        if (gameCharacterCategoryType == CategoryType.Stress || gameCharacterCategoryType == CategoryType.None)
+        {
+            /*
+             * [當前以太值]-<[以太消耗]*[1+n]>
+                <此以太消耗為"最終以太消耗">
+             */
+            //float totalCostStatePoint = gameCharacter.GetCurrentStatePoint() - (gameCharacter_BattleResultData.statePointCost * (1 + nearRangeAttack));
+            //battleResultData.AddGameCharacterResultData_StatePointCost(gameCharacter, totalCostStatePoint, out _);
+        }
+
+        // CASE B:當前流向為"生命流"
+        else if (gameCharacterCategoryType == CategoryType.Life)
+        {
+            /*
+             * [當前以太值]-<[以太消耗]*[1+n]*[1-n]>
+                <此以太消耗為"最終以太消耗">
+             */
+        }
+
+        // CASE C:當前流向為"以太流"
+        else if (gameCharacterCategoryType == CategoryType.State)
+        {
+            /*
+             * [當前以太值]-<[以太消耗]*[1+n]*[1-n]>
+                <此以太消耗為"最終以太消耗">
+             */
         }
     }
 }
