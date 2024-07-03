@@ -179,7 +179,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
     // 生命流能量循環負荷循環相關數值結算
-    public static void RunCyclePointConvert(ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter gameCharacter)
+    public static void RunCyclePointConvert(ref List<string> resultLogList, GameCharacter gameCharacter)
     {
         // 上個是生命流 && 現在不是生命流
         // "己方"的循環點是否>=1?
@@ -229,5 +229,21 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             */
             gameCharacter.ResetCyclePoint();
         }
+    }
+
+    // 生命流逆境流轉積分結算
+    public static void CalculateLifeCategoryNiJingLiuZhuanScore(ref List<string> resultLogList, GameCharacter gameCharacter)
+    {
+        /*
+         * "己方"是否
+            HP<50%&
+            當前生命積分<100?
+            (8.逆境流轉)
+         */
+        if ((gameCharacter.GetCurrentHealthPoint() < (gameCharacter.GetMaximumHealthPoint() * 0.5f)) && gameCharacter.GetLifeScore() < 100)
+        {
+            // 生命積分+50
+            gameCharacter.AddLifeScore(50);
+        }    
     }
 }
