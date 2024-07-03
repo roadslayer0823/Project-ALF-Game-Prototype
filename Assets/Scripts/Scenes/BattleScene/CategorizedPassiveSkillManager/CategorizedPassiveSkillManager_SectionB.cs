@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using PassiveSkill = DatabaseManager.PassiveSkill;
 
 public partial class CategorizedPassiveSkillManager : MonoBehaviour
 {
@@ -11,11 +12,31 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         BattleResultData.BattleResultData_GameCharacter gameCharacterOne_BattleResultData = battleResultData.GetGameCharacterResultData(gameCharacterOne);
         BattleResultData.BattleResultData_GameCharacter gameCharacterTwo_BattleResultData = battleResultData.GetGameCharacterResultData(gameCharacterTwo);
 
-        float pSL3_MengLie_value = (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL3)) ? 0.2f : 0.0f;
-        float pSL12_ShengShengBuXi_value = gameCharacterOne.GetLifeScore() >= 250 && (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL12)) ? 0.2f : 0.0f;
-        float energyMarker_value = (gameCharacterTwo_BattleResultData.HasEnergyMarker()) ? 0.5f : 0.0f;
-        float pSL4_JianRen_value = (gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategoryType.Life && gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL4)) ? 0.2f : 0.0f;
-        float pSE12_NiFeng = (gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategoryType.State && gameCharacterTwo_BattleResultData.maximumStatePoint < 80) ? 0.1f : 0.0f;
+        float pSL3_MengLie_value = 0.0f;
+        float pSL12_ShengShengBuXi_value = 0.0f;
+        float energyMarker_value = ( gameCharacterTwo_BattleResultData.HasEnergyMarker() ) ? 0.5f : 0.0f;
+        float pSL4_JianRen_value = 0.0f;
+        float pSE12_NiFeng = ( gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategoryType.State && gameCharacterTwo_BattleResultData.maximumStatePoint < 80 ) ? 0.1f : 0.0f;
+
+        if (gameCharacterOne.HasCategorizedPassiveSkill( PASSIVE_SKILL_ID_PSL1, out PassiveSkill _passiveSkill ))
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill( gameCharacterOne, _passiveSkill, out _ );
+            pSL3_MengLie_value = 0.2f;
+        }
+
+        if (gameCharacterOne.HasCategorizedPassiveSkill( PASSIVE_SKILL_ID_PSL12, out _passiveSkill )
+            && gameCharacterOne.GetLifeScore() >= 250)
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill( gameCharacterOne, _passiveSkill, out _ );
+            pSL12_ShengShengBuXi_value = 0.2f;
+        }
+
+        if (gameCharacterTwo.HasCategorizedPassiveSkill( PASSIVE_SKILL_ID_PSL4,out _passiveSkill )
+            && gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategoryType.Life)
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill( gameCharacterTwo, _passiveSkill, out _ );
+            pSL4_JianRen_value = 0.2f;
+        }
 
         float gameCharacterOneSkillDamage = gameCharacterOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().AttackDamage * 0.3f;
         float gameCharacterTwoSkillDamage = gameCharacterTwo.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().AttackDamage * 0.3f;

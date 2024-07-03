@@ -209,6 +209,7 @@ public class BattleGameManager : MonoBehaviour
         this.currentGamePhase = GamePhase.Execution;
 
         this.playerCharacter.RecordAllSkillSelectedLevelsAsPresets();
+        this.enemyCharacter.SetSelectedPassiveSkillCategoryType( CategorizedPassiveSkillManager.CategoryType.Life );
 
         if (this.battleUiManager.GetPreparationSection() == null)
         {
@@ -288,7 +289,7 @@ public class BattleGameManager : MonoBehaviour
                 BattleResultData.BattleResultData_GameCharacter _gameCharacterResultData = _battleResultData.GetGameCharacterResultData( _gameCharacter, out bool _isNewElement );
                 if (!_isNewElement)
                 {
-                    _gameCharacter.ApplyBattleResultData( _gameCharacterResultData, true );
+                    _gameCharacter.ApplyBattleResultData( _gameCharacterResultData, this );
                 }
             }
 

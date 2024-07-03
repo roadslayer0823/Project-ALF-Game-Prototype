@@ -187,6 +187,8 @@ public partial class GameCharacter : MonoBehaviour
             this.allSkills.Add( _characterSkill );
         }
 
+        InitializePassiveSkillLists();
+
         this.onCharacterInfoUpdated?.Invoke();
 
         if (this.battleAnimationEventManager == null)
@@ -1150,7 +1152,7 @@ public partial class GameCharacter : MonoBehaviour
         }
     }
 
-    public void ApplyBattleResultData( BattleResultData_GameCharacter battleResultData, bool needToUpdateDisplay = true )
+    public void ApplyBattleResultData( BattleResultData_GameCharacter battleResultData, BattleGameManager battleGameManager = null )
     {
         if (battleResultData != null)
         {
@@ -1174,10 +1176,12 @@ public partial class GameCharacter : MonoBehaviour
             // 其他狀態
             this.isDead = battleResultData.isDead;
 
-            if (needToUpdateDisplay)
+            if (battleGameManager != null)
             {
-                InvokeOnCharacterInfoUpdatedCallback();
+                ShowPassiveSkillTags( battleResultData.passiveSkillList, battleGameManager );
             }
+
+            InvokeOnCharacterInfoUpdatedCallback();
         }
 
         this.temporaryBattleResultData = null;

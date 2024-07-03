@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using PassiveSkill = DatabaseManager.PassiveSkill;
 
 public class BattleResultData
 {
@@ -36,14 +37,17 @@ public class BattleResultData
         public float maximumStatePointIncrease = 0.0f;
 
         // 改變參數（命中目標時）
-        public float actualHealthPointDamageDealt = 0.0f;    // 給予的HP值傷害點數(實傷)
-        public float virtualHealthPointDamageDealt = 0.0f;   // 給予的HP值傷害點數(虛傷)
-        public float statePointDamageDealt = 0.0f;           // 給予的以太值傷害點數
-        public float stressValueDamageDealt = 0.0f;          // 給予的負荷值傷害點數
-        public float actualHealthPointDamageTaken = 0.0f;    // 受到的HP值傷害點數(實傷)
-        public float virtualHealthPointDamageTaken = 0.0f;   // 受到的HP值傷害點數(虛傷)
-        public float statePointDamageTaken = 0.0f;           // 受到的以太值傷害點數
-        public float stressValueDamageTaken = 0.0f;          // 受到的負荷值傷害點數
+        public float actualHealthPointDamageDealt = 0.0f;   // 給予的HP值傷害點數(實傷)
+        public float virtualHealthPointDamageDealt = 0.0f;  // 給予的HP值傷害點數(虛傷)
+        public float statePointDamageDealt = 0.0f;          // 給予的以太值傷害點數
+        public float stressValueDamageDealt = 0.0f;         // 給予的負荷值傷害點數
+        public float actualHealthPointDamageTaken = 0.0f;   // 受到的HP值傷害點數(實傷)
+        public float virtualHealthPointDamageTaken = 0.0f;  // 受到的HP值傷害點數(虛傷)
+        public float statePointDamageTaken = 0.0f;          // 受到的以太值傷害點數
+        public float stressValueDamageTaken = 0.0f;         // 受到的負荷值傷害點數
+
+        // 流向技能
+        public List<PassiveSkill> passiveSkillList = new(); // 已經發動了的流向技能
 
         public bool IsInBreakStatus()
         {
@@ -353,6 +357,15 @@ public class BattleResultData
 
         AddNewElementIntoGameCharacterResultDataList( _gameCharacterResultData, _isNewElement );
         return _gameCharacterResultData;
+    }
+
+    // 發動流向技能
+    public BattleResultData AddGameCharacterResultData_TriggerPassiveSkill( GameCharacter gameCharacter, PassiveSkill passiveSkill, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.passiveSkillList.Add( passiveSkill );
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
     }
 
     public BattleResultData_GameCharacter GetGameCharacterResultData( GameCharacter gameCharacter )

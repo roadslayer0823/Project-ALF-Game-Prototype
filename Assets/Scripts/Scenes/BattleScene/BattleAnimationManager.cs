@@ -719,8 +719,8 @@ public class BattleAnimationManager : MonoBehaviour
         GameCharacter[] _gameCharacters = new GameCharacter[] { _playerCharacter, _enemyCharacter };
 
         _battleResultData = BattleLogicManagerV2.OnTheStartOfATL( _gameCharacters );
-        _playerCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _playerCharacter ), true );
-        _enemyCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _enemyCharacter ), true );
+        _playerCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _playerCharacter ), this.battleGameManager );
+        _enemyCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _enemyCharacter ), this.battleGameManager );
 
         bool _isPlayingCombatCommandAnimation = true;
 
@@ -874,7 +874,7 @@ public class BattleAnimationManager : MonoBehaviour
         _battleResultData = new BattleResultData();
         BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, _attacker, _attackTarget );
         _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
-        _attacker.ApplyBattleResultData( _attackerBattleResultData );
+        _attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
 
         //StartCoroutine( ShowPopUpDisplayInfo( _attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
         _attacker.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
@@ -1026,8 +1026,6 @@ public class BattleAnimationManager : MonoBehaviour
         _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
         StartPartB( out _battleResultData, out _attackerBattleResultData, out _attackTargetBattleResultData, _attacker, _attackTarget, out GameCharacter _winner, out GameCharacter _loser );
-        _attacker.ApplyBattleResultData( _attackerBattleResultData, false );
-        _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, false );
 
         LeanTween.delayedCall( 0.3f, () =>
         {
@@ -1090,8 +1088,8 @@ public class BattleAnimationManager : MonoBehaviour
                     yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
                 }
 
-                _attacker.InvokeOnCharacterInfoUpdatedCallback();
-                _attackTarget.InvokeOnCharacterInfoUpdatedCallback();
+                _attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
+                _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
 
                 this.cameraEffect.Shake();
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
@@ -1125,8 +1123,8 @@ public class BattleAnimationManager : MonoBehaviour
                 yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
                 yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
 
-                _attacker.InvokeOnCharacterInfoUpdatedCallback();
-                _attackTarget.InvokeOnCharacterInfoUpdatedCallback();
+                _attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
+                _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
 
                 bool _hasAssault = false;
                 if (_winner != null)
@@ -1204,8 +1202,8 @@ public class BattleAnimationManager : MonoBehaviour
                 string _attackTargetBackendSkillAnimationCharacterPartA = _attackTargetBackendSkillAnimation.CharacterPartA;
                 string _attackTargetBackendSkillAnimationSkillEffectPartA = _attackTargetBackendSkillAnimation.SkillEffectPartA;
 
-                _attacker.InvokeOnCharacterInfoUpdatedCallback();
-                _attackTarget.InvokeOnCharacterInfoUpdatedCallback();
+                _attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
+                _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
 
                 if (_winner == _attacker)
                 {
@@ -1308,7 +1306,7 @@ public class BattleAnimationManager : MonoBehaviour
             battleResultData = new BattleResultData();
             BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref battleResultData, attackTarget, attacker );
             attackTargetBattleResultData = battleResultData.GetGameCharacterResultData( attackTarget );
-            attackTarget.ApplyBattleResultData( attackTargetBattleResultData );
+            attackTarget.ApplyBattleResultData( attackTargetBattleResultData, this.battleGameManager );
         }
 
         // 判定 Part B 結果及結算。
@@ -1439,7 +1437,7 @@ public class BattleAnimationManager : MonoBehaviour
         BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, attacker, attackTarget );
 
         BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( attacker );
-        attacker.ApplyBattleResultData( _attackerBattleResultData );
+        attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
 
         //StartCoroutine( ShowPopUpDisplayInfo( attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
         attacker.ShowPopUpDisplayInfoV2(/* statePointDamage: _attackerBattleResultData.statePointCost,*/ maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease );
@@ -1525,9 +1523,6 @@ public class BattleAnimationManager : MonoBehaviour
                     out BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData,
                     attacker, attackTarget, out GameCharacter _, out GameCharacter _ );
 
-        attacker.ApplyBattleResultData( _attackerBattleResultData, false );
-        attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, false );
-
         attacker.GetSortingGroup().sortingOrder = 3;
         attackTarget.GetSortingGroup().sortingOrder = 1;
 
@@ -1541,8 +1536,8 @@ public class BattleAnimationManager : MonoBehaviour
             {
                 yield return StartCoroutine( RunMeleeDerivedSkillAnimation( attacker, _attackerSkill, DatabaseManager.Instance.GetSkillAnimation( _attackerSubskillData.Id ), atlSlotListPanel, atlNumber ) );
 
-                attacker.InvokeOnCharacterInfoUpdatedCallback();
-                attackTarget.InvokeOnCharacterInfoUpdatedCallback();
+                attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
+                attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
 
                 this.cameraEffect.Shake();
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
@@ -1560,8 +1555,8 @@ public class BattleAnimationManager : MonoBehaviour
             {
                 yield return StartCoroutine( RunRangedDerivedSkillAnimation( attacker, _attackerSkill, attackTarget, atlSlotListPanel, atlNumber ) );
 
-                attacker.InvokeOnCharacterInfoUpdatedCallback();
-                attackTarget.InvokeOnCharacterInfoUpdatedCallback();
+                attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
+                attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
 
                 this.cameraEffect.Shake();
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );

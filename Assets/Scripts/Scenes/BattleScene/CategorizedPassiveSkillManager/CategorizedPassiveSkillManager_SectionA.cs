@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PassiveSkill = DatabaseManager.PassiveSkill;
 
 public partial class CategorizedPassiveSkillManager : MonoBehaviour
 {
@@ -11,15 +12,47 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         BattleResultData.BattleResultData_GameCharacter gameCharacterData = battleResultData.GetGameCharacterResultData(gameCharacter);
 
         //skill variable
-        float skill_PSL1_HuoXin_VirtualHealthPoint = (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL1)) ? 0.05f : 0.0f;
-        float skill_PSL1_HuoXin_MaxStatePoint = (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL1)) ? 0.8f : 0.0f;
-        float skill_PSL12_ShengShengBuXi = (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL12)) ? 0.5f : 0.0f;
+        float skill_PSL1_HuoXin_VirtualHealthPoint = 0.0f;
+        float skill_PSL1_HuoXin_MaxStatePoint = 0.0f;
+        float skill_PSL12_ShengShengBuXi = 0.0f;
 
-        float skill_PSE1_GaoYang_Value = (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE1)) ? 10 : 0f;
-        float skill_PSE7_FuHeLiuZhuan_Value2 = (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE7)) ? 10 : 0f;
+        float skill_PSE1_GaoYang_Value = 0.0f;
+        float skill_PSE7_FuHeLiuZhuan_Value2 = 0.0f;
 
-        float skill_PSS1_JieYa_CurrentStressValue = (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSS1)) ? 10 : 0f;
-        float skill_PSS1_JieYa_MaxStatePoint = (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSS1)) ? 0.8f : 0.0f;
+        float skill_PSS1_JieYa_CurrentStressValue = 0.0f;
+        float skill_PSS1_JieYa_MaxStatePoint = 0.0f;
+
+        if (gameCharacter.HasCategorizedPassiveSkill( PASSIVE_SKILL_ID_PSL1, out PassiveSkill _passiveSkill ))
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill( gameCharacter, _passiveSkill, out _ );
+            skill_PSL1_HuoXin_VirtualHealthPoint = 0.05f;
+            skill_PSL1_HuoXin_MaxStatePoint = 0.8f;
+        }
+
+        if (gameCharacter.HasCategorizedPassiveSkill( PASSIVE_SKILL_ID_PSL12, out _passiveSkill ))
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill( gameCharacter, _passiveSkill, out _ );
+            skill_PSL12_ShengShengBuXi = 0.5f;
+        }
+
+        if (gameCharacter.HasCategorizedPassiveSkill( PASSIVE_SKILL_ID_PSE1, out _passiveSkill ))
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill( gameCharacter, _passiveSkill, out _ );
+            skill_PSE1_GaoYang_Value = 10.0f;
+        }
+
+        if (gameCharacter.HasCategorizedPassiveSkill( PASSIVE_SKILL_ID_PSE7, out _passiveSkill ))
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill( gameCharacter, _passiveSkill, out _ );
+            skill_PSE7_FuHeLiuZhuan_Value2 = 10.0f;
+        }
+
+        if (gameCharacter.HasCategorizedPassiveSkill( PASSIVE_SKILL_ID_PSS1, out _passiveSkill ))
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill( gameCharacter, _passiveSkill, out _ );
+            skill_PSS1_JieYa_CurrentStressValue = 10.0f;
+            skill_PSS1_JieYa_MaxStatePoint = 0.8f;
+        }
 
         //character latest game data
         float virtualHealthPointRecover_value = 0.05f;

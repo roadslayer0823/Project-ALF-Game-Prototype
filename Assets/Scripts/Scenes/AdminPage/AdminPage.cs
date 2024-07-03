@@ -164,6 +164,10 @@ public class AdminPage : MonoBehaviour
             {
                 _tableStatus = _databaseManager.GetSkillAnimationTableStatus();
             }
+            else if (_sheetName == _databaseManager.GetPassiveSkillSheetName())
+            {
+                _tableStatus = _databaseManager.GetPassiveSkillTableStatus();
+            }
 
             UpdateTableRowStatus( _tableRow, _tableStatus );
         }

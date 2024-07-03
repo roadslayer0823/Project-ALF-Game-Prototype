@@ -1,12 +1,18 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using PassiveSkill = DatabaseManager.PassiveSkill;
 using CategoryType = CategorizedPassiveSkillManager.CategoryType;
 
 public partial class GameCharacter : MonoBehaviour
 {
     private CategoryType selectedPassiveSkillCategoryType = CategoryType.None;
-    private List<string> selectedCategorizedPassiveSkillList = null;
+    private List<PassiveSkill> selectedCategorizedPassiveSkillList = null;
     private CategoryType lastSelectedPassiveSkillCategoryType = CategoryType.None;
+
+    private List<PassiveSkill> lifePassiveSkillList = new();
+    private List<PassiveSkill> statePassiveSkillList = new();
+    private List<PassiveSkill> stressPassiveSkillList = new();
 
     private int lifeScore = 0;      // 生命積分
     private int lifeCyclePoint = 0; // 循環點
@@ -15,53 +21,45 @@ public partial class GameCharacter : MonoBehaviour
 
     private int lifeScoreTarget = 0;    // 得到一個循環點的生命積分目標
 
-    private readonly List<string> lifePassiveSkillList = new()
+    private void InitializePassiveSkillLists()
     {
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL1,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL2,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL3,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL4,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL5,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL6,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL7,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL8,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL9,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL10,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL11,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL12
-    };
+        List<PassiveSkill> _passiveSkillList = DatabaseManager.Instance.GetPassiveSkillList();
+        for (int i = 0; i < _passiveSkillList.Count; i++)
+        {
+            PassiveSkill _passiveSkill = _passiveSkillList[ i ];
 
-    private readonly List<string> statePassiveSkillList = new()
-    {
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE1,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE2,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE3,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE4,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE5,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE6,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE7,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE8,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE9,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE10,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE11,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE12
-    };
+            switch ( _passiveSkill.Category )
+            {
+                case PassiveSkill.CategoryType.life:
 
-    private readonly List<string> stressPassiveSkillList = new()
+                    this.lifePassiveSkillList.Add( _passiveSkill );
+
+                    break;
+
+                case PassiveSkill.CategoryType.state:
+
+                    this.statePassiveSkillList.Add( _passiveSkill );
+
+                    break;
+
+                case PassiveSkill.CategoryType.stress:
+
+                    this.stressPassiveSkillList.Add( _passiveSkill );
+
+                    break;
+            }
+        }
+    }
+
+    private void ShowPassiveSkillTags( List<PassiveSkill> passiveSkills, BattleGameManager battleGameManager )
     {
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS1,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS2,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS3,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS4,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS5,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS6,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS7,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS8,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS9,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS10,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS11,
-        CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS12
-    };
+        SkillPromptPanelV2 _skillPromptPanelV2 = battleGameManager.GetBattleUiManager().GetSkillPromptPanel();
+
+        for (int i = 0; i < passiveSkills.Count; i++)
+        {
+            _skillPromptPanelV2.ShowPassiveSkillEffectTag( passiveSkills[ i ].DisplayName, this.isPlayer );
+        }
+    }
 
     public void SetSelectedPassiveSkillCategoryType( CategoryType selectedCategoryType )
     {
@@ -94,7 +92,19 @@ public partial class GameCharacter : MonoBehaviour
             return false;
         }
 
-        return this.selectedCategorizedPassiveSkillList.Contains( skillId );
+        return ( this.selectedCategorizedPassiveSkillList.FindIndex( ps => ps.Id == skillId ) >= 0 );
+    }
+
+    public bool HasCategorizedPassiveSkill( string skillId, out PassiveSkill passiveSkill )
+    {
+        if (this.selectedCategorizedPassiveSkillList == null)
+        {
+            passiveSkill = null;
+            return false;
+        }
+
+        passiveSkill = this.selectedCategorizedPassiveSkillList.FirstOrDefault( ps => ps.Id == skillId );
+        return ( passiveSkill != null );
     }
 
     public void AddLifeScore( int score )
