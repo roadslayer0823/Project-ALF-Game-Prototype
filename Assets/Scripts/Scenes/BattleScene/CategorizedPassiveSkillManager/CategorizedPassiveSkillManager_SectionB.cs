@@ -274,7 +274,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 給予"對方"HP傷害/
                 受到"對方"HP傷害?
              */
-            if (gameCharacterOne_BattleResultData.actualHealthPointDamageDealt > 0 || gameCharacterOne_BattleResultData.actualHealthPointDamageReceived > 0)
+            if (gameCharacterOne_BattleResultData.actualHealthPointDamageDealt > 0 || gameCharacterOne_BattleResultData.actualHealthPointDamageTaken > 0)
             {
                 // 生命流系統數值相關結算
             }
