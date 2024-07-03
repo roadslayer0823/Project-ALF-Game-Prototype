@@ -6,6 +6,7 @@ public partial class GameCharacter : MonoBehaviour
 {
     private CategoryType selectedPassiveSkillCategoryType = CategoryType.None;
     private List<string> selectedCategorizedPassiveSkillList = null;
+    private CategoryType lastSelectedPassiveSkillCategoryType = CategoryType.None;
 
     private int lifeScore = 0;      // 生命積分
     private int lifeCyclePoint = 0; // 循環點
@@ -64,6 +65,7 @@ public partial class GameCharacter : MonoBehaviour
 
     public void SetSelectedPassiveSkillCategoryType( CategoryType selectedCategoryType )
     {
+        this.lastSelectedPassiveSkillCategoryType = this.selectedPassiveSkillCategoryType;
         this.selectedPassiveSkillCategoryType = selectedCategoryType;
 
         this.selectedCategorizedPassiveSkillList = this.selectedPassiveSkillCategoryType switch
@@ -78,6 +80,11 @@ public partial class GameCharacter : MonoBehaviour
     public CategoryType GetSelectedPassiveSkillCategoryType()
     {
         return this.selectedPassiveSkillCategoryType;
+    }
+
+    public CategoryType GetLastSelectedPassiveSkillCategoryType()
+    {
+        return this.lastSelectedPassiveSkillCategoryType;
     }
 
     public bool HasCategorizedPassiveSkill( string skillId )
