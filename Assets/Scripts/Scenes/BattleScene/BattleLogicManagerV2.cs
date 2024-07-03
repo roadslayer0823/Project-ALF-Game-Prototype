@@ -312,6 +312,8 @@ public partial class BattleLogicManagerV2
             Subskill _improviserSubskillData = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData();
             _improviserRangeType = _improviserSubskillData.Range;
 
+            improviser.SetCurrentSkillRangeType( _improviserRangeType );
+
             if (_improviserSkillData.skillType == Skill.SkillType.repulse)
             {
                 float _stressValueDamageMultiplierOnRepulseForLoser = GameConfiguration.Instance.GetBattleConfiguration().GetStressValueDamageMultiplierOnRepulseForLoser();
