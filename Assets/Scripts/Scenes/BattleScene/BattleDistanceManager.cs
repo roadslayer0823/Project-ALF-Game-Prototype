@@ -84,115 +84,69 @@ public class BattleDistanceManager : MonoBehaviour
         battleDistancePanel.UpdatBattleeDistanceTypeUI(currentDistance);
     }
 
-    public void UpdateFinalDistanceResult(GameCharacter lead, GameCharacter improviser, DistanceType finalDistance, GameCharacterStatus gameCharacterStatus)
+    public void UpdateFinalDistanceResult(GameCharacter improviser, DistanceType finalDistance, GameCharacterStatus gameCharacterStatus)
     {
-        SubSkill leadSubSkill = lead.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
         SubSkill improviserSubSkill = improviser.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        CategorizedPassiveSkillManager.CategoryType improviserSelectedCategoryType = improviser.GetSelectedPassiveSkillCategoryType();
 
-        switch (currentDistance)
+        switch (finalDistance)
         {
             case DistanceType.Near:
-                if (leadSubSkill.Range == SubSkill.RangeType.melee)
+                if (improviserSubSkill.IsEvadingSkill)
                 {
-                    if(improviserSubSkill.Range == SubSkill.RangeType.melee || improviserSubSkill.Range == SubSkill.RangeType.ranged)
+                    if (improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.State || improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.None)
                     {
-                        finalDistance = DistanceType.Near;
-                    }
-
-                    else if (gameCharacterStatus == GameCharacterStatus.EvadingFailed || gameCharacterStatus == GameCharacterStatus.Recipient)
-                    {
-                        finalDistance = DistanceType.Near;
-                    }
-                    //需要增加判定當前的流向種類和技能
-                    else if (improviserSubSkill.IsEvadingSkill)
-                    {
-                        finalDistance = DistanceType.Near;
+                        finalDistance = DistanceType.Normal;
                     }
                     else
                     {
                         finalDistance = DistanceType.Near;
                     }
+                }
+                else if (improviserSubSkill.IsDefendingSkill)
+                {
+                    finalDistance = DistanceType.Normal;
+                }
+                else
+                {
+                    finalDistance = DistanceType.Near;
                 }
                 break;
 
             case DistanceType.Normal:
-                if (leadSubSkill.Range == SubSkill.RangeType.melee)
+                if (improviserSubSkill.IsEvadingSkill)
                 {
-                    if (improviserSubSkill.Range == SubSkill.RangeType.melee || improviserSubSkill.Range == SubSkill.RangeType.ranged)
+                    if(improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.State || improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.None)
                     {
-                        finalDistance = DistanceType.Near;
+                        finalDistance = DistanceType.Far;
                     }
-
-                    else if (gameCharacterStatus == GameCharacterStatus.EvadingFailed || gameCharacterStatus == GameCharacterStatus.Recipient)
-                    {
-                        finalDistance = DistanceType.Near;
-                    }
-
-                    else if (improviserSubSkill.IsEvadingSkill)
+                    else if(improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.Stress)
                     {
                         finalDistance = DistanceType.Near;
                     }
                     else
                     {
-                        finalDistance = DistanceType.Near;
+                        finalDistance = DistanceType.Normal;
                     }
                 }
-
-                else if (leadSubSkill.Range == SubSkill.RangeType.ranged)
+                else
                 {
-                    if (improviserSubSkill.Range == SubSkill.RangeType.melee || improviserSubSkill.Range == SubSkill.RangeType.ranged)
-                    {
-                        finalDistance = DistanceType.Normal;
-                    }
-
-                    else if (gameCharacterStatus == GameCharacterStatus.EvadingFailed || gameCharacterStatus == GameCharacterStatus.Recipient)
-                    {
-                        finalDistance = DistanceType.Normal;
-                    }
-
-                    else if (improviserSubSkill.IsDefendingSkill)
-                    {
-                        finalDistance = DistanceType.Normal;
-                    }
-
-                    else if (improviserSubSkill.IsEvadingSkill)
-                    {
-                        finalDistance = DistanceType.Normal;
-                    }
-                    else
-                    {
-                        finalDistance = DistanceType.Near;
-                    }
+                    finalDistance = DistanceType.Normal;
                 }
+              
                 break;
 
             case DistanceType.Far:
-                if (leadSubSkill.Range == SubSkill.RangeType.ranged)
+                if (improviserSubSkill.IsEvadingSkill)
                 {
-                    if (improviserSubSkill.Range == SubSkill.RangeType.melee)
+                    if(improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.Stress)
                     {
                         finalDistance = DistanceType.Normal;
                     }
-
-                    if (improviserSubSkill.Range == SubSkill.RangeType.ranged)
-                    {
-                        finalDistance = DistanceType.Far;
-                    }
-
-                    else if (gameCharacterStatus == GameCharacterStatus.EvadingFailed || gameCharacterStatus == GameCharacterStatus.Recipient)
-                    {
-                        finalDistance = DistanceType.Far;
-                    }
-
-                    else if (improviserSubSkill.IsEvadingSkill)
-                    {
-                        finalDistance = DistanceType.Far;
-                    }
-                    else
-                    {
-                        finalDistance = DistanceType.Near;
-                    }
                 }
+                //"後手方"已按下技能是否"迎擊技能" ?
+                //yes, "後手方"已按下技能是否"近戰" ?
+                //no, 當前距離更新為[遠距離]
                 break;
         }
         currentDistance = finalDistance;
