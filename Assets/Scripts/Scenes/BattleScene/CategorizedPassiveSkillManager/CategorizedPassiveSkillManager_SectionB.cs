@@ -23,10 +23,12 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         //["玩家1"生命值]-["玩家1"直擊傷害*0.3]*[1+0.2+n]*[1-0.2-n]
         float gameCharacterOneHealthPointDamage = gameCharacterTwoSkillDamage * (1 + pSL3_MengLie_value + pSL12_ShengShengBuXi_value) * (1 - 0.2f - pSL12_ShengShengBuXi_value);
         battleResultData.AddGameCharacterResultData_ActualHealthPointDamage(gameCharacterOne, Mathf.Round(gameCharacterOneHealthPointDamage), out _);
+        resultLogList.Add("1激昂效果: gameCharacterOneHealthPointDamage: " + gameCharacterOneHealthPointDamage);
 
         //["玩家2"生命值]-["玩家1"直擊傷害*0.3]*[1+0.2+n+n]*[1-n-n-n]
         float gameCharacterTwoHealthPointDamage = gameCharacterOneSkillDamage * (1 + pSL3_MengLie_value + pSL12_ShengShengBuXi_value + energyMarker_value) * (1 - pSL4_JianRen_value - pSL12_ShengShengBuXi_value - pSE12_NiFeng);
         battleResultData.AddGameCharacterResultData_ActualHealthPointDamage(gameCharacterTwo, Mathf.Round(gameCharacterTwoHealthPointDamage), out _);
+        resultLogList.Add("2激昂效果: gameCharacterTwoHealthPointDamage: " + gameCharacterTwoHealthPointDamage);
     }
 
     // 判定輕重受擊方
@@ -222,6 +224,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 // [負荷值] -[7.負荷循環]
                 gameCharacter.MinusCurrentStressValue(cyclePointConvert);
             }
+            resultLogList.Add("gameCharacter.GetLifeCyclePoint(): " + gameCharacter.GetLifeCyclePoint() + " convert to cyclePointConvert: " + cyclePointConvert);
 
             /*
              * 消耗所有循環點
@@ -244,6 +247,63 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         {
             // 生命積分+50
             gameCharacter.AddLifeScore(50);
+            resultLogList.Add("AddLifeScore 50");
         }    
+    }
+
+    // 發動流向效果B
+    public static void RunPassiveSkillEffectB(ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
+    {
+        BattleResultData.BattleResultData_GameCharacter gameCharacterOne_BattleResultData = battleResultData.GetGameCharacterResultData(gameCharacterOne);
+        BattleResultData.BattleResultData_GameCharacter gameCharacterTwo_BattleResultData = battleResultData.GetGameCharacterResultData(gameCharacterTwo);
+
+        // Case A: "己方"當前流向"生命流"
+        if (gameCharacterOne.GetSelectedPassiveSkillCategoryType() == CategoryType.Life)
+        {
+            /* （兩次）
+             * "己方"是否
+                HP<50%&
+                當前生命積分<100?
+                (8.逆境流轉) 
+             */
+            CalculateLifeCategoryNiJingLiuZhuanScore(ref resultLogList, gameCharacterOne);
+            CalculateLifeCategoryNiJingLiuZhuanScore(ref resultLogList, gameCharacterOne);
+
+            /*
+             * "己方"是否有
+                給予"對方"HP傷害/
+                受到"對方"HP傷害?
+             */
+            if (gameCharacterOne_BattleResultData.actualHealthPointDamageDealt > 0 || gameCharacterOne_BattleResultData.actualHealthPointDamageReceived > 0)
+            {
+                // 生命流系統數值相關結算
+            }
+        }
+
+        // Case B: "己方"當前流向"負荷流"
+        else if (gameCharacterOne.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress)
+        {
+            int stressLevel = gameCharacterOne.GetStressLevel();
+            /*
+             * "己方"的負荷等級
+                是否>=1?
+             */
+            if (stressLevel > 0)
+            {
+                //["己方"當前以太值]+["己方"此ATL給予"對方"的負荷傷害]
+                gameCharacterOne.AddCurrentStatePoint(gameCharacterOne_BattleResultData.stressValueDamageDealt);
+            }
+
+            /*
+             * "己方"的負荷等級
+                是否=3?
+             */
+            if (stressLevel == 3)
+            {
+                //["己方"負荷值]-["己方"最大HP]÷["對方"此ATL給予"己方"的HP傷害]
+                float minusValue = gameCharacterOne.GetMaximumHealthPoint() / gameCharacterTwo_BattleResultData.actualHealthPointDamageDealt;
+                gameCharacterOne.MinusCurrentStressValue(minusValue);
+            }
+        }
     }
 }
