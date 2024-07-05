@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using UnityEditor.VersionControl;
 using UnityEngine;
 using PassiveSkill = DatabaseManager.PassiveSkill;
 
@@ -313,7 +311,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     break;
                 case 3:
                     cyclePointConvert = 70;
-                    break;                   
+                    break;
             }
 
             // Case A: "生命流"》"以太流"。
@@ -437,7 +435,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         bool isLeadHealthMoreThanImproviser = lead_BattleResultData.currentHealthPoint > improviser_BattleResultData.currentHealthPoint * 0.2;
         bool isLeadCurrentStressMoreThanHalf = lead_BattleResultData.currentStressValue > lead_BattleResultData.maximumStressValue * 0.5;
 
-        float nearRangeAttack_value = lead.HasCharacterIdentityType(近距離遠程方) ? 0.2f : 0;
+        //float nearRangeAttack_value = lead.HasCharacterIdentityType(近距離遠程方) ? 0.2f : 0;
         float pSL9_ShengMingYaZhi_value = 0.0f;
         float psE8_JieLiu_PSE9_YouRen_value = 0.0f;
 
@@ -554,4 +552,282 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
 
+    // 先手方使用技能時當前以太值第2次結算
+    // 後手方使用技能時當前以太值第2次結算
+    public static void RunCurrentStatePointSecondTimeCalculation(ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter gameCharacter)
+    {
+        BattleResultData.BattleResultData_GameCharacter gameCharacter_BattleResultData = battleResultData.GetGameCharacterResultData(gameCharacter);
+
+        float pSE3_HuiLiu_value = 0.0f;
+        float pSE12_NiFeng_value = 1.0f;
+
+        if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE3, out PassiveSkill _passiveSkill))
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out _);
+            pSE3_HuiLiu_value = 0.5f;
+        }
+
+        if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE12, out _passiveSkill) && gameCharacter_BattleResultData.maximumStatePoint < 80)
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out _);
+            pSE12_NiFeng_value = 2.0f;
+        }
+
+        //[當前以太值] +[最終最大以太提升 * 0.5 * n]
+        float totalStatePointRestore = gameCharacter_BattleResultData.maximumStatePoint * pSE3_HuiLiu_value * pSE12_NiFeng_value;
+        battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacter, totalStatePointRestore, out _);
+    }
+
+
+    // 角力追風發動&以太值負荷值結算
+    public static void RunJiaoLiZhuiFengEffectAndStateCalculation(ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
+    {
+        BattleResultData.BattleResultData_GameCharacter gameCharacterOne_BattleResultData = battleResultData.GetGameCharacterResultData(gameCharacterOne);
+        BattleResultData.BattleResultData_GameCharacter gameCharacterTwo_BattleResultData = battleResultData.GetGameCharacterResultData(gameCharacterTwo);
+
+        CategoryType passiveSkillCategoryType = gameCharacterOne.GetSelectedPassiveSkillCategoryType();
+        int gameCharacterOne_LifeScore = gameCharacterOne.GetLifeScore();
+        float gameCharacterOne_HealthPoint = gameCharacterOne_BattleResultData.currentHealthPoint;
+        float gameCharacterTwo_HealthPoint = gameCharacterTwo_BattleResultData.currentHealthPoint;
+
+        float gameCharacterOne_StatePoint = gameCharacterOne_BattleResultData.currentStatePoint;
+        float gameCharacterTwo_StatePoint = gameCharacterTwo_BattleResultData.currentStatePoint;
+
+        int gameCharacterOne_SkillStrength = gameCharacterOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Strength;
+        int gameCharacterTwo_SkillStrength = gameCharacterTwo.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Strength;
+
+        bool isTriggerOnce = false;
+
+        // CASE A:當前流向為"生命流"
+        if (passiveSkillCategoryType == CategoryType.Life)
+        {
+            // "己方"生命積分是否>=150?
+            if (gameCharacterOne_LifeScore >= 150)
+            {
+                /*
+                 * "己方"生命值是否>=
+                    "對方"生命值35%
+                 */
+                if (gameCharacterOne_HealthPoint >= gameCharacterTwo_HealthPoint * 0.35)
+                {
+                    /*
+                     * "己方"發動
+                        生命壓制2
+                     */
+                    if (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL10, out PassiveSkill _passiveSkill))
+                    {
+                        battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
+                        /*
+                         * "己方"得到
+                            "無視追風角力方"
+                         */
+                        //gameCharacterOne.AddCharacterIdentityType("無視追風角力方");
+
+                        /*
+                         * "己方"發動
+                            角力
+                         */
+
+
+                        /*
+                        * "己方"發動
+                           追風
+                        */
+
+                        // added 2 skill above into list
+
+                        isTriggerOnce = true;
+                    }
+                }
+            }
+
+            // "己方"生命積分是否>=50?
+            /*
+             * "己方"生命值是否<=
+                對方生命值30%
+             */
+
+            if (gameCharacterOne_LifeScore >= 50 && isTriggerOnce == false
+                && gameCharacterOne_HealthPoint <= gameCharacterTwo_HealthPoint * 0.3)
+            {
+                /*
+                 * "己方"發動
+                    逆流而上
+                 */
+
+                /*
+                 * "己方"發動
+                    角力
+                 */
+
+                /*
+                * "己方"發動
+                   追風
+                */
+
+            }
+        }
+
+        // CASE B:當前流向為"以太流"
+        else if (passiveSkillCategoryType == CategoryType.State)
+        {
+            /*
+             * "己方"當前以太值是否>=
+                "對方"當前以太值35%
+             */
+            if (gameCharacterOne_StatePoint >= gameCharacterTwo_StatePoint * 0.35)
+            {
+                /*
+                 * "己方"發動
+                    以太壓制
+                 */
+                if (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE10, out PassiveSkill _passiveSkill))
+                {
+                    battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
+                    /*
+                     * "己方"得到
+                        "無視追風角力方"
+                     */
+                    //gameCharacterOne.AddCharacterIdentityType("無視追風角力方");
+                }
+
+            }
+
+            /*
+             * "己方"已按下技能的強度是否<
+                "對方"已按下技能的強度?
+             */
+            if (gameCharacterOne_SkillStrength < gameCharacterTwo_SkillStrength)
+            {
+                /*
+                * "己方"發動
+                   角力
+                */
+
+
+                /*
+                * "己方"發動
+                   追風
+                */
+
+                // added 2 skill above into list
+
+                isTriggerOnce = true;
+
+            }
+        }
+    }
+
+    // 雙方技能強度速度最終結算
+    //public static void RunBothCharacterStrengthSpeedCalculation(ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
+    //{
+
+    //    /* "玩家1" */
+
+    //    /*
+    //     * "玩家2"是否
+    //    "無視追風角力方"/
+    //    "無視追風角力激昂方"?
+    //     */
+
+    //    if (!gameCharacterTwo.HasCharacterIdentityType("無視追風角力方") || !gameCharacterTwo.HasCharacterIdentityType("無視追風角力激昂方"))
+    //    {
+    //        /*
+    //         * "玩家1"是否發動了
+    //            "角力"?
+    //         */
+    //        if (gameCharacterOne.HasCategorizedPassiveSkill("角力"))
+    //        {
+    //            /*
+    //             * "玩家1"已按下技能
+    //                強度+1
+    //             */
+
+    //            //battleResultData.addSkillStrength
+    //        }
+
+    //        /*
+    //         * "玩家1"是否發動了
+    //            "追風"?
+    //         */
+    //        if (gameCharacterOne.HasCategorizedPassiveSkill("追風"))
+    //        {
+    //            /*
+    //             * "玩家1"已按下技能
+    //                速度+1
+    //             */
+    //        }
+
+    //    }
+
+
+    //    /* "玩家2" */
+
+    //    /*
+    //     * "玩家1"是否
+    //    "無視追風角力方"/
+    //    "無視追風角力激昂方"?
+    //     */
+
+    //    if (!gameCharacterOne.HasCharacterIdentityType("無視追風角力方") || !gameCharacterOne.HasCharacterIdentityType("無視追風角力激昂方"))
+    //    {
+    //        /*
+    //         * "玩家2"是否發動了
+    //            "角力"?
+    //         */
+    //        if (gameCharacterTwo.HasCategorizedPassiveSkill("角力"))
+    //        {
+    //            /*
+    //             * "玩家2"已按下技能
+    //                強度+1
+    //             */
+    //        }
+
+    //        /*
+    //         * "玩家2"是否發動了
+    //            "追風"?
+    //         */
+    //        if (gameCharacterTwo.HasCategorizedPassiveSkill("追風"))
+    //        {
+    //            /*
+    //             * "玩家2"已按下技能
+    //                速度+1
+    //             */
+    //        }
+    //    }
+    //}
+
+    // 重受擊方當前以太值結算
+    public static void RunHeavyRecipientStateCalculation(ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter assaulter, GameCharacter recipient, bool isBreakStatusAvailable)
+    {
+        BattleResultData.BattleResultData_GameCharacter assaulter_BattleResultData = battleResultData.GetGameCharacterResultData(assaulter);
+        BattleResultData.BattleResultData_GameCharacter recipient_BattleResultData = battleResultData.GetGameCharacterResultData(recipient);
+        float heavyAssaulterStateDamage = assaulter_BattleResultData.statePointDamageDealt;
+
+        float totalStateDamage;
+        float pSE5_PoLiu_value = 0.0f;
+        float energyMarker_value = recipient_BattleResultData.HasEnergyMarker() ? 0.5f : 0.0f;
+
+        if (assaulter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE5, out PassiveSkill _passiveSkill))
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(assaulter, _passiveSkill, out _);
+            pSE5_PoLiu_value = 0.5f;
+        }
+
+        // CASE B:"重直擊方"當前流向為"以太流"
+        if (assaulter.GetSelectedPassiveSkillCategoryType() == CategoryType.State)
+        {
+            // ["重受擊方"當前以太值]-["重直擊方"以太傷害]*[1+0.5+n]
+            totalStateDamage = heavyAssaulterStateDamage * (1 + pSE5_PoLiu_value + energyMarker_value);
+        }
+
+        // CASE A:"重直擊方"當前流向為"生命流"/"負荷流"/無流向
+        else
+        {
+            // ["重受擊方"當前以太值]-["重直擊方"以太傷害]*[1+n]
+            totalStateDamage = heavyAssaulterStateDamage * (1 + energyMarker_value);
+        }
+
+        battleResultData.AddGameCharacterResultData_StatePointDamage(recipient, totalStateDamage,isBreakStatusAvailable, out _);
+    }
 }
