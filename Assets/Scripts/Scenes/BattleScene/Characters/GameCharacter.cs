@@ -1220,7 +1220,7 @@ public partial class GameCharacter : MonoBehaviour
 
             if (battleGameManager != null)
             {
-                ShowPassiveSkillTags( battleResultData.passiveSkillList, battleGameManager );
+                ShowPassiveSkillTags( battleResultData.triggeredPassiveSkillList, battleGameManager );
             }
 
             InvokeOnCharacterInfoUpdatedCallback();

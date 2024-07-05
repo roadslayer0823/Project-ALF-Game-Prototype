@@ -47,7 +47,7 @@ public class BattleResultData
         public float stressValueDamageTaken = 0.0f;         // 受到的負荷值傷害點數
 
         // 流向技能
-        public List<PassiveSkill> passiveSkillList = new(); // 已經發動了的流向技能
+        public List<PassiveSkill> triggeredPassiveSkillList = new(); // 已經發動了的流向技能
 
         public bool IsInBreakStatus()
         {
@@ -123,6 +123,11 @@ public class BattleResultData
             }
 
             return 0.0f;
+        }
+
+        public bool HasPassiveSkillTriggered( string skillId )
+        {
+            return ( triggeredPassiveSkillList.FirstOrDefault( ps => ps.Id == skillId ) != null );
         }
     }
 
@@ -363,7 +368,12 @@ public class BattleResultData
     public BattleResultData AddGameCharacterResultData_TriggerPassiveSkill( GameCharacter gameCharacter, PassiveSkill passiveSkill, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
-        gameCharacterResultData.passiveSkillList.Add( passiveSkill );
+
+        if (!gameCharacterResultData.HasPassiveSkillTriggered( passiveSkill.Id ))
+        {
+            gameCharacterResultData.triggeredPassiveSkillList.Add( passiveSkill );
+        }
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
