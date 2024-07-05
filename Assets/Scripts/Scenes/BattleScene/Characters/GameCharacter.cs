@@ -128,7 +128,49 @@ public partial class GameCharacter : MonoBehaviour
         LightRecipient,
 
         // 重受擊方
-        HeavyRecipient
+        HeavyRecipient,
+
+        // 未能抵抗方
+        NonResister,
+
+        // 速度勝方
+        SpeedWinner,
+
+        // 強度勝方
+        StrengthWinner,
+
+        // 速度負方
+        SpeedLoser,
+
+        // 強度負方
+        StrengthLoser,
+
+        // 速度強度負方
+        SpeedStrengthLoser,
+
+        // 以太崩潰方
+        StateBreakStatusHolder,
+
+        // 負荷崩潰方
+        StressBreakStatusHolder,
+
+        // 勝利優惠機制方
+        WinningBenefitHolder,
+
+        // 近距離遠程方
+        NearDistanceRangedDealer,
+
+        // 中距離近戰方
+        NormalDistanceMeleeDealer,
+
+        // 已更新按下技能方
+        UpdatedSelectedSkill,
+
+        // 無視追風角力方
+        IgnoreZhuiFengJiaoLi,
+
+        // 無視追風角力激昂方
+        IgnoreZhuiFengJiaoLiJiAng
     }
 
     public enum CharacterActionType
