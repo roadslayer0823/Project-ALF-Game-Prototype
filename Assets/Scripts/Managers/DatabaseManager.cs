@@ -308,7 +308,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 subskill.RepulseSubskillIds = ConvertStringToStringArray(subskill.RepulseSubskillIdsString);
                 subskill.DerivedSubskillIds = ConvertStringToStringArray(subskill.DerivedSubskillIdsString);
                 subskill.CounterSubskillIds = ConvertStringToStringArray(subskill.CounterSubskillIdsString);
-                subskill.Effects = ConvertStringToIntArray(subskill.EffectsString);
+                //subskill.Effects = ConvertStringToIntArray(subskill.EffectsString);
             }
 
             PlayerPrefsManager.SaveSubskillDatabase( jsonData );
@@ -727,6 +727,12 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("evasion_stress")]
         public float EvasionStress { get; private set; }
 
+        [JsonProperty( "damage_reduction" )]
+        public float DamageReduction { get; private set; }
+
+        [JsonProperty( "damage_reduction_rate" )]
+        public float DamageReductionRate { get; private set; }
+
         [JsonProperty("speed")]
         public int Speed { get; private set; }
 
@@ -764,14 +770,14 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public bool IsAttackingSkill;
 
         [JsonProperty("failed_repulse_damage_rate")]
-        public float FailedRepulseDamageRate { get; private set; }
+        [Obsolete] public float FailedRepulseDamageRate { get; private set; }
 
         [JsonProperty("is_defending_skill")]
         [HideInInspector] public string IsDefendingSkillString { get; private set; }
         public bool IsDefendingSkill;
 
         [JsonProperty("failed_defense_damage_rate")]
-        public float FailedDefenseDamageRate { get; private set; }
+        [Obsolete] public float FailedDefenseDamageRate { get; private set; }
 
         [JsonProperty("is_evading_skill")]
         [HideInInspector] public string IsEvadingSkillString { get; private set; }
@@ -815,8 +821,8 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public float StressResistance { get; private set; }
 
         [JsonProperty("effects")]
-        [HideInInspector] public string EffectsString { get; private set; }
-        public int[] Effects;
+        [Obsolete] [HideInInspector] public string EffectsString { get; private set; }
+        [Obsolete] public int[] Effects;
     }
 
     [Serializable]

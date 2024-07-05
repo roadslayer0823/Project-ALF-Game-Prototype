@@ -1,10 +1,9 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using TMPro;
-using static DatabaseManager;
+using Skill = DatabaseManager.Skill;
+using Subskill = DatabaseManager.Subskill;
 
 public class SkillSelectionBoxV2 : MonoBehaviour
 {
@@ -72,9 +71,17 @@ public class SkillSelectionBoxV2 : MonoBehaviour
 
         if (characterSkill != null)
         {
-            if (characterSkill.GetCharacterSubskillData().GetSubskillData().Prefix != "-" && this.skillTypeText != null)
+            string _prefix = characterSkill.GetCharacterSubskillData().GetSubskillData().Prefix;
+            if (this.skillTypeText != null)
             {
-                this.skillTypeText.SetText("[" + characterSkill.GetCharacterSubskillData().GetSubskillData().Prefix + "]");
+                if (_prefix != "-")
+                {
+                    this.skillTypeText.SetText( "[" + _prefix + "]" );
+                }
+                else
+                {
+                    this.skillTypeText.SetText( "" );
+                }
             }
             
             this.skillNameText.SetText(characterSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
@@ -345,13 +352,13 @@ public class SkillSelectionBoxV2 : MonoBehaviour
 
         this.skillNameText.SetText(_subskillData.DisplayName);
 
-        if (_subskillData.Prefix.ToString() == "-")
+        if (_subskillData.Prefix == "-")
         {
             this.skillTypeText.SetText("");
         }
         else
         {
-            this.skillTypeText.SetText("[" + _subskillData.Prefix.ToString() + "]");
+            this.skillTypeText.SetText("[" + _subskillData.Prefix + "]");
         }
 
         UpdateSkillIcon(this.isSelected);
