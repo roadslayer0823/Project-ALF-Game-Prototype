@@ -3,99 +3,36 @@ using UnityEngine.UI;
 
 public class PassiveSkillSlot : MonoBehaviour
 {
-    [Header("Reference")]
-    [SerializeField] private PassiveSkillType passiveSkillType = PassiveSkillType.None;
-
     [Header("Passive Skill")]
     [SerializeField] private Image passiveSkillSlot;
 
-    [Header("Selected Passive Skill UI")]
-    [SerializeField] private Sprite selectedStatePointSkill;
-    [SerializeField] private Sprite selectedStressValueSkill;
-    [SerializeField] private Sprite selectedHealthPointSkill;
+    [Header("Highlight Passive Skill UI")]
+    [SerializeField] private Image highLightPassiveSkill;
 
-    [Header("Default Passive Skill UI")]
-    [SerializeField] private Sprite defaultStatePointSkill;
-    [SerializeField] private Sprite defaultStressValueSkill;
-    [SerializeField] private Sprite defaultHealthPointSkill;
+    [Header("Selected Passive Skill UI")]
+    [SerializeField] private Image passiveSkillLogo;
 
     private PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel = null;
-    private bool isSelected = false;
 
-    private const string AUDIO_ID_CLICK = "click";
-
-    public enum PassiveSkillType
-    {
-        None,
-        HealthPoint,
-        StatePoint,
-        StressValue
-    }
 
     public void Initialize( PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel )
     {
         this.passiveSkillCategorySelectionPanel = passiveSkillCategorySelectionPanel;
-        UpdateDefaultPassiveSkillUI();
     }
 
-    public void SetIsSelected( bool isSelected )
+    public void UpdateHighlightPassiveSkillUI()
     {
-        this.isSelected = isSelected;
-
-        if (this.isSelected)
-        {
-            UpdateSelectedPassiveSkillUI();
-        }
-        else
-        {
-            UpdateDefaultPassiveSkillUI();
-        }
+        Color colorAlpha = this.highLightPassiveSkill.color;
+        colorAlpha.a = 1.0f;
+        this.highLightPassiveSkill.color = colorAlpha;
+        this.passiveSkillLogo.color = colorAlpha;
     }
 
-    private void UpdateDefaultPassiveSkillUI()
+    public void UpdateDefaultPassiveSkillUI()
     {
-        this.passiveSkillSlot.sprite = this.passiveSkillType switch
-        {
-            PassiveSkillType.HealthPoint => this.defaultHealthPointSkill,
-            PassiveSkillType.StatePoint => this.defaultStatePointSkill,
-            PassiveSkillType.StressValue => this.defaultStressValueSkill,
-            _ => null
-        };
-    }
-
-    private void UpdateSelectedPassiveSkillUI()
-    {
-        this.passiveSkillSlot.sprite = this.passiveSkillType switch
-        {
-            PassiveSkillType.HealthPoint => this.selectedHealthPointSkill,
-            PassiveSkillType.StatePoint => this.selectedStatePointSkill,
-            PassiveSkillType.StressValue => this.selectedStressValueSkill,
-            _ => null
-        };
-    }
-
-    public void ClickOption()
-    {
-        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
-        this.passiveSkillCategorySelectionPanel.OnPassiveSkillSlotSelected( this );
-        Debug.Log("current passive skill type:" + GetPassiveSkillType());
-    }
-
-    public void OptionEnter()
-    {
-        UpdateSelectedPassiveSkillUI();
-    }
-
-    public void OptionExit()
-    {
-        if (!this.isSelected)
-        {
-            UpdateDefaultPassiveSkillUI();
-        }
-    }
-
-    public PassiveSkillType GetPassiveSkillType()
-    {
-        return this.passiveSkillType;
+        Color colorAlpha = this.highLightPassiveSkill.color;
+        colorAlpha.a = 0.0f;
+        this.highLightPassiveSkill.color = colorAlpha;
+        this.passiveSkillLogo.color = colorAlpha;
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using SkillType = BattleSkillManager.SkillType;
-using PassiveSkillType = PassiveSkillSlot.PassiveSkillType;
+using PassiveSkillType = PassiveSkillCategorySelectionPanel.PassiveSkillType;
 
 public class BattleUiManager : MonoBehaviour
 {
@@ -700,7 +700,7 @@ public class BattleUiManager : MonoBehaviour
 
 #region Categorized Passive Skill Manager
 
-    public void OnPassiveSkillTypeUpdated( PassiveSkillSlot.PassiveSkillType passiveSkillType )
+    public void OnPassiveSkillTypeUpdated( PassiveSkillCategorySelectionPanel.PassiveSkillType passiveSkillType )
     {
         CategorizedPassiveSkillManager.CategoryType _categoryType = passiveSkillType switch
         {
