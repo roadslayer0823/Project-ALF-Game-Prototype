@@ -482,6 +482,10 @@ MonoBehaviour:
   passiveSkillInfoBox: {fileID: 2796202423185607482}
   passiveSkillButtonPosition: {fileID: 7465348881717094435}
   passiveSkillButton: {fileID: 767846447382108601}
+  lifeTypeButton: {fileID: 21300000, guid: 346bab653f8364987aa0df685a76ef6a, type: 3}
+  stateTypeButton: {fileID: 21300000, guid: f23b883050d984fdeaad2f667e857233, type: 3}
+  stressTypeButton: {fileID: 21300000, guid: eceb6df643f5e44b88af28c33892939a, type: 3}
+  noneTypeButton: {fileID: 21300000, guid: b54efade30308421d9c7e1ade7b2f574, type: 3}
 --- !u!223 &5409992620830137620
 Canvas:
   m_ObjectHideFlags: 0

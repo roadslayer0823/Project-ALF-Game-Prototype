@@ -11,9 +11,16 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     [SerializeField] private GameObject passiveSkillInfoBox;
     [SerializeField] private Transform passiveSkillButtonPosition;
     [SerializeField] private Image passiveSkillButton;
+    [SerializeField] private Sprite lifeTypeButton;
+    [SerializeField] private Sprite stateTypeButton;
+    [SerializeField] private Sprite stressTypeButton;
+    [SerializeField] private Sprite noneTypeButton;
 
-    private bool isPointerDown;
     private Vector3 initialPosition;
+    private bool isHolding = false;
+    private bool isPointerDown;
+    private float lastHoldingTime = 0f;
+    private float holdingDelay = 0.2f;
 
     private Action<PassiveSkillType> onPassiveSkillTypeUpdated = null;
     private PassiveSkillType passiveSkillType = PassiveSkillType.None;
@@ -43,6 +50,7 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     public void StartHolding()
     {
         isPointerDown = true;
+        this.lastHoldingTime = Time.time;
         this.passiveSkillHolder.SetActive(true);
         initialPosition = passiveSkillButtonPosition.transform.position;
         this.passiveSkillSelectionPanelAnimation.Play(ANIMATION_ID_EXPAND);
@@ -53,13 +61,36 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         if (isPointerDown)
         {
             isPointerDown = false;
-            this.passiveSkillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE);
-            for(int i=0; i < passiveSkillSlotsList.Length; i++)
+            float holdingDuration = Time.time - lastHoldingTime;
+            if(holdingDuration >= holdingDelay)
             {
-                passiveSkillSlotsList[i].UpdateDefaultPassiveSkillUI();
+                for (int i = 0; i < passiveSkillSlotsList.Length; i++)
+                {
+                    passiveSkillSlotsList[i].UpdateDefaultPassiveSkillUI();
+                }
+                OnPassiveSkillSelected();
+                Debug.Log("current passive skill:" + GetPassiveSkillType());
             }
-            OnPassiveSkillSlotSelected();
-            Debug.Log("current passive skill:" + GetPassiveSkillType());
+            else
+            {
+                DeselectPassiveSkill();
+            }
+            this.passiveSkillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE);
+        }
+    }
+
+    public void DeselectPassiveSkill()
+    {
+        if(GetPassiveSkillType() != PassiveSkillType.None)
+        {
+            PassiveSkillType _passiveSkillType;
+            _passiveSkillType = PassiveSkillType.None;
+            this.onPassiveSkillTypeUpdated?.Invoke(_passiveSkillType);
+            UpdateSelectedButtonUI(_passiveSkillType);
+        }
+        else
+        {
+            return;
         }
     }
 
@@ -127,17 +158,29 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         }
     }
 
+    public void UpdateSelectedButtonUI(PassiveSkillType currentPassiveSkill)
+    {
+        this.passiveSkillButton.sprite = currentPassiveSkill switch
+        {
+            PassiveSkillType.HealthPoint => this.lifeTypeButton,
+            PassiveSkillType.StatePoint => this.stateTypeButton,
+            PassiveSkillType.StressValue => this.stressTypeButton,
+            PassiveSkillType.None => this.noneTypeButton
+        };
+    }
+
     public void HidePassiveSkillHolder()
     {
         passiveSkillHolder.SetActive(false);
     }
 
-    public void OnPassiveSkillSlotSelected()
+    public void OnPassiveSkillSelected()
     {
-        PassiveSkillType _passiveSkillType = PassiveSkillType.None;
+        PassiveSkillType _passiveSkillType;
 
         _passiveSkillType = GetPassiveSkillType();
         this.onPassiveSkillTypeUpdated?.Invoke( _passiveSkillType );
+        UpdateSelectedButtonUI(_passiveSkillType);
     }
 
     public PassiveSkillType GetPassiveSkillType()
