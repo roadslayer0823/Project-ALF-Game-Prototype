@@ -13,6 +13,7 @@ public partial class GameCharacter : MonoBehaviour
     private List<PassiveSkill> lifePassiveSkillList = new();
     private List<PassiveSkill> statePassiveSkillList = new();
     private List<PassiveSkill> stressPassiveSkillList = new();
+    private Dictionary<string,int> triggeredPassiveSkillDictionary = new();
 
     private int lifeScore = 0;      // 生命積分
     private int lifeCyclePoint = 0; // 循環點
@@ -130,6 +131,28 @@ public partial class GameCharacter : MonoBehaviour
     {
         passiveSkill = passiveSkillList.FirstOrDefault( ps => ps.Id == skillId );
         return ( passiveSkill != null );
+    }
+
+    public void TriggerPassiveSkill( string skillId )
+    {
+        if (triggeredPassiveSkillDictionary.TryGetValue( skillId, out int _value ))
+        {
+            triggeredPassiveSkillDictionary[ skillId ] = _value + 1;
+        }
+        else
+        {
+            triggeredPassiveSkillDictionary.Add( skillId, 1 );
+        }
+    }
+
+    public int GetPassiveSkillTriggeredNumber( string skillId )
+    {
+        if (triggeredPassiveSkillDictionary.TryGetValue( skillId, out int _value ))
+        {
+            return _value;
+        }
+
+        return 0;
     }
 
     public void AddLifeScore( int score )

@@ -78,11 +78,12 @@ public partial class GameCharacter : MonoBehaviour
     private BattleAnimationEventManager battleAnimationEventManager = null;
 
     // Version 2
-    private CharacterSkill assignedSkill = null;    // 已按下的技能，該技能等待被發動。
-    private bool isInRepulseCommandTime = false;    // 是否在“迎戰指令時間”裡？
-    private bool isCounterAttacking = false;        // 是否正在進行反擊？
-    private int stateBreakStatusRemainingATLs = 0;  // 以太崩潰維持值 (ATL)
-    private int stressBreakStatusRemainingATLs = 0; // 負荷崩潰維持值 (ATL)
+    private CharacterSkill assignedSkill = null;     // 已按下的技能，該技能等待被發動。
+    private bool isInRepulseCommandTime = false;     // 是否在“迎戰指令時間”裡？
+    private bool isCounterAttacking = false;         // 是否正在進行反擊？
+    private int stateBreakStatusRemainingATLs = 0;   // 以太崩潰維持值 (ATL)
+    private int stressBreakStatusRemainingATLs = 0;  // 負荷崩潰維持值 (ATL)
+    private int numberOfEnteringIntoBreakStatus = 0; // 陷入崩潰狀態的次數
     private bool isDead = false;
     private BattleResultData_GameCharacter temporaryBattleResultData = null;
     private List<CharacterIdentityType> characterIdentityTypeList = null; // 暫時性身份列表
@@ -1211,6 +1212,7 @@ public partial class GameCharacter : MonoBehaviour
             // 崩潰狀態
             this.stateBreakStatusRemainingATLs = battleResultData.stateBreakStatusRemainingATLs;
             this.stressBreakStatusRemainingATLs = battleResultData.stressBreakStatusRemainingATLs;
+            this.numberOfEnteringIntoBreakStatus = battleResultData.numberOfEnteringIntoBreakStatus;
 
             // 能量殘響
             this.energyMarkerRemainingATLs = battleResultData.energyMarkerRemainingATLs;
@@ -1350,6 +1352,11 @@ public partial class GameCharacter : MonoBehaviour
     public bool IsInStressBreakStatus()
     {
         return ( this.stressBreakStatusRemainingATLs > 0 );
+    }
+
+    public int GetNumberOfEnteringIntoBreakStatus()
+    {
+        return this.numberOfEnteringIntoBreakStatus;
     }
 
     public bool GetIsDead()

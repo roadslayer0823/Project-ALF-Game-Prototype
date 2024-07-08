@@ -165,7 +165,7 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
             PassiveSkillType.HealthPoint => this.lifeTypeButton,
             PassiveSkillType.StatePoint => this.stateTypeButton,
             PassiveSkillType.StressValue => this.stressTypeButton,
-            PassiveSkillType.None => this.noneTypeButton
+            _ => this.noneTypeButton
         };
     }
 

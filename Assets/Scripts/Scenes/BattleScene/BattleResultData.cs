@@ -28,8 +28,9 @@ public class BattleResultData
         public int currentSkillSpeed = 0;
 
         // 崩潰狀態
-        public int stateBreakStatusRemainingATLs = 0;  // 以太崩潰維持值 (ATL)
-        public int stressBreakStatusRemainingATLs = 0; // 負荷崩潰維持值 (ATL)
+        public int stateBreakStatusRemainingATLs = 0;   // 以太崩潰維持值 (ATL)
+        public int stressBreakStatusRemainingATLs = 0;  // 負荷崩潰維持值 (ATL)
+        public int numberOfEnteringIntoBreakStatus = 0; // 陷入崩潰狀態的次數
 
         // 能量殘響
         public int energyMarkerRemainingATLs = 0;
@@ -239,6 +240,7 @@ public class BattleResultData
             {
                 // 陷入以太崩潰狀態。
                 gameCharacterResultData.stateBreakStatusRemainingATLs = 1;
+                gameCharacterResultData.numberOfEnteringIntoBreakStatus++;
                 BattleLogicManagerV2.OnGameCharacterBeingInBreakStatus( gameCharacter );
             }
         }
@@ -270,6 +272,7 @@ public class BattleResultData
                 {
                     // 陷入負荷崩潰狀態。
                     gameCharacterResultData.stressBreakStatusRemainingATLs = 1;
+                    gameCharacterResultData.numberOfEnteringIntoBreakStatus++;
                     BattleLogicManagerV2.OnGameCharacterBeingInBreakStatus( gameCharacter );
                 }
                 else
@@ -400,10 +403,14 @@ public class BattleResultData
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
 
-        if (!gameCharacterResultData.HasPassiveSkillTriggered( passiveSkill.Id ))
+        string _passiveSkillId = passiveSkill.Id;
+
+        if (!gameCharacterResultData.HasPassiveSkillTriggered( _passiveSkillId ))
         {
             gameCharacterResultData.triggeredPassiveSkillList.Add( passiveSkill );
         }
+
+        gameCharacter.TriggerPassiveSkill( _passiveSkillId );
 
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
@@ -441,6 +448,7 @@ public class BattleResultData
                 currentStressValue = gameCharacter.GetCurrentStressValue(),
                 stateBreakStatusRemainingATLs = gameCharacter.GetStateBreakStatusRemainingATLs(),
                 stressBreakStatusRemainingATLs = gameCharacter.GetStressBreakStatusRemainingATLs(),
+                numberOfEnteringIntoBreakStatus = gameCharacter.GetNumberOfEnteringIntoBreakStatus(),
                 energyMarkerRemainingATLs = gameCharacter.GetEnergyMarkerRemainingATLs(),
                 currentSkillStrength = ( _currentSkill != null ) ? _subskillData.Strength : 0,
                 currentSkillSpeed = ( _currentSkill != null ) ? _subskillData.Speed : 0

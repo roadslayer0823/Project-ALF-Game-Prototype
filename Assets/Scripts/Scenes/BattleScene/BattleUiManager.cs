@@ -700,7 +700,7 @@ public class BattleUiManager : MonoBehaviour
 
 #region Categorized Passive Skill Manager
 
-    public void OnPassiveSkillTypeUpdated( PassiveSkillCategorySelectionPanel.PassiveSkillType passiveSkillType )
+    public void OnPassiveSkillTypeUpdated( PassiveSkillType passiveSkillType )
     {
         CategorizedPassiveSkillManager.CategoryType _categoryType = passiveSkillType switch
         {
