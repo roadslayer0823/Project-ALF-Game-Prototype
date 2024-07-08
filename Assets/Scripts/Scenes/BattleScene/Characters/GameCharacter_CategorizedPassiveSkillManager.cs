@@ -103,7 +103,32 @@ public partial class GameCharacter : MonoBehaviour
             return false;
         }
 
-        passiveSkill = this.selectedCategorizedPassiveSkillList.FirstOrDefault( ps => ps.Id == skillId );
+        return HasPassiveSkill( skillId, this.selectedCategorizedPassiveSkillList, out passiveSkill );
+    }
+
+    public PassiveSkill GetPassiveSkill( string skillId )
+    {
+        if (HasPassiveSkill( skillId, this.lifePassiveSkillList, out PassiveSkill _passiveSkill ))
+        {
+            return _passiveSkill;
+        }
+
+        if (HasPassiveSkill( skillId, this.statePassiveSkillList, out _passiveSkill ))
+        {
+            return _passiveSkill;
+        }
+
+        if (HasPassiveSkill( skillId, this.stressPassiveSkillList, out _passiveSkill ))
+        {
+            return _passiveSkill;
+        }
+
+        return null;
+    }
+
+    private bool HasPassiveSkill( string skillId, List<PassiveSkill> passiveSkillList, out PassiveSkill passiveSkill )
+    {
+        passiveSkill = passiveSkillList.FirstOrDefault( ps => ps.Id == skillId );
         return ( passiveSkill != null );
     }
 

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Subskill = DatabaseManager.Subskill;
 using PassiveSkill = DatabaseManager.PassiveSkill;
 
 public class BattleResultData
@@ -22,6 +23,10 @@ public class BattleResultData
         public float maximumStressValue = 0.0f;
         public float currentStressValue = 0.0f;
 
+        // 技能參數
+        public int currentSkillStrength = 0;
+        public int currentSkillSpeed = 0;
+
         // 崩潰狀態
         public int stateBreakStatusRemainingATLs = 0;  // 以太崩潰維持值 (ATL)
         public int stressBreakStatusRemainingATLs = 0; // 負荷崩潰維持值 (ATL)
@@ -33,10 +38,8 @@ public class BattleResultData
         public bool isDead = false;
 
         // 改變參數（技能發動時）
-        public float statePointCost = 0.0f;
-        public float maximumStatePointIncrease = 0.0f;
-        public int strengthBonus = 0;
-        public int speedBonus = 0;
+        public float statePointCost = 0.0f;             // 以太值消耗
+        public float maximumStatePointIncrease = 0.0f;  // 最大以太值提升
 
         // 改變參數（命中目標時）
         public float actualHealthPointDamageDealt = 0.0f;   // 給予的HP值傷害點數(實傷)
@@ -354,6 +357,24 @@ public class BattleResultData
         return this;
     }
 
+    // 改變當前技能的強度。
+    public BattleResultData AddGameCharacterResultData_ChangeCurrentSkillStrength( GameCharacter gameCharacter, int valueToChange, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.currentSkillStrength += valueToChange;
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
+    }
+
+    // 改變當前技能的速度。
+    public BattleResultData AddGameCharacterResultData_ChangeCurrentSkillSpeed( GameCharacter gameCharacter, int valueToChange, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.currentSkillSpeed += valueToChange;
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
+    }
+
     // 更新狀態。
     public BattleResultData_GameCharacter AddGameCharacterResultData( GameCharacter gameCharacter,
                                                                       int stateBreakStatusRemainingATLs = 0, float maximumStatePoint = 0.0f, float currentStatePoint = 0.0f,
@@ -403,6 +424,9 @@ public class BattleResultData
         {
             isNewElement = true;
 
+            CharacterSkill _currentSkill = gameCharacter.GetCurrentSkill();
+            Subskill _subskillData = _currentSkill?.GetCharacterSubskillData().GetSubskillData();
+
             _gameCharacterResultData = new BattleResultData_GameCharacter()
             {
                 gameCharacter = gameCharacter,
@@ -417,7 +441,9 @@ public class BattleResultData
                 currentStressValue = gameCharacter.GetCurrentStressValue(),
                 stateBreakStatusRemainingATLs = gameCharacter.GetStateBreakStatusRemainingATLs(),
                 stressBreakStatusRemainingATLs = gameCharacter.GetStressBreakStatusRemainingATLs(),
-                energyMarkerRemainingATLs = gameCharacter.GetEnergyMarkerRemainingATLs()
+                energyMarkerRemainingATLs = gameCharacter.GetEnergyMarkerRemainingATLs(),
+                currentSkillStrength = ( _currentSkill != null ) ? _subskillData.Strength : 0,
+                currentSkillSpeed = ( _currentSkill != null ) ? _subskillData.Speed : 0
             };
         }
 
