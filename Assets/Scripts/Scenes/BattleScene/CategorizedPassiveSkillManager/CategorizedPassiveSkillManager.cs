@@ -44,21 +44,6 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     public const string PASSIVE_SKILL_ID_PSS11 = "PSS11";
     public const string PASSIVE_SKILL_ID_PSS12 = "PSS12";
 
-    //<此以太消耗為"最終以太消耗">
-    public static float finalTotalStatePointCost = 0;
-
-    //<此以太消耗為"角力以太消耗">
-    public static float jiaoLiStatePointCost = 0;
-
-    //<此最大以太提升為"角力最大以太提升">
-    public static float jiaoLiMaxStatePointIncrease = 0;
-
-    //<此為"回避壓力消耗>
-    public static float stressEvasionCost = 0;
-
-    //<此為"回避壓力消耗以太提升")
-    public static float stressEvasionMaxStatePointIncrease = 0;
-
     public enum CategoryType
     {
         None,

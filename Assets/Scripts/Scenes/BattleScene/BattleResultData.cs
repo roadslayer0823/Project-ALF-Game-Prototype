@@ -35,6 +35,8 @@ public class BattleResultData
         // 改變參數（技能發動時）
         public float statePointCost = 0.0f;
         public float maximumStatePointIncrease = 0.0f;
+        public int strengthBonus = 0;
+        public int speedBonus = 0;
 
         // 改變參數（命中目標時）
         public float actualHealthPointDamageDealt = 0.0f;   // 給予的HP值傷害點數(實傷)
@@ -45,6 +47,14 @@ public class BattleResultData
         public float virtualHealthPointDamageTaken = 0.0f;  // 受到的HP值傷害點數(虛傷)
         public float statePointDamageTaken = 0.0f;          // 受到的以太值傷害點數
         public float stressValueDamageTaken = 0.0f;         // 受到的負荷值傷害點數
+
+        // Temporary Variables    
+        public float temp_FinalTotalStatePointCost = 0;             // <此以太消耗為"最終以太消耗">
+        public float temp_FinalMaximumStatePointIncrease = 0;       // <此最大以太提升為"最終最大以太提升">
+        public float temp_JiaoLiStatePointCost = 0;                 // <此以太消耗為"角力以太消耗">
+        public float temp_JiaoLiMaxStatePointIncrease = 0;          // <此最大以太提升為"角力最大以太提升">
+        public float temp_StressEvasionCost = 0;                    // <此為"回避壓力消耗>
+        public float temp_StressEvasionMaxStatePointIncrease = 0;   // <此為"回避壓力消耗以太提升")
 
         // 流向技能
         public List<PassiveSkill> triggeredPassiveSkillList = new(); // 已經發動了的流向技能
