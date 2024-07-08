@@ -50,6 +50,9 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     //<此以太消耗為"角力以太消耗">
     public static float jiaoLiStatePointCost = 0;
 
+    //<此最大以太提升為"角力最大以太提升">
+    public static float jiaoLiMaxStatePointIncrease = 0;
+
     //<此為"回避壓力消耗>
     public static float stressEvasionCost = 0;
 
