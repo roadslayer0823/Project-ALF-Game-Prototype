@@ -1,9 +1,12 @@
 using UnityEngine;
-
 using SubSkill = DatabaseManager.Subskill;
 
 public class BattleDistanceManager : MonoBehaviour
 {
+    [SerializeField] private BattleDistancePanel battleDistancePanel = null;
+
+    private DistanceType currentDistanceType = DistanceType.Normal;
+
     public enum DistanceType
     {
         None,
@@ -12,21 +15,11 @@ public class BattleDistanceManager : MonoBehaviour
         Far
     }
 
-    public enum GameCharacterStatus
-    {
-        None,
-        EvadingFailed,
-        Recipient
-    }
-
-    public DistanceType currentDistance = DistanceType.Normal;
-    private BattleDistancePanel battleDistancePanel = null;
-
     public void UpdateHalfwayDistanceResult(GameCharacter lead)
     {
         SubSkill.RangeType leadSubskill = lead.GetCurrentSkillRangeType();
         SubSkill leadAssingedSkill = lead.GetAssignedSkill().GetCharacterSubskillData().GetSubskillData();
-        switch (currentDistance)
+        switch (currentDistanceType)
         {
             case DistanceType.Near:
                 if(leadAssingedSkill.Range == SubSkill.RangeType.melee_or_ranged)
@@ -35,11 +28,11 @@ public class BattleDistanceManager : MonoBehaviour
                 }
                 if (leadSubskill == SubSkill.RangeType.melee)
                 {
-                    currentDistance = DistanceType.Near;
+                    currentDistanceType = DistanceType.Near;
                 }
                 else
                 {
-                    currentDistance = DistanceType.Normal;
+                    currentDistanceType = DistanceType.Normal;
                     //assign as "近距離遠程方" for attacker
                 }
                 break;
@@ -51,12 +44,12 @@ public class BattleDistanceManager : MonoBehaviour
                 }
                 if (leadSubskill == SubSkill.RangeType.melee)
                 {
-                    currentDistance = DistanceType.Near;
+                    currentDistanceType = DistanceType.Near;
                     //assign as "中距離近戰方" for attacker
                 }
                 else
                 {
-                    currentDistance = DistanceType.Normal;
+                    currentDistanceType = DistanceType.Normal;
                 }
                 break;
 
@@ -67,12 +60,12 @@ public class BattleDistanceManager : MonoBehaviour
                 }
                 if (leadSubskill == SubSkill.RangeType.melee)
                 {
-                    currentDistance = DistanceType.Near;
+                    currentDistanceType = DistanceType.Near;
                     //assign as “中距離近戰方” for attacker
                 }
                 else
                 {
-                    currentDistance = DistanceType.Far;
+                    currentDistanceType = DistanceType.Far;
                 }
                 break;
 
@@ -80,11 +73,11 @@ public class BattleDistanceManager : MonoBehaviour
                 Debug.Log("Error Distance");
                 break;
         }
-        SetDistanceType(currentDistance);
-        battleDistancePanel.UpdatBattleeDistanceTypeUI(currentDistance);
+
+        SetCurrentDistanceType( currentDistanceType );
     }
 
-    public void UpdateFinalDistanceResult(GameCharacter improviser, DistanceType finalDistance, GameCharacterStatus gameCharacterStatus)
+    public void UpdateFinalDistanceResult( GameCharacter improviser, DistanceType finalDistance )
     {
         SubSkill improviserSubSkill = improviser.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
         CategorizedPassiveSkillManager.CategoryType improviserSelectedCategoryType = improviser.GetSelectedPassiveSkillCategoryType();
@@ -149,17 +142,18 @@ public class BattleDistanceManager : MonoBehaviour
                 //no, 當前距離更新為[遠距離]
                 break;
         }
-        currentDistance = finalDistance;
-        battleDistancePanel.UpdatBattleeDistanceTypeUI(currentDistance);
+
+        SetCurrentDistanceType( finalDistance );
     }
 
-    public void SetDistanceType(DistanceType distanceType)
+    public void SetCurrentDistanceType( DistanceType currentDistanceType )
     {
-        this.currentDistance = distanceType;
+        this.currentDistanceType = currentDistanceType;
+        this.battleDistancePanel.UpdatBattleDistanceType( this.currentDistanceType );
     }
 
-    public DistanceType GetDistanceType()
+    public DistanceType GetCurrentDistanceType()
     {
-        return this.currentDistance;
+        return this.currentDistanceType;
     }
 }

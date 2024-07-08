@@ -1,6 +1,6 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
+using DistanceType = BattleDistanceManager.DistanceType;
 
 public class BattleDistancePanel : MonoBehaviour
 {
@@ -13,21 +13,27 @@ public class BattleDistancePanel : MonoBehaviour
     [SerializeField] private RectTransform farDistanceLeft;
     [SerializeField] private RectTransform farDistanceRight;
 
-    private BattleDistanceManager battleDistanceManager = null;
-
-    public void UpdatBattleeDistanceTypeUI(BattleDistanceManager.DistanceType currentDistanceType)
+    public void UpdatBattleDistanceType( DistanceType currentDistanceType )
     {
-        if (currentDistanceType == BattleDistanceManager.DistanceType.Near)
+        switch ( currentDistanceType )
         {
-            CurrentPointerPosition(nearDistanceLeft, nearDistanceRight);
-        }
-        else if (currentDistanceType == BattleDistanceManager.DistanceType.Normal)
-        {
-            CurrentPointerPosition(normalDistanceLeft, normalDistanceRight);
-        }
-        else if (currentDistanceType == BattleDistanceManager.DistanceType.Far)
-        {
-            CurrentPointerPosition(farDistanceLeft, farDistanceRight);
+            case DistanceType.Near:
+
+                CurrentPointerPosition( nearDistanceLeft, nearDistanceRight );
+
+                break;
+
+            case DistanceType.Normal:
+
+                CurrentPointerPosition( normalDistanceLeft, normalDistanceRight );
+
+                break;
+
+            case DistanceType.Far:
+
+                CurrentPointerPosition( farDistanceLeft, farDistanceRight );
+
+                break;
         }
     }
 

@@ -12,6 +12,7 @@ public class BattleGameManager : MonoBehaviour
     [SerializeField] private BattleAnimationManager battleAnimationManager = null;
     [SerializeField] private BattleAnimationEventManager battleAnimationEventManager = null;
     [SerializeField] private BattleVisualEffectManager battleVisualEffectManager = null;
+    [SerializeField] private BattleDistanceManager battleDistanceManager = null;
 
     [Header( "References" )]
     [SerializeField] private GameObject playerContainer = null;
@@ -503,6 +504,11 @@ public class BattleGameManager : MonoBehaviour
     public BattleVisualEffectManager GetBattleVisualEffectManager()
     {
         return this.battleVisualEffectManager;
+    }
+
+    public BattleDistanceManager GetBattleDistanceManager()
+    {
+        return this.battleDistanceManager;
     }
 
     public GamePhase GetCurrentGamePhase()

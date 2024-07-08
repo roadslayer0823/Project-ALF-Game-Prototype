@@ -115,7 +115,7 @@ public partial class BattleLogicManagerV2
         return ( IsAttackingSkill( _gameCharacterOne_Skill ) || IsAttackingSkill( _gameCharacterTwo_Skill ) );
     }
 
-    public static ( GameCharacter lead, GameCharacter improviser ) DetermineLeadAndImproviser( GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
+    public static ( GameCharacter lead, GameCharacter improviser ) DetermineLeadAndImproviser( BattleGameManager battleGameManager, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
     {
         CharacterSkill _gameCharacterOne_Skill = gameCharacterOne.GetAssignedSkill();
         CharacterSkill _gameCharacterTwo_Skill = gameCharacterTwo.GetAssignedSkill();
@@ -155,6 +155,22 @@ public partial class BattleLogicManagerV2
 
             int _gameCharacterOne_Skill_Speed = _gameCharacterOne_Skill_SubskillData.Speed + gameCharacterOne.GetCurrentSkillStatIncrement();
             int _gameCharacterTwo_Skill_Speed = _gameCharacterTwo_Skill_SubskillData.Speed + gameCharacterTwo.GetCurrentSkillStatIncrement();
+
+            // 當前的距離是否為“遠距離”？ YES
+            if (battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType() == BattleDistanceManager.DistanceType.Far)
+            {
+                // 近戰技能的速度在[判定先後手方] 階段時,會降低一級
+
+                if (_gameCharacterOne_Skill_SubskillData.Range == RangeType.melee && _gameCharacterOne_Skill_Speed > 1)
+                {
+                    _gameCharacterOne_Skill_Speed -= 1;
+                }
+
+                if (_gameCharacterTwo_Skill_SubskillData.Range == RangeType.melee && _gameCharacterTwo_Skill_Speed > 1)
+                {
+                    _gameCharacterTwo_Skill_Speed -= 1;
+                }
+            }
 
             BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>按下了的技能的速度是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.GetSpeedLevelText( _gameCharacterOne_Skill_Speed ) }</color>。" );
             BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>按下了的技能的速度是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.GetSpeedLevelText( _gameCharacterTwo_Skill_Speed ) }</color>。" );

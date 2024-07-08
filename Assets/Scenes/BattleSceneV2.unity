@@ -1683,6 +1683,10 @@ PrefabInstance:
       propertyPath: playerCharacter
       value: 
       objectReference: {fileID: 1236949912}
+    - target: {fileID: 930214477544506960, guid: f4ebdd78d870a488aa53fd4e5bc003ca, type: 3}
+      propertyPath: m_Name
+      value: BattleDistancePanel
+      objectReference: {fileID: 0}
     - target: {fileID: 2438685319300247373, guid: f4ebdd78d870a488aa53fd4e5bc003ca, type: 3}
       propertyPath: characterInfoPanelAnimation
       value: 
@@ -1862,6 +1866,17 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 2873912261638753880, guid: f4ebdd78d870a488aa53fd4e5bc003ca, type: 3}
   m_PrefabInstance: {fileID: 382977989}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &382977993 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6724973640297134398, guid: f4ebdd78d870a488aa53fd4e5bc003ca, type: 3}
+  m_PrefabInstance: {fileID: 382977989}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48b030751e0a1459eb5d9d939a486178, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &454996432
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2087,7 +2102,7 @@ Transform:
   - {fileID: 210855937}
   - {fileID: 2094724882}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &538904515
 GameObject:
@@ -2857,7 +2872,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &794048808
 MonoBehaviour:
@@ -3843,7 +3858,7 @@ RectTransform:
   - {fileID: 1388652836}
   - {fileID: 659299214}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4105,6 +4120,51 @@ MonoBehaviour:
   buttonImage: {fileID: 1174228238}
   pauseButton: {fileID: 21300000, guid: db7c4002414414fa2bd05f33b698fdcb, type: 3}
   resumeButton: {fileID: 21300000, guid: bb83486d136fb42d1b774ec2731dc46b, type: 3}
+--- !u!1 &1179878569
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1179878570}
+  - component: {fileID: 1179878571}
+  m_Layer: 0
+  m_Name: BattleDistanceManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1179878570
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1179878569}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1179878571
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1179878569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 503baec07c3dc4062a413c374101af6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battleDistancePanel: {fileID: 382977993}
 --- !u!4 &1236949911 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7215210616897525856, guid: 8e79a763adf534ca5ad4843e26c17e83, type: 3}
@@ -4792,7 +4852,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1812108084
 GameObject:
@@ -5150,7 +5210,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1941073821
 PrefabInstance:
@@ -5300,6 +5360,7 @@ MonoBehaviour:
   battleAnimationManager: {fileID: 2019521244}
   battleAnimationEventManager: {fileID: 0}
   battleVisualEffectManager: {fileID: 759260331}
+  battleDistanceManager: {fileID: 1179878571}
   playerContainer: {fileID: 1355020975}
   opponentContainer: {fileID: 1104981973}
   playerCharacter: {fileID: 1236949912}

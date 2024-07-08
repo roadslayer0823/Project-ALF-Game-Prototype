@@ -766,7 +766,7 @@ public class BattleAnimationManager : MonoBehaviour
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定先後手方</color>" );
 
-        var ( _attacker, _attackTarget ) = BattleLogicManagerV2.DetermineLeadAndImproviser( _playerCharacter, _enemyCharacter );
+        var ( _attacker, _attackTarget ) = BattleLogicManagerV2.DetermineLeadAndImproviser( this.battleGameManager, _playerCharacter, _enemyCharacter );
 
         if (_attacker == null || _attackTarget == null)
         {
