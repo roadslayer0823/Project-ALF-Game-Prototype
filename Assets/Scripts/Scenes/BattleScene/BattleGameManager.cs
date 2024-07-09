@@ -210,8 +210,6 @@ public class BattleGameManager : MonoBehaviour
         this.currentGamePhase = GamePhase.Execution;
 
         this.playerCharacter.RecordAllSkillSelectedLevelsAsPresets();
-        this.enemyCharacter.SetSelectedPassiveSkillCategoryType( CategorizedPassiveSkillManager.CategoryType.Life );
-
         if (this.battleUiManager.GetPreparationSection() == null)
         {
             this.battleUiManager.ShowBattleSection( this.playerCharacter );
