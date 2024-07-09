@@ -1,5 +1,6 @@
 using UnityEngine;
 using SubSkill = DatabaseManager.Subskill;
+using SkillType = DatabaseManager.Skill.SkillType;
 
 public class BattleDistanceManager : MonoBehaviour
 {
@@ -33,7 +34,7 @@ public class BattleDistanceManager : MonoBehaviour
                 else
                 {
                     currentDistanceType = DistanceType.Normal;
-                    //assign as "近距離遠程方" for attacker
+                    lead.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.NearDistanceRangedDealer);
                 }
                 break;
 
@@ -45,7 +46,7 @@ public class BattleDistanceManager : MonoBehaviour
                 if (leadSubskill == SubSkill.RangeType.melee)
                 {
                     currentDistanceType = DistanceType.Near;
-                    //assign as "中距離近戰方" for attacker
+                    lead.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.NormalDistanceMeleeDealer);
                 }
                 else
                 {
@@ -61,7 +62,7 @@ public class BattleDistanceManager : MonoBehaviour
                 if (leadSubskill == SubSkill.RangeType.melee)
                 {
                     currentDistanceType = DistanceType.Near;
-                    //assign as “中距離近戰方” for attacker
+                    lead.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.NormalDistanceMeleeDealer);
                 }
                 else
                 {
@@ -79,13 +80,14 @@ public class BattleDistanceManager : MonoBehaviour
 
     public void UpdateFinalDistanceResult( GameCharacter improviser, DistanceType finalDistance )
     {
-        SubSkill improviserSubSkill = improviser.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        SubSkill improviserAssignedSkill = improviser.GetAssignedSkill().GetCharacterSubskillData().GetSubskillData();
+        SkillType improviserSkillType = improviser.GetAssignedSkill().GetSkillData().skillType;
         CategorizedPassiveSkillManager.CategoryType improviserSelectedCategoryType = improviser.GetSelectedPassiveSkillCategoryType();
 
         switch (finalDistance)
         {
             case DistanceType.Near:
-                if (improviserSubSkill.IsEvadingSkill)
+                if (improviserAssignedSkill.IsEvadingSkill)
                 {
                     if (improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.State || improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.None)
                     {
@@ -96,7 +98,7 @@ public class BattleDistanceManager : MonoBehaviour
                         finalDistance = DistanceType.Near;
                     }
                 }
-                else if (improviserSubSkill.IsDefendingSkill)
+                else if (improviserAssignedSkill.IsDefendingSkill)
                 {
                     finalDistance = DistanceType.Normal;
                 }
@@ -107,7 +109,7 @@ public class BattleDistanceManager : MonoBehaviour
                 break;
 
             case DistanceType.Normal:
-                if (improviserSubSkill.IsEvadingSkill)
+                if (improviserAssignedSkill.IsEvadingSkill)
                 {
                     if(improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.State || improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.None)
                     {
@@ -130,19 +132,26 @@ public class BattleDistanceManager : MonoBehaviour
                 break;
 
             case DistanceType.Far:
-                if (improviserSubSkill.IsEvadingSkill)
+                if (improviserAssignedSkill.IsEvadingSkill)
                 {
                     if(improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.Stress)
                     {
                         finalDistance = DistanceType.Normal;
                     }
                 }
-                //"後手方"已按下技能是否"迎擊技能" ?
-                //yes, "後手方"已按下技能是否"近戰" ?
-                //no, 當前距離更新為[遠距離]
+                if(improviserSkillType == SkillType.repulse)
+                {
+                    if(improviserAssignedSkill.Range == SubSkill.RangeType.melee)
+                    {
+                        finalDistance = DistanceType.Normal;
+                    }
+                }
+                else
+                {
+                    finalDistance = DistanceType.Far;
+                }
                 break;
         }
-
         SetCurrentDistanceType( finalDistance );
     }
 
