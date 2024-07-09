@@ -10,6 +10,7 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     [SerializeField] private GameObject passiveSkillHolder;
     [SerializeField] private GameObject passiveSkillInfoBox;
     [SerializeField] private Transform passiveSkillButtonPosition;
+    [SerializeField] private Button passiveSkillButtonInteratable;
     [SerializeField] private Image passiveSkillButton;
     [SerializeField] private Sprite lifeTypeButton;
     [SerializeField] private Sprite stateTypeButton;
@@ -17,11 +18,9 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     [SerializeField] private Sprite noneTypeButton;
 
     private Vector3 initialPosition;
-    private bool isHolding = false;
+    private Vector2 touchEndPos;
     private bool isPointerDown;
-    private float lastHoldingTime = 0f;
-    private float holdingDelay = 0.2f;
-
+   
     private Action<PassiveSkillType> onPassiveSkillTypeUpdated = null;
     private PassiveSkillType passiveSkillType = PassiveSkillType.None;
 
@@ -50,9 +49,9 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     public void StartHolding()
     {
         isPointerDown = true;
-        this.lastHoldingTime = Time.time;
-        this.passiveSkillHolder.SetActive(true);
         initialPosition = passiveSkillButtonPosition.transform.position;
+        
+        this.passiveSkillHolder.SetActive(true);
         this.passiveSkillSelectionPanelAnimation.Play(ANIMATION_ID_EXPAND);
     }
 
@@ -61,21 +60,22 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         if (isPointerDown)
         {
             isPointerDown = false;
-            float holdingDuration = Time.time - lastHoldingTime;
-            if(holdingDuration >= holdingDelay)
-            {
-                for (int i = 0; i < passiveSkillSlotsList.Length; i++)
-                {
-                    passiveSkillSlotsList[i].UpdateDefaultPassiveSkillUI();
-                }
-                OnPassiveSkillSelected();
-                Debug.Log("current passive skill:" + GetPassiveSkillType());
-            }
-            else
-            {
-                DeselectPassiveSkill();
-            }
+            this.touchEndPos = Input.mousePosition;
+            DistanceDetector();
             this.passiveSkillSelectionPanelAnimation.Play(ANIMATION_ID_HIDE);
+        }
+    }
+
+    public void DistanceDetector()
+    {
+        float swipeDistance = Vector2.Distance(this.touchEndPos, initialPosition);
+        if (swipeDistance <= 35)
+        {
+            DeselectPassiveSkill();
+        }
+        else
+        {
+            OnPassiveSkillSelected();
         }
     }
 
@@ -96,7 +96,6 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
 
     public void DraggingDirection()
     {
-        Debug.Log("is working");
         if (!isPointerDown) return;
 
         Vector3 currentPosition = Input.mousePosition;
@@ -111,9 +110,6 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
             {
                 angle = 360 - angle;
             }
-
-            Debug.Log("Angle:" + angle);
-
             if (angle < 60)
             {
                 passiveSkillType = PassiveSkillType.HealthPoint;
@@ -169,11 +165,6 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         };
     }
 
-    public void HidePassiveSkillHolder()
-    {
-        passiveSkillHolder.SetActive(false);
-    }
-
     public void OnPassiveSkillSelected()
     {
         PassiveSkillType _passiveSkillType;
@@ -186,5 +177,20 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     public PassiveSkillType GetPassiveSkillType()
     {
         return this.passiveSkillType;
+    }
+
+    public void HidePassiveSkillHolder()
+    {
+        passiveSkillHolder.SetActive(false);
+    }
+
+    public void DisableChangingPassiveSkillType()
+    {
+        this.passiveSkillButtonInteratable.interactable = false;
+    }
+
+    public void EnableChangingPassiveSkillType()
+    {
+        this.passiveSkillButtonInteratable.interactable = true;
     }
 }
