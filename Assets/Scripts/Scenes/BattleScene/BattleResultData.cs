@@ -294,7 +294,7 @@ public class BattleResultData
 
             string _log = "";
             if (_stringToReplace.Contains( "gameCharacterName" )
-                || _stringToReplace.Contains( "functionName" ))
+                || _stringToReplace.Contains( "eventName" ))
             {
                 _log = $"<color=#FFAAFF>{ _stringToReplace }</color>";
             }
@@ -312,7 +312,7 @@ public class BattleResultData
 
         BattleLog.Instance.AddOnScreenBattleLog( _battleLog.Replace( "\"", "" )
                                                            .ReplaceFirst( "gameCharacterName", "角色" )
-                                                           .ReplaceFirst( "functionName", "事件" )
+                                                           .ReplaceFirst( "eventName", "事件" )
                                                            .ReplaceFirst( "characterIdentityTypeListString", "身份" )
                                                            .ReplaceFirst( "maximumHealthPoint", "最大生命值" )
                                                            .ReplaceFirst( "currentHealthPoint", "當前生命值" )
