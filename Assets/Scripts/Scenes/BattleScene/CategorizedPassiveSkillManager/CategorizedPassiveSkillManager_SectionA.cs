@@ -90,7 +90,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     {
                         //["己方"生命值]+["己方"最大生命值]*[0.05+0.05]*[1+n]*0.5
                         battleResultData.AddGameCharacterResultData_ActualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint*(0.05f + skill_PSL1_HuoXin_HealthPoint)*(1+lifeCycleValue)*skill_PSL12_ShengShengBuXi, out gameCharacterData); 
-                        resultLogList.Add("health point recover" + );
+                        //resultLogList.Add("health point recover" + );
                     }
                 }
 
