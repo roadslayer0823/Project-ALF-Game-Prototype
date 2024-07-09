@@ -691,10 +691,9 @@ public partial class BattleLogicManagerV2
             _isTargetHavingEnergyMarker = ( _targetBattleResultData != null ) ? _targetBattleResultData.HasEnergyMarker() : target.HasEnergyMarker();
 
             float _statePointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStatePointDamage( _casterSubskillData ) * ( ( _isTargetHavingEnergyMarker ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
-            battleResultData.AddGameCharacterResultData_StatePointDamage( target, _statePointDamage, isBreakStatusAvailable, out _targetBattleResultData );
-
             if (_statePointDamage > 0)
             {
+                battleResultData.AddGameCharacterResultData_StatePointDamage( target, _statePointDamage, isBreakStatusAvailable, out _targetBattleResultData );
                 _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _statePointDamage }{ TerminologyManager.STATE_POINT }傷害</color>{ ( ( _isTargetHavingEnergyMarker ) ? "（帶有能量殘響）" : "" ) }";
             }
         }
@@ -705,10 +704,9 @@ public partial class BattleLogicManagerV2
             _isTargetHavingEnergyMarker = ( _targetBattleResultData != null ) ? _targetBattleResultData.HasEnergyMarker() : target.HasEnergyMarker();
 
             float _stressValueDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStressValueDamage( _casterSubskillData ) * ( ( _isTargetHavingEnergyMarker ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) * stressValueDamageMultiplier );
-            battleResultData.AddGameCharacterResultData_StressValueDamage( target, _stressValueDamage, isBreakStatusAvailable, out _targetBattleResultData );
-
             if (_stressValueDamage > 0)
             {
+                battleResultData.AddGameCharacterResultData_StressValueDamage( target, _stressValueDamage, isBreakStatusAvailable, out _targetBattleResultData );
                 _extraLog += $"{ ( ( _extraLog != "" ) ? "、" : "" ) }<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _stressValueDamage }%負荷值傷害</color>{ ( ( _isTargetHavingEnergyMarker ) ? "（帶有能量殘響）" : "" ) }";
             }
         }

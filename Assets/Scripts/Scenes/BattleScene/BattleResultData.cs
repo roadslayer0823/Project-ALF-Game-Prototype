@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Newtonsoft.Json;
+using CharacterIdentityType = GameCharacter.CharacterIdentityType;
 using Subskill = DatabaseManager.Subskill;
 using PassiveSkill = DatabaseManager.PassiveSkill;
 
@@ -10,12 +13,27 @@ public class BattleResultData
 
     public class BattleResultData_GameCharacter
     {
-        public GameCharacter gameCharacter = null;
+        [NonSerialized] public GameCharacter gameCharacter = null;
+
+#if ALF_DEBUG
+
+        public string gameCharacterName = "";
+        public string eventName = "";
+        public string characterIdentityTypeListString = "";
+
+#endif
 
         // 基本參數
         public float maximumHealthPoint = 0.0f;
         public float currentHealthPoint = 0.0f;
-        public float virtualHealthPoint = 0.0f;
+        [NonSerialized] public float virtualHealthPoint = 0.0f;
+
+#if ALF_DEBUG
+
+        public float virtualHealthDamage = 0.0f;
+
+#endif
+
         public float originalStatePoint = 0.0f;
         public float maximumStatePoint = 0.0f;
         public float minimumStatePoint = 0.0f;
@@ -61,7 +79,20 @@ public class BattleResultData
         public float temp_StressEvasionMaxStatePointIncrease = 0;   // <此為"回避壓力消耗以太提升")
 
         // 流向技能
-        public List<PassiveSkill> triggeredPassiveSkillList = new(); // 已經發動了的流向技能
+        [NonSerialized] public List<PassiveSkill> triggeredPassiveSkillList = new(); // 已經發動了的流向技能
+
+#if ALF_DEBUG
+
+        public string triggeredPassiveSkillListString = "";
+
+        public int lifeScore = 0;      // 生命積分
+        public int lifeCyclePoint = 0; // 循環點
+        public int stressScore = 0;    // 負荷積分
+        public int stressLevel = 0;    // 負荷等級
+
+        [NonSerialized] public string lastJsonString = "";
+
+#endif
 
         public bool IsInBreakStatus()
         {
@@ -129,7 +160,7 @@ public class BattleResultData
             this.currentStressValue = Mathf.Clamp( value, 0.0f, this.maximumStressValue );
         }
 
-        public float GetVirtualDamage()
+        public float GetVirtualHealthDamage()
         {
             if (this.virtualHealthPoint > this.currentHealthPoint)
             {
@@ -151,6 +182,169 @@ public class BattleResultData
         {
             this.gameCharacterResultDataList.Add( gameCharacterResultData );
         }
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.virtualHealthDamage = gameCharacterResultData.GetVirtualHealthDamage();
+
+        string _characterIdentityTypeString = "";
+
+        List<CharacterIdentityType> _characterIdentityTypeList = gameCharacterResultData.gameCharacter.GetAllCharacterIdentityTypes();
+        for (int i = 0; i < _characterIdentityTypeList.Count; i++)
+        {
+            _characterIdentityTypeString += ( ( i > 0 ) ? " | " : "" ) +
+                                            _characterIdentityTypeList[ i ] switch
+                                            {
+                                                CharacterIdentityType.PlayerOne => "玩家1",
+                                                CharacterIdentityType.PlayerTwo => "玩家2",
+                                                CharacterIdentityType.Lead => "先手方",
+                                                CharacterIdentityType.Improviser => "後手方",
+                                                CharacterIdentityType.Deuce => "平手方",
+                                                CharacterIdentityType.SuccessfulResister => "抵抗成功方",
+                                                CharacterIdentityType.Assaulter => "直擊方",
+                                                CharacterIdentityType.LightAssaulter => "輕直擊方",
+                                                CharacterIdentityType.HeavyAssaulter => "重直擊方",
+                                                CharacterIdentityType.Recipient => "受擊方",
+                                                CharacterIdentityType.LightRecipient => "輕受擊方",
+                                                CharacterIdentityType.HeavyRecipient => "重受擊方",
+                                                CharacterIdentityType.NonResister => "未能抵抗方",
+                                                CharacterIdentityType.SpeedWinner => "速度勝方",
+                                                CharacterIdentityType.StrengthWinner => "強度勝方",
+                                                CharacterIdentityType.SpeedLoser => "速度負方",
+                                                CharacterIdentityType.StrengthLoser => "強度負方",
+                                                CharacterIdentityType.SpeedStrengthLoser => "速度強度負方",
+                                                CharacterIdentityType.StateBreakStatusHolder => "以太崩潰方",
+                                                CharacterIdentityType.StressBreakStatusHolder => "負荷崩潰方",
+                                                CharacterIdentityType.WinningBenefitHolder => "勝利優惠機制方",
+                                                CharacterIdentityType.NearDistanceRangedDealer => "近距離遠程方",
+                                                CharacterIdentityType.NormalDistanceMeleeDealer => "中距離近戰方",
+                                                CharacterIdentityType.UpdatedSelectedSkill => "已更新按下技能方",
+                                                CharacterIdentityType.IgnoreZhuiFengJiaoLi => "無視追風角力方",
+                                                CharacterIdentityType.IgnoreZhuiFengJiaoLiJiAng => "無視追風角力激昂方",
+                                                _ => ""
+                                            };
+        }
+
+        gameCharacterResultData.characterIdentityTypeListString = _characterIdentityTypeString;
+
+        string _triggeredPassiveSkillListString = "";
+
+        List<PassiveSkill> _triggeredPassiveSkillList = gameCharacterResultData.triggeredPassiveSkillList;
+        for (int i = 0; i < _triggeredPassiveSkillList.Count; i++)
+        {
+            _triggeredPassiveSkillListString += ( ( i > 0 ) ? " | " : "" ) + _triggeredPassiveSkillList[ i ].DisplayName;
+        }
+
+        gameCharacterResultData.triggeredPassiveSkillListString = _triggeredPassiveSkillListString;
+
+        string _lastJsonString = gameCharacterResultData.lastJsonString;
+
+        gameCharacterResultData.lastJsonString = JsonConvert.SerializeObject( gameCharacterResultData );
+
+        char[] _charactersToTrim = new char[] { '{', '}' };
+        string[] _oldJsonStringArray = _lastJsonString.Trim( _charactersToTrim ).Split( ',' );
+        string[] _newJsonStringArray = gameCharacterResultData.lastJsonString.Trim( _charactersToTrim ).Split( ',' );
+
+        List<string> _oldTextArray = new();
+        List<string> _newTextArray = new();
+        for (int i = 0; i < _oldJsonStringArray.Length; i++)
+        {
+            string _oldJsonString = _oldJsonStringArray[ i ];
+            string _newJsonString = _newJsonStringArray[ i ];
+            if (_oldJsonString != _newJsonString
+                || _newJsonString.Contains( "gameCharacterName" ))
+            {
+                _oldTextArray.Add( _oldJsonString );
+                _newTextArray.Add( _newJsonString );
+            }
+        }
+
+        string _battleLog = "";
+        string _jsonString = JsonConvert.SerializeObject( gameCharacterResultData, Formatting.Indented );
+        for (int i = 0; i < _newTextArray.Count; i++)
+        {
+            string _oldText = _oldTextArray[ i ];
+            string _newText = _newTextArray[ i ];
+
+            string _oldTextValue = _oldText.Split( ':' )[ 1 ];
+            string _newTextValue = _newText.Split( ':' )[ 1 ];
+
+            string _extraString = "";
+            if (int.TryParse( _oldTextValue, out int _oldTextValueInt )
+                && int.TryParse( _newTextValue, out int _newTextValueInt ))
+            {
+                int _valueDifferenceInt = _newTextValueInt - _oldTextValueInt;
+                if (_valueDifferenceInt != 0)
+                {
+                    _extraString += $" ({ ( ( _valueDifferenceInt > 0 ) ? "+" : "" ) }{ _valueDifferenceInt })";
+                }
+            }
+            else if (float.TryParse( _oldTextValue, out float _oldTextValueFloat )
+                && float.TryParse( _newTextValue, out float _newTextValueFloat ))
+            {
+                float _valueDifferenceFloat = _newTextValueFloat - _oldTextValueFloat;
+                if (_valueDifferenceFloat != 0)
+                {
+                    _extraString += $" ({ ( ( _valueDifferenceFloat > 0 ) ? "+" : "" ) }{ _valueDifferenceFloat })";
+                }
+            }
+
+            string _stringToReplace = _newText.Replace( ":", ": " );
+            string[] _stringArray = _newText.Split( ':' );
+
+            string _log = "";
+            if (_stringToReplace.Contains( "gameCharacterName" )
+                || _stringToReplace.Contains( "functionName" ))
+            {
+                _log = $"<color=#FFAAFF>{ _stringToReplace }</color>";
+            }
+            else
+            {
+                _log = $"<color=#FFFF00>{ _oldText.Replace( ":", ": " ) } -> { _stringArray[ 1 ] }{ _extraString }</color>";
+            }
+
+            _jsonString = _jsonString.Replace( _stringToReplace, _log );
+
+            _battleLog += ( ( _battleLog != "" ) ? "\n" : "" ) + _log;
+        }
+
+        Debug.Log( $"######[ DEBUG ]######\n{ _jsonString }\n#####################\n" );
+
+        BattleLog.Instance.AddOnScreenBattleLog( _battleLog.Replace( "\"", "" )
+                                                           .ReplaceFirst( "gameCharacterName", "角色" )
+                                                           .ReplaceFirst( "functionName", "事件" )
+                                                           .ReplaceFirst( "characterIdentityTypeListString", "身份" )
+                                                           .ReplaceFirst( "maximumHealthPoint", "最大生命值" )
+                                                           .ReplaceFirst( "currentHealthPoint", "當前生命值" )
+                                                           .ReplaceFirst( "virtualHealthDamage", "虛傷" )
+                                                           .ReplaceFirst( "maximumStatePoint", "最大以太值" )
+                                                           .ReplaceFirst( "currentStatePoint", "當前以太值" )
+                                                           .ReplaceFirst( "maximumStressValue", "最大負荷值" )
+                                                           .ReplaceFirst( "currentStressValue", "當前負荷值" )
+                                                           .ReplaceFirst( "currentSkillStrength", "技能強度" )
+                                                           .ReplaceFirst( "currentSkillSpeed", "技能速度" )
+                                                           .ReplaceFirst( "stateBreakStatusRemainingATLs", "以太崩潰(ATL)" )
+                                                           .ReplaceFirst( "stressBreakStatusRemainingATLs", "負荷崩潰(ATL)" )
+                                                           .ReplaceFirst( "numberOfEnteringIntoBreakStatus", "陷入崩潰狀態的次數" )
+                                                           .ReplaceFirst( "energyMarkerRemainingATLs", "能量殘響(ATL)" )
+                                                           .ReplaceFirst( "isDead", "是否死亡" )
+                                                           .ReplaceFirst( "statePointCost", "以太值消耗" )
+                                                           .ReplaceFirst( "maximumStatePointIncrease", "最大以太值提升" )
+                                                           .ReplaceFirst( "actualHealthPointDamageDealt", "給予實傷" )
+                                                           .ReplaceFirst( "virtualHealthPointDamageDealt", "給予虛傷" )
+                                                           .ReplaceFirst( "statePointDamageDealt", "給予以太傷害" )
+                                                           .ReplaceFirst( "stressValueDamageDealt", "給予負荷傷害" )
+                                                           .ReplaceFirst( "actualHealthPointDamageTaken", "受到實傷" )
+                                                           .ReplaceFirst( "virtualHealthPointDamageTaken", "受到虛傷" )
+                                                           .ReplaceFirst( "statePointDamageTaken", "受到以太傷害" )
+                                                           .ReplaceFirst( "stressValueDamageTaken", "受到負荷傷害" )
+                                                           .ReplaceFirst( "triggeredPassiveSkillListString", "發動了的流向技能" )
+                                                           .ReplaceFirst( "lifeScore", "生命積分" )
+                                                           .ReplaceFirst( "lifeCyclePoint", "循環點" )
+                                                           .ReplaceFirst( "stressScore", "負荷積分" )
+                                                           .ReplaceFirst( "stressLevel", "負荷等級" ) );
+
+#endif
     }
 
     // 回復受到的“虛傷”。
@@ -158,6 +352,13 @@ public class BattleResultData
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint + virtualHealthPointDamageRecovered, false, true );
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "回復受到的“虛傷”";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -167,6 +368,13 @@ public class BattleResultData
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint + actualHealthPointDamageRecovered, true );
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "回復受到的“實傷”";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -176,6 +384,13 @@ public class BattleResultData
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.SetMaximumStatePoint( gameCharacterResultData.maximumStatePoint - maximumStatePointDecrease );
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "降低最大以太值";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -186,6 +401,13 @@ public class BattleResultData
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.maximumStatePointIncrease += maximumStatePointIncrease;
         gameCharacterResultData.SetMaximumStatePoint( gameCharacterResultData.maximumStatePoint + maximumStatePointIncrease );
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "提升最大以太值";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -199,6 +421,12 @@ public class BattleResultData
         {
             gameCharacterResultData.SetCurrentStressValue( gameCharacterResultData.currentStressValue - stressValueDamageRecovered );
         }
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "降低當前負荷值";
+
+#endif
 
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
@@ -214,6 +442,12 @@ public class BattleResultData
             gameCharacterResultData.statePointCost += statePointCost;
             gameCharacterResultData.SetCurrentStatePoint( gameCharacterResultData.currentStatePoint - statePointCost );
         }
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "以太值消耗";
+
+#endif
 
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
@@ -244,6 +478,12 @@ public class BattleResultData
                 BattleLogicManagerV2.OnGameCharacterBeingInBreakStatus( gameCharacter );
             }
         }
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "以太值傷害";
+
+#endif
 
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
@@ -285,6 +525,12 @@ public class BattleResultData
             }
         }
 
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "負荷值傷害";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -303,6 +549,13 @@ public class BattleResultData
         gameCharacterResultData.actualHealthPointDamageTaken += actualHealthPointDamage;
         gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint - actualHealthPointDamage, false );
         gameCharacterResultData.SetVirtualHealthPoint( gameCharacterResultData.virtualHealthPoint - actualHealthPointDamage );
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "生命值傷害（實傷）";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -320,6 +573,13 @@ public class BattleResultData
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.virtualHealthPointDamageTaken += virtualHealthPointDamage;
         gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint - virtualHealthPointDamage, true );
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "生命值傷害（虛傷）";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -329,6 +589,13 @@ public class BattleResultData
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.energyMarkerRemainingATLs = renewedEnergyMarkerATLs;
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "更新能量殘響的ATL";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -338,15 +605,29 @@ public class BattleResultData
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.energyMarkerRemainingATLs = 0;
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "消去能量殘響";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
 
-    // 當前以太值回復至最大以太值的100%。
+    // 當前以太值回復至最大以太值的指定巴仙率。
     public BattleResultData AddGameCharacterResultData_RestoreCurrentStatePoint( GameCharacter gameCharacter, float restorationPercentage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.SetCurrentStatePoint( gameCharacterResultData.maximumStatePoint * Mathf.Clamp01( restorationPercentage ) );
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = $"當前以太值回復至最大以太值的{ restorationPercentage.ConvertToIntegerInPercentage() }%";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -356,6 +637,13 @@ public class BattleResultData
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.SetVirtualHealthPoint( gameCharacterResultData.currentHealthPoint );
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "尚未回復的虛傷部分全數轉化為實傷";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -365,6 +653,13 @@ public class BattleResultData
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.currentSkillStrength += valueToChange;
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "改變當前技能的強度";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -374,6 +669,13 @@ public class BattleResultData
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.currentSkillSpeed += valueToChange;
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "改變當前技能的速度";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -412,6 +714,12 @@ public class BattleResultData
 
         gameCharacter.TriggerPassiveSkill( _passiveSkillId );
 
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "發動流向技能";
+
+#endif
+
         AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
         return this;
     }
@@ -437,6 +745,12 @@ public class BattleResultData
             _gameCharacterResultData = new BattleResultData_GameCharacter()
             {
                 gameCharacter = gameCharacter,
+
+#if ALF_DEBUG
+
+                gameCharacterName = gameCharacter.GetCharacterName(),
+
+#endif
                 maximumHealthPoint = gameCharacter.GetMaximumHealthPoint(),
                 currentHealthPoint = gameCharacter.GetCurrentHealthPoint(),
                 virtualHealthPoint = gameCharacter.GetVirtualHealthPoint(),
@@ -453,6 +767,12 @@ public class BattleResultData
                 currentSkillStrength = ( _currentSkill != null ) ? _subskillData.Strength : 0,
                 currentSkillSpeed = ( _currentSkill != null ) ? _subskillData.Speed : 0
             };
+
+#if ALF_DEBUG
+
+            _gameCharacterResultData.lastJsonString = JsonConvert.SerializeObject( _gameCharacterResultData );
+
+#endif
         }
 
         gameCharacter.SetTemporaryBattleResultData( _gameCharacterResultData );

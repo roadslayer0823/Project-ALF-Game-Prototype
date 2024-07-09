@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Skill = DatabaseManager.Skill;
@@ -1272,6 +1273,11 @@ public partial class GameCharacter : MonoBehaviour
     public bool IsCharacterIdentityTypeListEmpty()
     {
         return ( this.characterIdentityTypeList.Count <= 0 );
+    }
+
+    public List<CharacterIdentityType> GetAllCharacterIdentityTypes()
+    {
+        return this.permanentCharacterIdentityTypeList.Concat( this.characterIdentityTypeList ).ToList();
     }
 
     public void SetAssignedSkill( CharacterSkill assignedSkill )

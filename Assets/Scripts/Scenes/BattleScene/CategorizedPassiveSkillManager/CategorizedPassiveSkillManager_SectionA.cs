@@ -83,7 +83,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         switch (gameCharacter.GetSelectedPassiveSkillCategoryType())
         {
             case CategoryType.Life:
-                if(gameCharacterData.GetVirtualDamage() != 0)
+                if(gameCharacterData.GetVirtualHealthDamage() != 0)
                 {
                     //["己方"虛傷]-["己方"最大生命值] *[0.05 + 0.05] *[1 + n]
                     battleResultData.AddGameCharacterResultData_VirtualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint * (0.05f + skill_PSL1_HuoXin_HealthPoint)*(1+lifeCycleValue), out gameCharacterData);
@@ -91,7 +91,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                         + ",virtual health point recover:" + gameCharacterData.virtualHealthPoint;
                     resultLogList.Add(_VirtualHealthPointDamageRecovered);            
                 }
-                if (gameCharacterData.GetVirtualDamage() == 0)
+                if (gameCharacterData.GetVirtualHealthDamage() == 0)
                 {
                     //"己方"生命積分是否 >= 250 ?
                     if(gameCharacter.GetLifeScore() >= 250)
