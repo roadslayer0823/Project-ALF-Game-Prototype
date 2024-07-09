@@ -595,7 +595,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         else
         {
             //["己方"當前以太值]-["對方"以太傷害]*[1+n]
-            battleResultData.AddGameCharacterResultData_StatePointDamage(gameCharacterOne, gameCharacterTwoData.statePointDamageDealt * (1 + hasEnergyMarker));
+            battleResultData.AddGameCharacterResultData_StatePointDamage(gameCharacterOne, gameCharacterTwoData.statePointDamageDealt * (1 + hasEnergyMarker), false, out _);
         }
     }
 

@@ -106,7 +106,6 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         Vector3 currentPosition = Input.mousePosition;
         Vector3 direction = currentPosition - initialPosition;
 
-        //<60 angle == life, >120 == stress, >60 angle and < 120 angle == state
         if(direction != Vector3.zero)
         {
             float angle = Vector3.Angle(Vector3.up, direction);
