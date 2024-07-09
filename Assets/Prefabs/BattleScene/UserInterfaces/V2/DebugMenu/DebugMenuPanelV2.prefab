@@ -1136,6 +1136,14 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: "\u865B\u50B7"
       m_Image: {fileID: 0}
+    - m_Text: "\u751F\u547D\u7A4D\u5206"
+      m_Image: {fileID: 0}
+    - m_Text: "\u5FAA\u74B0\u9EDE"
+      m_Image: {fileID: 0}
+    - m_Text: "\u8CA0\u8377\u7A4D\u5206"
+      m_Image: {fileID: 0}
+    - m_Text: "\u8CA0\u8377\u7B49\u7D1A"
+      m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -2709,7 +2717,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 2}
-  m_SizeDelta: {x: 0, y: 600}
+  m_SizeDelta: {x: 0, y: 720}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &734276809296509319
 CanvasRenderer:
@@ -4763,9 +4771,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93c6f6a14c82744ee8b8151c27ef48c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonLabel: {fileID: 0}
   timeSpeedSlider: {fileID: 7589191568212754989}
   sliderValue: {fileID: 8764839451505650503}
+  buttonImage: {fileID: 0}
+  pauseButton: {fileID: 0}
+  resumeButton: {fileID: 0}
 --- !u!1 &6154671477997506649
 GameObject:
   m_ObjectHideFlags: 0
@@ -5344,6 +5354,22 @@ MonoBehaviour:
     - m_Text: "\u865B\u50B7"
       m_Image: {fileID: 0}
     - m_Text: "\u4F7F\u7528\u6280\u80FDID"
+      m_Image: {fileID: 0}
+    - m_Text: "\u7576\u524D\u70BA\u7121\u6D41\u5411"
+      m_Image: {fileID: 0}
+    - m_Text: "\u7576\u524D\u70BA\u751F\u547D\u6D41"
+      m_Image: {fileID: 0}
+    - m_Text: "\u7576\u524D\u70BA\u4EE5\u592A\u6D41"
+      m_Image: {fileID: 0}
+    - m_Text: "\u7576\u524D\u70BA\u8CA0\u8377\u6D41"
+      m_Image: {fileID: 0}
+    - m_Text: "\u751F\u547D\u7A4D\u5206"
+      m_Image: {fileID: 0}
+    - m_Text: "\u5FAA\u74B0\u9EDE"
+      m_Image: {fileID: 0}
+    - m_Text: "\u8CA0\u8377\u7A4D\u5206"
+      m_Image: {fileID: 0}
+    - m_Text: "\u8CA0\u8377\u7B49\u7D1A"
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5973,7 +5999,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 2}
-  m_SizeDelta: {x: 0, y: 600}
+  m_SizeDelta: {x: 0, y: 720}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &3650668167628262151
 CanvasRenderer:

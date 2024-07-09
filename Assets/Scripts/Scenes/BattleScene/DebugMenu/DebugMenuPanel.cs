@@ -251,6 +251,38 @@ public class DebugMenuPanel : MonoBehaviour
                 this.enemyDisplayInfo.text = errorMessage;
             }
         }
+        else if (statNames == "生命積分") //life score
+        {
+            if (int.TryParse(newStatValue, out int value))
+            {
+                characterObject.AddLifeScore(value);
+                DisplaySuccessText(characterObject == this.playerCharacter);
+            }
+        }
+        else if(statNames == "循環點") //life cycle point
+        {
+            if (int.TryParse(newStatValue, out int value))
+            {
+                characterObject.SetDebugLifeCyclePoint(value);
+                DisplaySuccessText(characterObject == this.playerCharacter);
+            }
+        }
+        else if (statNames == "負荷積分") //stress score
+        {
+            if (int.TryParse(newStatValue, out int value))
+            {
+                characterObject.AddStressScore(value);
+                DisplaySuccessText(characterObject == this.playerCharacter);
+            }
+        }
+        else if (statNames == "負荷等級") //stress level
+        {
+            if (int.TryParse(newStatValue, out int value))
+            {
+                characterObject.SetDebugStressLevel(value);
+                DisplaySuccessText(characterObject == this.playerCharacter);
+            }
+        }
 
         this.battleGameManager.GetBattleAnimationManager().CheckHasBattleEnded();
     }
@@ -265,7 +297,30 @@ public class DebugMenuPanel : MonoBehaviour
     public void OnEnemyButtonClick()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-        ChangeStateValue(this.selectedEnemyStat, this.newEnemyStatValue, this.enemyCharacter);
+        if (this.selectedEnemyStat == "當前為無流向") //none passive
+        {
+            this.enemyCharacter.SetSelectedPassiveSkillCategoryType(CategorizedPassiveSkillManager.CategoryType.None);
+            DisplaySuccessText(this.enemyCharacter == this.playerCharacter);
+        }
+        else if (this.selectedEnemyStat == "當前為生命流") //life passive
+        {
+            this.enemyCharacter.SetSelectedPassiveSkillCategoryType(CategorizedPassiveSkillManager.CategoryType.Life);
+            DisplaySuccessText(this.enemyCharacter == this.playerCharacter);
+        }
+        else if (this.selectedEnemyStat == "當前為以太流") //state passive
+        {
+            this.enemyCharacter.SetSelectedPassiveSkillCategoryType(CategorizedPassiveSkillManager.CategoryType.State);
+            DisplaySuccessText(this.enemyCharacter == this.playerCharacter);
+        }
+        else if (this.selectedEnemyStat == "當前為負荷流") //stress passive
+        {
+            this.enemyCharacter.SetSelectedPassiveSkillCategoryType(CategorizedPassiveSkillManager.CategoryType.Stress);
+            DisplaySuccessText(this.enemyCharacter == this.playerCharacter);
+        }
+        else
+        {
+            ChangeStateValue(this.selectedEnemyStat, this.newEnemyStatValue, this.enemyCharacter);
+        }
     }
 
     public void ClickToToggleDebugMode()
@@ -299,7 +354,8 @@ public class DebugMenuPanel : MonoBehaviour
     public void CheckValueInput(string selectedCharacterStat, TMP_InputField characterStatValue)
     {
         characterStatValue.text = null;
-        if (selectedCharacterStat == "參數")
+        if (selectedCharacterStat == "參數" || selectedCharacterStat == "當前為無流向" || selectedCharacterStat == "當前為生命流"
+            || selectedCharacterStat == "當前為以太流" || selectedCharacterStat == "當前為負荷流")
         {
             characterStatValue.interactable = false;
         }
@@ -321,7 +377,7 @@ public class DebugMenuPanel : MonoBehaviour
             else
             {
                 characterStatValue.contentType = TMP_InputField.ContentType.DecimalNumber;
-                if (selectedCharacterStat == "當前以太值")
+                if (selectedCharacterStat == "當前以太值" || selectedCharacterStat == "生命積分" || selectedCharacterStat == "負荷積分")
                 {
                     characterStatValue.onValidateInput = null;
                 }

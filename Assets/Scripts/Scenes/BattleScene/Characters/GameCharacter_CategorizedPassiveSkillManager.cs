@@ -212,4 +212,15 @@ public partial class GameCharacter : MonoBehaviour
     {
         return this.stressLevel;
     }
+
+    // Debug purpose
+    public void SetDebugLifeCyclePoint(int value)
+    {
+        this.lifeCyclePoint = value;
+    }
+
+    public void SetDebugStressLevel(int value)
+    {
+        this.stressLevel = value;
+    }
 }
