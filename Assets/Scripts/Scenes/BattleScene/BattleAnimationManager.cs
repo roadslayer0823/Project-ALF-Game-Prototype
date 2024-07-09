@@ -798,6 +798,11 @@ public class BattleAnimationManager : MonoBehaviour
         // 進入 Part A 前的結果。
         BattleLogicManagerV2.DetermineResultForPartA( _attacker, _attackTarget );
 
+        if (_attacker.GetIsPlayer())
+        {
+            battleGameManager.GetBattleUiManager().ApplySelectedPassiveType();
+        }
+
         float _skillAnimationLength = 0.0f;
         float _skillCountdownTime = 0.0f;
         float _skillCountdownTimeStartTime = 0.0f;

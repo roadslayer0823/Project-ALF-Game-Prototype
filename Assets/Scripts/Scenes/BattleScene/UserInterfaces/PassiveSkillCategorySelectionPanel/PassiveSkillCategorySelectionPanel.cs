@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,12 +21,12 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     [SerializeField] private Sprite stateTypeIcon;
     [SerializeField] private Sprite stressTypeIcon;
 
+    private PassiveSkillType currentPassiveSkillType = PassiveSkillType.None;
+    private PassiveSkillType highlightedPassiveSkillType = PassiveSkillType.None;
+
     private Vector3 initialPosition;
     private Vector2 touchEndPos;
     private bool isPointerDown;
-   
-    private Action<PassiveSkillType> onPassiveSkillTypeUpdated = null;
-    private PassiveSkillType passiveSkillType = PassiveSkillType.None;
 
     private const string ANIMATION_ID_EXPAND = "Expand";
     private const string ANIMATION_ID_HIDE = "Hide";
@@ -40,10 +39,8 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         StressValue
     }
 
-    public void Initialize( Action<PassiveSkillType> onPassiveSkillTypeUpdated )
+    public void Initialize()
     {
-        this.onPassiveSkillTypeUpdated = onPassiveSkillTypeUpdated;
-
         for (int i = 0; i < passiveSkillSlotsList.Length; i++)
         {
             PassiveSkillSlot _passiveSkillSlot = passiveSkillSlotsList[ i ];
@@ -76,27 +73,17 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         float swipeDistance = Vector2.Distance(this.touchEndPos, initialPosition);
         if (swipeDistance <= 35)
         {
-            DeselectPassiveSkill();
+            if (this.currentPassiveSkillType != PassiveSkillType.None)
+            {
+                SetCurrentPassiveSkillType( PassiveSkillType.None );
+            }
         }
         else
         {
-            OnPassiveSkillSelected();
+            SetCurrentPassiveSkillType( this.highlightedPassiveSkillType );
         }
-    }
 
-    public void DeselectPassiveSkill()
-    {
-        if(GetPassiveSkillType() != PassiveSkillType.None)
-        {
-            PassiveSkillType _passiveSkillType;
-            _passiveSkillType = PassiveSkillType.None;
-            this.onPassiveSkillTypeUpdated?.Invoke(_passiveSkillType);
-            UpdateSelectedButtonUI(_passiveSkillType);
-        }
-        else
-        {
-            return;
-        }
+        this.highlightedPassiveSkillType = PassiveSkillType.None;
     }
 
     public void DraggingDirection()
@@ -116,27 +103,28 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
             }
             if (angle < 60)
             {
-                passiveSkillType = PassiveSkillType.HealthPoint;
+                this.highlightedPassiveSkillType = PassiveSkillType.HealthPoint;
             }
             else if (angle > 60 && angle < 120)
             {
-                passiveSkillType = PassiveSkillType.StatePoint;
+                this.highlightedPassiveSkillType = PassiveSkillType.StatePoint;
             }
             else if (angle > 120)
             {
-                passiveSkillType = PassiveSkillType.StressValue;
+                this.highlightedPassiveSkillType = PassiveSkillType.StressValue;
             }
             else
             {
                 Debug.Log("none skill");
             }
-            UpdateCurrentPassiveSkillSlot(passiveSkillType);
+
+            UpdateCurrentPassiveSkillSlot();
         }
     }
 
-    public void UpdateCurrentPassiveSkillSlot(PassiveSkillType currentPassiveSkill)
+    public void UpdateCurrentPassiveSkillSlot()
     {
-        switch (currentPassiveSkill)
+        switch ( this.highlightedPassiveSkillType )
         {
             case PassiveSkillType.HealthPoint:
                 passiveSkillSlotsList[0].UpdateHighlightPassiveSkillUI();
@@ -158,9 +146,9 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         }
     }
 
-    public void UpdateSelectedButtonUI(PassiveSkillType currentPassiveSkill)
+    public void UpdateSelectedButtonUI()
     {
-        this.passiveSkillButton.sprite = currentPassiveSkill switch
+        this.passiveSkillButton.sprite = this.currentPassiveSkillType switch
         {
             PassiveSkillType.HealthPoint => this.lifeTypeButton,
             PassiveSkillType.StatePoint => this.stateTypeButton,
@@ -170,30 +158,27 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         this.passiveSkillButton.SetNativeSize();
     }
 
-    public void SHowCurrentButtonUI(PassiveSkillType currentPassiveSkill)
+    public void ShowCurrentButtonUI()
     {
-        this.passiveSkillButton.sprite = currentPassiveSkill switch
+        this.passiveSkillButton.sprite = this.currentPassiveSkillType switch
         {
             PassiveSkillType.HealthPoint => this.lifeTypeIcon,
             PassiveSkillType.StatePoint => this.stateTypeIcon,
             PassiveSkillType.StressValue => this.stressTypeIcon,
-            PassiveSkillType.None => this.noneTypeButton
+            _ => this.noneTypeButton
         };
         this.passiveSkillButton.SetNativeSize();
     }
 
-    public void OnPassiveSkillSelected()
+    public void SetCurrentPassiveSkillType( PassiveSkillType currentPassiveSkillType )
     {
-        PassiveSkillType _passiveSkillType;
-
-        _passiveSkillType = GetPassiveSkillType();
-        this.onPassiveSkillTypeUpdated?.Invoke( _passiveSkillType );
-        UpdateSelectedButtonUI(_passiveSkillType);
+        this.currentPassiveSkillType = currentPassiveSkillType;
+        UpdateSelectedButtonUI();
     }
 
-    public PassiveSkillType GetPassiveSkillType()
+    public PassiveSkillType GetCurrentPassiveSkillType()
     {
-        return this.passiveSkillType;
+        return this.currentPassiveSkillType;
     }
 
     public void HidePassiveSkillHolder()

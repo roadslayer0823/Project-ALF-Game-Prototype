@@ -100,7 +100,7 @@ public class BattleUiManager : MonoBehaviour
             this.characterInfoPanelV2.Initialize();
         }
 
-        this.passiveSkillCategorySelectionPanel.Initialize( OnPassiveSkillTypeUpdated );
+        this.passiveSkillCategorySelectionPanel.Initialize();
     }
 
     public void SetSelectedGameCharacter( GameCharacter gameCharacter )
@@ -700,9 +700,11 @@ public class BattleUiManager : MonoBehaviour
 
 #region Categorized Passive Skill Manager
 
-    public void OnPassiveSkillTypeUpdated( PassiveSkillType passiveSkillType )
+    public void ApplySelectedPassiveType()
     {
-        CategorizedPassiveSkillManager.CategoryType _categoryType = passiveSkillType switch
+        PassiveSkillType _passiveSkillType = this.passiveSkillCategorySelectionPanel.GetCurrentPassiveSkillType();
+
+        CategorizedPassiveSkillManager.CategoryType _categoryType = _passiveSkillType switch
         {
             PassiveSkillType.HealthPoint => CategorizedPassiveSkillManager.CategoryType.Life,
             PassiveSkillType.StatePoint => CategorizedPassiveSkillManager.CategoryType.State,
@@ -711,6 +713,7 @@ public class BattleUiManager : MonoBehaviour
         };
 
         this.selectedGameCharacter.SetSelectedPassiveSkillCategoryType( _categoryType );
+        this.passiveSkillCategorySelectionPanel.ShowCurrentButtonUI();
     }
 
 #endregion
