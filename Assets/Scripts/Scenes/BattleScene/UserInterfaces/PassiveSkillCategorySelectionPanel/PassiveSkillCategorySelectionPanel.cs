@@ -12,10 +12,15 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     [SerializeField] private Transform passiveSkillButtonPosition;
     [SerializeField] private Button passiveSkillButtonInteratable;
     [SerializeField] private Image passiveSkillButton;
+
     [SerializeField] private Sprite lifeTypeButton;
     [SerializeField] private Sprite stateTypeButton;
     [SerializeField] private Sprite stressTypeButton;
     [SerializeField] private Sprite noneTypeButton;
+
+    [SerializeField] private Sprite lifeTypeIcon;
+    [SerializeField] private Sprite stateTypeIcon;
+    [SerializeField] private Sprite stressTypeIcon;
 
     private Vector3 initialPosition;
     private Vector2 touchEndPos;
@@ -163,6 +168,19 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
             PassiveSkillType.StressValue => this.stressTypeButton,
             _ => this.noneTypeButton
         };
+        this.passiveSkillButton.SetNativeSize();
+    }
+
+    public void SHowCurrentButtonUI(PassiveSkillType currentPassiveSkill)
+    {
+        this.passiveSkillButton.sprite = currentPassiveSkill switch
+        {
+            PassiveSkillType.HealthPoint => this.lifeTypeIcon,
+            PassiveSkillType.StatePoint => this.stateTypeIcon,
+            PassiveSkillType.StressValue => this.stressTypeIcon,
+            PassiveSkillType.None => this.noneTypeButton
+        };
+        this.passiveSkillButton.SetNativeSize();
     }
 
     public void OnPassiveSkillSelected()
