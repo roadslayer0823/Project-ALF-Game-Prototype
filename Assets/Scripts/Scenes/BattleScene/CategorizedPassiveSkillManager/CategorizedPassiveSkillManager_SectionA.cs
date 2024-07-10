@@ -14,6 +14,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         //skill variable
         float skill_PSL1_HuoXin_HealthPoint = 0.0f;
         float skill_PSL1_HuoXin_MaxStatePoint = 0.0f;
+        float skill_PSL5_XunHuanLi = 0.0f;
         float skill_PSL12_ShengShengBuXi = 0.0f;
 
         float skill_PSE1_GaoYang_Value = 0.0f;
@@ -22,13 +23,45 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         float skill_PSS1_JieYa_CurrentStressValue = 0.0f;
         float skill_PSS1_JieYa_MaxStatePoint = 0.0f;
 
+        //keyword
+        string _formula = "";
+        string _VirtualHealthPointDamageRecovered = "";
+        string currentPassiveSkillType = "當前流向";
+        string currentCharacterName = "角色名稱";
+        string lifeCyclePoint = "循環點";
+        string basicRecover = "基本回復數值";
+        string maxHealthPoint = "最大生命值";
+        string maxStatePoint = "最大以太值";
+        string currentStatePoint = "當前以太值";
+        string currentStressValue = "當前負荷值";
+        string PSL5_XunHuanLi = "5.循環力";
+        string PSL1_HuoXin = "1.活性";
+        string PSL12_ShengShengBuXi = "12.生生不息";
+
         if (gameCharacter.HasCategorizedPassiveSkill( PASSIVE_SKILL_ID_PSL1, out PassiveSkill _passiveSkill ))
         {
             battleResultData.AddGameCharacterResultData_TriggerPassiveSkill( gameCharacter, _passiveSkill, out _ );
             skill_PSL1_HuoXin_HealthPoint = 0.05f;
             skill_PSL1_HuoXin_MaxStatePoint = 0.8f;
         }
+        if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL5, out _passiveSkill))
+        {
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out _);
+            switch (gameCharacter.GetLifeCyclePoint())
+            {
+                case 1:
+                    skill_PSL5_XunHuanLi = 0.2f;
+                    break;
 
+                case 2:
+                    skill_PSL5_XunHuanLi = 0.4f;
+                    break;
+
+                case 3:
+                    skill_PSL5_XunHuanLi = 0.6f;
+                    break;
+            }
+        }
         if (gameCharacter.HasCategorizedPassiveSkill( PASSIVE_SKILL_ID_PSL12, out _passiveSkill ))
         {
             battleResultData.AddGameCharacterResultData_TriggerPassiveSkill( gameCharacter, _passiveSkill, out _ );
@@ -54,42 +87,49 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             skill_PSS1_JieYa_MaxStatePoint = 0.8f;
         }
 
-        //character latest game data
-        float lifeCycleValue = 0.0f;
+        //keyword with value
+        /*
+        string currentIdentityString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> {currentCharacterName} = </color>" + gameCharacter.GetCharacterName();
+        string basicRecoverString = basicRecover + 0.5f;
+        string maxHealthPointString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> {maxHealthPoint} = </color>" + gameCharacterData.maximumHealthPoint;
+        string skill_PSL1_HuoXin_HealthPointString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> {PSL1_HuoXin} = </color>" + skill_PSL1_HuoXin_HealthPoint;
+        string skill_PSL5_XunHuanLiString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> {PSL5_XunHuanLi} = </color>" + lifeCycleValue;
+        string currentLifeCyclePointString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> {lifeCyclePoint} = </color>" + gameCharacter.GetLifeCyclePoint();
+        string skill_PSL12_ShengShengBuXiString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> {PSL12_ShengShengBuXi} = </color>" + skill_PSL12_ShengShengBuXi;*/
 
-        switch (gameCharacter.GetLifeCyclePoint())
-        {
-            case 1:
-                lifeCycleValue = 0.2f;
-                break;
+        string currentPassiveSkillTypeString = TranslatePassiveSkillCategorizedType(gameCharacter.GetSelectedPassiveSkillCategoryType());
+        string currentIdentityString = currentCharacterName + ":" + gameCharacter.GetCharacterName();
+        string basicRecoverString_ZeroPointFive = basicRecover + ":" + 0.5f;
+        string basicRecoverString_Ten = basicRecover + ":" + 10f;
+        string maxHealthPointString = maxHealthPoint + ":" + gameCharacterData.maximumHealthPoint;
+        string maxStatePointString = maxStatePoint + ":" + gameCharacterData.maximumStatePoint;
+        string currentStatePointString = currentStatePoint + ":" + gameCharacterData.currentStatePoint;
+        string currentStressValueString = currentStressValue + ":" + gameCharacterData.currentStressValue;
+        string skill_PSL1_HuoXin_HealthPointString = PSL1_HuoXin + ":" + skill_PSL1_HuoXin_HealthPoint;
+        string skill_PSL1_HuoXin_MaxStatePointString = PSL1_HuoXin + ":" + skill_PSL1_HuoXin_MaxStatePoint;
+        string skill_PSL5_XunHuanLiString = PSL5_XunHuanLi + ":" + skill_PSL5_XunHuanLi;
+        string currentLifeCyclePointString = lifeCyclePoint + ":" + gameCharacter.GetLifeCyclePoint();
+        string skill_PSL12_ShengShengBuXiString = PSL12_ShengShengBuXi + ":" + skill_PSL12_ShengShengBuXi;
 
-            case 2:
-                lifeCycleValue = 0.4f;
-                break;
-
-            case 3:
-                lifeCycleValue = 0.6f;
-                break;
-        }
-
-        //keyword variable
-        string currentIdentityString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> 角色名稱 = </color>" + gameCharacter.GetCharacterName();
-        string currentMaxHealthPointString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> 當前最大生命值 = </color>" + gameCharacterData.maximumHealthPoint;
-        string skill_PSL1_HuoXin_HealthPointString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> 1.活性 = </color>" + skill_PSL1_HuoXin_HealthPoint;
-        string lifeCyclePointString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> 5.循環力 = </color>" + lifeCycleValue;
-        string skill_PSL12_ShengShengBuXiString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> 12.生生不息 = </color>" + skill_PSL12_ShengShengBuXi;
-
-        resultLogList.Add("基本回復效果相關數值結算");
+        resultLogList.Add("基本回復效果相關數值結算" + "\n" +
+                            currentPassiveSkillTypeString);
         switch (gameCharacter.GetSelectedPassiveSkillCategoryType())
         {
             case CategoryType.Life:
+
                 if(gameCharacterData.GetVirtualHealthDamage() != 0)
                 {
                     //["己方"虛傷]-["己方"最大生命值] *[0.05 + 0.05] *[1 + n]
-                    battleResultData.AddGameCharacterResultData_VirtualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint * (0.05f + skill_PSL1_HuoXin_HealthPoint)*(1+lifeCycleValue), out gameCharacterData);
-                    string _VirtualHealthPointDamageRecovered = "當前身份:" + gameCharacter.GetCharacterName() + "當前生命值:" + gameCharacterData.maximumHealthPoint + ",3.活性:" + skill_PSL1_HuoXin_HealthPoint + ",循環點:" + lifeCycleValue
-                        + ",virtual health point recover:" + gameCharacterData.virtualHealthPoint;
-                    resultLogList.Add(_VirtualHealthPointDamageRecovered);            
+                    battleResultData.AddGameCharacterResultData_VirtualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint * (0.05f + skill_PSL1_HuoXin_HealthPoint)*(1+skill_PSL5_XunHuanLi), out gameCharacterData);
+                    _formula = "[己方虛傷] -[己方最大生命值] * [" + basicRecover + "+" + PSL1_HuoXin + "] *[1 +" + PSL5_XunHuanLi + "]";
+                    _VirtualHealthPointDamageRecovered = maxHealthPointString + "\n" +
+                                                                basicRecoverString_ZeroPointFive + "\n" +
+                                                                skill_PSL1_HuoXin_HealthPointString + "\n" +
+                                                                currentLifeCyclePointString + "\n" +
+                                                                skill_PSL5_XunHuanLiString + "\n";
+                    resultLogList.Add(currentIdentityString + "\n" + "\n" +
+                                        "算式:  " + "\n" + _formula + "\n" + "\n" +
+                                        "已使用的參數:" + "\n" + _VirtualHealthPointDamageRecovered);
                 }
                 if (gameCharacterData.GetVirtualHealthDamage() == 0)
                 {
@@ -97,11 +137,12 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     if(gameCharacter.GetLifeScore() >= 250)
                     {
                         //["己方"生命值]+["己方"最大生命值]*[0.05+0.05]*[1+n]*0.5
-                        battleResultData.AddGameCharacterResultData_ActualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint*(0.05f + skill_PSL1_HuoXin_HealthPoint)*(1+lifeCycleValue)*skill_PSL12_ShengShengBuXi, out gameCharacterData);
-                        string _formula = "[己方生命值]+[己方最大生命值]*[基本回復效果 + 1.活性]*[1 + 5.循環力]*12.生生不息";
-                        string _ActualHealthPointDamageRecovered = currentMaxHealthPointString + "\n" +
+                        battleResultData.AddGameCharacterResultData_ActualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint*(0.05f + skill_PSL1_HuoXin_HealthPoint)*(1+skill_PSL5_XunHuanLi)*skill_PSL12_ShengShengBuXi, out gameCharacterData);
+                        _formula = "[己方生命值]+[己方最大生命值]*[" + basicRecover + "+" + PSL1_HuoXin + "]*[1 +" + PSL5_XunHuanLi + "]*" + PSL12_ShengShengBuXi;
+                        string _ActualHealthPointDamageRecovered = maxHealthPointString + "\n" +
+                                                                   currentLifeCyclePointString + "\n" +
                                                                    skill_PSL1_HuoXin_HealthPointString + "\n" +
-                                                                   lifeCyclePointString + "\n" +
+                                                                   skill_PSL5_XunHuanLiString + "\n" +
                                                                    skill_PSL12_ShengShengBuXiString + "\n";
                         resultLogList.Add(currentIdentityString + "\n" + "\n" +
                                          "算式:  " + "\n" + _formula + "\n" + "\n" +
@@ -113,24 +154,36 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 {
                     //["己方"最大以太值]+["己方"當前以太值]
                     battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData);
-                    string _MaximumStatePointIncrease = "當前身份:" + gameCharacter.GetCharacterName() + "當前以太值" + gameCharacterData.currentStatePoint + ", max state point increase" + gameCharacterData.maximumStatePoint;
-                    resultLogList.Add("less than 0" + _MaximumStatePointIncrease);
+                    _formula = "[己方最大以太值]+[己方當前以太值]";
+                    string _MaximumStatePointIncrease = maxStatePointString + "\n" +
+                                                        currentStatePointString;
+                    resultLogList.Add(currentIdentityString + "\n" + "\n" +
+                                         "算式:  " + "\n" + _formula + "\n" + "\n" +
+                                         "已使用的參數:" + "\n" + _MaximumStatePointIncrease);
                 }
 
                 if(gameCharacterData.currentStatePoint > 0) //"己方"當前以太值不是負數
                 {
                     //["己方"最大以太值]+10
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, 10, out gameCharacterData); 
-                    string _MaximumStatePointIncrease = "當前身份:" + gameCharacter.GetCharacterName() + ",基本恢复数值:" + 10 + ",max state point increase" + gameCharacterData.maximumStatePoint;
-                    resultLogList.Add("more than 0" + _MaximumStatePointIncrease);
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, 10, out gameCharacterData);
+                    _formula = "[己方最大以太值]+"+ basicRecover;
+                    string _MaximumStatePointIncrease = maxStatePointString + "\n" +
+                                                        basicRecoverString_Ten;
+                    resultLogList.Add(currentIdentityString + "\n" + "\n" +
+                                         "算式:  " + "\n" + _formula + "\n" + "\n" +
+                                         "已使用的參數:" + "\n" + _MaximumStatePointIncrease);
                 }
 
                 if (!gameCharacterData.IsInStressBreakStatus()) //"己方"是否"負荷崩潰狀態" ?
                 {
                     //["己方"負荷值]-10
                     battleResultData.AddGameCharacterResultData_StressValueDamageRecovered(gameCharacter, 10, out gameCharacterData);
-                    string _StressValueDamageRecovered = "當前身份:" + gameCharacter.GetCharacterName() + ",基本恢复数值:" + 10 + ",stress value recover" + gameCharacterData.currentStressValue;
-                    resultLogList.Add(_StressValueDamageRecovered);
+                    _formula = "[己方負荷值]-" + basicRecover;
+                    string _StressValueDamageRecovered = currentStressValueString + "\n" +
+                                                         basicRecoverString_Ten;
+                    resultLogList.Add(currentIdentityString + "\n" + "\n" +
+                                        "算式:  " + "\n" + _formula + "\n" + "\n" +
+                                        "已使用的參數:" + "\n" + _StressValueDamageRecovered);
                 }
 
                 if (!gameCharacterData.IsInStateBreakStatus()) //"己方"是否"以太崩潰狀態" ?
@@ -138,9 +191,13 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     if (gameCharacterData.currentStatePoint < (gameCharacterData.currentStatePoint * 0.8f)) //["己方"當前以太值]是否 <["己方"當前以太值]的80 %?
                     {
                         //["己方"當前以太值]=["己方"最大以太值 * 0.8(skill_L1_HuoXin_MaximumStatePoint)]
-                        battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacter, gameCharacterData.maximumStatePoint * skill_PSL1_HuoXin_MaxStatePoint, out _);
-                        string _RestoreCurrentStatePoint = "當前身份:" + gameCharacter.GetCharacterName() + ",最大以太值:" + gameCharacterData.maximumStatePoint + ",3.活性" + skill_PSL1_HuoXin_MaxStatePoint + ",restored current stata point" + gameCharacterData.currentStatePoint;
-                        resultLogList.Add(_RestoreCurrentStatePoint);
+                        battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacter, skill_PSL1_HuoXin_MaxStatePoint, out _);
+                        _formula = "[己方當前以太值] =[己方最大以太值 *" + PSL1_HuoXin + "]";
+                        string _RestoreCurrentStatePoint = maxStatePointString + "\n" +
+                                                           skill_PSL1_HuoXin_MaxStatePointString;
+                        resultLogList.Add(currentIdentityString + "\n" + "\n" +
+                                        "算式:  " + "\n" + _formula + "\n" + "\n" +
+                                        "已使用的參數:" + "\n" + _RestoreCurrentStatePoint);
                     }
                 }
                 else
@@ -150,12 +207,25 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 break;
 
             case CategoryType.State:
-                battleResultData.AddGameCharacterResultData_VirtualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint * 0.5f, out gameCharacterData); //["己方"虛傷]-["己方"最大生命值]*[0.5]
-                Debug.Log("virtual health point recover");
+                //["己方"虛傷]-["己方"最大生命值]*[0.5]
+                battleResultData.AddGameCharacterResultData_VirtualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint * 0.5f, out gameCharacterData);
+                _formula = "[己方虛傷] -[己方最大生命值] *[" +basicRecover+ "]";
+                _VirtualHealthPointDamageRecovered = maxHealthPointString + "\n" +
+                                                            basicRecoverString_ZeroPointFive;
+                resultLogList.Add(currentIdentityString + "\n" + "\n" +
+                                       "算式:  " + "\n" + _formula + "\n" + "\n" +
+                                       "已使用的參數:" + "\n" + _VirtualHealthPointDamageRecovered);
+
                 if (gameCharacterData.currentStatePoint < 0) //"己方"當前以太值是否負數?
                 {
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData); //["己方"最大以太值]+["己方"當前以太值]
-                    Debug.Log("max state point increase because stress point less than 0");
+                    //["己方"最大以太值]+["己方"當前以太值]
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData);
+                    _formula = "[己方最大以太值] + [己方當前以太值]";
+                    string _MaximumStatePointIncrease = maxStatePointString + "\n" +
+                                                        currentStatePointString;
+                    resultLogList.Add(currentIdentityString + "\n" + "\n" +
+                                      "算式:  " + "\n" + _formula + "\n" + "\n" +
+                                      "已使用的參數:" + "\n" + _MaximumStatePointIncrease);
                 }
                 if(gameCharacterData.currentStatePoint > 0)
                 {
