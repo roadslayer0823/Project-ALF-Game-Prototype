@@ -5,6 +5,7 @@ public class PassiveSkillSlot : MonoBehaviour
 {
     [Header("Passive Skill")]
     [SerializeField] private Image passiveSkillSlot;
+    [SerializeField] public PassiveSkillCategorySelectionPanel.PassiveSkillType passiveSkillTypeSlot = PassiveSkillCategorySelectionPanel.PassiveSkillType.None;
 
     [Header("Highlight Passive Skill UI")]
     [SerializeField] private Image highLightPassiveSkill;
@@ -13,7 +14,6 @@ public class PassiveSkillSlot : MonoBehaviour
     [SerializeField] private Image passiveSkillLogo;
 
     private PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel = null;
-
 
     public void Initialize( PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel )
     {

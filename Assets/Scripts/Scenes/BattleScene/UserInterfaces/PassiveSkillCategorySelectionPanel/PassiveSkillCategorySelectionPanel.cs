@@ -124,25 +124,16 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
 
     public void UpdateCurrentPassiveSkillSlot()
     {
-        switch ( this.highlightedPassiveSkillType )
+        for(int i=0; i<passiveSkillSlotsList.Length; i++)
         {
-            case PassiveSkillType.HealthPoint:
-                passiveSkillSlotsList[0].UpdateHighlightPassiveSkillUI();
-                passiveSkillSlotsList[1].UpdateDefaultPassiveSkillUI();
-                passiveSkillSlotsList[2].UpdateDefaultPassiveSkillUI();
-                break;
-
-            case PassiveSkillType.StatePoint:
-                passiveSkillSlotsList[2].UpdateDefaultPassiveSkillUI();
-                passiveSkillSlotsList[0].UpdateDefaultPassiveSkillUI();
-                passiveSkillSlotsList[1].UpdateHighlightPassiveSkillUI();
-                break;
-
-            case PassiveSkillType.StressValue:
-                passiveSkillSlotsList[2].UpdateHighlightPassiveSkillUI();
-                passiveSkillSlotsList[1].UpdateDefaultPassiveSkillUI();
-                passiveSkillSlotsList[0].UpdateDefaultPassiveSkillUI();
-                break;
+            if(this.highlightedPassiveSkillType == passiveSkillSlotsList[i].passiveSkillTypeSlot)
+            {
+                passiveSkillSlotsList[i].UpdateHighlightPassiveSkillUI();
+            }
+            else
+            {
+                passiveSkillSlotsList[i].UpdateDefaultPassiveSkillUI();
+            }
         }
     }
 
