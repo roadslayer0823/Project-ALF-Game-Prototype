@@ -1,5 +1,6 @@
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
+using SkillType = DatabaseManager.Skill.SkillType;
 using RangeType = DatabaseManager.Subskill.RangeType;
 
 public class TerminologyManager
@@ -13,78 +14,29 @@ public class TerminologyManager
     public const string REPULSE_COMMAND_TIME = "迎擊指令";
     public const string COUNTER_COMMAND_TIME = "反擊指令";
 
-    public static string GetSkillTypeText( Skill.SkillType skillType )
+    public static string GetSkillTypeText( SkillType skillType )
     {
-        string _skillTypeText = "";
-
-        switch ( skillType )
+        return skillType switch
         {
-            case Skill.SkillType.active:
-
-                _skillTypeText = "主動技能";
-
-                break;
-
-            case Skill.SkillType.backend:
-
-                _skillTypeText = "後台技能";
-
-                break;
-
-            case Skill.SkillType.repulse:
-
-                _skillTypeText = "迎擊技能";
-
-                break;
-
-            case Skill.SkillType.derived:
-
-                _skillTypeText = "派生技能";
-
-                break;
-
-            case Skill.SkillType.counter:
-
-                _skillTypeText = "反擊技能";
-
-                break;
-        }
-
-        return _skillTypeText;
+            SkillType.active => "主動技能",
+            SkillType.backend => "後台技能",
+            SkillType.repulse => "迎擊技能",
+            SkillType.derived => "派生技能",
+            SkillType.counter => "反擊技能",
+            _ => ""
+        };
     }
 
     public static string GetSpeedLevelText( int speedLevel )
     {
-        string _speedLevelText = "";
-
-        switch ( speedLevel )
+        return speedLevel switch
         {
-            case 1:
-
-                _speedLevelText = "普速";
-
-                break;
-
-            case 2:
-
-                _speedLevelText = "快速";
-
-                break;
-
-            case 3:
-
-                _speedLevelText = "迅速";
-
-                break;
-
-            case 4:
-
-                _speedLevelText = "神速";
-
-                break;
-        }
-
-        return _speedLevelText;
+            1 => "普速",
+            2 => "快速",
+            3 => "迅速",
+            4 => "神速",
+            _ => ""
+        };
     }
 
     public static string GetWideEffectTypeText( Skill skillData )
@@ -104,24 +56,13 @@ public class TerminologyManager
 
     public static string GetRangeTypeText( RangeType rangeType )
     {
-        string _rangeTypeText = "";
-
-        switch ( rangeType )
+        return rangeType switch
         {
-            case RangeType.melee:
-
-                _rangeTypeText = "近戰";
-
-                break;
-
-            case RangeType.ranged:
-
-                _rangeTypeText = "遠程";
-
-                break;
-        }
-
-        return _rangeTypeText;
+            RangeType.melee => "近戰",
+            RangeType.ranged => "遠程",
+            RangeType.melee_or_ranged => "遠/近",
+            _ => ""
+        };
     }
 
     public static string GetSkillInformationText( CharacterSkill characterSkill )
@@ -157,4 +98,14 @@ public class TerminologyManager
         };
     }
 
+    public static string GetDistanceTypeText( BattleDistanceManager.DistanceType distanceType )
+    {
+        return distanceType switch
+        {
+            BattleDistanceManager.DistanceType.Near => "近距離",
+            BattleDistanceManager.DistanceType.Normal => "中距離",
+            BattleDistanceManager.DistanceType.Far => "遠距離",
+            _ => ""
+        };
+    }
 }

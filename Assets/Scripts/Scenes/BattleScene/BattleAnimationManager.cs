@@ -88,6 +88,7 @@ public class BattleAnimationManager : MonoBehaviour
         OnTransition,
         OnNormalSkillBeingUsed,
         OnObservingSkillBeingUsed,
+        OnCategorizedPassiveTypeUpdated,
         OnDeath
     }
 
@@ -766,8 +767,10 @@ public class BattleAnimationManager : MonoBehaviour
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定先後手方</color>" );
 
-        var ( _attacker, _attackTarget ) = BattleLogicManagerV2.DetermineLeadAndImproviser( this.battleGameManager, _playerCharacter, _enemyCharacter );
+        var ( _attacker, _attackTarget ) = BattleLogicManagerV2.DetermineLeadAndImproviser( this.battleGameManager, _playerCharacter, _enemyCharacter, out List<string> _resultLogList );
+        ShowBattleLog( _resultLogList );
 
+        // 如果沒有“先手方”和“後手方”，當前 ATL 結束，直接進入下一個 ATL。
         if (_attacker == null || _attackTarget == null)
         {
             BattleLog.Instance.AddOnScreenBattleLog( "沒有先後手方。當前 ATL 結束。" );
@@ -777,9 +780,12 @@ public class BattleAnimationManager : MonoBehaviour
             yield break;
         }
 
-        // 有“先手方”和“後手方”。
+        // “先手方”發動技能。
+        _attacker.ApplyAssignedSkillAsCurrentSkill();
 
-        // TODO: 調用“判定距離中途結果”。BattleDistanceManager.UpdateHalfwayDistanceResult();
+        // 調用“判定距離中途結果”。
+        battleGameManager.GetBattleDistanceManager().UpdateHalfwayDistanceResult( _attacker, out _resultLogList );
+        ShowBattleLog( _resultLogList );
 
         if (battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen())
         {
@@ -790,18 +796,8 @@ public class BattleAnimationManager : MonoBehaviour
                                                  + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“先手方”</color>，"
                                                  + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“后手方”</color>。" );
 
-        // “先手方”發動技能。
-        _attacker.ApplyAssignedSkillAsCurrentSkill();
         _attacker.PlayCharacterAnimation( "Idle" );
         _attackTarget.PlayCharacterAnimation( "Idle" );
-
-        // 進入 Part A 前的結果。
-        BattleLogicManagerV2.DetermineResultForPartA( _attacker, _attackTarget );
-
-        if (_attacker.GetIsPlayer())
-        {
-            battleGameManager.GetBattleUiManager().ApplySelectedPassiveType();
-        }
 
         float _skillAnimationLength = 0.0f;
         float _skillCountdownTime = 0.0f;
@@ -904,6 +900,8 @@ public class BattleAnimationManager : MonoBehaviour
         _attacker.SetIsCounterAttacking( false );
         _attackTarget.SetIsCounterAttacking( false );
 
+        // 是否有一方按下“派生技能”？
+        // YES
         // “先手方”使用派生技能。
         if (_attackerSkillType == Skill.SkillType.derived)
         {
@@ -916,6 +914,8 @@ public class BattleAnimationManager : MonoBehaviour
 
             yield break;
         }
+        // NO
+        // TODO: 先手方是否在“近戰指令時間”或“近戰反擊指令時間”按下主動或反擊技能？
         // “先手方”使用反擊技能。
         else if (_isAttackerCounterAttacking)
         {
@@ -924,6 +924,24 @@ public class BattleAnimationManager : MonoBehaviour
         }
         else
         {
+            // 頁面：Part A前
+
+            // 更新"先手方"當前流向
+            _attacker.TriggerEvent( AnimationEvent.OnCategorizedPassiveTypeUpdated );
+
+            // 頁面：發動流向效果A
+            _battleResultData = BattleLogicManagerV2.TriggerCategorizedPassiveSkillEffectA( _attacker );
+            ShowBattleLog( _battleResultData.GetResultLogList() );
+
+            // TODO: 判定PART A演出
+
+            // 頁面：Part A
+
+            // "先手方"進入【 Part A結算 】。
+            _battleResultData = BattleLogicManagerV2.DetermineResultForPartA( _attacker, _attackTarget );
+            ShowBattleLog( _battleResultData.GetResultLogList() );
+
+            // "後手方"進入【 迎擊指令時間 】。
             _attackTarget.SetIsInRepulseCommandTime( true );
 
             //_skillAnimationLength = GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f;
@@ -1322,12 +1340,7 @@ public class BattleAnimationManager : MonoBehaviour
         battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser );
         attackerBattleResultData = battleResultData.GetGameCharacterResultData( attacker );
         attackTargetBattleResultData = battleResultData.GetGameCharacterResultData( attackTarget );
-
-        List<string> _resultLogList = battleResultData.GetResultLogList();
-        for (int i = 0; i < _resultLogList.Count; i++)
-        {
-            BattleLog.Instance.AddOnScreenBattleLog( _resultLogList[ i ] );
-        }
+        ShowBattleLog( battleResultData.GetResultLogList() );
 
         if (_isAttackTargetUsingSkill)
         {
@@ -1351,11 +1364,7 @@ public class BattleAnimationManager : MonoBehaviour
         GameCharacter[] _gameCharacters = new GameCharacter[] { attacker, attackTarget };
 
         BattleLogicManagerV2.OnTheEndOfPartB( _gameCharacters, out List<string> _resultLogList );
-
-        for (int i = 0; i < _resultLogList.Count; i++)
-        {
-            BattleLog.Instance.AddOnScreenBattleLog( _resultLogList[ i ] );
-        }
+        ShowBattleLog( _resultLogList );
 
         this.battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
 
@@ -2091,5 +2100,13 @@ public class BattleAnimationManager : MonoBehaviour
     private void ShowSkillInfo( GameCharacter attacker, GameCharacter attackTarget )
     {
         this.skillPromptPanel.ShowCasterCurrentSkillInfo( attacker );
+    }
+
+    private void ShowBattleLog( List<string> resultLogList )
+    {
+        for (int i = 0; i < resultLogList.Count; i++)
+        {
+            BattleLog.Instance.AddOnScreenBattleLog( resultLogList[ i ] );
+        }
     }
 }

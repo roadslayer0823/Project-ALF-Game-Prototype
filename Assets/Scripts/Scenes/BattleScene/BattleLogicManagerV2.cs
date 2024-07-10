@@ -115,8 +115,10 @@ public partial class BattleLogicManagerV2
         return ( IsAttackingSkill( _gameCharacterOne_Skill ) || IsAttackingSkill( _gameCharacterTwo_Skill ) );
     }
 
-    public static ( GameCharacter lead, GameCharacter improviser ) DetermineLeadAndImproviser( BattleGameManager battleGameManager, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
+    public static ( GameCharacter lead, GameCharacter improviser ) DetermineLeadAndImproviser( BattleGameManager battleGameManager, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo, out List<string> resultLogList )
     {
+        resultLogList = new List<string>();
+
         CharacterSkill _gameCharacterOne_Skill = gameCharacterOne.GetAssignedSkill();
         CharacterSkill _gameCharacterTwo_Skill = gameCharacterTwo.GetAssignedSkill();
 
@@ -134,7 +136,7 @@ public partial class BattleLogicManagerV2
                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterOne_Skill_SubskillData.DisplayName }</color>"
                            + $" （{ TerminologyManager.GetSkillInformationText( _gameCharacterOne_Skill ) }）。";
 
-            BattleLog.Instance.AddOnScreenBattleLog( _logOne );
+            resultLogList.Add( _logOne );
         }
 
         if (_isGameCharacterTwoUsingAttackingSkill)
@@ -145,13 +147,13 @@ public partial class BattleLogicManagerV2
                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterTwo_Skill_SubskillData.DisplayName }</color>"
                            + $" （{ TerminologyManager.GetSkillInformationText( _gameCharacterTwo_Skill ) }）。";
 
-            BattleLog.Instance.AddOnScreenBattleLog( _logTwo );
+            resultLogList.Add( _logTwo );
         }
 
         // 如果雙方都有按下主動技能或反擊技能：
         if (_isGameCharacterOneUsingAttackingSkill && _isGameCharacterTwoUsingAttackingSkill)
         {
-            BattleLog.Instance.AddOnScreenBattleLog( "雙方都有按下主動技能或反擊技能。" );
+            resultLogList.Add( "雙方都有按下主動技能或反擊技能。" );
 
             int _gameCharacterOne_Skill_Speed = _gameCharacterOne_Skill_SubskillData.Speed + gameCharacterOne.GetCurrentSkillStatIncrement();
             int _gameCharacterTwo_Skill_Speed = _gameCharacterTwo_Skill_SubskillData.Speed + gameCharacterTwo.GetCurrentSkillStatIncrement();
@@ -172,8 +174,8 @@ public partial class BattleLogicManagerV2
                 }
             }
 
-            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>按下了的技能的速度是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.GetSpeedLevelText( _gameCharacterOne_Skill_Speed ) }</color>。" );
-            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>按下了的技能的速度是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.GetSpeedLevelText( _gameCharacterTwo_Skill_Speed ) }</color>。" );
+            resultLogList.Add( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>按下了的技能的速度是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.GetSpeedLevelText( _gameCharacterOne_Skill_Speed ) }</color>。" );
+            resultLogList.Add( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>按下了的技能的速度是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.GetSpeedLevelText( _gameCharacterTwo_Skill_Speed ) }</color>。" );
 
             // 對比雙方技能的速度。
             if (_gameCharacterOne_Skill_Speed > _gameCharacterTwo_Skill_Speed)
@@ -189,7 +191,7 @@ public partial class BattleLogicManagerV2
             // 如果雙方的技能速度相同：
             else
             {
-                BattleLog.Instance.AddOnScreenBattleLog( "雙方按下了的技能速度相同。" );
+                resultLogList.Add( "雙方按下了的技能速度相同。" );
 
                 bool _isGameCharacterOneCounterAttacking = gameCharacterOne.GetIsCounterAttacking();
                 bool _isGameCharacterTwoCounterAttacking = gameCharacterTwo.GetIsCounterAttacking();
@@ -197,8 +199,21 @@ public partial class BattleLogicManagerV2
                 // 如果有一方在【 反擊指令時間 】階段按下主動技能或反擊技能：
                 if (_isGameCharacterOneCounterAttacking || _isGameCharacterTwoCounterAttacking)
                 {
-                    gameCharacterOne.AddCharacterIdentityType( ( _isGameCharacterOneCounterAttacking ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
-                    gameCharacterTwo.AddCharacterIdentityType( ( _isGameCharacterTwoCounterAttacking ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
+                    if (_isGameCharacterOneCounterAttacking)
+                    {
+                        resultLogList.Add( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>在【 反擊指令時間 】階段按下主動技能或反擊技能。" );
+
+                        gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Lead );
+                        gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Improviser );
+                    }
+
+                    if (_isGameCharacterTwoCounterAttacking)
+                    {
+                        resultLogList.Add( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>在【 反擊指令時間 】階段按下主動技能或反擊技能。" );
+
+                        gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Improviser );
+                        gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Lead );
+                    }
                 }
                 // 否則：
                 else
@@ -217,8 +232,8 @@ public partial class BattleLogicManagerV2
                         _gameCharacterTwo_StatePoint = _minimumCurrentStatePoint;
                     }
 
-                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>的當前以太值（扣除技能以太值消耗後）是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterOne_StatePoint }</color>。" );
-                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>的當前以太值（扣除技能以太值消耗後）是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterTwo_StatePoint }</color>。" );
+                    resultLogList.Add( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>的當前以太值（扣除技能以太值消耗後）是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterOne_StatePoint }</color>。" );
+                    resultLogList.Add( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>的當前以太值（扣除技能以太值消耗後）是<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacterTwo_StatePoint }</color>。" );
 
                     // 對比雙方的當前以太值（扣除了按下的技能的以太值消耗後的數值）：
                     if (_gameCharacterOne_StatePoint > _gameCharacterTwo_StatePoint)
@@ -234,7 +249,7 @@ public partial class BattleLogicManagerV2
                     // 如果雙方的當前以太值（扣除了按下的技能的以太值消耗後的數值）也是相同:
                     else
                     {
-                        BattleLog.Instance.AddOnScreenBattleLog( "雙方的當前以太值（扣除技能以太值消耗後）是相同。" );
+                        resultLogList.Add( "雙方的當前以太值（扣除技能以太值消耗後）是相同。因此，隨機決定先手方。" );
 
                         if (Random.value < 0.5f)
                         {
@@ -253,15 +268,26 @@ public partial class BattleLogicManagerV2
         // 如果只有一方按下主動技能或反擊技能：
         else if (_isGameCharacterOneUsingAttackingSkill || _isGameCharacterTwoUsingAttackingSkill)
         {
-            BattleLog.Instance.AddOnScreenBattleLog( "只有一方按下主動技能或反擊技能。" );
+            if (_isGameCharacterOneUsingAttackingSkill)
+            {
+                resultLogList.Add( $"只有一方（<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>）按下主動技能或反擊技能。" );
 
-            gameCharacterOne.AddCharacterIdentityType( ( _isGameCharacterOneUsingAttackingSkill ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
-            gameCharacterTwo.AddCharacterIdentityType( ( _isGameCharacterTwoUsingAttackingSkill ) ? CharacterIdentityType.Lead : CharacterIdentityType.Improviser );
+                gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Lead );
+                gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Improviser );
+            }
+
+            if (_isGameCharacterTwoUsingAttackingSkill)
+            {
+                resultLogList.Add( $"只有一方（<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>）按下主動技能或反擊技能。" );
+
+                gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Improviser );
+                gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Lead );
+            }
         }
         // 否則：
         else
         {
-            BattleLog.Instance.AddOnScreenBattleLog( "雙方都沒有按下主動技能或反擊技能。" );
+            resultLogList.Add( "雙方都沒有按下主動技能或反擊技能。" );
         }
 
         if (gameCharacterOne.HasCharacterIdentityType( CharacterIdentityType.Lead )
@@ -279,6 +305,33 @@ public partial class BattleLogicManagerV2
         return ( lead: null, improviser: null );
     }
 
+    // 發動流向效果A
+    public static BattleResultData TriggerCategorizedPassiveSkillEffectA( GameCharacter gameCharacter )
+    {
+        BattleResultData _battleResultData = new();
+
+        // 開始檢查流向效果
+        CategorizedPassiveSkillManager.CategoryType _selectedPassiveSkillCategoryType = gameCharacter.GetSelectedPassiveSkillCategoryType();
+        CategorizedPassiveSkillManager.CategoryType _lastSelectedPassiveSkillCategoryType = gameCharacter.GetLastSelectedPassiveSkillCategoryType();
+
+        // "己方"是否從"生命流"》"以太流"/"負荷流"?
+        // YES
+        if (_lastSelectedPassiveSkillCategoryType == CategorizedPassiveSkillManager.CategoryType.Life
+            && _selectedPassiveSkillCategoryType is CategorizedPassiveSkillManager.CategoryType.State or CategorizedPassiveSkillManager.CategoryType.Stress)
+        {
+            CategorizedPassiveSkillManager.RunCyclePointConvert( ref _battleResultData, gameCharacter );
+        }
+        // NO
+        // "己方"的當前流向是否"生命流"?
+        // YES
+        else if (_selectedPassiveSkillCategoryType == CategorizedPassiveSkillManager.CategoryType.Life)
+        {
+            CategorizedPassiveSkillManager.CalculateLifeCategoryNiJingLiuZhuanScore( ref _battleResultData, gameCharacter );
+        }
+
+        return _battleResultData;
+    }
+
     public static void DeclareAssaulterAndRecipient( GameCharacter assaulter, GameCharacter recipient )
     {
         assaulter.AddCharacterIdentityType( CharacterIdentityType.Assaulter );
@@ -294,18 +347,26 @@ public partial class BattleLogicManagerV2
         assaulter.AddCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
     }
 
-    public static void DetermineResultForPartA( GameCharacter lead, GameCharacter improviser )
+    // 頁面：Part A結算
+    public static BattleResultData DetermineResultForPartA( GameCharacter lead, GameCharacter improviser )
     {
-        CharacterSkill _leadCurrentSkill = lead.GetCurrentSkill();
-        RangeType _leadCurrentSkillRangeType = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
+        BattleResultData _battleResultData = new();
 
-        // TODO: Temporarily determine that the lead's current skill's range type is melee if it is melee-or-ranged.
-        if (_leadCurrentSkillRangeType == RangeType.melee_or_ranged)
+        // 先手方使用技能時當前以太值結算
+        CategorizedPassiveSkillManager.CalculateLeadCurrentStatePoint( ref _battleResultData, lead, improviser );
+
+        // 先手方使用技能時最大以太值結算
+        CategorizedPassiveSkillManager.CalculateMaximumStatePoint( ref _battleResultData, lead );
+
+        // "先手方"的當前流向是否"以太流"?
+        // YES
+        if (lead.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.State)
         {
-            _leadCurrentSkillRangeType = RangeType.melee;
+            // 先手方使用技能時當前以太值第2次結算
+            CategorizedPassiveSkillManager.RunCurrentStatePointSecondTimeCalculation( ref _battleResultData, lead );
         }
 
-        lead.SetCurrentSkillRangeType( _leadCurrentSkillRangeType );
+        return _battleResultData;
     }
 
     public static BattleResultData DetermineResultForPartB( GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser )

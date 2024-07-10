@@ -150,6 +150,12 @@ public class PlayerCharacter : GameCharacter
 
                 break;
 
+            case AnimationEvent.OnCategorizedPassiveTypeUpdated:
+
+                battleGameManager.GetBattleUiManager().ApplySelectedPassiveType();
+
+                break;
+
             case AnimationEvent.OnDeath:
 
                 _battleUiManager.UpdateSkillButtons();

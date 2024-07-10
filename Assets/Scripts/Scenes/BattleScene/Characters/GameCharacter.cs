@@ -60,7 +60,7 @@ public partial class GameCharacter : MonoBehaviour
     private GameCharacter currentAttackTarget = null;
     private float skillCountdownTime = 0.0f;
     private int counterAttacks = 0;
-    private bool isAbleToUseSkill = false;
+    [Obsolete] private bool isAbleToUseSkill = false;
     private List<PopUpDisplayInfo> popUpDisplayInfoList = new();
 
     // Break Status
@@ -946,30 +946,36 @@ public partial class GameCharacter : MonoBehaviour
     public void SetCurrentSkill( CharacterSkill currentSkill )
     {
         this.currentSkill = currentSkill;
-        this.isAbleToUseSkill = true;
 
-        this.currentSkillStatIncrement = 0;
-        if (this.currentAttacker != null)
+        if (this.currentSkill != null)
         {
-            CharacterSkill _currentAttackerSkill = this.currentAttacker.GetCurrentSkill();
-            if (_currentAttackerSkill != null)
-            {
-                for (int i = 0; i < this.selectedBackendSkillList.Count; i++)
-                {
-                    CharacterSkill _backendSkill = this.selectedBackendSkillList[ i ];
-                    if (_backendSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
-                    {
-                        ObservedSkillData _observedSkillData = _backendSkill.GetObservedSkillData( _currentAttackerSkill.GetCharacterSubskillData().GetSubskillData().FeatureId );
-                        if (_observedSkillData != null)
-                        {
-                            this.currentSkillStatIncrement = Mathf.FloorToInt( _observedSkillData.GetCurrentObservedRate() );
-                        }
-
-                        break;
-                    }
-                }
-            }
+            SetCurrentSkillRangeType( this.currentSkill.GetCharacterSubskillData().GetSubskillData().Range );
         }
+
+        //this.isAbleToUseSkill = true;
+
+        //this.currentSkillStatIncrement = 0;
+        //if (this.currentAttacker != null)
+        //{
+        //    CharacterSkill _currentAttackerSkill = this.currentAttacker.GetCurrentSkill();
+        //    if (_currentAttackerSkill != null)
+        //    {
+        //        for (int i = 0; i < this.selectedBackendSkillList.Count; i++)
+        //        {
+        //            CharacterSkill _backendSkill = this.selectedBackendSkillList[ i ];
+        //            if (_backendSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill)
+        //            {
+        //                ObservedSkillData _observedSkillData = _backendSkill.GetObservedSkillData( _currentAttackerSkill.GetCharacterSubskillData().GetSubskillData().FeatureId );
+        //                if (_observedSkillData != null)
+        //                {
+        //                    this.currentSkillStatIncrement = Mathf.FloorToInt( _observedSkillData.GetCurrentObservedRate() );
+        //                }
+
+        //                break;
+        //            }
+        //        }
+        //    }
+        //}
 
         this.onCharacterInfoUpdated?.Invoke();
     }

@@ -272,6 +272,12 @@ public class EnemyCharacter : GameCharacter
             case AnimationEvent.OnObservingSkillBeingUsed:
                 break;
 
+            case AnimationEvent.OnCategorizedPassiveTypeUpdated:
+
+                this.SetSelectedPassiveSkillCategoryType( new List<CategorizedPassiveSkillManager.CategoryType> { CategorizedPassiveSkillManager.CategoryType.Life, CategorizedPassiveSkillManager.CategoryType.State, CategorizedPassiveSkillManager.CategoryType.Stress }.GetRandomElement() );
+
+                break;
+
             case AnimationEvent.OnDeath:
                 break;
         }
