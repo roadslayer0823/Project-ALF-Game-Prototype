@@ -145,4 +145,16 @@ public class TerminologyManager
 
         return _skillInformationText;
     }
+
+    public static string GetPassiveSkillCategorizedType(CategorizedPassiveSkillManager.CategoryType categoryType)
+    {
+        return categoryType switch
+        {
+            CategorizedPassiveSkillManager.CategoryType.Life => "生命流",
+            CategorizedPassiveSkillManager.CategoryType.State => "以太流",
+            CategorizedPassiveSkillManager.CategoryType.Stress => "負荷流",
+            _ => "無流向",
+        };
+    }
+
 }
