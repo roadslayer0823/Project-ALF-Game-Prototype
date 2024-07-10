@@ -308,10 +308,8 @@ public partial class BattleLogicManagerV2
         lead.SetCurrentSkillRangeType( _leadCurrentSkillRangeType );
     }
 
-    public static BattleResultData DetermineResultForPartB( GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser, out List<string> resultLogList )
+    public static BattleResultData DetermineResultForPartB( GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser )
     {
-        resultLogList = new List<string>();
-
         BattleResultData _battleResultData = new();
         winner = null;
         loser = null;
@@ -335,7 +333,7 @@ public partial class BattleLogicManagerV2
                 float _stressValueDamageMultiplierOnRepulseForLoser = GameConfiguration.Instance.GetBattleConfiguration().GetStressValueDamageMultiplierOnRepulseForLoser();
 
                 // 判定迎擊中途結果。
-                CompareCharacterSkillAttributes( ActionType.Repulse, lead, improviser, out winner, out loser, ref resultLogList );
+                CompareCharacterSkillAttributes( ref _battleResultData, ActionType.Repulse, lead, improviser, out winner, out loser );
 
                 // ----------------------------------------------------------------------------------------------------
                 // Battle Log
@@ -354,7 +352,7 @@ public partial class BattleLogicManagerV2
                     _repulseResultLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>雙方打平</color>。";
                 }
 
-                resultLogList.Add( _repulseResultLog );
+                _battleResultData.AddResultLog( _repulseResultLog );
 
                 // ----------------------------------------------------------------------------------------------------
 
@@ -365,7 +363,7 @@ public partial class BattleLogicManagerV2
                     improviser.AddCharacterIdentityType( CharacterIdentityType.Deuce );
 
                     // 進入“迎擊平手方結算”。
-                    SettleResultForRepulseDraw( ref _battleResultData, ref resultLogList, lead, improviser );
+                    SettleResultForRepulseDraw( ref _battleResultData, lead, improviser );
                 }
 
                 if (_leadRangeType == RangeType.melee)
@@ -376,21 +374,21 @@ public partial class BattleLogicManagerV2
                         {
                             // 先手近戰攻擊，後手近戰迎擊，先手攻擊勝利。
                             DeclareAssaulterAndRecipient( assaulter: lead, recipient: improviser );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
                         }
                         else if (winner == improviser)
                         {
                             // 先手近戰攻擊，後手近戰迎擊，後手迎擊勝利。
                             DeclareAssaulterAndRecipient( assaulter: improviser, recipient: lead );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
                         }
                         else
                         {
                             // 先手近戰攻擊，後手近戰迎擊，雙方打平。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true );
                         }
                     }
                     else if (_improviserRangeType == RangeType.ranged)
@@ -398,18 +396,18 @@ public partial class BattleLogicManagerV2
                         if (winner == lead)
                         {
                             // 先手近戰攻擊，後手遠程迎擊，先手攻擊勝利。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
                         }
                         else if (winner == improviser)
                         {
                             // 先手近戰攻擊，後手遠程迎擊，後手迎擊勝利。
                             DeclareAssaulterAndRecipient( assaulter: improviser, recipient: lead );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
                         }
                         else
                         {
                             // 先手近戰攻擊，後手遠程迎擊，雙方打平。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true );
                         }
                     }
                 }
@@ -421,17 +419,17 @@ public partial class BattleLogicManagerV2
                         {
                             // 先手遠程攻擊，後手近戰迎擊，先手攻擊勝利。
                             DeclareAssaulterAndRecipient( assaulter: lead, recipient: improviser );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
                         }
                         else if (winner == improviser)
                         {
                             // 先手遠程攻擊，後手近戰迎擊，後手迎擊勝利。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
                         }
                         else
                         {
                             // 先手遠程攻擊，後手近戰迎擊，雙方打平。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true );
                         }
                     }
                     else if (_improviserRangeType == RangeType.ranged)
@@ -440,13 +438,13 @@ public partial class BattleLogicManagerV2
                         {
                             // 先手遠程攻擊，後手近戰迎擊，先手攻擊勝利。
                             DeclareAssaulterAndRecipient( assaulter: lead, recipient: improviser );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true );
                         }
                         else if (winner == improviser)
                         {
                             // 先手遠程攻擊，後手近戰迎擊，後手迎擊勝利。
                             DeclareAssaulterAndRecipient( assaulter: improviser, recipient: lead );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true );
                         }
                         else
                         {
@@ -460,12 +458,12 @@ public partial class BattleLogicManagerV2
                 if (_improviserSubskillData.IsDefendingSkill)
                 {
                     // 判定防禦成敗。
-                    CompareCharacterSkillAttributes( ActionType.Defend, lead, improviser, out winner, out loser, ref resultLogList );
+                    CompareCharacterSkillAttributes( ref _battleResultData, ActionType.Defend, lead, improviser, out winner, out loser );
                 }
                 else if (_improviserSubskillData.IsEvadingSkill)
                 {
                     // 判定迴避成敗。
-                    CompareCharacterSkillAttributes( ActionType.Evade, lead, improviser, out winner, out loser, ref resultLogList );
+                    CompareCharacterSkillAttributes( ref _battleResultData, ActionType.Evade, lead, improviser, out winner, out loser );
                 }
 
                 // ----------------------------------------------------------------------------------------------------
@@ -484,7 +482,7 @@ public partial class BattleLogicManagerV2
 
                 _resultLog += $"{ ( ( winner == improviser ) ? "成功" : "失敗" ) }。";
 
-                resultLogList.Add( _resultLog );
+                _battleResultData.AddResultLog( _resultLog );
 
                 // ----------------------------------------------------------------------------------------------------
 
@@ -497,7 +495,7 @@ public partial class BattleLogicManagerV2
                     lead.AddCharacterIdentityType( CharacterIdentityType.Deuce );
                 }
 
-                ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: winner == lead, hasStatePointDamage: true, hasStressValueDamage: true );
+                ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: winner == lead, hasStatePointDamage: true, hasStressValueDamage: true );
             }
         }
         else
@@ -505,7 +503,7 @@ public partial class BattleLogicManagerV2
             // 後手方得到"受擊方"&“重受擊方”&"未能抵抗方"先手方得到 “重直擊方”。
 
             DeclareAssaulterAndRecipient( assaulter: lead, recipient: improviser );
-            ExecuteCasterSkillOnHit( ref _battleResultData, ref resultLogList, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true );
+            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true );
 
             winner = lead;
             loser = improviser;
@@ -639,7 +637,7 @@ public partial class BattleLogicManagerV2
         BattleLog.Instance.AddOnScreenBattleLog( _log );
     }
 
-    private static void ExecuteCasterSkillOnHit( ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter caster, GameCharacter target,
+    private static void ExecuteCasterSkillOnHit( ref BattleResultData battleResultData, GameCharacter caster, GameCharacter target,
                                                  bool hasHealthPointDamage = false, bool hasStatePointDamage = false, bool hasStressValueDamage = false,
                                                  bool isBreakStatusAvailable = true, float stressValueDamageMultiplier = 1.0f )
     {
@@ -785,7 +783,7 @@ public partial class BattleLogicManagerV2
 
         if (_resultLog != "")
         {
-            resultLogList.Add( _resultLog );
+            battleResultData.AddResultLog( _resultLog );
         }
     }
 
@@ -839,8 +837,9 @@ public partial class BattleLogicManagerV2
         return 0;
     }
 
-    private static void CompareCharacterSkillAttributes( ActionType actionType, GameCharacter lead, GameCharacter improviser,
-                                                         out GameCharacter winner, out GameCharacter loser, ref List<string> resultLogList )
+    private static void CompareCharacterSkillAttributes( ref BattleResultData battleResultData,
+                                                         ActionType actionType, GameCharacter lead, GameCharacter improviser,
+                                                         out GameCharacter winner, out GameCharacter loser )
     {
         winner = null;
         loser = null;
@@ -867,7 +866,7 @@ public partial class BattleLogicManagerV2
                        + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviserSubskillData.DisplayName }</color>，所以<color={ BattleLog.KEYWORD_COLOR_CODE }>{ lead.GetCharacterName() }</color>使用的"
                        + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _leadSubskillData.DisplayName }</color>的強度和速度得到<color={ BattleLog.KEYWORD_COLOR_CODE }>+{ _leadSkillStatIncrement }</color>。";
 
-            resultLogList.Add( _resultLog );
+            battleResultData.AddResultLog( _resultLog );
         }
 
         if (_improviserSkillStatIncrement > 0)
@@ -876,7 +875,7 @@ public partial class BattleLogicManagerV2
                        + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _leadSubskillData.DisplayName }</color>，所以<color={ BattleLog.KEYWORD_COLOR_CODE }>{ improviser.GetCharacterName() }</color>使用的"
                        + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviserSubskillData.DisplayName }</color>的強度和速度得到<color={ BattleLog.KEYWORD_COLOR_CODE }>+{ _improviserSkillStatIncrement }</color>。";
 
-            resultLogList.Add( _resultLog );
+            battleResultData.AddResultLog( _resultLog );
         }
 
         switch ( actionType )
@@ -1059,10 +1058,9 @@ public partial class BattleLogicManagerV2
         }
     }
 
-    public static BattleResultData OnTheEndOfRound( GameCharacter[] gameCharacters, out List<string> resultLogList )
+    public static BattleResultData OnTheEndOfRound( GameCharacter[] gameCharacters )
     {
         BattleResultData _battleResultData = new();
-        resultLogList = new List<string>();
 
         GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
         int _stressValueDecreaseOnRoundStart = _battleConfiguration.GetStressValueDecreaseOnRoundStart();
@@ -1158,7 +1156,7 @@ public partial class BattleLogicManagerV2
 
                             _resultLog += "。";
 
-                            resultLogList.Add( _resultLog );
+                            _battleResultData.AddResultLog( _resultLog );
                         }
                     }
                 }

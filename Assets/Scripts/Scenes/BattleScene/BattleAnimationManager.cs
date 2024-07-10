@@ -1319,10 +1319,11 @@ public class BattleAnimationManager : MonoBehaviour
         }
 
         // 判定 Part B 結果及結算。
-        battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser, out List<string> _resultLogList );
+        battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser );
         attackerBattleResultData = battleResultData.GetGameCharacterResultData( attacker );
         attackTargetBattleResultData = battleResultData.GetGameCharacterResultData( attackTarget );
 
+        List<string> _resultLogList = battleResultData.GetResultLogList();
         for (int i = 0; i < _resultLogList.Count; i++)
         {
             BattleLog.Instance.AddOnScreenBattleLog( _resultLogList[ i ] );

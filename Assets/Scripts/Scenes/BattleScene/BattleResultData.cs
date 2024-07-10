@@ -10,6 +10,7 @@ using PassiveSkill = DatabaseManager.PassiveSkill;
 public class BattleResultData
 {
     private List<BattleResultData_GameCharacter> gameCharacterResultDataList = new();
+    private List<string> resultLogList = new();
 
     public class BattleResultData_GameCharacter
     {
@@ -310,39 +311,39 @@ public class BattleResultData
 
         Debug.Log( $"######[ DEBUG ]######\n{ _jsonString }\n#####################\n" );
 
-        BattleLog.Instance.AddOnScreenBattleLog( _battleLog.Replace( "\"", "" )
-                                                           .ReplaceFirst( "gameCharacterName", "角色" )
-                                                           .ReplaceFirst( "eventName", "事件" )
-                                                           .ReplaceFirst( "characterIdentityTypeListString", "身份" )
-                                                           .ReplaceFirst( "maximumHealthPoint", "最大生命值" )
-                                                           .ReplaceFirst( "currentHealthPoint", "當前生命值" )
-                                                           .ReplaceFirst( "virtualHealthDamage", "虛傷" )
-                                                           .ReplaceFirst( "maximumStatePoint", "最大以太值" )
-                                                           .ReplaceFirst( "currentStatePoint", "當前以太值" )
-                                                           .ReplaceFirst( "maximumStressValue", "最大負荷值" )
-                                                           .ReplaceFirst( "currentStressValue", "當前負荷值" )
-                                                           .ReplaceFirst( "currentSkillStrength", "技能強度" )
-                                                           .ReplaceFirst( "currentSkillSpeed", "技能速度" )
-                                                           .ReplaceFirst( "stateBreakStatusRemainingATLs", "以太崩潰(ATL)" )
-                                                           .ReplaceFirst( "stressBreakStatusRemainingATLs", "負荷崩潰(ATL)" )
-                                                           .ReplaceFirst( "numberOfEnteringIntoBreakStatus", "陷入崩潰狀態的次數" )
-                                                           .ReplaceFirst( "energyMarkerRemainingATLs", "能量殘響(ATL)" )
-                                                           .ReplaceFirst( "isDead", "是否死亡" )
-                                                           .ReplaceFirst( "statePointCost", "以太值消耗" )
-                                                           .ReplaceFirst( "maximumStatePointIncrease", "最大以太值提升" )
-                                                           .ReplaceFirst( "actualHealthPointDamageDealt", "給予實傷" )
-                                                           .ReplaceFirst( "virtualHealthPointDamageDealt", "給予虛傷" )
-                                                           .ReplaceFirst( "statePointDamageDealt", "給予以太傷害" )
-                                                           .ReplaceFirst( "stressValueDamageDealt", "給予負荷傷害" )
-                                                           .ReplaceFirst( "actualHealthPointDamageTaken", "受到實傷" )
-                                                           .ReplaceFirst( "virtualHealthPointDamageTaken", "受到虛傷" )
-                                                           .ReplaceFirst( "statePointDamageTaken", "受到以太傷害" )
-                                                           .ReplaceFirst( "stressValueDamageTaken", "受到負荷傷害" )
-                                                           .ReplaceFirst( "triggeredPassiveSkillListString", "發動了的流向技能" )
-                                                           .ReplaceFirst( "lifeScore", "生命積分" )
-                                                           .ReplaceFirst( "lifeCyclePoint", "循環點" )
-                                                           .ReplaceFirst( "stressScore", "負荷積分" )
-                                                           .ReplaceFirst( "stressLevel", "負荷等級" ) );
+        AddResultLog( _battleLog.Replace( "\"", "" )
+                        .ReplaceFirst( "gameCharacterName", "角色" )
+                        .ReplaceFirst( "eventName", "事件" )
+                        .ReplaceFirst( "characterIdentityTypeListString", "身份" )
+                        .ReplaceFirst( "maximumHealthPoint", "最大生命值" )
+                        .ReplaceFirst( "currentHealthPoint", "當前生命值" )
+                        .ReplaceFirst( "virtualHealthDamage", "虛傷" )
+                        .ReplaceFirst( "maximumStatePoint", "最大以太值" )
+                        .ReplaceFirst( "currentStatePoint", "當前以太值" )
+                        .ReplaceFirst( "maximumStressValue", "最大負荷值" )
+                        .ReplaceFirst( "currentStressValue", "當前負荷值" )
+                        .ReplaceFirst( "currentSkillStrength", "技能強度" )
+                        .ReplaceFirst( "currentSkillSpeed", "技能速度" )
+                        .ReplaceFirst( "stateBreakStatusRemainingATLs", "以太崩潰(ATL)" )
+                        .ReplaceFirst( "stressBreakStatusRemainingATLs", "負荷崩潰(ATL)" )
+                        .ReplaceFirst( "numberOfEnteringIntoBreakStatus", "陷入崩潰狀態的次數" )
+                        .ReplaceFirst( "energyMarkerRemainingATLs", "能量殘響(ATL)" )
+                        .ReplaceFirst( "isDead", "是否死亡" )
+                        .ReplaceFirst( "statePointCost", "以太值消耗" )
+                        .ReplaceFirst( "maximumStatePointIncrease", "最大以太值提升" )
+                        .ReplaceFirst( "actualHealthPointDamageDealt", "給予實傷" )
+                        .ReplaceFirst( "virtualHealthPointDamageDealt", "給予虛傷" )
+                        .ReplaceFirst( "statePointDamageDealt", "給予以太傷害" )
+                        .ReplaceFirst( "stressValueDamageDealt", "給予負荷傷害" )
+                        .ReplaceFirst( "actualHealthPointDamageTaken", "受到實傷" )
+                        .ReplaceFirst( "virtualHealthPointDamageTaken", "受到虛傷" )
+                        .ReplaceFirst( "statePointDamageTaken", "受到以太傷害" )
+                        .ReplaceFirst( "stressValueDamageTaken", "受到負荷傷害" )
+                        .ReplaceFirst( "triggeredPassiveSkillListString", "發動了的流向技能" )
+                        .ReplaceFirst( "lifeScore", "生命積分" )
+                        .ReplaceFirst( "lifeCyclePoint", "循環點" )
+                        .ReplaceFirst( "stressScore", "負荷積分" )
+                        .ReplaceFirst( "stressLevel", "負荷等級" ) );
 
 #endif
     }
@@ -748,7 +749,7 @@ public class BattleResultData
 
 #if ALF_DEBUG
 
-                gameCharacterName = gameCharacter.GetCharacterName(),
+                gameCharacterName = $"{ gameCharacter.GetCharacterName() } { ( gameCharacter.GetIsPlayer() ? "<color=#ADD8E6>[ PLAYER ]</color>" : "<color=#FF0000>[ ENEMY ]</color>" ) }",
 
 #endif
                 maximumHealthPoint = gameCharacter.GetMaximumHealthPoint(),
@@ -778,5 +779,15 @@ public class BattleResultData
         gameCharacter.SetTemporaryBattleResultData( _gameCharacterResultData );
 
         return _gameCharacterResultData;
+    }
+
+    public void AddResultLog( string resultLog )
+    {
+        this.resultLogList.Add( resultLog );
+    }
+
+    public List<string> GetResultLogList()
+    {
+        return this.resultLogList;
     }
 }

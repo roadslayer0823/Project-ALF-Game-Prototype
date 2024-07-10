@@ -4,7 +4,7 @@ using RangeType = DatabaseManager.Subskill.RangeType;
 
 public partial class BattleLogicManagerV2
 {
-    private static void SettleResultForRepulseDraw( ref BattleResultData battleResultData, ref List<string> resultLogList, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
+    private static void SettleResultForRepulseDraw( ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo )
     {
         RangeType _gameCharacterOne_SkillRangeType = gameCharacterOne.GetCurrentSkillRangeType();
         RangeType _gameCharacterTwo_SkillRangeType = gameCharacterTwo.GetCurrentSkillRangeType();

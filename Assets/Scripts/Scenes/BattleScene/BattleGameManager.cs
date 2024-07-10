@@ -276,7 +276,7 @@ public class BattleGameManager : MonoBehaviour
         else
         {
             List<GameCharacter> _gameCharacters = GetCharacterList();
-            BattleResultData _battleResultData = BattleLogicManagerV2.OnTheEndOfRound( _gameCharacters.ToArray(), out List<string> _resultLogList );
+            BattleResultData _battleResultData = BattleLogicManagerV2.OnTheEndOfRound( _gameCharacters.ToArray() );
 
             for (int i = 0; i < _gameCharacters.Count; i++)
             {
@@ -292,6 +292,7 @@ public class BattleGameManager : MonoBehaviour
                 }
             }
 
+            List<string> _resultLogList = _battleResultData.GetResultLogList();
             for (int i = 0; i < _resultLogList.Count; i++)
             {
                 BattleLog.Instance.AddOnScreenBattleLog( _resultLogList[ i ] );
