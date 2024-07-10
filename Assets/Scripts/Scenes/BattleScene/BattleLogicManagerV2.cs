@@ -511,7 +511,7 @@ public partial class BattleLogicManagerV2
             // 重受擊方當前以太值結算
 
             // 重受擊方生命值結算
-            CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult( ref _battleResultData, ref resultLogList, lead, improviser );
+            CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult( ref _battleResultData, lead, improviser );
         }
 
         // "己方"是否有給予"對方"HP傷害 / 受到"對方"HP傷害?
@@ -522,12 +522,12 @@ public partial class BattleLogicManagerV2
             if (_lead_BattleResultData.actualHealthPointDamageDealt > 0
                 || _lead_BattleResultData.virtualHealthPointDamageDealt > 0)
             {
-                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, ref resultLogList, lead, true );
+                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, lead, true );
             }
             else if (_lead_BattleResultData.actualHealthPointDamageTaken > 0
                 || _lead_BattleResultData.virtualHealthPointDamageTaken > 0)
             {
-                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, ref resultLogList, lead, false );
+                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, lead, false );
             }
         }
 
@@ -537,12 +537,12 @@ public partial class BattleLogicManagerV2
             if (_improviser_BattleResultData.actualHealthPointDamageDealt > 0
                 || _improviser_BattleResultData.virtualHealthPointDamageDealt > 0)
             {
-                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, ref resultLogList, improviser, true );
+                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, improviser, true );
             }
             else if (_improviser_BattleResultData.actualHealthPointDamageTaken > 0
                 || _improviser_BattleResultData.virtualHealthPointDamageTaken > 0)
             {
-                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, ref resultLogList, improviser, false );
+                CategorizedPassiveSkillManager.CalculateLifeScoreEffect( ref _battleResultData, improviser, false );
             }
         }
 
@@ -1118,7 +1118,7 @@ public partial class BattleLogicManagerV2
             resultLogList.Add( _resultLog );
             */
 
-            CategorizedPassiveSkillManager.RunBasicRecoveryEffects( ref _battleResultData, ref resultLogList, _gameCharacter );
+            CategorizedPassiveSkillManager.RunBasicRecoveryEffects( ref _battleResultData, _gameCharacter );
 
             string _resultLog = "";
 

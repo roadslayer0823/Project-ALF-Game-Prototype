@@ -34,14 +34,14 @@ public partial class BattleLogicManagerV2
                 if (gameCharacterOne.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life)
                 {
                     // 進入“玩家1激昂效果”頁面。
-                    CategorizedPassiveSkillManager.RunCharacterExcitementEffect( ref battleResultData, ref resultLogList, gameCharacterOne, gameCharacterTwo );
+                    CategorizedPassiveSkillManager.RunCharacterExcitementEffect( ref battleResultData, gameCharacterOne, gameCharacterTwo );
                 }
 
                 // "玩家2"當前流向是否"生命流"? YES
                 if (gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life)
                 {
                     // 進入“玩家2激昂效果”頁面。
-                    CategorizedPassiveSkillManager.RunCharacterExcitementEffect( ref battleResultData, ref resultLogList, gameCharacterTwo, gameCharacterOne );
+                    CategorizedPassiveSkillManager.RunCharacterExcitementEffect( ref battleResultData, gameCharacterTwo, gameCharacterOne );
                 }
             }
 
