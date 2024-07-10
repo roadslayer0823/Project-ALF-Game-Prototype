@@ -1056,6 +1056,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4115339572566122421, guid: 23e6c870247fa47ecba2963d6b434dee, type: 3}
+      propertyPath: passiveSkillTypeSlot
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115339572566122421, guid: 23e6c870247fa47ecba2963d6b434dee, type: 3}
       propertyPath: highLightLifePassiveSkill
       value: 
       objectReference: {fileID: 1942624940202729576}
@@ -1328,6 +1332,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4115339572566122421, guid: 23e6c870247fa47ecba2963d6b434dee, type: 3}
+      propertyPath: passiveSkillTypeSlot
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115339572566122421, guid: 23e6c870247fa47ecba2963d6b434dee, type: 3}
       propertyPath: highLightLifePassiveSkill
       value: 
       objectReference: {fileID: 1942624940202729576}
@@ -1558,6 +1566,10 @@ PrefabInstance:
     - target: {fileID: 4115339572566122421, guid: 23e6c870247fa47ecba2963d6b434dee, type: 3}
       propertyPath: passiveSkillType
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4115339572566122421, guid: 23e6c870247fa47ecba2963d6b434dee, type: 3}
+      propertyPath: passiveSkillTypeSlot
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4115339572566122421, guid: 23e6c870247fa47ecba2963d6b434dee, type: 3}
       propertyPath: highLightLifePassiveSkill
