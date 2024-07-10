@@ -257,18 +257,36 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 }
                 if (!gameCharacterData.IsInStateBreakStatus()) //"己方"是否"以太崩潰狀態" ?
                 {
-                    battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint( gameCharacter, 1.0f, out _); //["己方"當前以太值] = ["己方"最大以太值]
-                    Debug.Log("restore curent state point");
+                    //["己方"當前以太值] = ["己方"最大以太值]
+                    battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint( gameCharacter, 1.0f, out _);
+                    _formula = "[己方當前以太值] = [己方最大以太值]";
+                    string _RestoreCurrentStatePoint = maxStatePointString;
+                    resultLogList.Add(currentIdentityString + "\n" + "\n" +
+                                     "算式:  " + "\n" + _formula + "\n" + "\n" +
+                                     "已使用的參數:" + "\n" + _RestoreCurrentStatePoint);
                 }
                 break;
 
             case CategoryType.Stress:
-                battleResultData.AddGameCharacterResultData_VirtualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint * 0.5f, out gameCharacterData); //["己方"虛傷]-["己方"最大生命值] *[0.5]
-                Debug.Log("virtual health point recover");
+                //["己方"虛傷]-["己方"最大生命值] *[0.5]
+                battleResultData.AddGameCharacterResultData_VirtualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint * 0.5f, out gameCharacterData);
+                _formula = "[己方虛傷] -[己方最大生命值] *[" + basicRecover +"]";
+                _VirtualHealthPointDamageRecovered = maxHealthPointString + "\n" +
+                                                     basicRecoverString_ZeroPointFive;
+                resultLogList.Add(currentIdentityString + "\n" + "\n" +
+                                     "算式:  " + "\n" + _formula + "\n" + "\n" +
+                                     "已使用的參數:" + "\n" + _VirtualHealthPointDamageRecovered);
+
                 if (gameCharacterData.currentStatePoint < 0) //"己方"當前以太值是否負數?
                 {
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData); //["己方"最大以太值]+["己方"當前以太值]
-                    Debug.Log("max state point increase because stress point less than 0");
+                    //["己方"最大以太值]+["己方"當前以太值]
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData); 
+                    _formula = "[己方最大以太值]+[己方當前以太值]";
+                    string _MaximumStatePointIncrease = maxStatePointString + "\n" +
+                                                        currentStatePointString;
+                    resultLogList.Add(currentIdentityString + "\n" + "\n" +
+                                     "算式:  " + "\n" + _formula + "\n" + "\n" +
+                                     "已使用的參數:" + "\n" + _MaximumStatePointIncrease);
                 }
                 if (gameCharacterData.currentStatePoint > 0)
                 {
