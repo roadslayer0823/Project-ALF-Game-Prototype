@@ -255,7 +255,7 @@ public class DebugMenuPanel : MonoBehaviour
         {
             if (int.TryParse(newStatValue, out int value))
             {
-                characterObject.AddLifeScore(value);
+                characterObject.SetDebugLifeScore(value);
                 DisplaySuccessText(characterObject == this.playerCharacter);
             }
         }
@@ -271,7 +271,7 @@ public class DebugMenuPanel : MonoBehaviour
         {
             if (int.TryParse(newStatValue, out int value))
             {
-                characterObject.AddStressScore(value);
+                characterObject.SetDebugStressScore(value);
                 DisplaySuccessText(characterObject == this.playerCharacter);
             }
         }

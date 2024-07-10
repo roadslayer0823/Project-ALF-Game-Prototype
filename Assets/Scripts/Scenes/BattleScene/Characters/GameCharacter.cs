@@ -1221,6 +1221,8 @@ public partial class GameCharacter : MonoBehaviour
             // 其他狀態
             this.isDead = battleResultData.isDead;
 
+            ApplyBattleResultData_CategorizedPassiveSkillManager( battleResultData );
+
             if (battleGameManager != null)
             {
                 ShowPassiveSkillTags( battleResultData.triggeredPassiveSkillList, battleGameManager );

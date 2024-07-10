@@ -9,8 +9,8 @@ using PassiveSkill = DatabaseManager.PassiveSkill;
 
 public class BattleResultData
 {
-    private List<BattleResultData_GameCharacter> gameCharacterResultDataList = new();
-    private List<string> resultLogList = new();
+    private readonly List<BattleResultData_GameCharacter> gameCharacterResultDataList = new();
+    private readonly List<string> resultLogList = new();
 
     public class BattleResultData_GameCharacter
     {
@@ -54,6 +54,13 @@ public class BattleResultData
         // 能量殘響
         public int energyMarkerRemainingATLs = 0;
 
+        // 流向系統
+        public int lifeScore = 0;       // 生命積分
+        public int lifeScoreTarget = 0; // 得到一個循環點的生命積分目標
+        public int lifeCyclePoint = 0;  // 循環點
+        public int stressScore = 0;     // 負荷積分
+        public int stressLevel = 0;     // 負荷等級
+
         // 其他狀態
         public bool isDead = false;
 
@@ -85,11 +92,6 @@ public class BattleResultData
 #if ALF_DEBUG
 
         public string triggeredPassiveSkillListString = "";
-
-        public int lifeScore = 0;      // 生命積分
-        public int lifeCyclePoint = 0; // 循環點
-        public int stressScore = 0;    // 負荷積分
-        public int stressLevel = 0;    // 負荷等級
 
         [NonSerialized] public string lastJsonString = "";
 
@@ -328,6 +330,11 @@ public class BattleResultData
                         .ReplaceFirst( "stressBreakStatusRemainingATLs", "負荷崩潰(ATL)" )
                         .ReplaceFirst( "numberOfEnteringIntoBreakStatus", "陷入崩潰狀態的次數" )
                         .ReplaceFirst( "energyMarkerRemainingATLs", "能量殘響(ATL)" )
+                        .ReplaceFirst( "lifeScore", "生命積分" )
+                        .ReplaceFirst( "lifeScoreTarget", "生命積分目標" )
+                        .ReplaceFirst( "lifeCyclePoint", "循環點" )
+                        .ReplaceFirst( "stressScore", "負荷積分" )
+                        .ReplaceFirst( "stressLevel", "負荷等級" )
                         .ReplaceFirst( "isDead", "是否死亡" )
                         .ReplaceFirst( "statePointCost", "以太值消耗" )
                         .ReplaceFirst( "maximumStatePointIncrease", "最大以太值提升" )
@@ -339,11 +346,7 @@ public class BattleResultData
                         .ReplaceFirst( "virtualHealthPointDamageTaken", "受到虛傷" )
                         .ReplaceFirst( "statePointDamageTaken", "受到以太傷害" )
                         .ReplaceFirst( "stressValueDamageTaken", "受到負荷傷害" )
-                        .ReplaceFirst( "triggeredPassiveSkillListString", "發動了的流向技能" )
-                        .ReplaceFirst( "lifeScore", "生命積分" )
-                        .ReplaceFirst( "lifeCyclePoint", "循環點" )
-                        .ReplaceFirst( "stressScore", "負荷積分" )
-                        .ReplaceFirst( "stressLevel", "負荷等級" ) );
+                        .ReplaceFirst( "triggeredPassiveSkillListString", "發動了的流向技能" ) );
 
 #endif
     }
@@ -701,7 +704,7 @@ public class BattleResultData
         return _gameCharacterResultData;
     }
 
-    // 發動流向技能
+    // 發動流向技能。
     public BattleResultData AddGameCharacterResultData_TriggerPassiveSkill( GameCharacter gameCharacter, PassiveSkill passiveSkill, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
@@ -718,6 +721,70 @@ public class BattleResultData
 #if ALF_DEBUG
 
         gameCharacterResultData.eventName = "發動流向技能";
+
+#endif
+
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
+    }
+
+    // 增加生命積分。
+    public BattleResultData AddGameCharacterResultData_AddLifeScore( GameCharacter gameCharacter, int score, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.lifeScore += score;
+
+        while (gameCharacterResultData.lifeScore >= gameCharacterResultData.lifeScoreTarget)
+        {
+            if (gameCharacterResultData.lifeCyclePoint < 3)
+            {
+                gameCharacterResultData.lifeCyclePoint += 1;
+            }
+
+            gameCharacterResultData.lifeScoreTarget += 12;
+        }
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "增加生命積分";
+
+#endif
+
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
+    }
+
+    // 消耗全部循環點。
+    public BattleResultData AddGameCharacterResultData_ResetLifeCyclePoint( GameCharacter gameCharacter, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.lifeCyclePoint = 0;
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "消耗全部循環點";
+
+#endif
+
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
+    }
+
+    // 增加負荷積分。
+    public BattleResultData AddGameCharacterResultData_AddStressScore( GameCharacter gameCharacter, int score, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.stressScore += score;
+
+        int _stressScore = gameCharacterResultData.stressScore;
+        gameCharacterResultData.stressLevel = ( _stressScore >= 350 ) ? 3 :
+                                              ( _stressScore >= 200 ) ? 2 :
+                                              ( _stressScore >= 150 ) ? 1 :
+                                              0;
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "增加負荷積分";
 
 #endif
 
@@ -761,12 +828,21 @@ public class BattleResultData
                 currentStatePoint = gameCharacter.GetCurrentStatePoint(),
                 maximumStressValue = gameCharacter.GetMaximumStressValue(),
                 currentStressValue = gameCharacter.GetCurrentStressValue(),
+
+                currentSkillStrength = ( _currentSkill != null ) ? _subskillData.Strength : 0,
+                currentSkillSpeed = ( _currentSkill != null ) ? _subskillData.Speed : 0,
+
                 stateBreakStatusRemainingATLs = gameCharacter.GetStateBreakStatusRemainingATLs(),
                 stressBreakStatusRemainingATLs = gameCharacter.GetStressBreakStatusRemainingATLs(),
                 numberOfEnteringIntoBreakStatus = gameCharacter.GetNumberOfEnteringIntoBreakStatus(),
+
                 energyMarkerRemainingATLs = gameCharacter.GetEnergyMarkerRemainingATLs(),
-                currentSkillStrength = ( _currentSkill != null ) ? _subskillData.Strength : 0,
-                currentSkillSpeed = ( _currentSkill != null ) ? _subskillData.Speed : 0
+
+                lifeScore = gameCharacter.GetLifeScore(),
+                lifeScoreTarget = gameCharacter.GetLifeScoreTarget(),
+                lifeCyclePoint = gameCharacter.GetLifeCyclePoint(),
+                stressScore = gameCharacter.GetStressScore(),
+                stressLevel = gameCharacter.GetStressLevel()
             };
 
 #if ALF_DEBUG

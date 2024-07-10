@@ -10,17 +10,16 @@ public partial class GameCharacter : MonoBehaviour
     private List<PassiveSkill> selectedCategorizedPassiveSkillList = null;
     private CategoryType lastSelectedPassiveSkillCategoryType = CategoryType.None;
 
-    private List<PassiveSkill> lifePassiveSkillList = new();
-    private List<PassiveSkill> statePassiveSkillList = new();
-    private List<PassiveSkill> stressPassiveSkillList = new();
-    private Dictionary<string,int> triggeredPassiveSkillDictionary = new();
+    private readonly List<PassiveSkill> lifePassiveSkillList = new();
+    private readonly List<PassiveSkill> statePassiveSkillList = new();
+    private readonly List<PassiveSkill> stressPassiveSkillList = new();
+    private readonly Dictionary<string,int> triggeredPassiveSkillDictionary = new();
 
-    private int lifeScore = 0;      // 生命積分
-    private int lifeCyclePoint = 0; // 循環點
-    private int stressScore = 0;    // 負荷積分
-    private int stressLevel = 0;    // 負荷等級
-
-    private int lifeScoreTarget = 0;    // 得到一個循環點的生命積分目標
+    private int lifeScore = 0;       // 生命積分
+    private int lifeScoreTarget = 0; // 得到一個循環點的生命積分目標
+    private int lifeCyclePoint = 0;  // 循環點
+    private int stressScore = 0;     // 負荷積分
+    private int stressLevel = 0;     // 負荷等級
 
     private void InitializePassiveSkillLists()
     {
@@ -155,19 +154,13 @@ public partial class GameCharacter : MonoBehaviour
         return 0;
     }
 
-    public void AddLifeScore( int score )
+    public void ApplyBattleResultData_CategorizedPassiveSkillManager( BattleResultData.BattleResultData_GameCharacter battleResultData )
     {
-        this.lifeScore += score;
-
-        while (this.lifeScore >= this.lifeScoreTarget)
-        {
-            if (this.lifeCyclePoint < 3)
-            {
-                this.lifeCyclePoint += 1;
-            }
-
-            this.lifeScoreTarget += 12;
-        }
+        this.lifeScore = battleResultData.lifeScore;
+        this.lifeScoreTarget = battleResultData.lifeScoreTarget;
+        this.lifeCyclePoint = battleResultData.lifeCyclePoint;
+        this.stressScore = battleResultData.stressScore;
+        this.stressLevel = battleResultData.stressLevel;
     }
 
     public int GetLifeScore()
@@ -175,32 +168,14 @@ public partial class GameCharacter : MonoBehaviour
         return this.lifeScore;
     }
 
-    public void ResetCyclePoint()
+    public int GetLifeScoreTarget()
     {
-        this.lifeCyclePoint = 0;
+        return this.lifeScoreTarget;
     }
 
     public int GetLifeCyclePoint()
     {
         return this.lifeCyclePoint;
-    }
-
-    public void AddStressScore( int score )
-    {
-        this.stressScore += score;
-
-        if (this.stressScore >= 350)
-        {
-            this.stressLevel = 3;
-        }
-        else if (this.stressScore >= 200)
-        {
-            this.stressLevel = 2;
-        }
-        else if (this.stressScore >= 150)
-        {
-            this.stressLevel = 1;
-        }
     }
 
     public int GetStressScore()
@@ -213,14 +188,27 @@ public partial class GameCharacter : MonoBehaviour
         return this.stressLevel;
     }
 
-    // Debug purpose
-    public void SetDebugLifeCyclePoint(int value)
+    // ---------- For the debugging purpose only ----------
+
+    public void SetDebugLifeScore( int value )
+    {
+        this.lifeScore = value;
+    }
+
+    public void SetDebugLifeCyclePoint( int value )
     {
         this.lifeCyclePoint = value;
     }
 
-    public void SetDebugStressLevel(int value)
+    public void SetDebugStressScore( int value )
+    {
+        this.stressScore = value;
+    }
+
+    public void SetDebugStressLevel( int value )
     {
         this.stressLevel = value;
     }
+
+    // ----------------------------------------------------
 }
