@@ -67,8 +67,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         {
             battleResultData.AddResultLog("玩家1激昂效果");
 
-            battleResultData.AddResultLog("[玩家1生命值]-[玩家2直擊傷害*0.3]*[1+玩家1猛烈+玩家1生生不息]*[1-玩家1堅韌-玩家1生生不息]" +
-                                      "\n\n[玩家2生命值]-[玩家1直擊傷害*0.3]*[1+玩家1猛烈+玩家1生生不息+玩家2能量殘響]*[1-玩家2堅韌-玩家2生生不息-玩家2逆風]");
+            battleResultData.AddResultLog("[\"玩家1\"生命值]-[\"玩家2\"直擊傷害*0.3]*[1+\"玩家1\"猛烈+\"玩家1\"生生不息]*[1-\"玩家1\"堅韌-\"玩家1\"生生不息]" +
+                                      "\n\n[\"玩家2\"生命值]-[\"玩家1\"直擊傷害*0.3]*[1+\"玩家1\"猛烈+\"玩家1\"生生不息+\"玩家2\"能量殘響]*[1-\"玩家2\"堅韌-\"玩家2\"生生不息-\"玩家2\"逆風]");
 
             battleResultData.AddResultLog("玩家1 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacterOne.GetSelectedPassiveSkillCategoryType()) +
                                         "\n玩家2 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacterTwo.GetSelectedPassiveSkillCategoryType()) +
@@ -86,9 +86,9 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         {
             battleResultData.AddResultLog("玩家2激昂效果");
 
-            battleResultData.AddResultLog("[玩家1生命值]-[玩家2直擊傷害*0.3]*[1+玩家2猛烈+玩家2生生不息+玩家1能量殘響]*[1-玩家2堅韌-玩家1生生不息-玩家1逆風]" +
+            battleResultData.AddResultLog("[\"玩家1\"生命值]-[\"玩家2\"直擊傷害*0.3]*[1+\"玩家2\"猛烈+\"玩家2\"生生不息+\"玩家1\"能量殘響]*[1-\"玩家2\"堅韌-\"玩家1\"生生不息-\"玩家1\"逆風]" +
                                           "\n======================" +
-                                          "\n[玩家2生命值]-[玩家1直擊傷害*0.3]*[1+玩家2猛烈+玩家2生生不息]*[1-玩家2堅韌-玩家2生生不息]");
+                                          "\n[\"玩家2\"生命值]-[\"玩家1\"直擊傷害*0.3]*[1+\"玩家2\"猛烈+\"玩家2\"生生不息]*[1-\"玩家2\"堅韌-\"玩家2\"生生不息]");
 
             battleResultData.AddResultLog("玩家1 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacterTwo.GetSelectedPassiveSkillCategoryType()) +
                                         "\n玩家2 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacterOne.GetSelectedPassiveSkillCategoryType()) +
@@ -474,7 +474,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
              * 消耗所有循環點
                發動生命流效果
             */
-            gameCharacter.ResetCyclePoint();
+            battleResultData.AddGameCharacterResultData_ResetLifeCyclePoint(gameCharacter, out _);
         }
     }
 
@@ -495,7 +495,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         if ((gameCharacter.GetCurrentHealthPoint() < (gameCharacter.GetMaximumHealthPoint() * 0.5f)) && gameCharacter.GetLifeScore() < 100)
         {
             // 生命積分+50    
-            gameCharacter.AddLifeScore(50);
+            battleResultData.AddGameCharacterResultData_AddLifeScore(gameCharacter,50,out _);
             battleResultData.AddResultLog(gameCharacter.name + " 生命積分 +50");
         }
     }
@@ -575,6 +575,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     // 先手方使用技能時當前以太值結算
     public static void CalculateLeadCurrentStatePoint(ref BattleResultData battleResultData, GameCharacter lead, GameCharacter improviser)
     {
+        battleResultData.AddResultLog("先手方使用技能時當前以太值結算");
         BattleResultData.BattleResultData_GameCharacter lead_BattleResultData = battleResultData.GetGameCharacterResultData(lead);
         BattleResultData.BattleResultData_GameCharacter improviser_BattleResultData = battleResultData.GetGameCharacterResultData(improviser);
 
@@ -601,7 +602,6 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             Debug.Log("Only call once jie liu or you ren");
         }
 
-
         // CASE A:當前流向為"負荷流"/無流向
         /*
          * [當前以太值]-<[以太消耗]*[1+n]>
@@ -620,6 +620,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 <此以太消耗為"最終以太消耗">
              */
             lead_BattleResultData.temp_FinalTotalStatePointCost *= (1 - pSL9_ShengMingYaZhi_value);
+            battleResultData.AddResultLog("CASE B:當前流向為 生命流" +
+                                          "[當前以太值]-<[以太消耗]*[1+n]*[1-n]>\n<此以太消耗為\"最終以太消耗\">");
         }
 
         // CASE C:當前流向為"以太流"
@@ -630,6 +632,13 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 <此以太消耗為"最終以太消耗">
              */
             lead_BattleResultData.temp_FinalTotalStatePointCost *= (1 - psE8_JieLiu_PSE9_YouRen_value);
+            battleResultData.AddResultLog("CASE C:當前流向為 以太流" +
+                                          "[當前以太值]-<[以太消耗]*[1+n]*[1-n]>\n<此以太消耗為\"最終以太消耗\">");
+        }
+        else
+        {
+            battleResultData.AddResultLog("CASE A:當前流向為 負荷流/無流向"+
+                                          "[當前以太值]-<[以太消耗]*[1+n]>\n<此以太消耗為\"最終以太消耗\">");
         }
         battleResultData.AddGameCharacterResultData_StatePointCost(lead, lead_BattleResultData.temp_FinalTotalStatePointCost, out _);
     }
