@@ -45,6 +45,11 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private int maximumStatePointIncreaseOnRoundStart = 0;
         private float attackOpportunityDurationInSeconds = 0.0f;
         private float stressValueDamageMultiplierOnRepulseForLoser = 0.0f;
+        private int lifeScoreTargetToGainLifeCyclePoint = 0;
+        private int maximumLifeCyclePoint = 0;
+        private int stressScoreTargetForStressLevelOne = 0;
+        private int stressScoreTargetForStressLevelTwo = 0;
+        private int stressScoreTargetForStressLevelThree = 0;
 
         private const string NUMBER_OF_ATL_SLOTS = "number_of_atl_slots";
         private const string MAXIMUM_SELECTED_ACTIVE_SKILLS = "maximum_selected_active_skills";
@@ -69,6 +74,11 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private const string MAXIMUM_STATE_POINT_INCREASE_ON_ROUND_START = "maximum_state_point_increase_on_round_start";
         private const string ATTACK_OPPORTUNITY_DURATION_IN_SECONDS = "attack_opportunity_duration_in_seconds";
         private const string STRESS_VALUE_DAMAGE_MULTIPLIER_ON_REPULSE_FOR_LOSER = "stress_value_damage_multiplier_on_repulse_for_loser";
+        private const string LIFE_SCORE_TARGET_TO_GAIN_LIFE_CYCLE_POINT = "life_score_target_to_gain_life_cycle_point";
+        private const string MAXIMUM_LIFE_CYCLE_POINT = "maximum_life_cycle_point";
+        private const string STRESS_SCORE_TARGET_FOR_STRESS_LEVEL_1 = "stress_score_target_for_stress_level_1";
+        private const string STRESS_SCORE_TARGET_FOR_STRESS_LEVEL_2 = "stress_score_target_for_stress_level_2";
+        private const string STRESS_SCORE_TARGET_FOR_STRESS_LEVEL_3 = "stress_score_target_for_stress_level_3";
 
         public Battle( List<Configuration> battleConfigurationList )
         {
@@ -144,31 +154,51 @@ public class GameConfiguration : Singleton<GameConfiguration>
                         break;
 
                     case OBSERVATION_RATE_DEDUCTION_PER_ROUND:
-                        observationRateDeductionPerRound = _configurationValue;
+                        this.observationRateDeductionPerRound = _configurationValue;
                         break;
 
                     case OBSERVATION_RATE_DEDUCTION_START_ROUND:
-                        observationRateDeductionStartRound = ( int )_configurationValue;
+                        this.observationRateDeductionStartRound = ( int )_configurationValue;
                         break;
 
                     case STRESS_VALUE_DECREASE_ON_ROUND_START:
-                        stressValueDecreaseOnRoundStart = ( int )_configurationValue;
+                        this.stressValueDecreaseOnRoundStart = ( int )_configurationValue;
                         break;
 
                     case HEALTH_POINT_REGENERATION_RATE_ON_ROUND_START:
-                        healthPointRegenerationRateOnRoundStart = ( float )_configurationValue;
+                        this.healthPointRegenerationRateOnRoundStart = ( float )_configurationValue;
                         break;
 
                     case MAXIMUM_STATE_POINT_INCREASE_ON_ROUND_START:
-                        maximumStatePointIncreaseOnRoundStart = ( int )_configurationValue;
+                        this.maximumStatePointIncreaseOnRoundStart = ( int )_configurationValue;
                         break;
 
                     case ATTACK_OPPORTUNITY_DURATION_IN_SECONDS:
-                        attackOpportunityDurationInSeconds = ( float )_configurationValue;
+                        this.attackOpportunityDurationInSeconds = ( float )_configurationValue;
                         break;
 
                     case STRESS_VALUE_DAMAGE_MULTIPLIER_ON_REPULSE_FOR_LOSER:
-                        stressValueDamageMultiplierOnRepulseForLoser = ( float )_configurationValue;
+                        this.stressValueDamageMultiplierOnRepulseForLoser = ( float )_configurationValue;
+                        break;
+
+                    case LIFE_SCORE_TARGET_TO_GAIN_LIFE_CYCLE_POINT:
+                        this.lifeScoreTargetToGainLifeCyclePoint = ( int )_configurationValue;
+                        break;
+
+                    case MAXIMUM_LIFE_CYCLE_POINT:
+                        this.maximumLifeCyclePoint = ( int )_configurationValue;
+                        break;
+
+                    case STRESS_SCORE_TARGET_FOR_STRESS_LEVEL_1:
+                        this.stressScoreTargetForStressLevelOne = ( int )_configurationValue;
+                        break;
+
+                    case STRESS_SCORE_TARGET_FOR_STRESS_LEVEL_2:
+                        this.stressScoreTargetForStressLevelTwo = ( int )_configurationValue;
+                        break;
+
+                    case STRESS_SCORE_TARGET_FOR_STRESS_LEVEL_3:
+                        this.stressScoreTargetForStressLevelThree = ( int )_configurationValue;
                         break;
 
                     default:
@@ -290,6 +320,31 @@ public class GameConfiguration : Singleton<GameConfiguration>
         public float GetStressValueDamageMultiplierOnRepulseForLoser()
         {
             return this.stressValueDamageMultiplierOnRepulseForLoser;
+        }
+
+        public int GetLifeScoreTargetToGainLifeCyclePoint()
+        {
+            return this.lifeScoreTargetToGainLifeCyclePoint;
+        }
+
+        public int GetMaximumLifeCyclePoint()
+        {
+            return this.maximumLifeCyclePoint;
+        }
+
+        public int GetStressScoreTargetForStressLevelOne()
+        {
+            return this.stressScoreTargetForStressLevelOne;
+        }
+
+        public int GetStressScoreTargetForStressLevelTwo()
+        {
+            return this.stressScoreTargetForStressLevelTwo;
+        }
+
+        public int GetStressScoreTargetForStressLevelThree()
+        {
+            return this.stressScoreTargetForStressLevelThree;
         }
     }
 

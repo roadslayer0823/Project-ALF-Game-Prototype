@@ -330,8 +330,8 @@ public class BattleResultData
                         .ReplaceFirst( "stressBreakStatusRemainingATLs", "負荷崩潰(ATL)" )
                         .ReplaceFirst( "numberOfEnteringIntoBreakStatus", "陷入崩潰狀態的次數" )
                         .ReplaceFirst( "energyMarkerRemainingATLs", "能量殘響(ATL)" )
-                        .ReplaceFirst( "lifeScore", "生命積分" )
                         .ReplaceFirst( "lifeScoreTarget", "生命積分目標" )
+                        .ReplaceFirst( "lifeScore", "生命積分" )
                         .ReplaceFirst( "lifeCyclePoint", "循環點" )
                         .ReplaceFirst( "stressScore", "負荷積分" )
                         .ReplaceFirst( "stressLevel", "負荷等級" )
@@ -734,14 +734,25 @@ public class BattleResultData
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.lifeScore += score;
 
-        while (gameCharacterResultData.lifeScore >= gameCharacterResultData.lifeScoreTarget)
+        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
+        int _lifeScoreTargetToGainLifeCyclePoint = _battleConfiguration.GetLifeScoreTargetToGainLifeCyclePoint();
+
+        if (_lifeScoreTargetToGainLifeCyclePoint > 0)
         {
-            if (gameCharacterResultData.lifeCyclePoint < 3)
+            if (gameCharacterResultData.lifeScoreTarget <= 0)
             {
-                gameCharacterResultData.lifeCyclePoint += 1;
+                gameCharacterResultData.lifeScoreTarget = _lifeScoreTargetToGainLifeCyclePoint;
             }
 
-            gameCharacterResultData.lifeScoreTarget += 12;
+            while (gameCharacterResultData.lifeScore >= gameCharacterResultData.lifeScoreTarget)
+            {
+                if (gameCharacterResultData.lifeCyclePoint < _battleConfiguration.GetMaximumLifeCyclePoint())
+                {
+                    gameCharacterResultData.lifeCyclePoint += 1;
+                }
+
+                gameCharacterResultData.lifeScoreTarget += _lifeScoreTargetToGainLifeCyclePoint;
+            }
         }
 
 #if ALF_DEBUG
@@ -776,10 +787,12 @@ public class BattleResultData
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.stressScore += score;
 
+        GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
         int _stressScore = gameCharacterResultData.stressScore;
-        gameCharacterResultData.stressLevel = ( _stressScore >= 350 ) ? 3 :
-                                              ( _stressScore >= 200 ) ? 2 :
-                                              ( _stressScore >= 150 ) ? 1 :
+
+        gameCharacterResultData.stressLevel = ( _stressScore >= _battleConfiguration.GetStressScoreTargetForStressLevelThree() ) ? 3 :
+                                              ( _stressScore >= _battleConfiguration.GetStressScoreTargetForStressLevelTwo() )   ? 2 :
+                                              ( _stressScore >= _battleConfiguration.GetStressScoreTargetForStressLevelOne() )   ? 1 :
                                               0;
 
 #if ALF_DEBUG
