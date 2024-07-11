@@ -590,6 +590,14 @@ PrefabInstance:
       propertyPath: m_fontColor32.rgba
       value: 4294967295
       objectReference: {fileID: 0}
+    - target: {fileID: 1795811716754065221, guid: 78791089734864858825b7034f730793, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1795811716754065221, guid: 78791089734864858825b7034f730793, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3550035007505322517, guid: 78791089734864858825b7034f730793, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -603,6 +611,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3550035007505322517, guid: 78791089734864858825b7034f730793, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3940423962409824696, guid: 78791089734864858825b7034f730793, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3940423962409824696, guid: 78791089734864858825b7034f730793, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
@@ -726,6 +742,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8624026233802121046, guid: 78791089734864858825b7034f730793, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9128312537024708665, guid: 78791089734864858825b7034f730793, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -740,6 +760,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9128312537024708665, guid: 78791089734864858825b7034f730793, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9222627803484288092, guid: 78791089734864858825b7034f730793, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

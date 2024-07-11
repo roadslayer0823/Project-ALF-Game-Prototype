@@ -39,6 +39,17 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     [SerializeField] private Image statePointStatus = null;
     [SerializeField] private Image statePointBar = null;
 
+    [Header("Passive Skill UI")]
+    [SerializeField] private Image stressScoreProgressBar = null;
+    [SerializeField] private Sprite defaultStressLevelSlot = null;
+    [SerializeField] private Sprite activateStressLevelSlot = null;
+    [SerializeField] private Sprite defaultLifeCyclePointSlot = null;
+    [SerializeField] private Sprite activateLifeCyclePointSlot = null;
+    [SerializeField] private Image[] lifeScoreProgressBar = null;
+    [SerializeField] private Image[] lifeScoreGlowBar = null;
+    [SerializeField] private Image[] stressLevelSlot = null;
+    [SerializeField] private Image[] lifeCyclePointSlot = null;
+
     [Header("Character Info Panel Animation")]
     [SerializeField] private Animator characterInfoPanelAnimation = null;
 
@@ -116,6 +127,9 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         HealthPointInfo();
         StressValueInfo();
         StatePointInfo();
+        CurrentLifeScoreUI();
+        CurrentStressScoreUI();
+        CurrentLifeCyclePointUI();
     }
 
     private void StatePointInfo()
@@ -369,7 +383,6 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         }
     }
 
-
     public IEnumerator MaxStatePointAnimation(TextMeshProUGUI targetText, Vector3 targetScale, Vector3 currentScale, float defaultOffset, float targetOffset, float defaultOuter, float targetOuter, float duration)
     {
         var _sequence = LeanTween.sequence();
@@ -395,5 +408,74 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         _sequence.insert(LeanTween.scale(targetText.gameObject, currentScale, duration));
 
         yield return new WaitForSeconds(0.1f);
+    }
+
+    public void CurrentStressScoreUI()
+    {
+        float stressScore = this.selectedCharacter.GetStressScore();
+        float convertStressScore = Mathf.RoundToInt(stressScore);
+        if (convertStressScore >= 0)
+        {
+            this.stressScoreProgressBar.fillAmount = convertStressScore / 150;
+        }
+        else if(convertStressScore >= 150 && convertStressScore < 200)
+        {
+           if(this.stressScoreProgressBar.fillAmount != 0)
+           {
+                this.stressScoreProgressBar.fillAmount = 0;
+           }
+            this.stressScoreProgressBar.fillAmount = convertStressScore - 150 / 50;
+        }
+        else if (convertStressScore >= 200)
+        {
+            if (this.stressScoreProgressBar.fillAmount != 0)
+            {
+                this.stressScoreProgressBar.fillAmount = 0;
+            }
+            this.stressScoreProgressBar.fillAmount = convertStressScore - 200 / 150;
+        }
+    }
+
+    public void CurrentStressLevelUI()
+    {
+        int stressLevel = this.selectedCharacter.GetStressLevel();
+        for (int i = 0; i < stressLevelSlot.Length; i++)
+        {
+            this.stressLevelSlot[i].sprite = (i < stressLevel) ? activateStressLevelSlot : defaultStressLevelSlot;
+            this.stressLevelSlot[i].SetNativeSize();
+        }
+    }
+
+    public void CurrentLifeCyclePointUI()
+    {
+        int lifeCyclePoint = this.selectedCharacter.GetLifeCyclePoint();
+        for (int i = 0; i < lifeCyclePointSlot.Length; i++)
+        {
+            this.lifeCyclePointSlot[i].sprite = ( i < lifeCyclePoint) ? activateLifeCyclePointSlot : defaultLifeCyclePointSlot;
+            this.lifeCyclePointSlot[i].SetNativeSize();
+        }
+    }
+
+    public void CurrentLifeScoreUI()
+    {
+        float lifeScore = this.selectedCharacter.GetLifeScore();
+
+        // Calculate the index, ensuring proper slot selection
+        int index = Mathf.FloorToInt(lifeScore / 50);
+        float fillAmount = (lifeScore % 50) / 50.0f;
+
+        // Update all previous progress bars to full
+        for (int i = 0; i < index; i++)
+        {
+            this.lifeScoreProgressBar[i].fillAmount = 1.0f;
+            this.lifeScoreGlowBar[i].gameObject.SetActive(true);
+        }
+
+        // Update the current progress bar
+        this.lifeScoreProgressBar[index].fillAmount = fillAmount;
+        if(this.lifeScoreProgressBar[index].fillAmount >= 1.0f)
+        {
+            this.lifeScoreGlowBar[index].gameObject.SetActive(true);
+        }
     }
 }
