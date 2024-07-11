@@ -12,6 +12,26 @@ public class BattleResultData
     private readonly List<BattleResultData_GameCharacter> gameCharacterResultDataList = new();
     private readonly List<string> resultLogList = new();
 
+#if ALF_DEBUG
+
+    private readonly string[] debugKeyStrings = new string[]
+    {
+        "gameCharacterName",
+        "eventName"
+    };
+
+    private readonly string[] debugTempStrings = new string[]
+    {
+        "temp_FinalTotalStatePointCost",
+        "temp_FinalMaximumStatePointIncrease",
+        "temp_JiaoLiStatePointCost",
+        "temp_JiaoLiMaxStatePointIncrease",
+        "temp_StressEvasionCost",
+        "temp_StressEvasionMaxStatePointIncrease"
+    };
+
+#endif
+
     public class BattleResultData_GameCharacter
     {
         [NonSerialized] public GameCharacter gameCharacter = null;
@@ -296,10 +316,13 @@ public class BattleResultData
             string[] _stringArray = _newText.Split( ':' );
 
             string _log = "";
-            if (_stringToReplace.Contains( "gameCharacterName" )
-                || _stringToReplace.Contains( "eventName" ))
+            if (debugKeyStrings.Any( s => _stringToReplace.Contains( s )))
             {
                 _log = $"<color=#FFAAFF>{ _stringToReplace }</color>";
+            }
+            else if (debugTempStrings.Any( s => _stringToReplace.Contains( s ) ))
+            {
+                _log = $"<color=#DCDCDC>{ _stringToReplace }</color>";
             }
             else
             {
@@ -346,7 +369,14 @@ public class BattleResultData
                         .ReplaceFirst( "virtualHealthPointDamageTaken", "受到虛傷" )
                         .ReplaceFirst( "statePointDamageTaken", "受到以太傷害" )
                         .ReplaceFirst( "stressValueDamageTaken", "受到負荷傷害" )
-                        .ReplaceFirst( "triggeredPassiveSkillListString", "發動了的流向技能" ) );
+                        .ReplaceFirst( "triggeredPassiveSkillListString", "發動了的流向技能" )
+                        .ReplaceFirst( "temp_FinalTotalStatePointCost", "最終以太消耗" )
+                        .ReplaceFirst( "temp_FinalMaximumStatePointIncrease", "最終最大以太提升" )
+                        .ReplaceFirst( "temp_JiaoLiStatePointCost", "角力以太消耗" )
+                        .ReplaceFirst( "temp_JiaoLiMaxStatePointIncrease", "角力最大以太提升" )
+                        .ReplaceFirst( "temp_StressEvasionCost", "回避壓力消耗" )
+                        .ReplaceFirst( "temp_StressEvasionMaxStatePointIncrease", "回避壓力消耗以太提升" )
+                        );
 
 #endif
     }
