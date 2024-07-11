@@ -893,6 +893,8 @@ public class BattleResultData
             _gameCharacterResultData.lastJsonString = JsonConvert.SerializeObject( _gameCharacterResultData );
 
 #endif
+
+            this.gameCharacterResultDataList.Add( _gameCharacterResultData );
         }
 
         gameCharacter.SetTemporaryBattleResultData( _gameCharacterResultData );

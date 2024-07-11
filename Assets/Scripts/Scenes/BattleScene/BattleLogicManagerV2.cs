@@ -306,10 +306,8 @@ public partial class BattleLogicManagerV2
     }
 
     // 發動流向效果A
-    public static BattleResultData TriggerCategorizedPassiveSkillEffectA( GameCharacter gameCharacter )
+    public static void TriggerCategorizedPassiveSkillEffectA( ref BattleResultData battleResultData, GameCharacter gameCharacter )
     {
-        BattleResultData _battleResultData = new();
-
         // 開始檢查流向效果
         CategorizedPassiveSkillManager.CategoryType _selectedPassiveSkillCategoryType = gameCharacter.GetSelectedPassiveSkillCategoryType();
         CategorizedPassiveSkillManager.CategoryType _lastSelectedPassiveSkillCategoryType = gameCharacter.GetLastSelectedPassiveSkillCategoryType();
@@ -319,17 +317,15 @@ public partial class BattleLogicManagerV2
         if (_lastSelectedPassiveSkillCategoryType == CategorizedPassiveSkillManager.CategoryType.Life
             && _selectedPassiveSkillCategoryType is CategorizedPassiveSkillManager.CategoryType.State or CategorizedPassiveSkillManager.CategoryType.Stress)
         {
-            CategorizedPassiveSkillManager.RunCyclePointConvert( ref _battleResultData, gameCharacter );
+            CategorizedPassiveSkillManager.RunCyclePointConvert( ref battleResultData, gameCharacter );
         }
         // NO
         // "己方"的當前流向是否"生命流"?
         // YES
         else if (_selectedPassiveSkillCategoryType == CategorizedPassiveSkillManager.CategoryType.Life)
         {
-            CategorizedPassiveSkillManager.CalculateLifeCategoryNiJingLiuZhuanScore( ref _battleResultData, gameCharacter );
+            CategorizedPassiveSkillManager.CalculateLifeCategoryNiJingLiuZhuanScore( ref battleResultData, gameCharacter );
         }
-
-        return _battleResultData;
     }
 
     public static void DeclareAssaulterAndRecipient( GameCharacter assaulter, GameCharacter recipient )
@@ -348,25 +344,21 @@ public partial class BattleLogicManagerV2
     }
 
     // 頁面：Part A結算
-    public static BattleResultData DetermineResultForPartA( GameCharacter lead, GameCharacter improviser )
+    public static void DetermineResultForPartA( ref BattleResultData battleResultData, GameCharacter lead, GameCharacter improviser )
     {
-        BattleResultData _battleResultData = new();
-
         // 先手方使用技能時當前以太值結算
-        CategorizedPassiveSkillManager.CalculateLeadCurrentStatePoint( ref _battleResultData, lead, improviser );
+        CategorizedPassiveSkillManager.CalculateLeadCurrentStatePoint( ref battleResultData, lead, improviser );
 
         // 先手方使用技能時最大以太值結算
-        CategorizedPassiveSkillManager.CalculateMaximumStatePoint( ref _battleResultData, lead );
+        CategorizedPassiveSkillManager.CalculateMaximumStatePoint( ref battleResultData, lead );
 
         // "先手方"的當前流向是否"以太流"?
         // YES
         if (lead.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.State)
         {
             // 先手方使用技能時當前以太值第2次結算
-            CategorizedPassiveSkillManager.RunCurrentStatePointSecondTimeCalculation( ref _battleResultData, lead );
+            CategorizedPassiveSkillManager.RunCurrentStatePointSecondTimeCalculation( ref battleResultData, lead );
         }
-
-        return _battleResultData;
     }
 
     public static BattleResultData DetermineResultForPartB( GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser )

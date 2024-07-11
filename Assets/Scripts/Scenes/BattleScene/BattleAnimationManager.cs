@@ -810,7 +810,8 @@ public class BattleAnimationManager : MonoBehaviour
             _attackTarget
         };
 
-        Subskill _attackerSubskillData = _attacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        CharacterSkill _attackerCurrentSkill = _attacker.GetCurrentSkill();
+        Subskill _attackerSubskillData = _attackerCurrentSkill.GetCharacterSubskillData().GetSubskillData();
         SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackerSubskillData.Id );
         RangeType _attackerRangeType = _attacker.GetCurrentSkillRangeType();
 
@@ -869,18 +870,15 @@ public class BattleAnimationManager : MonoBehaviour
 
         yield return new WaitForSeconds( 0.1f );
 
-        _attacker.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
-
         // “先手方”發動技能。
-        _battleResultData = new BattleResultData();
-        BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, _attacker, _attackTarget );
-        _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
-        _attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
-
-        //StartCoroutine( ShowPopUpDisplayInfo( _attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
-        _attacker.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
-
+        _attacker.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
         _attackTarget.SetCurrentAttacker( _attacker );
+
+        BattleLog.Instance.AddOnScreenBattleLog(
+            $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>使出了"
+            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackerSubskillData.DisplayName }</color>"
+            + $" （{ TerminologyManager.GetSkillInformationText( _attackerCurrentSkill ) }）"
+            );
 
         Skill.SkillType _attackerSkillType = _attacker.GetCurrentSkill().GetSkillData().skillType;
 
@@ -905,6 +903,8 @@ public class BattleAnimationManager : MonoBehaviour
         // “先手方”使用派生技能。
         if (_attackerSkillType == Skill.SkillType.derived)
         {
+            // TODO: 取消對方的任何技能指令並進入“判定 Part B 結果及結算”。
+
             yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, _atlSlotListPanel, battleFlowRound.GetCurrentATL().GetATLNumber() ) );
 
             if (EndPartB( _attacker, _attackTarget ))
@@ -924,22 +924,34 @@ public class BattleAnimationManager : MonoBehaviour
         }
         else
         {
+            _battleResultData = new BattleResultData();
+
             // 頁面：Part A前
 
             // 更新"先手方"當前流向
             _attacker.TriggerEvent( AnimationEvent.OnCategorizedPassiveTypeUpdated );
 
             // 頁面：發動流向效果A
-            _battleResultData = BattleLogicManagerV2.TriggerCategorizedPassiveSkillEffectA( _attacker );
-            ShowBattleLog( _battleResultData.GetResultLogList() );
+            BattleLogicManagerV2.TriggerCategorizedPassiveSkillEffectA( ref _battleResultData, _attacker );
 
             // TODO: 判定PART A演出
 
             // 頁面：Part A
 
             // "先手方"進入【 Part A結算 】。
-            _battleResultData = BattleLogicManagerV2.DetermineResultForPartA( _attacker, _attackTarget );
+            BattleLogicManagerV2.DetermineResultForPartA( ref _battleResultData, _attacker, _attackTarget );
+
+            _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
+            _attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
             ShowBattleLog( _battleResultData.GetResultLogList() );
+
+            _attacker.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
+
+            BattleLog.Instance.AddOnScreenBattleLog(
+                $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>"
+                + $"消耗了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackerBattleResultData.statePointCost }{ TerminologyManager.STATE_POINT }</color>"
+                + $"和提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackerBattleResultData.maximumStatePointIncrease }最大{ TerminologyManager.STATE_POINT }</color>。"
+            );
 
             // "後手方"進入【 迎擊指令時間 】。
             _attackTarget.SetIsInRepulseCommandTime( true );
