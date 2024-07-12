@@ -313,13 +313,13 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         if (assaulter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL3, out PassiveSkill _passiveSkill) && isAssaulter_LifePassiveSkill)
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(assaulter, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(assaulter, _passiveSkill, out recipient_BattleResultData);
             pSL3_MengLie_value = 0.2f;
         }
 
         if (recipient.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL4, out _passiveSkill) && isRecipient_LifePassiveSkill)
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(recipient, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(recipient, _passiveSkill, out recipient_BattleResultData);
             pSL4_JianRen_value = 0.2f;
         }
 
@@ -595,14 +595,14 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         if (lead.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL9, out PassiveSkill _passiveSkill) && lead.GetLifeScore() >= 100 && isLeadHealthMoreThanImproviser)
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(lead, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(lead, _passiveSkill, out lead_BattleResultData);
             pSL9_ShengMingYaZhi_value = 0.5f;
         }
 
         if ((lead.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE8, out _passiveSkill) || lead.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE9, out _passiveSkill))
             && (lead_BattleResultData.maximumStatePoint >= 300 || isLeadCurrentStressMoreThanHalf))
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(lead, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(lead, _passiveSkill, out lead_BattleResultData);
             psE8_JieLiu_PSE9_YouRen_value = 0.5f;
             bool isPSE8 = _passiveSkill.Id == PASSIVE_SKILL_ID_PSE8;
             psE8_JieLiu_PSE9_YouRen_text = isPSE8 ? "先手方 以太流 8.節流：" : "先手方 以太流 9.游刃：";
@@ -676,14 +676,14 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         if (improviser.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL9, out PassiveSkill _passiveSkill) && improviser.GetLifeScore() >= 100 && isImproviserHealthMoreThanLead)
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(improviser, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(improviser, _passiveSkill, out improviser_BattleResultData);
             pSL9_ShengMingYaZhi_value = 0.5f;
         }
 
         if ((improviser.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE8, out _passiveSkill) || improviser.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE9, out _passiveSkill))
             && (improviser_BattleResultData.maximumStatePoint >= 300 || isImproviserCurrentStressMoreThanHalf))
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(improviser, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(improviser, _passiveSkill, out improviser_BattleResultData);
             psE8_JieLiu_PSE9_YouRen_value = 0.5f;
 
             Debug.Log("Only call once jie liu or you ren");
@@ -730,18 +730,19 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         float pSE4_KuoLiu_value = 0;
         float pSE12_NiFeng_value = 1;
+        float skillMaximumStatePointIncrease = gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().MaxStatePointUp;
 
         if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE4, out PassiveSkill _passiveSkill)
             && gameCharacter_BattleResultData.temp_FinalTotalStatePointCost >= 20)
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out gameCharacter_BattleResultData);
             pSE4_KuoLiu_value = 0.2f;
         }
 
         if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE12, out _passiveSkill)
             && gameCharacter_BattleResultData.maximumStatePoint < 80)
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out gameCharacter_BattleResultData);
             pSE12_NiFeng_value = 2.0f;
         }
         
@@ -750,7 +751,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
          * [最大以太值]+<[最大以太提升]>
             <此最大以太提升為"最終最大以太提升">
          */
-        gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease = gameCharacter_BattleResultData.maximumStatePointIncrease;
+        gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease = skillMaximumStatePointIncrease;
 
         // CASE B:當前流向為"以太流"
         if (gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.State)
@@ -760,17 +761,16 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 <此最大以太提升為"最終最大以太提升">
              */
             gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease += gameCharacter_BattleResultData.temp_FinalTotalStatePointCost * pSE4_KuoLiu_value * pSE12_NiFeng_value;
-            battleResultData.AddResultLog("CASE B:當前流向為 以太流\n\n[最大以太值]+<[最大以太提升]+[最終以太消耗*擴流*逆風]>\n<此最大以太提升為\"最終最大以太提升\">" +
-                                        "\n\n最大以太提升: " + gameCharacter_BattleResultData.maximumStatePointIncrease +
+            battleResultData.AddResultLog("CASE B:當前流向為 以太流\n\n[最大以太值]+<[最大以太提升]+[最終以太消耗*\"" + gameCharacterText + "\"擴流*\"" + gameCharacterText + "\"逆風]>\n<此最大以太提升為\"最終最大以太提升\">" +
+                                        "\n\n最大以太提升: " + skillMaximumStatePointIncrease +
                                         "\n最終以太消耗: " + gameCharacter_BattleResultData.temp_FinalTotalStatePointCost +
                                         "\n" + gameCharacterText + "以太流 4.擴流: " + pSE4_KuoLiu_value +
                                         "\n" + gameCharacterText + "以太流 12.逆風: " + pSE12_NiFeng_value);
-
         }
         else
         {
             battleResultData.AddResultLog("CASE A:當前流向為 生命流/負荷流/無流向\n\n[最大以太值]+<[最大以太提升]>\n<此最大以太提升為\"最終最大以太提升\">" +
-                                        "\n\n最大以太提升: " + gameCharacter_BattleResultData.maximumStatePointIncrease);
+                                        "\n\n最大以太提升: " + skillMaximumStatePointIncrease);
         }
         battleResultData.AddResultLog("最終最大以太提升: " + gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease);
         battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease, out _);
@@ -780,6 +780,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     // 後手方使用技能時當前以太值第2次結算
     public static void RunCurrentStatePointSecondTimeCalculation(ref BattleResultData battleResultData, GameCharacter gameCharacter)
     {
+        string gameCharacterText = gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Lead) ? "先手方" : "後手方";
+
         BattleResultData.BattleResultData_GameCharacter gameCharacter_BattleResultData = battleResultData.GetGameCharacterResultData(gameCharacter);
 
         float pSE3_HuiLiu_value = 0.0f;
@@ -787,18 +789,25 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE3, out PassiveSkill _passiveSkill))
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out gameCharacter_BattleResultData);
             pSE3_HuiLiu_value = 0.5f;
         }
 
         if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE12, out _passiveSkill) && gameCharacter_BattleResultData.maximumStatePoint < 80)
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out gameCharacter_BattleResultData);
             pSE12_NiFeng_value = 2.0f;
         }
 
         //[當前以太值] +[最終最大以太提升 * 0.5 * n]
         float totalStatePointRestore = gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease * pSE3_HuiLiu_value * pSE12_NiFeng_value;
+        battleResultData.AddResultLog(gameCharacterText + "使用技能時當前以太值第2次結算");
+
+        battleResultData.AddResultLog("[當前以太值] +[最終最大以太提升 * \"" + gameCharacterText + "\"回流 * \"" + gameCharacterText + "\"逆風]");
+        battleResultData.AddResultLog("最終最大以太提升: " + gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease +
+                                    "\n" + gameCharacterText + " 以太流 3.回流：" + pSE3_HuiLiu_value +
+                                    "\n" + gameCharacterText + " 以太流 12.逆風: " + pSE12_NiFeng_value);
+        battleResultData.AddResultLog("當前以太提升: " + totalStatePointRestore);
         battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacter, totalStatePointRestore, out _);
     }
 
@@ -952,7 +961,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                  */
                  if (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSS10, out PassiveSkill _passiveSkill))
                 {
-                    battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
+                    battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out gameCharacterOne_BattleResultData);
 
                     /*
                      * "己方"得到
@@ -974,7 +983,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, gameCharacterOne.GetPassiveSkill(PASSIVE_SKILL_ID_PSS2), out _);
 
                     //[負荷值] +[10]
-                    battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacterOne, 10, isBreakStatusAvailable, out _);
+                    battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacterOne, 10, isBreakStatusAvailable, out gameCharacterOne_BattleResultData);
                 }
             }
 
@@ -1138,14 +1147,14 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         if (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE2, out PassiveSkill _passiveSkill))
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out gameCharacterOne_BattleResultData);
             pSE2_JiaoLi_value = 0.2f;
         }
 
         if ((gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE8, out _passiveSkill) || gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE9, out _passiveSkill))
         && (gameCharacterOne_BattleResultData.maximumStatePoint >= 300 || isImproviserCurrentStressMoreThanHalf))
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out gameCharacterOne_BattleResultData);
             pSE8_JieLiu_PSE9_YouRen_value = 0.5f;
 
             Debug.Log("Only call once jie liu or you ren");
@@ -1153,7 +1162,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         if (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE12, out _passiveSkill))
         {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
+            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out gameCharacterOne_BattleResultData);
             pSE12_NiFeng_value = 2f;
         }
 
@@ -1177,7 +1186,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
              */
             if (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE4, out _passiveSkill))
             {
-                battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
+                battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out gameCharacterOne_BattleResultData);
                 pSE4_KuoLiu_value = 0.2f;
             }
 
@@ -1194,7 +1203,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
              */
             if (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE4, out _passiveSkill))
             {
-                battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
+                battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out gameCharacterOne_BattleResultData);
                 pSE3_HuiLiu_value = 0.5f;
             }
 

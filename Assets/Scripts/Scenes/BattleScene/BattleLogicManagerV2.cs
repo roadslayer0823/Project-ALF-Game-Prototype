@@ -325,6 +325,7 @@ public partial class BattleLogicManagerV2
         else if (_selectedPassiveSkillCategoryType == CategorizedPassiveSkillManager.CategoryType.Life)
         {
             CategorizedPassiveSkillManager.CalculateLifeCategoryNiJingLiuZhuanScore( ref battleResultData, gameCharacter );
+            CategorizedPassiveSkillManager.CalculateLifeCategoryNiJingLiuZhuanScore(ref battleResultData, gameCharacter);
         }
     }
 
