@@ -4089,14 +4089,23 @@ MonoBehaviour:
   battleGameManager: {fileID: 0}
   debugModeObjectLabel: {fileID: 0}
   container: {fileID: 7525882896127653738}
+  currentBackground: {fileID: 0}
+  backgroundOne: {fileID: 0}
+  backgroundTwo: {fileID: 0}
   playerStatList: {fileID: 1382417245301751040}
   enemyStatList: {fileID: 2545216359508503701}
   playerStatValue: {fileID: 3876000834011107372}
   enemyStatValue: {fileID: 6599399028679528178}
   enemyInputPlaceHolder: {fileID: 4031258919684730130}
-  changedSkillInfo: {fileID: 6170039967833781247}
+  playerDisplayInfo: {fileID: 0}
+  enemyDisplayInfo: {fileID: 0}
   playerInputPlaceHolder: {fileID: 1282530397211866370}
   debugModeButtonLabel: {fileID: 8830624310851392781}
+  validateInputWord: 
+  backgroundOnePartA: {fileID: 0}
+  backgroundOnePartB: {fileID: 0}
+  backgroundTwoPartA: {fileID: 0}
+  backgroundTwoPartB: {fileID: 0}
 --- !u!223 &2971328728000285138
 Canvas:
   m_ObjectHideFlags: 0
@@ -4116,7 +4125,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 6
+  m_SortingOrder: 7
   m_TargetDisplay: 0
 --- !u!114 &6305601682218933496
 MonoBehaviour:

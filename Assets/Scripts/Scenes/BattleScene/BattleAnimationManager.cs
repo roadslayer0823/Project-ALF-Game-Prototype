@@ -877,7 +877,7 @@ public class BattleAnimationManager : MonoBehaviour
         BattleLog.Instance.AddOnScreenBattleLog(
             $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>使出了"
             + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackerSubskillData.DisplayName }</color>"
-            + $" （{ TerminologyManager.GetSkillInformationText( _attackerCurrentSkill ) }）"
+            + $" （{ TerminologyManager.GetSkillInformationText( _attackerCurrentSkill ) }）。"
             );
 
         Skill.SkillType _attackerSkillType = _attacker.GetCurrentSkill().GetSkillData().skillType;

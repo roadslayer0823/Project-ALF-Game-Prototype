@@ -73,6 +73,13 @@ public partial class GameCharacter : MonoBehaviour
             CategoryType.Stress => this.stressPassiveSkillList,
             _ => null,
         };
+
+        if (this.selectedPassiveSkillCategoryType != this.lastSelectedPassiveSkillCategoryType)
+        {
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ this.characterName }</color>更新了流向："
+                                                     + $"\n{ TerminologyManager.GetPassiveSkillCategorizedType( this.lastSelectedPassiveSkillCategoryType ) } -> "
+                                                     + $"<color={ BattleLog.SPECIAL_COLOR_CODE }>{ TerminologyManager.GetPassiveSkillCategorizedType( this.selectedPassiveSkillCategoryType ) }</color>" );
+        }
     }
 
     public CategoryType GetSelectedPassiveSkillCategoryType()
