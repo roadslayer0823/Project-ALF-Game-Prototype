@@ -799,6 +799,9 @@ public class BattleAnimationManager : MonoBehaviour
         _attacker.PlayCharacterAnimation( "Idle" );
         _attackTarget.PlayCharacterAnimation( "Idle" );
 
+        float _animationDuration = 0.0f;
+        float _animationStartTime = 0.0f;
+
         float _skillAnimationLength = 0.0f;
         float _skillCountdownTime = 0.0f;
         float _skillCountdownTimeStartTime = 0.0f;
@@ -880,23 +883,13 @@ public class BattleAnimationManager : MonoBehaviour
             + $" （{ TerminologyManager.GetSkillInformationText( _attackerCurrentSkill ) }）。"
             );
 
-        Skill.SkillType _attackerSkillType = _attacker.GetCurrentSkill().GetSkillData().skillType;
-
-        // 在當前的 ATL 裡，如果“先手方”發動的技能不是派生技能，才會有 Part A 的階段，否則將直接進入 Part B 的階段。
-        if (_attackerSkillType != Skill.SkillType.derived)
-        {
-            LeanTween.delayedCall( 0.3f, () =>
-            {
-                _attacker.TriggerEvent( AnimationEvent.OnPartA );
-                _attackTarget.TriggerEvent( AnimationEvent.OnPartA );
-            } );
-        }
-
         yield return StartCoroutine( PlayShowingSkillInformation( _attacker ) );
 
         bool _isAttackerCounterAttacking = _attacker.GetIsCounterAttacking();
         _attacker.SetIsCounterAttacking( false );
         _attackTarget.SetIsCounterAttacking( false );
+
+        Skill.SkillType _attackerSkillType = _attacker.GetCurrentSkill().GetSkillData().skillType;
 
         // 是否有一方按下“派生技能”？
         // YES
@@ -916,12 +909,15 @@ public class BattleAnimationManager : MonoBehaviour
         }
         // NO
         // TODO: 先手方是否在“近戰指令時間”或“近戰反擊指令時間”按下主動或反擊技能？
+        // YES
         // “先手方”使用反擊技能。
         else if (_isAttackerCounterAttacking)
         {
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
             yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, ( _attacker.GetIsPlayer() ) ? "Player_Ariku_Counterattack" : "Enemy_Enemy_Counterattack" ) );
         }
+        // NO
+        // 进入“Part A前”。
         else
         {
             _battleResultData = new BattleResultData();
@@ -938,6 +934,12 @@ public class BattleAnimationManager : MonoBehaviour
 
             // 頁面：Part A
 
+            // 演出時長為1.6秒
+            _animationDuration = 1.6f;
+            _animationStartTime = Time.time;
+
+            // -------------------- 先手方 --------------------
+
             // "先手方"進入【 Part A結算 】。
             BattleLogicManagerV2.DetermineResultForPartA( ref _battleResultData, _attacker, _attackTarget );
 
@@ -945,6 +947,9 @@ public class BattleAnimationManager : MonoBehaviour
             _attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
             ShowBattleLog( _battleResultData.GetResultLogList() );
 
+            StartCoroutine( RunAnimationOfPartA( _attacker, _animationDuration ) );
+
+            // 播放演出同時，UI反映各項參數。
             _attacker.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
 
             BattleLog.Instance.AddOnScreenBattleLog(
@@ -953,54 +958,61 @@ public class BattleAnimationManager : MonoBehaviour
                 + $"和提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackerBattleResultData.maximumStatePointIncrease }最大{ TerminologyManager.STATE_POINT }</color>。"
             );
 
-            // "後手方"進入【 迎擊指令時間 】。
-            _attackTarget.SetIsInRepulseCommandTime( true );
+            // -----------------------------------------------
 
-            //_skillAnimationLength = GetAttackAnimationLength( _attacker, _attackerCharacterPartA, _attackerSkillEffectPartA ) + 1.0f;
-            //_skillCountdownTime = _skillAnimationLength * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-            _skillCountdownTime = 1.6f;
-            _attackTarget.SetSkillCountdownTime( _skillCountdownTime );
-            StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefensePartA_Cutoff ) );
+            // -------------------- 後手方 --------------------
 
-            if (_attackTarget.GetIsPlayer())
+            StartCoroutine( RunAnimationOfPartA( _attackTarget, _animationDuration ) );
+
+            // -----------------------------------------------
+
+            // 播放演出同時，根據"當前距離"，更新畫面中ATL的距離圖標。
+            this.battleGameManager.GetBattleDistanceManager().UpdateBattleDistancePanel();
+
+            yield return new WaitWhile( () => Time.time - _animationStartTime < _animationDuration );
+
+            // 指令結束，禁用技能。
+            _attacker.TriggerEvent( AnimationEvent.OnTransition );
+            _attackTarget.TriggerEvent( AnimationEvent.OnTransition );
+
+            // “後手方”發動技能。
+            _attackTarget.ApplyAssignedSkillAsCurrentSkill();
+
+            CharacterSkill _attackTargetCurrentSkill = _attackTarget.GetCurrentSkill();
+            if (_attackTargetCurrentSkill != null)
             {
-                yield return new WaitForSeconds( 0.1f );
-                this.skillPromptPanel.ShowCommandPhase( TerminologyManager.REPULSE_COMMAND_TIME, true, _skillCountdownTime );
-                yield return new WaitForSeconds( 0.2f );
+                RangeType _attackTargetCurrentSkillRange = _attackTargetCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
 
-                _skillCountdownTimeStartTime = Time.time;
-                ShowCommandPhaseCountdownTimer( false, _attackTarget, _skillCountdownTime );
-                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_REPULSE );
+                // 當前距離是否近距離?
+                // YES
+                if (this.battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType() == BattleDistanceManager.DistanceType.Near)
+                {
+                    // 後手方的已按下技能的接觸判定"遠/近"變為"近戰"
+                    if (_attackTargetCurrentSkillRange == RangeType.melee_or_ranged)
+                    {
+                        _attackTarget.SetCurrentSkillRangeType( RangeType.melee );
+                    }
+                    // "後手方"的已按下技能是否遠程技能?
+                    // YES
+                    else if (_attackTargetCurrentSkillRange == RangeType.ranged)
+                    {
+                        // "後手方"得到"近距離遠程方"
+                        _attackTarget.AddCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer );
+                    }
+                }
+                // NO
+                else
+                {
+                    // 後手方的已按下技能的接觸判定"遠/近"變為"遠程"
+                    if (_attackTargetCurrentSkillRange == RangeType.melee_or_ranged)
+                    {
+                        _attackTarget.SetCurrentSkillRangeType( RangeType.ranged );
+                    }
+                }
             }
-
-            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.REPULSE_COMMAND_TIME } 】</color>。" );
         }
 
-        yield return StartCoroutine( ZoomInCameraToTarget( _attacker, 0.6f ) );
-
-        if (_attackerCharacterPartA != NO_ANIMATION)
-        {
-            yield return StartCoroutine( PlayCharacterAnimation( _attacker, _attackerCharacterPartA ) );
-        }
-
-        if (_attackerSkillEffectPartA != NO_ANIMATION)
-        {
-            if (_attackerSkillEffectPartA == "Fireball_Part_A")
-            {
-                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
-            }
-
-            yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartA ) );
-        }
-
-        while (Time.time - _skillCountdownTimeStartTime < _skillCountdownTime)
-        {
-            yield return null;
-        }
-
-        _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
-        _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
-
+        // 開始0.2秒的“PART A戰鬥過場演出”並進入“判定 Part B 結果及結算”。
         this.hasTransitionAnimationEnded = false;
         this.battleGameManager.GetBattleVisualEffectManager().TransitionToNextPart( () => { this.hasTransitionAnimationEnded = true; } );
         yield return new WaitUntil( () => this.hasTransitionAnimationEnded );
@@ -1028,9 +1040,6 @@ public class BattleAnimationManager : MonoBehaviour
 
         _attacker.GetOpponentContainer().SetActive( true );
         _attackTarget.ShowCharacterObject();
-
-        // “後手方”發動技能。
-        _attackTarget.ApplyAssignedSkillAsCurrentSkill();
 
         if (_attackTarget.GetIsInBreakStatus())
         {
@@ -1331,6 +1340,92 @@ public class BattleAnimationManager : MonoBehaviour
         this.hasTransitionAnimationEnded = false;
         this.battleGameManager.GetBattleVisualEffectManager().TransitionToNextATL( () => { this.hasTransitionAnimationEnded = true; } );
         yield return new WaitUntil( () => this.hasTransitionAnimationEnded );
+    }
+
+    private IEnumerator RunAnimationOfPartA( GameCharacter gameCharacter, float animationDuration )
+    {
+        float _animationStartTime = 0.0f;
+
+        // “Part A結算”頁面："己方"播放已判定的[已按下技能演出]&[共用特效]
+        if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.Lead ))
+        {
+            yield return StartCoroutine( ZoomInCameraToTarget( gameCharacter, 0.6f ) );
+
+            RangeType _attackerSkillRangeType = gameCharacter.GetCurrentSkillRangeType();
+            string _attackerCharacterPartA = "";
+            string _attackerSkillEffectPartA = "";
+
+            if (gameCharacter.GetIsPlayer())
+            {
+                if (_attackerSkillRangeType == RangeType.melee)
+                {
+                    _attackerCharacterPartA = "MeleeAttack_Part_A";
+                    _attackerSkillEffectPartA = "MeleeAttack_Part_A";
+                }
+                else if (_attackerSkillRangeType == RangeType.ranged)
+                {
+                    _attackerCharacterPartA = "RangedAttack";
+                    _attackerSkillEffectPartA = "Fireball_Part_A";
+                }
+            }
+            else
+            {
+                if (_attackerSkillRangeType == RangeType.melee)
+                {
+                    _attackerCharacterPartA = "Attack_Part_A";
+                    _attackerSkillEffectPartA = "-";
+                }
+                else if (_attackerSkillRangeType == RangeType.ranged)
+                {
+                    _attackerCharacterPartA = "RangedAttack";
+                    _attackerSkillEffectPartA = "Fireball_Part_A";
+                }
+            }
+
+            if (_attackerCharacterPartA != NO_ANIMATION)
+            {
+                yield return StartCoroutine( PlayCharacterAnimation( gameCharacter, _attackerCharacterPartA ) );
+            }
+
+            if (_attackerSkillEffectPartA != NO_ANIMATION)
+            {
+                if (_attackerSkillEffectPartA == "Fireball_Part_A")
+                {
+                    AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
+                }
+
+                yield return StartCoroutine( PlaySkillEffectAnimation( gameCharacter, _attackerSkillEffectPartA ) );
+            }
+        }
+        // “迎擊指令時間”頁面："己方"播放已判定的演出&特效
+        else if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.Improviser ))
+        {
+            // "後手方"進入【 迎擊指令時間 】。
+            gameCharacter.SetIsInRepulseCommandTime( true );
+            gameCharacter.SetSkillCountdownTime( animationDuration );
+
+            if (gameCharacter.GetIsPlayer())
+            {
+                yield return new WaitWhile( () => Time.time - _animationStartTime < 0.1f );
+
+                // 首0.1秒後，指令牌出現。
+                this.skillPromptPanel.ShowCommandPhase( TerminologyManager.REPULSE_COMMAND_TIME, true, animationDuration );
+            }
+
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacter.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.REPULSE_COMMAND_TIME } 】</color>。" );
+        }
+
+        yield return new WaitWhile( () => Time.time - _animationStartTime < 0.3f );
+
+        // ⁠0.3秒後，參考【技能按鈕可用性】，開啟可用的指令。
+        gameCharacter.TriggerEvent( AnimationEvent.OnPartA );
+
+        if (gameCharacter.GetIsInRepulseCommandTime())
+        {
+            // 倒數計時開始。
+            ShowCommandPhaseCountdownTimer( false, gameCharacter, animationDuration - ( Time.time - _animationStartTime ) );
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_REPULSE );
+        }
     }
 
     private void StartPartB( out BattleResultData battleResultData,

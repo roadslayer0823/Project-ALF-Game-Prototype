@@ -207,11 +207,15 @@ public class BattleDistanceManager : MonoBehaviour
     public void SetCurrentDistanceType( DistanceType currentDistanceType )
     {
         this.currentDistanceType = currentDistanceType;
-        this.battleDistancePanel.UpdatBattleDistanceType( this.currentDistanceType );
     }
 
     public DistanceType GetCurrentDistanceType()
     {
         return this.currentDistanceType;
+    }
+
+    public void UpdateBattleDistancePanel()
+    {
+        this.battleDistancePanel.UpdatBattleDistanceType( this.currentDistanceType );
     }
 }

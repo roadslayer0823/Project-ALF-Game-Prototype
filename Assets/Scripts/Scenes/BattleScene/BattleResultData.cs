@@ -654,7 +654,7 @@ public class BattleResultData
     public BattleResultData AddGameCharacterResultData_RestoreCurrentStatePoint( GameCharacter gameCharacter, float restorationPercentage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
-        gameCharacterResultData.SetCurrentStatePoint( gameCharacterResultData.maximumStatePoint * Mathf.Clamp01( restorationPercentage ) );
+        gameCharacterResultData.SetCurrentStatePoint( Mathf.Round( gameCharacterResultData.maximumStatePoint * Mathf.Clamp01( restorationPercentage ) ) );
 
 #if ALF_DEBUG
 
