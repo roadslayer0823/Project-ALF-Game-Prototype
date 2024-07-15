@@ -76,6 +76,10 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
             if (this.currentPassiveSkillType != PassiveSkillType.None)
             {
                 SetCurrentPassiveSkillType( PassiveSkillType.None );
+                for(int i = 0; i < passiveSkillSlotsList.Length; i++)
+                {
+                    passiveSkillSlotsList[i].UpdateDefaultPassiveSkillUI();
+                }
             }
         }
         else
