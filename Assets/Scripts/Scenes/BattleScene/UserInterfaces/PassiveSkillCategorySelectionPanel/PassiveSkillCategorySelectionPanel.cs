@@ -115,7 +115,7 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
             }
             else
             {
-                Debug.Log("none skill");
+                this.highlightedPassiveSkillType = PassiveSkillType.None;
             }
 
             UpdateCurrentPassiveSkillSlot();
