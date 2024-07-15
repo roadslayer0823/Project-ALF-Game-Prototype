@@ -36,6 +36,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private TMP_Text turnText = null;
     [SerializeField] private PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel = null;
     [SerializeField] private BattleResultPanelV2 battleResultPanelV2 = null;
+    [SerializeField] private GameObject blurLayerObject = null;
 
     [Header( "Debug" )]
     [SerializeField] private EnemyDebugMenuPanel enemyDebugMenuPanel = null;
@@ -615,6 +616,7 @@ public class BattleUiManager : MonoBehaviour
         }
         else
         {
+            this.blurLayerObject.SetActive( true );
             this.battleResultPanelV2.ShowVictory();
         }
     }
@@ -627,6 +629,7 @@ public class BattleUiManager : MonoBehaviour
         }
         else
         {
+            this.blurLayerObject.SetActive( true );
             this.battleResultPanelV2.ShowDefeat();
         }
     }

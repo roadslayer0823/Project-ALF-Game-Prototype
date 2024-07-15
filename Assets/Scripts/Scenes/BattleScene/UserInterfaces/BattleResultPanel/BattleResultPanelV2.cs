@@ -43,7 +43,6 @@ public class BattleResultPanelV2: MonoBehaviour
     public void ClickToRestartBattle()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-        this.battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
         SceneManager.LoadScene( SceneManager.GetActiveScene().name );
     }
 
