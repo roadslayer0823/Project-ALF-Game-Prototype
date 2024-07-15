@@ -41,4 +41,11 @@ public class BattleResultPanelV2: MonoBehaviour
         BattleVisualEffectManager.TurnOffBlurShader();
         SceneManager.LoadScene( SceneManager.GetActiveScene().name );
     }
+
+    public void ClickToReturnStartScene()
+    {
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        BattleVisualEffectManager.TurnOffBlurShader();
+        SceneManager.LoadScene("StartScene");
+    }
 }
