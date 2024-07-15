@@ -1030,6 +1030,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4634474583712434720}
   - component: {fileID: 8928877232475122472}
+  - component: {fileID: 1072671375187879666}
+  - component: {fileID: 3734813806287614697}
   m_Layer: 5
   m_Name: BattleResultPanelV2
   m_TagString: Untagged
@@ -1075,6 +1077,44 @@ MonoBehaviour:
   winResult: {fileID: 21300000, guid: 9cfb31f61c53a4e44aa61f08f046cbf6, type: 3}
   loseResult: {fileID: 21300000, guid: 4408a25c8e6854c8da56dd563b3eae13, type: 3}
   currentResultText: {fileID: 6193116537524458978}
+--- !u!223 &1072671375187879666
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6274931955033599716}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_SortingLayerID: 0
+  m_SortingOrder: 3
+  m_TargetDisplay: 0
+--- !u!114 &3734813806287614697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6274931955033599716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreReversedGraphics: 1
+  m_BlockingObjects: 0
+  m_BlockingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
 --- !u!1 &6629239017574811068
 GameObject:
   m_ObjectHideFlags: 0
@@ -1199,7 +1239,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8928877232475122472}
         m_TargetAssemblyTypeName: BattleResultPanelV2, Assembly-CSharp
-        m_MethodName: ClickToReturnStartScene
+        m_MethodName: ClickToExitScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,10 +8,10 @@ using PassiveSkillType = PassiveSkillCategorySelectionPanel.PassiveSkillType;
 
 public class BattleUiManager : MonoBehaviour
 {
-    [System.Obsolete][SerializeField] private PlayerActionPanel playerActionPanel = null;
-    [System.Obsolete][SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
-    [System.Obsolete][SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
-    [System.Obsolete][SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
+    [Obsolete][SerializeField] private PlayerActionPanel playerActionPanel = null;
+    [Obsolete][SerializeField] private SkillSelectionPanel skillSelectionPanel = null;
+    [Obsolete][SerializeField] private SkillSlotListPanel skillSlotListPanel = null;
+    [Obsolete][SerializeField] private ATLSlotListPanel atlSlotListPanel = null;
     [SerializeField] private CharacterInfoPanel characterInfoPanel = null;
     [SerializeField] private BattleResultPanel battleResultPanel = null;
     //[SerializeField] private TMP_Text instructionLabel = null;
@@ -24,7 +25,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private ActiveSkillSlotListPanelV2 activeSkillSlotListPanelV2 = null;
     [SerializeField] private BackendSkillSlotListPanel backendSkillSlotListPanel = null;
     [SerializeField] private BattleLog battleLog = null;
-    [System.Obsolete][SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
+    [Obsolete][SerializeField] private ATLSlotListPanelV2 atlSlotListPanelV2 = null;
     [SerializeField] private PlayerDashboard playerDashboard = null;
     [SerializeField] private EnemyCharacterInfoBox_UI_V2 enemyCharacterInfoBox = null;
     [SerializeField] private SkillPromptPanelV2 skillPromptPanel = null;
@@ -34,6 +35,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private Animator battleStartUiAnimator = null;
     [SerializeField] private TMP_Text turnText = null;
     [SerializeField] private PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel = null;
+    [SerializeField] private BattleResultPanelV2 battleResultPanelV2 = null;
 
     [Header( "Debug" )]
     [SerializeField] private EnemyDebugMenuPanel enemyDebugMenuPanel = null;
@@ -101,6 +103,11 @@ public class BattleUiManager : MonoBehaviour
         }
 
         this.passiveSkillCategorySelectionPanel.Initialize();
+
+        if (this.battleResultPanelV2 != null)
+        {
+            this.battleResultPanelV2.Initialize( this.battleGameManager );
+        }
     }
 
     public void SetSelectedGameCharacter( GameCharacter gameCharacter )
@@ -196,7 +203,15 @@ public class BattleUiManager : MonoBehaviour
             this.playerDashboard.gameObject.SetActive( value );
         }
 
-        this.battleResultPanel.gameObject.SetActive( value );
+        if (this.battleResultPanelV2 == null)
+        {
+            this.battleResultPanel.gameObject.SetActive( value );
+        }
+        else
+        {
+            this.battleResultPanelV2.gameObject.SetActive( value );
+        }
+
         this.battleLog.gameObject.SetActive (value);
         this.enemyCharacterInfoBox.gameObject.SetActive(value);
     }
@@ -594,12 +609,26 @@ public class BattleUiManager : MonoBehaviour
 
     public void ShowVictoryResult()
     {
-        this.battleResultPanel.ShowVictory();
+        if (this.battleResultPanelV2 == null)
+        {
+            this.battleResultPanel.ShowVictory();
+        }
+        else
+        {
+            this.battleResultPanelV2.ShowVictory();
+        }
     }
 
     public void ShowDefeatResult()
     {
-        this.battleResultPanel.ShowDefeat();
+        if (this.battleResultPanelV2 == null)
+        {
+            this.battleResultPanel.ShowDefeat();
+        }
+        else
+        {
+            this.battleResultPanelV2.ShowDefeat();
+        }
     }
 
 #endregion

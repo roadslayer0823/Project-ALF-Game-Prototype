@@ -11,9 +11,14 @@ public class BattleResultPanelV2: MonoBehaviour
     [SerializeField] private Sprite loseResult = null;
     [SerializeField] private TMP_Text currentResultText = null;
 
-    private BattleVisualEffectManager BattleVisualEffectManager;
+    private BattleGameManager battleGameManager = null;
 
     private const string AUDIO_ID_CLICK = "click";
+
+    public void Initialize( BattleGameManager battleGameManager )
+    {
+        this.battleGameManager = battleGameManager;
+    }
 
     public void ShowVictory()
     {
@@ -32,20 +37,19 @@ public class BattleResultPanelV2: MonoBehaviour
     private void ShowPanel()
     {
         this.container.SetActive( true );
-        BattleVisualEffectManager.ApplyBlurShader(30);
+        this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShader( 30 );
     }
 
     public void ClickToRestartBattle()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-        BattleVisualEffectManager.TurnOffBlurShader();
+        this.battleGameManager.GetBattleVisualEffectManager().TurnOffBlurShader();
         SceneManager.LoadScene( SceneManager.GetActiveScene().name );
     }
 
-    public void ClickToReturnStartScene()
+    public void ClickToExitScene()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-        BattleVisualEffectManager.TurnOffBlurShader();
-        SceneManager.LoadScene("StartScene");
+        SceneManager.LoadScene( "AdminPage" );
     }
 }
