@@ -41,6 +41,21 @@ public class BattleVisualEffectManager : MonoBehaviour
         this.cameraRadiusBlur.SetShaderValue(_radiusData, 5, 0);
     }
 
+    public void ApplyBlurShader(int iteration)
+    {
+        this.cameraRadiusBlur.onShader = true;
+
+        float _centerX = 0.5f;
+        float _centerY = 0.5f;
+        float _radiusOffset = 0.004f;
+        Vector3 _radiusData = new Vector3(_centerX, _centerY, _radiusOffset);
+
+        if(iteration > 0)
+        {
+            this.cameraRadiusBlur.SetShaderValue(_radiusData, iteration, 0);
+        }
+    }
+
     public void ApplyBlurShaderAnimationAtRepulse()
     {
         this.cameraRadiusBlur.onShader = true;
