@@ -428,6 +428,12 @@ public class BattleGameManager : MonoBehaviour
     {
         this.currentGamePhase = GamePhase.End;
 
+        List<GameCharacter> _gameCharacters = GetCharacterList();
+        for (int i = 0; i < _gameCharacters.Count; i++)
+        {
+            _gameCharacters[ i ].TriggerEvent( BattleAnimationManager.AnimationEvent.OnBattleEnded );
+        }
+
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 戰鬥結束 】</color>" );
 
         this.battleUiManager.PlayLineBreakAnimation();

@@ -161,6 +161,12 @@ public class PlayerCharacter : GameCharacter
                 _battleUiManager.UpdateSkillButtons();
 
                 break;
+
+            case AnimationEvent.OnBattleEnded:
+
+                _battleUiManager.UpdateSkillButtons();
+
+                break;
         }
     }
 }

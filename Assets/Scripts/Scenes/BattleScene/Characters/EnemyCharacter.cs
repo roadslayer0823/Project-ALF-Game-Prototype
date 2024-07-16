@@ -280,6 +280,9 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnDeath:
                 break;
+
+            case AnimationEvent.OnBattleEnded:
+                break;
         }
     }
 

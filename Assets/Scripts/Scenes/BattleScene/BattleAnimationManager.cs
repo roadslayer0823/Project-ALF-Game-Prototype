@@ -89,7 +89,8 @@ public class BattleAnimationManager : MonoBehaviour
         OnNormalSkillBeingUsed,
         OnObservingSkillBeingUsed,
         OnCategorizedPassiveTypeUpdated,
-        OnDeath
+        OnDeath,
+        OnBattleEnded
     }
 
     public void Initialize( BattleGameManager battleGameManager, Action<bool> onBattleEndedCallback )
