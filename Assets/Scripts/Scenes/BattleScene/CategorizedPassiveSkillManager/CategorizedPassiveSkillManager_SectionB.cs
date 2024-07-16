@@ -455,7 +455,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, _cyclePointConvert,out _);
 
                 // [當前以太值] +[6.能量循環]
-                battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacter, _cyclePointConvert, out _);
+                battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacter, _cyclePointConvert, out _);
                 battleResultData.AddResultLog("生命流能量循環負荷循環相關數值結算");
                 battleResultData.AddResultLog("Case A: 生命流 -> 以太流\n循環點: "+gameCharacter.GetLifeCyclePoint()+ "\n以太提升: " + _cyclePointConvert);
             }
@@ -560,7 +560,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 //["己方"當前以太值]+["己方"此ATL給予"對方"的負荷傷害]
                 battleResultData.AddResultLog("[\"己方\"當前以太值]+[\"己方\"此ATL給予\"對方\"的負荷傷害]");
                 battleResultData.AddResultLog("己方 負荷等級 >= 1\n發動 6.變頻 負荷傷害:" + _gameCharacterOne_BattleResultData.stressValueDamageDealt);
-                battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacterOne, _gameCharacterOne_BattleResultData.stressValueDamageDealt, out _);
+                battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacterOne, _gameCharacterOne_BattleResultData.stressValueDamageDealt, out _);
             }
 
             /*
@@ -838,7 +838,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                     "\n" + _gameCharacterText + " 以太流 12.逆風: " + _pSE12_NiFeng_value);
         battleResultData.AddResultLog("當前以太提升: " + _totalStatePointRestore);
         // remember change to another function // not the percentage one
-        battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacter, _totalStatePointRestore, out _);
+        battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacter, _totalStatePointRestore, out _);
     }
 
     // 角力追風發動&以太值負荷值結算

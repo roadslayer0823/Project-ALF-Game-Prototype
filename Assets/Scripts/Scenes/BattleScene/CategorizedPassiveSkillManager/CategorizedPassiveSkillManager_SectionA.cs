@@ -200,7 +200,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     if (gameCharacterData.currentStatePoint < (gameCharacterData.currentStatePoint * 0.8f)) //["己方"當前以太值]是否 <["己方"當前以太值]的80 %?
                     {
                         //["己方"當前以太值]=["己方"最大以太值 * 0.8(skill_L1_HuoXin_MaximumStatePoint)]
-                        battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacter, _skill_PSL1_HuoXin_MaxStatePoint, out _);
+                        battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacter, _skill_PSL1_HuoXin_MaxStatePoint, out _);
                         _formula = "[己方當前以太值] =[己方最大以太值 *" + _PSL1_HuoXin + "]";
                         string _RestoreCurrentStatePoint = _maxStatePointString + "\n" +
                                                            _skill_PSL1_HuoXin_MaxStatePointString;
@@ -264,7 +264,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 if (!gameCharacterData.IsInStateBreakStatus()) //"己方"是否"以太崩潰狀態" ?
                 {
                     //["己方"當前以太值] = ["己方"最大以太值]
-                    battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint( gameCharacter, 1.0f, out _);
+                    battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage( gameCharacter, 1.0f, out _);
                     _formula = "[己方當前以太值] = [己方最大以太值]";
                     string _RestoreCurrentStatePoint = _maxStatePointString;
                     battleResultData.AddResultLog(_currentIdentityString + "\n" + "\n" +
@@ -324,7 +324,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     if (gameCharacterData.currentStatePoint < gameCharacterData.currentStatePoint * 0.8f) //["己方"當前以太值]是否<["己方"當前以太值]的80 %?
                     {
                         //["己方"當前以太值]=["己方"最大以太值*skill_PSS1_JieYa_MaxStatePoint]
-                        battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacter, _skill_PSS1_JieYa_MaxStatePoint, out _);
+                        battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacter, _skill_PSS1_JieYa_MaxStatePoint, out _);
                         _formula = "[己方當前以太值]=[己方最大以太值*" +_PSS1_JieYa + "]";
                         string _RestoreCurrentStatePoint = _maxStatePointString + "\n" +
                                                            _skill_PSS1_JieYaString_MaxStatePoint;
@@ -382,7 +382,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 if (!gameCharacterData.IsInStateBreakStatus()) //"己方"是否"以太崩潰狀態" ?
                 {
                     //["己方"當前以太值]=["己方"最大以太值]
-                    battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacter, 1.0f, out _);
+                    battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacter, 1.0f, out _);
                     _formula = "[己方當前以太值]=[己方最大以太值]";
                     string _RestoreCurrentStatePoint = _maxStatePointString;
                     battleResultData.AddResultLog(_currentIdentityString + "\n" + "\n" +
@@ -708,7 +708,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         //[當前以太值]+[回避壓力消耗以太提升*0.5*n]
         if(stressEvasionMaxStatePointIncrease != 0)
         {
-            battleResultData.AddGameCharacterResultData_RestoreCurrentStatePoint(gameCharacter, stressEvasionMaxStatePointIncrease * skill_PSE3_HuiLiu * skill_PSE12_NiFeng, out _);
+            battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacter, stressEvasionMaxStatePointIncrease * skill_PSE3_HuiLiu * skill_PSE12_NiFeng, out _);
             string _formula = "[當前以太值] +[回避壓力消耗以太提升 * 3.回流 * 12.逆風]";
             string _finalString = "當前身份: 抵抗成功方" + "\n" +
                                   "當前以太值:" + gameCharacterData.currentStatePoint + "\n" +

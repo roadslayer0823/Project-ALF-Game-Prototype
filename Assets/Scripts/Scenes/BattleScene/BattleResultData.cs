@@ -650,8 +650,24 @@ public class BattleResultData
         return this;
     }
 
+    // 提升當前以太值。
+    public BattleResultData AddGameCharacterResultData_IncreaseCurrentStatePoint( GameCharacter gameCharacter, float statePoint, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.SetCurrentStatePoint( gameCharacterResultData.currentStatePoint + Mathf.Round( statePoint ) );
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "提升當前以太值";
+
+#endif
+
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
+    }
+
     // 當前以太值回復至最大以太值的指定巴仙率。
-    public BattleResultData AddGameCharacterResultData_RestoreCurrentStatePoint( GameCharacter gameCharacter, float restorationPercentage, out BattleResultData_GameCharacter gameCharacterResultData )
+    public BattleResultData AddGameCharacterResultData_RestoreCurrentStatePointByPercentage( GameCharacter gameCharacter, float restorationPercentage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.SetCurrentStatePoint( Mathf.Round( gameCharacterResultData.maximumStatePoint * Mathf.Clamp01( restorationPercentage ) ) );
