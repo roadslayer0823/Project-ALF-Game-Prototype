@@ -441,6 +441,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 852df9ad948ea414796e99e244ebce04, type: 3}
   - {fileID: 21300000, guid: ba2232bdca54c48b792a1339d782cdce, type: 3}
   - {fileID: 21300000, guid: b5e3d8bd7dbc64e3aa2eb9f3c82bc0fb, type: 3}
+  - {fileID: 21300000, guid: 2d156ebd02a5a4f1f91c51420ebed050, type: 3}
   - {fileID: 21300000, guid: 4d25a3dd5ecd14510a4e6a4026035cf5, type: 3}
   - {fileID: 21300000, guid: 6dc5faddd87754b538b7434c44cc8aca, type: 3}
   - {fileID: 21300000, guid: a97110ed358c14b99a01e9ed518e72af, type: 3}
@@ -860,6 +861,7 @@ SpriteAtlas:
   - LINEBREAK_009
   - "\u4EE5\u592Abreak (42)"
   - 00
+  - "\u88C5\u99701"
   - "\u8CA0\u8377break (23)"
   - 04
   - LINEBREAK_011

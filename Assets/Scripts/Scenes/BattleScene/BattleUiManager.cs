@@ -215,6 +215,7 @@ public class BattleUiManager : MonoBehaviour
 
         this.battleLog.gameObject.SetActive (value);
         this.enemyCharacterInfoBox.gameObject.SetActive(value);
+        this.passiveSkillCategorySelectionPanel.gameObject.SetActive(value);
     }
 
     public void PlayInstructionAnimation()

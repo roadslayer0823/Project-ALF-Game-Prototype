@@ -35,4 +35,9 @@ public class PassiveSkillSlot : MonoBehaviour
         this.highLightPassiveSkill.color = colorAlpha;
         this.passiveSkillLogo.color = colorAlpha;
     }
+
+    public void ActivePassiveSkillIcon()
+    {
+        this.passiveSkillLogo.gameObject.SetActive(true);
+    }
 }

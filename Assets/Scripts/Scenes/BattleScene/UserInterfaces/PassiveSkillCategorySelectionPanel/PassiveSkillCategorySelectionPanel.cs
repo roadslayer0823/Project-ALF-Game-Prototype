@@ -21,6 +21,12 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     [SerializeField] private Sprite stateTypeIcon;
     [SerializeField] private Sprite stressTypeIcon;
 
+    [Header("Selected Passive Skill Effect")]
+    [SerializeField] private Image selectedPassiveSkillEffect;
+    [SerializeField] private Image LifeIconGameObject;
+    [SerializeField] private Image StateIconGameObject;
+    [SerializeField] private Image StressIconGameObject;
+
     private PassiveSkillType currentPassiveSkillType = PassiveSkillType.None;
     private PassiveSkillType highlightedPassiveSkillType = PassiveSkillType.None;
 
@@ -30,6 +36,10 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
 
     private const string ANIMATION_ID_EXPAND = "Expand";
     private const string ANIMATION_ID_HIDE = "Hide";
+    private const string ANIMATION_ID_STARTUP = "Startup";
+    private const string COLOR_ID_LIFE = "#CEFFB5";
+    private const string COLOR_ID_STRESS = "#37D2FF";
+    private const string COLOR_ID_STATE = "#FDEEA5";
 
     public enum PassiveSkillType
     {
@@ -52,7 +62,11 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     {
         isPointerDown = true;
         initialPosition = passiveSkillButtonPosition.transform.position;
-        
+
+        for (int i = 0; i < passiveSkillSlotsList.Length; i++)
+        {
+            passiveSkillSlotsList[i].ActivePassiveSkillIcon();
+        }
         this.passiveSkillHolder.SetActive(true);
         this.passiveSkillSelectionPanelAnimation.Play(ANIMATION_ID_EXPAND);
     }
@@ -85,6 +99,18 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         else
         {
             SetCurrentPassiveSkillType( this.highlightedPassiveSkillType );
+            if (this.highlightedPassiveSkillType == PassiveSkillType.HealthPoint)
+            {
+                SelectingPassiveSkillAnimation(LifeIconGameObject, selectedPassiveSkillEffect, COLOR_ID_LIFE);
+            }
+            else if (this.highlightedPassiveSkillType == PassiveSkillType.StatePoint)
+            {
+                SelectingPassiveSkillAnimation(StateIconGameObject, selectedPassiveSkillEffect, COLOR_ID_STATE);
+            }
+            else if (this.highlightedPassiveSkillType == PassiveSkillType.StressValue)
+            {
+                SelectingPassiveSkillAnimation(StressIconGameObject, selectedPassiveSkillEffect, COLOR_ID_STRESS);
+            }
         }
 
         this.highlightedPassiveSkillType = PassiveSkillType.None;
@@ -165,6 +191,31 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         this.passiveSkillButton.SetNativeSize();
     }
 
+    public void SelectingPassiveSkillAnimation(Image currentIcon, Image background, string color)
+    {
+        Color newColor;
+        Vector2 _currentIconScale = currentIcon.rectTransform.localScale;
+        Vector2 _targetIconScale = currentIcon.rectTransform.localScale * 3;
+
+        if(ColorUtility.TryParseHtmlString(color, out newColor))
+        {
+            Debug.Log("changed color");
+            background.color = newColor;
+        }
+        background.gameObject.SetActive(true);
+        LeanTween.alpha(background.gameObject, 1, 0.1f).setOnComplete(() =>
+        {
+            LeanTween.scale(currentIcon.gameObject, _targetIconScale, 0.1f);
+            LeanTween.alpha(currentIcon.gameObject, 0, 0.1f);
+            LeanTween.alpha(background.gameObject, 0, 0.1f).setOnComplete(() =>
+            {
+                background.gameObject.SetActive(false);
+                currentIcon.gameObject.SetActive(false);
+                currentIcon.rectTransform.localScale = _currentIconScale;
+            });
+        });
+    }
+
     public void SetCurrentPassiveSkillType( PassiveSkillType currentPassiveSkillType )
     {
         this.currentPassiveSkillType = currentPassiveSkillType;
@@ -189,5 +240,10 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     public void EnableChangingPassiveSkillType()
     {
         this.passiveSkillButtonInteratable.interactable = true;
+    }
+
+    public void PlayPassiveSkillSelectionStartupAnimation()
+    {
+        this.passiveSkillSelectionPanelAnimation.Play(ANIMATION_ID_STARTUP);
     }
 }
