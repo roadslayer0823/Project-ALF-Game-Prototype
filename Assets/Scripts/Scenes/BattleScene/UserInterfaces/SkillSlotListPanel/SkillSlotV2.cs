@@ -454,43 +454,48 @@ public class SkillSlotV2 : MonoBehaviour
                 }
 
                 ActivateSkillFrame();
-                if (isMiddleSlot)
+
+                if (this.isMiddleSlot)
                 {
                     EnableButton();
                     BrightnessLoopAnimation();
                     AudioManager.Instance.PlaySoundEffect(AUDIO_ID_HIGHLIGHT);
                 }
-                if(isSelected == true)
+
+                if (this.isSelected == true)
                 {
                     this.selectedSkillEffect.SetActive(true);
                     ShowActivateSkillFrame(this.selectedSkill);
-                    UpdateSkillIcon(true);
                 }
                 else
                 {
                     this.selectedSkillEffect.SetActive(false);
                     ShowSkillFrame(this.selectedSkill);
-                    UpdateSkillIcon(false);
                 }
-                swipeDetector.enabled = true;
+
+                UpdateSkillIcon( true );
+                this.swipeDetector.enabled = true;
                 PlayActivateOutlineAnimation();
+
                 break;
 
             case StateType.Disabled:
-                if (isSelected == true)
+
+                if (this.isSelected == true)
                 {
                     this.selectedSkillEffect.SetActive(true);
                     ShowActivateSkillFrame(this.selectedSkill);
                     UpdateSkillIcon(true);
-                    swipeDetector.enabled = true;
+                    this.swipeDetector.enabled = true;
                 }
                 else
                 {
                     this.selectedSkillEffect.SetActive(false);
                     SetBlankFrame(this.skillType);
                     UpdateSkillIcon(false);
-                    swipeDetector.enabled = false;
+                    this.swipeDetector.enabled = false;
                 }
+
                 break;
 
             case StateType.Activated:
@@ -500,7 +505,8 @@ public class SkillSlotV2 : MonoBehaviour
                 SetBlankFrame(this.skillType);
                 UpdateSkillIcon( false );
                 PlaySkillOutlineAnimation();
-                swipeDetector.enabled = false;
+                this.swipeDetector.enabled = false;
+
                 break;
         }
     }
