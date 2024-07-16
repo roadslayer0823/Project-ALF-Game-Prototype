@@ -385,7 +385,7 @@ public class BattleResultData
     public BattleResultData AddGameCharacterResultData_VirtualHealthPointDamageRecovered( GameCharacter gameCharacter, float virtualHealthPointDamageRecovered, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
-        gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint + virtualHealthPointDamageRecovered, false, true );
+        gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint + Mathf.Round(virtualHealthPointDamageRecovered), false, true );
 
 #if ALF_DEBUG
 
@@ -401,7 +401,7 @@ public class BattleResultData
     public BattleResultData AddGameCharacterResultData_ActualHealthPointDamageRecovered( GameCharacter gameCharacter, float actualHealthPointDamageRecovered, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
-        gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint + actualHealthPointDamageRecovered, true );
+        gameCharacterResultData.SetCurrentHealthPoint( gameCharacterResultData.currentHealthPoint + Mathf.Round(actualHealthPointDamageRecovered), true );
 
 #if ALF_DEBUG
 
@@ -417,7 +417,7 @@ public class BattleResultData
     public BattleResultData AddGameCharacterResultData_MaximumStatePointDecrease( GameCharacter gameCharacter, float maximumStatePointDecrease, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
-        gameCharacterResultData.SetMaximumStatePoint( gameCharacterResultData.maximumStatePoint - maximumStatePointDecrease );
+        gameCharacterResultData.SetMaximumStatePoint( gameCharacterResultData.maximumStatePoint - Mathf.Round(maximumStatePointDecrease) );
 
 #if ALF_DEBUG
 
@@ -432,6 +432,7 @@ public class BattleResultData
     // 提升最大以太值。
     public BattleResultData AddGameCharacterResultData_MaximumStatePointIncrease( GameCharacter gameCharacter, float maximumStatePointIncrease, out BattleResultData_GameCharacter gameCharacterResultData )
     {
+        maximumStatePointIncrease = Mathf.Round(maximumStatePointIncrease);
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
         gameCharacterResultData.maximumStatePointIncrease += maximumStatePointIncrease;
         gameCharacterResultData.SetMaximumStatePoint( gameCharacterResultData.maximumStatePoint + maximumStatePointIncrease );
@@ -453,7 +454,7 @@ public class BattleResultData
 
         if (!gameCharacterResultData.IsInStressBreakStatus())
         {
-            gameCharacterResultData.SetCurrentStressValue( gameCharacterResultData.currentStressValue - stressValueDamageRecovered );
+            gameCharacterResultData.SetCurrentStressValue( gameCharacterResultData.currentStressValue - Mathf.Round(stressValueDamageRecovered) );
         }
 
 #if ALF_DEBUG
@@ -469,6 +470,7 @@ public class BattleResultData
     // 以太值消耗
     public BattleResultData AddGameCharacterResultData_StatePointCost( GameCharacter gameCharacter, float statePointCost, out BattleResultData_GameCharacter gameCharacterResultData )
     {
+        statePointCost = Mathf.Round(statePointCost);
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
 
         if (!gameCharacterResultData.IsInStateBreakStatus())
@@ -490,6 +492,7 @@ public class BattleResultData
     // 以太值傷害
     public BattleResultData AddGameCharacterResultData_StatePointDamage( GameCharacter gameCharacter, float statePointDamage, bool isBreakStatusAvailable, out BattleResultData_GameCharacter gameCharacterResultData )
     {
+        statePointDamage = Mathf.Round(statePointDamage);
         GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
         if (_currentAttacker != null)
         {
@@ -526,6 +529,7 @@ public class BattleResultData
     // 負荷值傷害
     public BattleResultData AddGameCharacterResultData_StressValueDamage( GameCharacter gameCharacter, float stressValueDamage, bool isBreakStatusAvailable, out BattleResultData_GameCharacter gameCharacterResultData )
     {
+        stressValueDamage = Mathf.Round(stressValueDamage);
         GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
         if (_currentAttacker != null)
         {
@@ -572,6 +576,7 @@ public class BattleResultData
     // HP 傷害（實傷）
     public BattleResultData AddGameCharacterResultData_ActualHealthPointDamage( GameCharacter gameCharacter, float actualHealthPointDamage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
+        actualHealthPointDamage = Mathf.Round(actualHealthPointDamage);
         GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
         if (_currentAttacker != null)
         {
@@ -597,6 +602,7 @@ public class BattleResultData
     // HP 傷害（虛傷）
     public BattleResultData AddGameCharacterResultData_VirtualHealthPointDamage( GameCharacter gameCharacter, float virtualHealthPointDamage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
+        virtualHealthPointDamage = Mathf.Round(virtualHealthPointDamage);
         GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
         if (_currentAttacker != null)
         {

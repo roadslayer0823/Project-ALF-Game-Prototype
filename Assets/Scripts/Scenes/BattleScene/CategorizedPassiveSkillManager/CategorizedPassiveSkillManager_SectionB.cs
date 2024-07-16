@@ -108,6 +108,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     // 判定輕重受擊方
     public static void RunDeterminingLightOrHeavyRecipient(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient)
     {
+        battleResultData.AddResultLog("判定輕重受擊方");
         CategoryType _recipientCategoryType = recipient.GetSelectedPassiveSkillCategoryType();
         bool _isAssaulter_IgnoreZhuiFengJiaoLi = assaulter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.IgnoreZhuiFengJiaoLi);
         bool _isAssaulter_IgnoreZhuiFengJiaoLiJiAng = assaulter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.IgnoreZhuiFengJiaoLiJiAng);
@@ -117,6 +118,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         // CASE A:"受擊方"當前流向為"生命流"
         if (_recipientCategoryType == CategoryType.Life)
         {
+            battleResultData.AddResultLog("CASE A:\"受擊方\"當前流向為\"生命流\"");
             /*
              * "受擊方"
                 發動
@@ -125,35 +127,40 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             if (recipient.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL2, out PassiveSkill _passiveSkill))
             {
                 battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(recipient, _passiveSkill, out _);
-            }
-
-            /*
-             * "直擊方"是否
-                "無視追風角力方"/
-                "無視追風角力激昂方"?
-             */
-            if (_isAssaulter_IgnoreZhuiFengJiaoLi || _isAssaulter_IgnoreZhuiFengJiaoLiJiAng)
-            {
+                battleResultData.AddResultLog("\"受擊方\" 發動 生命流 2.激昂");
                 /*
-                 * "受擊方"得到重受擊方,
-                   "直擊方"得到重直擊方
+                 * "直擊方"是否
+                    "無視追風角力方"/
+                    "無視追風角力激昂方"?
                  */
-                recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
-                assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
-            }
-            else
-            {
-                /*
-                 * "受擊方"得到輕受擊方,
-                    "直擊方"得到輕直擊方
-                 */
-                recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient);
-                assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightAssaulter);
+                if (_isAssaulter_IgnoreZhuiFengJiaoLi || _isAssaulter_IgnoreZhuiFengJiaoLiJiAng)
+                {
+                    battleResultData.AddResultLog("\"直擊方\" 是 \"無視追風角力方\"/ \"無視追風角力激昂方\"");
+                    /*
+                     * "受擊方"得到重受擊方,
+                       "直擊方"得到重直擊方
+                     */
+                    battleResultData.AddResultLog("\"受擊方\" 得到 重受擊方,\n\"直擊方\" 得到 重直擊方");
+                    recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
+                    assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
+                }
+                else
+                {
+                    battleResultData.AddResultLog("\"直擊方\" 不是 \"無視追風角力方\"/ \"無視追風角力激昂方\"");
+                    /*
+                     * "受擊方"得到輕受擊方,
+                        "直擊方"得到輕直擊方
+                     */
+                    battleResultData.AddResultLog("\"受擊方\" 得到 輕受擊方,\n\"直擊方\" 得到 輕直擊方");
+                    recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient);
+                    assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightAssaulter);
+                }
             }
         }
         // CASE B:"受擊方"當前流向為"以太流"
         else if (_recipientCategoryType == CategoryType.State)
         {
+            battleResultData.AddResultLog("CASE B:\"受擊方\"當前流向為\"以太流\"");
             /*
              * "受擊方"
                 發動
@@ -162,43 +169,50 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             if (recipient.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE2, out PassiveSkill _passiveSkill))
             {
                 battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(recipient, _passiveSkill, out _);
-            }
-
-            /*
-             * "直擊方"是否
-                "無視追風角力方"/
-                "無視追風角力激昂方"?
-             */
-
-            /*
-             * "受擊方"是否
-                "強度負方"/"速度強度負方"?
-             */
-            if (_isAssaulter_IgnoreZhuiFengJiaoLi || _isAssaulter_IgnoreZhuiFengJiaoLiJiAng
-                || _isRecipient_StrengthLoser || _isRecipient_SpeedStrengthLoser)
-            {
+                battleResultData.AddResultLog("\"受擊方\" 發動 以太流 2.角力");
                 /*
-                 * "受擊方"得到重受擊方,
-                   "直擊方"得到重直擊方
+                 * "直擊方"是否
+                    "無視追風角力方"/
+                    "無視追風角力激昂方"?
                  */
-                recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
-                assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
-            }
-
-            else
-            {
                 /*
-                 * "受擊方"得到輕受擊方,
-                    "直擊方"得到輕直擊方
+                 * "受擊方"是否
+                    "強度負方"/"速度強度負方"?
                  */
-                recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient);
-                assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightAssaulter);
+                if (_isAssaulter_IgnoreZhuiFengJiaoLi || _isAssaulter_IgnoreZhuiFengJiaoLiJiAng
+                    || _isRecipient_StrengthLoser || _isRecipient_SpeedStrengthLoser)
+                {
+                    battleResultData.AddResultLog("\"直擊方\" 是 \"無視追風角力方\"/ \"無視追風角力激昂方\"");
+                    battleResultData.AddResultLog("\"受擊方\" 是 \"強度負方\"/ \"速度強度負方\"");
+
+                    /*
+                     * "受擊方"得到重受擊方,
+                       "直擊方"得到重直擊方
+                     */
+                    battleResultData.AddResultLog("\"受擊方\" 得到 重受擊方,\n\"直擊方\" 得到 重直擊方");
+                    recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
+                    assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
+                }
+                else
+                {
+                    battleResultData.AddResultLog("\"直擊方\" 不是 \"無視追風角力方\"/ \"無視追風角力激昂方\"");
+                    battleResultData.AddResultLog("\"受擊方\" 不是 \"強度負方\"/ \"速度強度負方\"");
+
+                    /*
+                     * "受擊方"得到輕受擊方,
+                        "直擊方"得到輕直擊方
+                     */
+                    battleResultData.AddResultLog("\"受擊方\" 得到 輕受擊方,\n\"直擊方\" 得到 輕直擊方");
+                    recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient);
+                    assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightAssaulter);
+                }
             }
         }
 
         // CASE C:"受擊方"當前流向為"負荷流"
         else if (_recipientCategoryType == CategoryType.Stress)
         {
+            battleResultData.AddResultLog("CASE C:\"受擊方\"當前流向為\"負荷流\"");
             /*
              * "受擊方"
                 發動
@@ -207,59 +221,65 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             if (recipient.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSS2, out PassiveSkill _passiveSkill))
             {
                 battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(recipient, _passiveSkill, out _);
-            }
+                battleResultData.AddResultLog("\"受擊方\" 發動 負荷流 2.追風");
 
-            /*
-             * "直擊方"是否
-                "無視追風角力方"/
-                "無視追風角力激昂方"?
-             */
-            if (_isAssaulter_IgnoreZhuiFengJiaoLi || _isAssaulter_IgnoreZhuiFengJiaoLiJiAng) 
-            {
-                /*"受擊方"是否
-                    "速度負方"/"速度強度負方"?
-                    &&
-                    "受擊方"負荷等級
-                    是否>=2?
-                */
-                if ((_isRecipient_StrengthLoser || _isRecipient_SpeedStrengthLoser)
-                && recipient.GetStressLevel() >= 2)
+                /*
+                 * "直擊方"是否
+                    "無視追風角力方"/
+                    "無視追風角力激昂方"?
+                 */
+                if (_isAssaulter_IgnoreZhuiFengJiaoLi || _isAssaulter_IgnoreZhuiFengJiaoLiJiAng)
                 {
-                    /*
-                     * "受擊方"
-                        發動
-                        9.行雲流水
-                     */
-                    if (recipient.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSS9, out _passiveSkill))
+                    battleResultData.AddResultLog("\"直擊方\" 是 \"無視追風角力方\"/ \"無視追風角力激昂方\"");
+                    /*"受擊方"是否
+                        "速度負方"/"速度強度負方"?
+                        &&
+                        "受擊方"負荷等級
+                        是否>=2?
+                    */
+                    if ((_isRecipient_StrengthLoser || _isRecipient_SpeedStrengthLoser)
+                    && recipient.GetStressLevel() >= 2)
                     {
-                        battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(recipient, _passiveSkill, out _);
+                        battleResultData.AddResultLog("\"受擊方\" 是 \"速度負方\"/ \"速度強度負方\" 以及\n\"受擊方\"負荷等級 是否>=2");
+                        /*
+                         * "受擊方"
+                            發動
+                            9.行雲流水
+                         */
+                        if (recipient.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSS9, out _passiveSkill))
+                        {
+                            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(recipient, _passiveSkill, out _);
+                            battleResultData.AddResultLog("\"受擊方\" 發動 負荷流 9.行雲流水");
+                            /*
+                             * "受擊方"得到輕受擊方,
+                                "直擊方"得到輕直擊方
+                             */
+                            battleResultData.AddResultLog("\"受擊方\" 得到 輕受擊方,\n\"直擊方\" 得到 輕直擊方");
+                            recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient);
+                            assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightAssaulter);
+                        }
                     }
-
-                    /*
-                     * "受擊方"得到輕受擊方,
-                        "直擊方"得到輕直擊方
-                     */
-                    recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient);
-                    assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightAssaulter);
+                    else
+                    {
+                        /*
+                         * "受擊方"得到重受擊方,
+                           "直擊方"得到重直擊方
+                        */
+                        battleResultData.AddResultLog("\"受擊方\" 得到 重受擊方,\n\"直擊方\" 得到 重直擊方");
+                        recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
+                        assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
+                    }
                 }
                 else
                 {
                     /*
-                     * "受擊方"得到重受擊方,
-                       "直擊方"得到重直擊方
-                    */
-                    recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
-                    assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
+                     * "受擊方"得到輕受擊方,
+                        "直擊方"得到輕直擊方
+                     */
+                    battleResultData.AddResultLog("\"受擊方\" 得到 輕受擊方,\n\"直擊方\" 得到 輕直擊方");
+                    recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient);
+                    assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightAssaulter);
                 }
-            }
-            else
-            {
-                /*
-                 * "受擊方"得到輕受擊方,
-                    "直擊方"得到輕直擊方
-                 */
-                recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient);
-                assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.LightAssaulter);
             }
         }
 
@@ -270,6 +290,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
              * "受擊方"得到重受擊方,
                "直擊方"得到重直擊方
              */
+            battleResultData.AddResultLog("\"受擊方\" 得到 重受擊方,\n\"直擊方\" 得到 重直擊方");
             recipient.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
             assaulter.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
         }
@@ -583,7 +604,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     public static void CalculateLeadCurrentStatePoint(ref BattleResultData battleResultData, GameCharacter lead, GameCharacter improviser)
     {
         battleResultData.AddResultLog("先手方使用技能時當前以太值結算");
-        battleResultData.AddResultLog("先手方 流向：" + TerminologyManager.GetPassiveSkillCategorizedType(improviser.GetSelectedPassiveSkillCategoryType()));
+        battleResultData.AddResultLog("先手方 流向：" + TerminologyManager.GetPassiveSkillCategorizedType(lead.GetSelectedPassiveSkillCategoryType()));
         BattleResultData.BattleResultData_GameCharacter _lead_BattleResultData = battleResultData.GetGameCharacterResultData(lead);
         BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = battleResultData.GetGameCharacterResultData(improviser);
 
@@ -753,7 +774,6 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     {
         string _gameCharacterText = gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Lead) ? "先手方" : "後手方";
         battleResultData.AddResultLog( _gameCharacterText + "使用技能時最大以太值結算");
-        battleResultData.AddResultLog(_gameCharacterText + " 流向：" + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacter.GetSelectedPassiveSkillCategoryType()));
 
         BattleResultData.BattleResultData_GameCharacter _gameCharacter_BattleResultData = battleResultData.GetGameCharacterResultData(gameCharacter);
 
@@ -774,7 +794,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out _gameCharacter_BattleResultData);
             _pSE12_NiFeng_value = 2.0f;
         }
-        
+
+        battleResultData.AddResultLog(_gameCharacterText + " 流向：" + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacter.GetSelectedPassiveSkillCategoryType()));
         // CASE A:當前流向為"生命流"/"負荷流"/無流向
         /*
          * [最大以太值]+<[最大以太提升]>
@@ -837,8 +858,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                     "\n" + _gameCharacterText + " 以太流 3.回流：" + _pSE3_HuiLiu_value +
                                     "\n" + _gameCharacterText + " 以太流 12.逆風: " + _pSE12_NiFeng_value);
         battleResultData.AddResultLog("當前以太提升: " + _totalStatePointRestore);
-        // remember change to another function // not the percentage one
-        battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacter, _totalStatePointRestore, out _);
+        battleResultData.AddGameCharacterResultData_IncreaseCurrentStatePoint(gameCharacter, _totalStatePointRestore, out _);
     }
 
     // 角力追風發動&以太值負荷值結算
