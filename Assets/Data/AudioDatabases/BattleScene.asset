@@ -73,3 +73,9 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 38c3d5ddd1ffb4f2684db705ff4684fb, type: 3}
   - id: repulse
     clip: {fileID: 8300000, guid: 742883f7b7c554352bcfdf7cd5c77bba, type: 3}
+  - id: passive_skill_press
+    clip: {fileID: 8300000, guid: 1a72ef682b74d40b99cb17096fcf8131, type: 3}
+  - id: passive_skill_select
+    clip: {fileID: 8300000, guid: 0c4ed8217076b43218ea4e69d667ab56, type: 3}
+  - id: passive_skill_choose
+    clip: {fileID: 8300000, guid: 7ac1f9cc9eafc49f5b8f4a1dc95b071a, type: 3}
