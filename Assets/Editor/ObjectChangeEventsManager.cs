@@ -2,8 +2,10 @@ using UnityEditor;
 using UnityEngine;
 
 [InitializeOnLoad]
-public class ObjectChangeEventsManager : MonoBehaviour
+public class ObjectChangeEventsManager
 {
+    private const string TAG_AUTO_UNPACK_PREFAB = "AutoUnpackPrefab";
+
     static ObjectChangeEventsManager()
     {
         ObjectChangeEvents.changesPublished += ChangesPublished;
@@ -18,10 +20,10 @@ public class ObjectChangeEventsManager : MonoBehaviour
                 case ObjectChangeKind.CreateGameObjectHierarchy:
                     stream.GetCreateGameObjectHierarchyEvent(i, out var createGameObjectHierarchyEvent);
                     var newGameObject = EditorUtility.InstanceIDToObject(createGameObjectHierarchyEvent.instanceId) as GameObject;
-                    if (newGameObject.tag == "AutoUnpackPrefab")
+                    if (newGameObject.CompareTag( TAG_AUTO_UNPACK_PREFAB ))
                     {
                         PrefabUtility.UnpackPrefabInstance(newGameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
-                        Debug.Log($"Create GameObject: {newGameObject.name} in scene: {createGameObjectHierarchyEvent.scene.name}.");
+                        Debug.Log($"Automatically unpack the prefab instance named \"{newGameObject.name}\" in the scene named \"{createGameObjectHierarchyEvent.scene.name}\".");
                     }
                     break;
             }
