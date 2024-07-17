@@ -99,24 +99,24 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         string currentLifeCyclePointString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> {lifeCyclePoint} = </color>" + gameCharacter.GetLifeCyclePoint();
         string skill_PSL12_ShengShengBuXiString = $"<color={BattleLog.KEYWORD_COLOR_CODE}> {PSL12_ShengShengBuXi} = </color>" + skill_PSL12_ShengShengBuXi;*/
 
-        string _currentPassiveSkillTypeString = _currentPassiveSkillType + ":" + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacter.GetSelectedPassiveSkillCategoryType());
-        string _currentIdentityString = _currentCharacterName + ":" + gameCharacter.GetCharacterName();
-        string _basicRecoverString_ZeroPointFive = _basicRecover + ":" + 0.5f;
-        string _basicRecoverString_Ten = _basicRecover + ":" + 10f;
-        string _maxHealthPointString = _maxHealthPoint + ":" + gameCharacterData.maximumHealthPoint;
-        string _maxStatePointString = _maxStatePoint + ":" + gameCharacterData.maximumStatePoint;
-        string _currentVirtualHealthPointString = _currentVirtualHealthPoint + ":" + gameCharacterData.virtualHealthPoint;
-        string _currentStatePointString = _currentStatePoint + ":" + gameCharacterData.currentStatePoint;
-        string _currentStressValueString = _currentStressValue + ":" + gameCharacterData.currentStressValue;
-        string _currentLifeCyclePointString = _lifeCyclePoint + ":" + gameCharacter.GetLifeCyclePoint();
-        string _skill_PSL1_HuoXin_HealthPointString = _PSL1_HuoXin + ":" + _skill_PSL1_HuoXin_HealthPoint;
-        string _skill_PSL1_HuoXin_MaxStatePointString = _PSL1_HuoXin + ":" + _skill_PSL1_HuoXin_MaxStatePoint;
-        string _skill_PSL5_XunHuanLiString = _PSL5_XunHuanLi + ":" + _skill_PSL5_XunHuanLi;
-        string _skill_PSL12_ShengShengBuXiString = _PSL12_ShengShengBuXi + ":" + _skill_PSL12_ShengShengBuXi;
-        string _skill_PSE1_GaoYangString = _PSE1_GaoYang + ":" + _skill_PSE1_GaoYang_Value;
-        string _skill_PSE7_FuHeLiuZhuan2String = _PSE7_FuHeLiuZhuan2 + ":" + _skill_PSE7_FuHeLiuZhuan_Value2;
-        string _skill_PSS1_JieYaString_CurrentStressValue = _PSS1_JieYa + ":" + _skill_PSS1_JieYa_CurrentStressValue;
-        string _skill_PSS1_JieYaString_MaxStatePoint = _PSS1_JieYa + ":" + _skill_PSS1_JieYa_MaxStatePoint;
+        string _currentPassiveSkillTypeString = _currentPassiveSkillType + "=" + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacter.GetSelectedPassiveSkillCategoryType());
+        string _currentIdentityString = _currentCharacterName + "=" + gameCharacter.GetCharacterName();
+        string _basicRecoverString_ZeroPointFive = _basicRecover + "=" + 0.5f;
+        string _basicRecoverString_Ten = _basicRecover + "=" + 10f;
+        string _maxHealthPointString = _maxHealthPoint + "=" + gameCharacterData.maximumHealthPoint;
+        string _maxStatePointString = _maxStatePoint + "=" + gameCharacterData.maximumStatePoint;
+        string _currentVirtualHealthPointString = _currentVirtualHealthPoint + "=" + gameCharacterData.virtualHealthPoint;
+        string _currentStatePointString = _currentStatePoint + "=" + gameCharacterData.currentStatePoint;
+        string _currentStressValueString = _currentStressValue + "=" + gameCharacterData.currentStressValue;
+        string _currentLifeCyclePointString = _lifeCyclePoint + "=" + gameCharacter.GetLifeCyclePoint();
+        string _skill_PSL1_HuoXin_HealthPointString = _PSL1_HuoXin + "=" + _skill_PSL1_HuoXin_HealthPoint;
+        string _skill_PSL1_HuoXin_MaxStatePointString = _PSL1_HuoXin + "=" + _skill_PSL1_HuoXin_MaxStatePoint;
+        string _skill_PSL5_XunHuanLiString = _PSL5_XunHuanLi + "=" + _skill_PSL5_XunHuanLi;
+        string _skill_PSL12_ShengShengBuXiString = _PSL12_ShengShengBuXi + "=" + _skill_PSL12_ShengShengBuXi;
+        string _skill_PSE1_GaoYangString = _PSE1_GaoYang + "=" + _skill_PSE1_GaoYang_Value;
+        string _skill_PSE7_FuHeLiuZhuan2String = _PSE7_FuHeLiuZhuan2 + "=" + _skill_PSE7_FuHeLiuZhuan_Value2;
+        string _skill_PSS1_JieYaString_CurrentStressValue = _PSS1_JieYa + "=" + _skill_PSS1_JieYa_CurrentStressValue;
+        string _skill_PSS1_JieYaString_MaxStatePoint = _PSS1_JieYa + "=" + _skill_PSS1_JieYa_MaxStatePoint;
 
         battleResultData.AddResultLog("基本回復效果相關數值結算" + "\n" +
                             _currentPassiveSkillTypeString);
@@ -253,7 +253,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 {
                     //["己方"負荷值]-10- "己方"最大以太值是否 >= 180 ? YES = 10(發動7.負荷流轉2) NO = 0
                     battleResultData.AddGameCharacterResultData_StressValueDamageRecovered(gameCharacter, _skill_PSE7_FuHeLiuZhuan_Value2 + 10, out gameCharacterData);
-                    _formula = "[己方負荷值] - " +_basicRecover+ "-" + _skill_PSE7_FuHeLiuZhuan2String;
+                    _formula = "[己方負荷值] - " +_basicRecover+ "-" + _PSE7_FuHeLiuZhuan2;
                     string _StressValueDamageRecovered = _currentStressValueString + "\n" +
                                                          _basicRecoverString_Ten + "\n" +
                                                          _skill_PSE7_FuHeLiuZhuan2String;
@@ -408,7 +408,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         string currentLifeScore = "生命積分";
         string PSL8_NiJingLiuZhuan = "8.逆境流轉";
 
-        string currentIdentityString = currentCharacterName + ":" + gameCharacter.GetCharacterName();
+        string currentIdentityString = currentCharacterName + "=" + gameCharacter.GetCharacterName();
         string _finalString = "";
 
         if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL1, out PassiveSkill _passiveSkill))
@@ -454,7 +454,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             string _formula = currentLifeScore + "*" + PSL8_NiJingLiuZhuan;
             _finalString =     currentIdentityString + "\n" + "\n" +
                                "算式:  " + "\n" + _formula + "\n" + "\n" +
-                               PSL8_NiJingLiuZhuan + ":" + skill_PSL8_NiJingliuZhuan_Value150;
+                               PSL8_NiJingLiuZhuan + "=" + skill_PSL8_NiJingliuZhuan_Value150;
         }
         else if(gameCharacterData.currentHealthPoint < gameCharacterData.maximumHealthPoint * 0.5f) //"己方"是否< HP50 %
         {
@@ -463,7 +463,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             string _formula = currentLifeScore + "*" + PSL8_NiJingLiuZhuan;
             _finalString =     currentIdentityString + "\n" + "\n" +
                                "算式:  " + "\n" + _formula + "\n" + "\n" +
-                               PSL8_NiJingLiuZhuan + ":" + skill_PSL8_NiJingliuZhuan_Value100;
+                               PSL8_NiJingLiuZhuan + "=" + skill_PSL8_NiJingliuZhuan_Value100;
         }
         battleResultData.AddGameCharacterResultData_AddLifeScore(gameCharacter, Mathf.RoundToInt(gainLifeScore), out _);
         battleResultData.AddResultLog(_finalString);
@@ -615,14 +615,14 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         _successfulResisterString = "當前身份:" + _currentIdentity + "\n" +
                                     "當前流向:" + successfulResisterPassiveSkillType + "\n" +
-                                    "當前以太值:" + successfulResisterData.currentStatePoint + "\n" +
+                                    "當前以太值=" + successfulResisterData.currentStatePoint + "\n" +
                                     _currentActivatingSkill;
 
         _deuceString              = "當前身份:" + _currentIdentity + "\n" +
                                     "當前流向:" + deucePassiveSkillType + "\n" +
-                                    "回避壓力:" + _deuceEvasionStress + "\n";
+                                    "回避壓力=" + _deuceEvasionStress + "\n";
 
-        _finalString              = "算式=" + _formula + "\n" + "\n" +
+        _finalString              = "算式:" + _formula + "\n" + "\n" +
                                     _successfulResisterString + "\n" + "\n" +
                                     _deuceString;
 
@@ -671,10 +671,10 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         }
         string _formula = "[最大以太值]+<[回避壓力消耗*4.擴流*12.逆風]";
         string _finalString = "當前身份: 抵抗成功方" + "\n" +
-                              "最大以太值:" + gameCharacterData.maximumStatePoint + "\n" +
-                              "回避壓力消耗:" + gameCharacterData.temp_StressEvasionMaxStatePointIncrease + "\n" +
-                              "4.擴流:" + skill_PSE4_KuoLiu + "\n" +
-                              "4.逆風:" + skill_PSE12_NiFeng;
+                              "最大以太值=" + gameCharacterData.maximumStatePoint + "\n" +
+                              "回避壓力消耗=" + gameCharacterData.temp_StressEvasionMaxStatePointIncrease + "\n" +
+                              "4.擴流=" + skill_PSE4_KuoLiu + "\n" +
+                              "4.逆風=" + skill_PSE12_NiFeng;
         battleResultData.AddResultLog("角色名稱:" + gameCharacter.GetCharacterName() + "\n" + "\n" +
                                         _formula + "\n" + "\n" + _finalString);
     }
@@ -711,10 +711,10 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacter, stressEvasionMaxStatePointIncrease * skill_PSE3_HuiLiu * skill_PSE12_NiFeng, out _);
             string _formula = "[當前以太值] +[回避壓力消耗以太提升 * 3.回流 * 12.逆風]";
             string _finalString = "當前身份: 抵抗成功方" + "\n" +
-                                  "當前以太值:" + gameCharacterData.currentStatePoint + "\n" +
-                                  "回避壓力消耗以太提升:" + stressEvasionMaxStatePointIncrease + "\n" +
-                                  "3.回流:" + skill_PSE3_HuiLiu + "\n" +
-                                  "12.逆風:" + skill_PSE12_NiFeng;
+                                  "當前以太值=" + gameCharacterData.currentStatePoint + "\n" +
+                                  "回避壓力消耗以太提升=" + stressEvasionMaxStatePointIncrease + "\n" +
+                                  "3.回流=" + skill_PSE3_HuiLiu + "\n" +
+                                  "12.逆風=" + skill_PSE12_NiFeng;
             battleResultData.AddResultLog("角色名稱:" + gameCharacter.GetCharacterName() + "\n" + "\n" +
                                           "算式:" + _formula + "\n" + "\n" +
                                           _finalString);
@@ -808,9 +808,9 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 battleResultData.AddGameCharacterResultData_ActualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint * skill_PSS8_JieLi, out _);
                 string _formula = "[己方當前生命值] +[己方最大生命值] *[8.節流]";
                 string _finalString = "角色名稱:" + gameCharacter.GetCharacterName() + "\n" + "\n" +
-                                      "當前生命值:" + gameCharacterData.currentHealthPoint + "\n" + "\n" +
-                                      "最大生命值:" + gameCharacterData.maximumHealthPoint + "\n" + "\n" +
-                                      "8.節流:" + skill_PSS8_JieLi;
+                                      "當前生命值=" + gameCharacterData.currentHealthPoint + "\n" + "\n" +
+                                      "最大生命值=" + gameCharacterData.maximumHealthPoint + "\n" + "\n" +
+                                      "8.節流=" + skill_PSS8_JieLi;
                 battleResultData.AddResultLog(_formula + "\n" + "\n" + _finalString);
             }
         }
@@ -850,7 +850,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     //"己方"已按下技能強度+1&速度+1
                     battleResultData.AddGameCharacterResultData_ChangeCurrentSkillSpeed(gameCharacterOne, skill_PSE11_YiTaiYaZhi, out _);
                     battleResultData.AddGameCharacterResultData_ChangeCurrentSkillStrength(gameCharacterOne, skill_PSE11_YiTaiYaZhi, out _);
-                    _activatingSkill = "11.以太壓制: +" + skill_PSE11_YiTaiYaZhi;  
+                    _activatingSkill = "11.以太壓制= +" + skill_PSE11_YiTaiYaZhi;  
                 }
                 break;
 
@@ -864,7 +864,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                         //"己方"已按下技能強度 + 1 & 速度 + 1
                         battleResultData.AddGameCharacterResultData_ChangeCurrentSkillSpeed(gameCharacterOne, skill_PSS7_JieFeng, out _);
                         battleResultData.AddGameCharacterResultData_ChangeCurrentSkillStrength(gameCharacterOne, skill_PSS7_JieFeng, out _);
-                        _activatingSkill = "7.:借風 +" + skill_PSE11_YiTaiYaZhi;
+                        _activatingSkill = "7.借風= +" + skill_PSE11_YiTaiYaZhi;
                     }
                 }
                 break;
@@ -918,13 +918,13 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             _formula = "[" +_characterOneCurrentIdentity +"當前以太值]-["+ _characterTwoCurrentIdentity +"以太傷害]*[1+能量殘響]";
         }
 
-        string _finalString = _characterOneCurrentIdentity + ":" + gameCharacterOne.GetCharacterName() + "\n" +
-                              "當前以太值:" + gameCharacterOneData.currentStatePoint + "\n" +
-                              "5.破流:" + skill_PSE5_PoLiu + "\n" +
-                              "能量殘響:" + hasEnergyMarker + "\n" + "\n" +
+        string _finalString = _characterOneCurrentIdentity + "=" + gameCharacterOne.GetCharacterName() + "\n" +
+                              "當前以太值=" + gameCharacterOneData.currentStatePoint + "\n" +
+                              "5.破流=" + skill_PSE5_PoLiu + "\n" +
+                              "能量殘響=" + hasEnergyMarker + "\n" + "\n" +
                               
-                              _characterTwoCurrentIdentity + ":" + gameCharacterTwo.GetCharacterName() + "\n" +
-                              "以太傷害:" + gameCharacterTwoData.statePointDamageDealt;
+                              _characterTwoCurrentIdentity + "=" + gameCharacterTwo.GetCharacterName() + "\n" +
+                              "以太傷害=" + gameCharacterTwoData.statePointDamageDealt;
         battleResultData.AddResultLog("算式:" + _formula + "\n"+ "\n" + _finalString);
     }
 
@@ -973,7 +973,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         {
             battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
             skill_PSL9_ShengMingYaZhi = 1.0f;
-            _activatingPassiveSkillString = "9.生命壓制:" + skill_PSL9_ShengMingYaZhi;
+            _activatingPassiveSkillString = "9.生命壓制=" + skill_PSL9_ShengMingYaZhi;
         }
 
         if (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSS3, out _passiveSkill))
@@ -1020,7 +1020,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         {
             battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
             skill_PSS11_FuheYaZhi2 = 1.0f;
-            _activatingPassiveSkillString = "11.負荷壓制2:" + skill_PSS11_FuheYaZhi2;
+            _activatingPassiveSkillString = "11.負荷壓制2=" + skill_PSS11_FuheYaZhi2;
         }
 
         /*
@@ -1061,18 +1061,18 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             _formula = "[" +_characterOneCurrentIdentity + "負荷值] +[" +_characterTwoCurrentIdentity + "負荷傷害] *[1 + 9.生命壓制 或者 11.負荷壓制2 + 能量殘響] * [1 -"
                            +_characterOneCurrentIdentity + "負荷抗性) -6.負荷流轉 - 12.逆風]]" + _isMultipleWithZeroPointFive;
 
-            _gameCharacterOnefinalString = _characterOneCurrentIdentity + ":" + gameCharacterOne.GetCharacterName() + "\n" +
+            _gameCharacterOnefinalString = _characterOneCurrentIdentity + "=" + gameCharacterOne.GetCharacterName() + "\n" +
                                            "當前流向:" + gameCharacterOne.GetSelectedPassiveSkillCategoryType() + "\n" +
-                                           "當前負荷值:" + gameCharacterOneData.currentStressValue + "\n" +
-                                           "能量殘響:" + gameCharacterOneEnergyMarker + "\n" +
-                                           "負荷抗性:" + gameCharacterOneStressResistance + "\n" +
+                                           "當前負荷值=" + gameCharacterOneData.currentStressValue + "\n" +
+                                           "能量殘響=" + gameCharacterOneEnergyMarker + "\n" +
+                                           "負荷抗性=" + gameCharacterOneStressResistance + "\n" +
                                            _activatingPassiveSkillString + "\n" +
-                                           "6.負荷流轉:" + skill_PSS6_FuHeLiuZhuan + "\n" +
-                                           "2.逆風:" + skill_PSS12_NiFeng;
+                                           "6.負荷流轉=" + skill_PSS6_FuHeLiuZhuan + "\n" +
+                                           "2.逆風=" + skill_PSS12_NiFeng;
 
             _gameCharacterTwofinalString = _characterTwoCurrentIdentity + ":" + gameCharacterTwo.GetCharacterName() + "\n" +
                                            "當前流向:" + gameCharacterTwo.GetSelectedPassiveSkillCategoryType() + "\n" +
-                                           "負荷傷害:" + gameCharacterTwoData.stressValueDamageDealt;
+                                           "負荷傷害=" + gameCharacterTwoData.stressValueDamageDealt;
                       
         }
         else if (gameCharacterOnePassiveSkillCategory == CategoryType.Stress)
@@ -1087,16 +1087,16 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
             _gameCharacterOnefinalString = _characterOneCurrentIdentity + ":" + gameCharacterOne.GetCharacterName() + "\n" +
                                            "當前流向:" + gameCharacterOne.GetSelectedPassiveSkillCategoryType() + "\n" +
-                                           "當前負荷值:" + gameCharacterOneData.currentStressValue + "\n" +
-                                           "能量殘響:" + gameCharacterOneEnergyMarker + "\n" +
-                                           "負荷抗性:" + gameCharacterOneStressResistance + "\n" +
+                                           "當前負荷值=" + gameCharacterOneData.currentStressValue + "\n" +
+                                           "能量殘響=" + gameCharacterOneEnergyMarker + "\n" +
+                                           "負荷抗性=" + gameCharacterOneStressResistance + "\n" +
                                            _activatingPassiveSkillString + "\n" +
-                                           "3.化勁:" + skill_PSS3_HuaJing + "\n" +
-                                           "9.行雲流水:" + skill_PSS9_XingYunLiuShui;
+                                           "3.化勁=" + skill_PSS3_HuaJing + "\n" +
+                                           "9.行雲流水=" + skill_PSS9_XingYunLiuShui;
 
             _gameCharacterTwofinalString = _characterTwoCurrentIdentity + ":" + gameCharacterTwo.GetCharacterName() + "\n" +
                                            "當前流向:" + gameCharacterTwo.GetSelectedPassiveSkillCategoryType() + "\n" +
-                                           "負荷傷害:" + gameCharacterTwoData.stressValueDamageDealt;
+                                           "負荷傷害=" + gameCharacterTwoData.stressValueDamageDealt;
         }
         else if (gameCharacterOnePassiveSkillCategory == CategoryType.Life || gameCharacterOnePassiveSkillCategory == CategoryType.None)
         {
@@ -1109,14 +1109,14 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
             _gameCharacterOnefinalString = _characterOneCurrentIdentity + ":" + gameCharacterOne.GetCharacterName() + "\n" +
                                           "當前流向:" + gameCharacterOne.GetSelectedPassiveSkillCategoryType() + "\n" +
-                                          "當前負荷值:" + gameCharacterOneData.currentStressValue + "\n" +
-                                          "能量殘響:" + gameCharacterOneEnergyMarker + "\n" +
-                                          "負荷抗性:" + gameCharacterOneStressResistance + "\n" +
+                                          "當前負荷值=" + gameCharacterOneData.currentStressValue + "\n" +
+                                          "能量殘響=" + gameCharacterOneEnergyMarker + "\n" +
+                                          "負荷抗性=" + gameCharacterOneStressResistance + "\n" +
                                           _activatingPassiveSkillString + "\n";
 
             _gameCharacterTwofinalString = _characterTwoCurrentIdentity + ":" + gameCharacterTwo.GetCharacterName() + "\n" +
                                          "當前流向:" + gameCharacterTwo.GetSelectedPassiveSkillCategoryType() + "\n" +
-                                         "負荷傷害:" + gameCharacterTwoData.stressValueDamageDealt;
+                                         "負荷傷害=" + gameCharacterTwoData.stressValueDamageDealt;
         }
         battleResultData.AddResultLog(_formula + "\n" + "\n" +
                                       _gameCharacterOnefinalString + "\n" + "\n" +

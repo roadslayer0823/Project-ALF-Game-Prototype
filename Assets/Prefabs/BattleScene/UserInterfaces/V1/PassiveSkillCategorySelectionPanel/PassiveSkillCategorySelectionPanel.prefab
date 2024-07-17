@@ -947,6 +947,7 @@ GameObject:
   - component: {fileID: 5253907872975195255}
   - component: {fileID: 8520935407269098171}
   - component: {fileID: 5649266428672325641}
+  - component: {fileID: 3002805946167240957}
   m_Layer: 5
   m_Name: PassiveSkillButton
   m_TagString: Untagged
@@ -1132,6 +1133,42 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+--- !u!60 &3002805946167240957
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8942392632388100107}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: -1.8607941, y: 87.94292}
+      - {x: -26.608627, y: 75.2137}
+      - {x: -44.112015, y: 66.21071}
+      - {x: -42.743744, y: -1.1106873}
+      - {x: -42.354523, y: 4.3614655}
+      - {x: -41.115196, y: -60.414223}
+      - {x: -42.270004, y: -59.970875}
+      - {x: -1.3614807, y: -85.51803}
+      - {x: -0.7568039, y: -85.51803}
+      - {x: 72.11661, y: -40.98545}
+      - {x: 73.55065, y: 44.680397}
 --- !u!1001 &954230689769887172
 PrefabInstance:
   m_ObjectHideFlags: 0
