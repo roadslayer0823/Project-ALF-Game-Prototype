@@ -32,6 +32,7 @@ public class BattleUiManager : MonoBehaviour
     [SerializeField] private GameObject enemyCharacterInfoBoxUI = null;
     [SerializeField] private GameObject enemyCharacterInfoBoxHUD = null;
     [SerializeField] private GameObject darkLayer = null;
+    [SerializeField] private GameObject uiMiddleFrame = null;
     [SerializeField] private Animator battleStartUiAnimator = null;
     [SerializeField] private TMP_Text turnText = null;
     [SerializeField] private PassiveSkillCategorySelectionPanel passiveSkillCategorySelectionPanel = null;
@@ -214,6 +215,7 @@ public class BattleUiManager : MonoBehaviour
         }
 
         this.battleLog.gameObject.SetActive (value);
+        this.uiMiddleFrame.gameObject.SetActive (value);
         this.enemyCharacterInfoBox.gameObject.SetActive(value);
         this.passiveSkillCategorySelectionPanel.gameObject.SetActive(value);
     }
