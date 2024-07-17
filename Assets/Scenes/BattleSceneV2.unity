@@ -3086,6 +3086,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7109231520585092214, guid: 6caae24a59b43470789fd9847056a6d3, type: 3}
   m_PrefabInstance: {fileID: 697935621}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &697935624 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7648497496615040402, guid: 6caae24a59b43470789fd9847056a6d3, type: 3}
+  m_PrefabInstance: {fileID: 697935621}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697935623}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 647b66c8af20546ceab4c8390b7c2743, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &759260329
 GameObject:
   m_ObjectHideFlags: 0
@@ -3131,6 +3142,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraRadiusBlur: {fileID: 794048810}
+  layerBlur: {fileID: 697935624}
   cutScreenHandler: {fileID: 1388652837}
   combatCommandAnimationHandler: {fileID: 454996434}
   darkEffectAnimator: {fileID: 2094724883}

@@ -5,6 +5,7 @@ using UnityEngine;
 public class BattleVisualEffectManager : MonoBehaviour
 {
     [SerializeField] private CameraRadiusBlur cameraRadiusBlur = null;
+    [SerializeField] private LayerBlur layerBlur = null;
     [SerializeField] private CutScreenHandlerV2 cutScreenHandler = null;
     [SerializeField] private CombatCommandAnimationHandler combatCommandAnimationHandler = null;
     [SerializeField] private Animator darkEffectAnimator = null;
@@ -24,6 +25,11 @@ public class BattleVisualEffectManager : MonoBehaviour
         if(this.combatCommandAnimationHandler != null)
         {
             this.combatCommandAnimationHandler.Initialize();
+        }
+
+        if(this.layerBlur != null)
+        {
+            this.layerBlur.CreateNewShaderMaterial();
         }
     }
 
@@ -84,6 +90,19 @@ public class BattleVisualEffectManager : MonoBehaviour
         this.cameraRadiusBlur.onShader = false;
     }
 
+    #endregion
+
+#region Layer Blur
+    public void ApplyLayerBlur(int distortion, int size)
+    {
+        this.layerBlur.gameObject.SetActive(true);
+        this.layerBlur.SetShaderValue(distortion, size);
+    }
+
+    public void TurnOffBlurLayer()
+    {
+        this.layerBlur.gameObject.SetActive(false);
+    }
 #endregion
 
 #region Battle Transition Animation
