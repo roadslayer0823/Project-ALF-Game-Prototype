@@ -72,6 +72,7 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         for (int i = 0; i < passiveSkillSlotsList.Length; i++)
         {
             passiveSkillSlotsList[i].ActivePassiveSkillIcon();
+            passiveSkillSlotsList[i].UpdateDefaultPassiveSkillUI();
         }
         this.passiveSkillHolder.SetActive(true);
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_PRESS);
@@ -92,7 +93,6 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
 
     public void DistanceDetector()
     {
-        float swipeDistance = Vector2.Distance(this.touchEndPos, initialPosition);
         if (polygonChecker.IsMousePositionInsidePolygonArea())
         {
             if (this.currentPassiveSkillType != PassiveSkillType.None)
@@ -131,7 +131,7 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
         Vector3 currentPosition = Input.mousePosition;
         Vector3 direction = currentPosition - initialPosition;
         
-        if (direction != Vector3.zero)
+        if (polygonChecker.IsMousePositionInsidePolygonArea() == false)
         {
             PassiveSkillType _lastSelectedPassiveSkill = this.highlightedPassiveSkillType;
             float angle = Vector3.Angle(Vector3.up, direction);
@@ -140,7 +140,7 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
             {
                 angle = 360 - angle;
             }
-            if (angle < 60)
+            if (angle < 60 || angle > 340)
             {
                 this.highlightedPassiveSkillType = PassiveSkillType.HealthPoint;
             }
@@ -148,7 +148,7 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
             {
                 this.highlightedPassiveSkillType = PassiveSkillType.StatePoint;
             }
-            else if (angle > 120)
+            else if (angle > 120 && angle < 195)
             {
                 this.highlightedPassiveSkillType = PassiveSkillType.StressValue;
             }
@@ -156,11 +156,17 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
             {
                 this.highlightedPassiveSkillType = PassiveSkillType.None;
             }
-
             UpdateCurrentPassiveSkillSlot();
             if (_lastSelectedPassiveSkill != this.highlightedPassiveSkillType)
             {
                 AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CHOOSE);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < passiveSkillSlotsList.Length; i++)
+            {
+                passiveSkillSlotsList[i].UpdateDefaultPassiveSkillUI();
             }
         }
     }
