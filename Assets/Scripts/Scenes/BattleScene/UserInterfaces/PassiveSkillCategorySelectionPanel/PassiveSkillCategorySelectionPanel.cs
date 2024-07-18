@@ -26,6 +26,7 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     [SerializeField] private Image LifeIconGameObject;
     [SerializeField] private Image StateIconGameObject;
     [SerializeField] private Image StressIconGameObject;
+    [SerializeField] private PolygonChecker polygonChecker;
 
     private PassiveSkillType currentPassiveSkillType = PassiveSkillType.None;
     private PassiveSkillType highlightedPassiveSkillType = PassiveSkillType.None;
@@ -92,7 +93,7 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
     public void DistanceDetector()
     {
         float swipeDistance = Vector2.Distance(this.touchEndPos, initialPosition);
-        if (swipeDistance <= 35)
+        if (polygonChecker.IsMousePositionInsidePolygonArea())
         {
             if (this.currentPassiveSkillType != PassiveSkillType.None)
             {
@@ -212,7 +213,6 @@ public class PassiveSkillCategorySelectionPanel : MonoBehaviour
 
         if(ColorUtility.TryParseHtmlString(color, out newColor))
         {
-            Debug.Log("changed color");
             background.color = newColor;
         }
         background.gameObject.SetActive(true);
