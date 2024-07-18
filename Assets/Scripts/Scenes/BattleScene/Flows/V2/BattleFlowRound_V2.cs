@@ -79,6 +79,7 @@ public class BattleFlowRound_V2
                 break;
             }
 
+            // 頁面：更新當前ATL
             this.flowATLIndex++;
         }
         while ( true );

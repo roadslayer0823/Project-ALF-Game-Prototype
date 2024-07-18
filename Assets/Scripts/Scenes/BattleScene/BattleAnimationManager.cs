@@ -67,10 +67,10 @@ public partial class BattleAnimationManager : MonoBehaviour
     public enum AnimationEvent
     {
         None,
-        SetCharacter,
 
         // ---------- Version 1 ----------
 
+        SetCharacter,
         OnAttackPartB,
         OnAttackPartB_Cutoff,
         OnDefensePartA,

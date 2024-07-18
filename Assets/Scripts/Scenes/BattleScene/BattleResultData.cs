@@ -640,6 +640,22 @@ public class BattleResultData
         return this;
     }
 
+    // 改變能量殘響的 ATL。
+    public BattleResultData AddGameCharacterResultData_ModifyEnergyMarkerATL( GameCharacter gameCharacter, int valueChange, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.energyMarkerRemainingATLs += valueChange;
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "改變能量殘響的ATL";
+
+#endif
+
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
+    }
+
     // 消去能量殘響。
     public BattleResultData AddGameCharacterResultData_RemoveEnergyMarker( GameCharacter gameCharacter, out BattleResultData_GameCharacter gameCharacterResultData )
     {

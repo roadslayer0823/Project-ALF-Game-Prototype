@@ -108,6 +108,103 @@ public partial class BattleLogicManagerV2
         return ( IsAttackingSkill( _gameCharacterOne_Skill ) || IsAttackingSkill( _gameCharacterTwo_Skill ) );
     }
 
+    // 頁面：狀態更新
+    private static void UpdateGameCharacterStatus( ref BattleResultData battleResultData, GameCharacter gameCharacter )
+    {
+        // 是否處於負荷崩潰狀態或以太崩潰狀態?
+        // YES
+        if (gameCharacter.IsInBreakStatus())
+        {
+            // 負荷崩潰狀態
+            int _stressBreakStatusRemainingATLs = gameCharacter.GetStressBreakStatusRemainingATLs();
+            float _currentStressValue = gameCharacter.GetCurrentStressValue();
+            if (_stressBreakStatusRemainingATLs > 0)
+            {
+                // 負荷崩潰狀態維持值減1
+                _stressBreakStatusRemainingATLs--;
+
+                // 負荷崩潰狀態維持值是否為0?
+                if (_stressBreakStatusRemainingATLs <= 0)
+                {
+                    // 解除負荷崩潰狀態
+                    // 負荷值回復至0%
+                    _currentStressValue = 0.0f;
+                }
+            }
+
+            // 以太崩潰狀態
+            int _stateBreakStatusRemainingATLs = gameCharacter.GetStateBreakStatusRemainingATLs();
+            float _maximumStatePoint = gameCharacter.GetMaximumStatePoint();
+            float _currentStatePoint = gameCharacter.GetCurrentStatePoint();
+            if (_stateBreakStatusRemainingATLs > 0)
+            {
+                // 以太崩潰狀態維持值減1
+                _stateBreakStatusRemainingATLs--;
+
+                // 以太崩潰狀態維持值是否為0?
+                // YES
+                if (_stateBreakStatusRemainingATLs <= 0)
+                {
+                    // 解除以太崩潰狀態
+
+                    float _originalStatePoint = gameCharacter.GetOriginalStatePoint();
+
+                    // 最大以太值是否<起始最大以太值?
+                    // YES
+                    if (_maximumStatePoint < _originalStatePoint)
+                    {
+                        // 最大以太值回復至起始最大以太值
+                        _maximumStatePoint = _originalStatePoint;
+                    }
+
+                    float _maximumStatePointThreshold = _maximumStatePoint * 0.5f;
+
+                    // 當前以太值是否少於最大以太值的50%?
+                    // YES
+                    if (_currentStatePoint < _maximumStatePointThreshold)
+                    {
+                        _currentStatePoint = _maximumStatePointThreshold;
+                    }
+                    // NO
+                    else
+                    {
+                        // TODO: 當前以太值回復至崩潰前一刻的數值
+                        // 正常情況下，以太崩潰前提一定是低於0的。
+                        // 所以正常情況下一定是回復至50%的。
+                        // 但為了今後可能會創作有一些技能的特殊效果是可以在以太在正常值下，強制進入崩潰。
+                        // 例如尚擁有120的情況下，被特殊效果進入以太崩潰。
+                        // 當崩潰回復時，以太值會返回崩潰前的120。
+                    }
+                }
+            }
+
+            battleResultData.AddGameCharacterResultData( gameCharacter,
+                stateBreakStatusRemainingATLs: _stateBreakStatusRemainingATLs, maximumStatePoint: _maximumStatePoint, currentStatePoint: _currentStatePoint,
+                stressBreakStatusRemainingATLs: _stressBreakStatusRemainingATLs, currentStressValue: _currentStressValue );
+
+            // "己方"當前流向是否"負荷流"?
+            // YES
+            if (gameCharacter.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Stress)
+            {
+                // 負荷流借力結算
+                CategorizedPassiveSkillManager.StressPassiveSkillTypeJieLiCalculation( ref battleResultData, gameCharacter );
+            }
+        }
+    }
+
+    // 頁面：技能持續效果更新
+    private static void UpdateSkillContinuousEffects( ref BattleResultData battleResultData, GameCharacter gameCharacter )
+    {
+        BattleResultData_GameCharacter _gameCharacter_BattleResultData = battleResultData.GetGameCharacterResultData( gameCharacter );
+
+        if (_gameCharacter_BattleResultData.HasEnergyMarker())
+        {
+            // 技能持續效果維持值減1 (例如:能量殘響)
+            // 技能持續效果的維持值為0時解除該技能效果
+            battleResultData.AddGameCharacterResultData_ModifyEnergyMarkerATL( gameCharacter, -1, out _ );
+        }
+    }
+
     public static ( GameCharacter lead, GameCharacter improviser ) DetermineLeadAndImproviser( BattleGameManager battleGameManager, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo, out List<string> resultLogList )
     {
         resultLogList = new List<string>();
@@ -1022,39 +1119,11 @@ public partial class BattleLogicManagerV2
         for (int i = 0; i < gameCharacters.Length; i++)
         {
             GameCharacter _gameCharacter = gameCharacters[ i ];
-            _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.SetCharacter );
+            _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnTransition );
+            UpdateGameCharacterStatus( ref _battleResultData, _gameCharacter );
+            UpdateSkillContinuousEffects( ref _battleResultData, _gameCharacter );
 
-            // 以太崩潰狀態
-            int _stateBreakStatusRemainingATLs = _gameCharacter.GetStateBreakStatusRemainingATLs();
-            float _maximumStatePoint = _gameCharacter.GetMaximumStatePoint();
-            float _currentStatePoint = _gameCharacter.GetCurrentStatePoint();
-            if (_stateBreakStatusRemainingATLs > 0)
-            {
-                _stateBreakStatusRemainingATLs--;
-
-                if (_stateBreakStatusRemainingATLs <= 0)
-                {
-                    _maximumStatePoint = _gameCharacter.GetOriginalStatePoint();
-                    _currentStatePoint = _maximumStatePoint;
-                }
-            }
-
-            // 負荷崩潰狀態
-            int _stressBreakStatusRemainingATLs = _gameCharacter.GetStressBreakStatusRemainingATLs();
-            float _currentStressValue = _gameCharacter.GetCurrentStressValue();
-            if (_stressBreakStatusRemainingATLs > 0)
-            {
-                _stressBreakStatusRemainingATLs--;
-
-                if (_stressBreakStatusRemainingATLs <= 0)
-                {
-                    _currentStressValue = 0.0f;
-                }
-            }
-
-            _battleResultData.AddGameCharacterResultData( _gameCharacter,
-                stateBreakStatusRemainingATLs: _stateBreakStatusRemainingATLs, maximumStatePoint: _maximumStatePoint, currentStatePoint: _currentStatePoint,
-                stressBreakStatusRemainingATLs: _stressBreakStatusRemainingATLs, currentStressValue: _currentStressValue );
+            // TODO: 頁面：形態切換
         }
 
         return _battleResultData;

@@ -28,12 +28,19 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         bool _isPlayingCombatCommandAnimation = true;
 
+        // 是否有一方在[臨戰指令時間 (後)]/[反擊指令時間]/[近戰指令時間]/[近戰反擊指令時間]輸入主動/反擊/派生技能？
+        // YES
         if (BattleLogicManagerV2.ShouldCombatCommandTimeBeSkipped( _playerCharacter, _enemyCharacter ))
         {
             _atlSlotListPanel.GoToATL( battleFlowATL.GetATLNumber(), 0.1f );
         }
+        // NO
         else
         {
+            // 當前距離重置為“中距離”
+            this.battleGameManager.GetBattleDistanceManager().SetCurrentDistanceType( BattleDistanceManager.DistanceType.Normal );
+
+            // 進入“臨戰指令時間（前）”頁面。
             // ------------------------------ 臨戰指令時間 (前) ------------------------------
 
             LeanTween.delayedCall( 0.1f, () =>
@@ -68,6 +75,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             // ------------------------------------------------------------------------
         }
 
+        // 進入“判定先后手方”頁面。
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定先後手方</color>" );
 
         var ( _attacker, _attackTarget ) = BattleLogicManagerV2.DetermineLeadAndImproviser( this.battleGameManager, _playerCharacter, _enemyCharacter, out List<string> _resultLogList );
