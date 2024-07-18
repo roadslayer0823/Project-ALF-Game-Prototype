@@ -146,9 +146,9 @@ public class BattleResultData
                 UpdateVirtualHealthPoint();
             }
 
-            if (this.currentHealthPoint <= 0)
+            if (this.currentHealthPoint <= 0.0f)
             {
-                this.currentHealthPoint = 0;
+                this.currentHealthPoint = 0.0f;
                 this.isDead = true;
             }
         }

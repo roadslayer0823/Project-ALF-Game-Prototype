@@ -28,17 +28,10 @@ public partial class BattleLogicManagerV2
 
         if (_temporaryBattleResultData != null)
         {
-            if (_temporaryBattleResultData.IsInBreakStatus())
-            {
-                return true;
-            }
-        }
-        else if (gameCharacter.GetStateBreakStatusRemainingATLs() > 0 || gameCharacter.GetStressBreakStatusRemainingATLs() > 0)
-        {
-            return true;
+            return _temporaryBattleResultData.IsInBreakStatus();
         }
 
-        return false;
+        return gameCharacter.IsInBreakStatus();
     }
 
     public static bool IsAbleToUseAnySkill( GameCharacter gameCharacter )
@@ -1233,5 +1226,63 @@ public partial class BattleLogicManagerV2
             gameCharacter.AddCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
             gameCharacter.GetCurrentAttacker().AddCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
         }
+    }
+
+    // result
+    // 0 = None
+    // 1 = Player wins
+    // 2 = Enemy wins
+    public static bool HasBattleEnded( GameCharacter[] gameCharacters, out int result )
+    {
+        result = 0;
+
+        bool _hasPlayerCharacterSurvived = false;
+        bool _hasEnemyCharacterSurvived = false;
+
+        for (int i = 0; i < gameCharacters.Length; i++)
+        {
+            GameCharacter _gameCharacter = gameCharacters[ i ];
+            if (!BattleLogicManagerV2.IsGameCharacterDead( _gameCharacter ))
+            {
+                if (_gameCharacter.GetIsPlayer())
+                {
+                    _hasPlayerCharacterSurvived = true;
+                }
+                else
+                {
+                    _hasEnemyCharacterSurvived = true;
+                }
+            }
+        }
+
+        if (!_hasPlayerCharacterSurvived || !_hasEnemyCharacterSurvived)
+        {
+            if (_hasPlayerCharacterSurvived)
+            {
+                // Player wins.
+                result = 1;
+            }
+            else if (_hasEnemyCharacterSurvived)
+            {
+                // Enemy wins.
+                result = 2;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public static bool IsGameCharacterDead( GameCharacter gameCharacter )
+    {
+        BattleResultData_GameCharacter _temporaryBattleResultData = gameCharacter.GetTemporaryBattleResultData();
+
+        if (_temporaryBattleResultData != null)
+        {
+            return _temporaryBattleResultData.isDead;
+        }
+
+        return gameCharacter.GetIsDead();
     }
 }

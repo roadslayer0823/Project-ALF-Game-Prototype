@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Skill = DatabaseManager.Skill;
-using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
 using Character = DatabaseManager.Character;
 using AnimationEvent = BattleAnimationManager.AnimationEvent;
@@ -54,23 +53,12 @@ public partial class GameCharacter : MonoBehaviour
     private CharacterSkill currentSkill = null;
     private RangeType currentSkillRangeType = RangeType.none;
     private CharacterSkill currentObservingSkill = null;
-    [Obsolete] private CharacterSkill currentObservedSkill = null;
-    [Obsolete] private int currentSkillStatIncrement = 0;
     private GameCharacter currentAttacker = null;
     private GameCharacter currentAttackTarget = null;
     private float skillCountdownTime = 0.0f;
-    private int counterAttacks = 0;
-    [Obsolete] private bool isAbleToUseSkill = false;
-    private List<PopUpDisplayInfo> popUpDisplayInfoList = new();
-
-    // Break Status
-    private int breakStatusRemainingATLs = 0;
-    private bool isBreakStatusCausedByStatePoint = false;
-    private bool isBreakStatusCausedByStressValue = false;
 
     // Energy Marker
     private int energyMarkerRemainingATLs = 0;
-    private bool hasJustAddedEnergyMarker = false;
 
     // Audios
     private const string AUDIO_ID_BREAK = "break";
@@ -85,7 +73,8 @@ public partial class GameCharacter : MonoBehaviour
     private int stateBreakStatusRemainingATLs = 0;   // 以太崩潰維持值 (ATL)
     private int stressBreakStatusRemainingATLs = 0;  // 負荷崩潰維持值 (ATL)
     private int numberOfEnteringIntoBreakStatus = 0; // 陷入崩潰狀態的次數
-    private bool isDead = false;
+    private bool isDead = false;                     // 是否死亡？
+    private bool hasJustDied = false;                // 是否剛剛才死亡？
     private BattleResultData_GameCharacter temporaryBattleResultData = null;
     private List<CharacterIdentityType> characterIdentityTypeList = null; // 暫時性身份列表
     private List<CharacterIdentityType> permanentCharacterIdentityTypeList = null; // 永久性身份列表
@@ -258,245 +247,6 @@ public partial class GameCharacter : MonoBehaviour
     {
     }
 
-    public float AddCurrentHealthPoint( float amount )
-    {
-        return AddCurrentHealthPoint( amount, this.maximumHealthPoint );
-    }
-
-    public float RecoverCurrentHealthPoint( float amount )
-    {
-        return AddCurrentHealthPoint( amount, this.virtualHealthPoint );
-    }
-
-    public float AddCurrentHealthPoint( float amount, float maximumAmount )
-    {
-        if (amount > 0)
-        {
-            float _lastValue = this.currentHealthPoint;
-
-            this.currentHealthPoint = Mathf.Clamp( this.currentHealthPoint + amount, 0.0f, maximumAmount );
-
-            if (this.virtualHealthPoint < this.currentHealthPoint)
-            {
-                this.virtualHealthPoint = this.currentHealthPoint;
-            }
-
-            this.onCharacterInfoUpdated?.Invoke();
-
-            return ( this.currentHealthPoint - _lastValue );
-        }
-
-        return 0.0f;
-    }
-
-    public void MinusCurrentHealthPoint( float amount )
-    {
-        if (amount > 0)
-        {
-            this.currentHealthPoint -= amount;
-            this.onCharacterInfoUpdated?.Invoke();
-        }
-    }
-
-    public void AddVirtualHealthPoint(float amount)
-    {
-        if (amount > 0)
-        {
-            this.virtualHealthPoint = Mathf.Clamp(this.virtualHealthPoint + amount, 0.0f, this.maximumHealthPoint);
-            this.onCharacterInfoUpdated?.Invoke();
-        }
-    }
-
-    public void MinusVirtualHealthPoint(float amount)
-    {
-        if (amount > 0)
-        {
-            this.virtualHealthPoint -= amount;
-            this.onCharacterInfoUpdated?.Invoke();
-        }
-    }
-
-    public void RecoverHealthPointToVirtualHP()
-    {
-        this.currentHealthPoint = this.virtualHealthPoint;
-        this.onCharacterInfoUpdated?.Invoke();
-    }
-
-    public float ClearVirtualHealthPoint()
-    {
-        float _difference = this.virtualHealthPoint - this.currentHealthPoint;
-
-        this.virtualHealthPoint = this.currentHealthPoint;
-        this.onCharacterInfoUpdated?.Invoke();
-
-        return _difference;
-    }
-
-    private void SetCurrentStatePoint( float amount )
-    {
-        this.currentStatePoint = Mathf.Clamp( amount, this.minimumStatePoint, this.maximumStatePoint );
-    }
-
-    public void AddCurrentStatePoint( float amount )
-    {
-        if (amount > 0)
-        {
-            SetCurrentStatePoint( this.currentStatePoint + amount );
-            this.onCharacterInfoUpdated?.Invoke();
-        }
-    }
-
-    public void MinusCurrentStatePoint( float amount, bool onHit, bool isBreakStatusAvailable )
-    {
-        if (amount > 0)
-        {
-            SetCurrentStatePoint( this.currentStatePoint - amount );
-
-            if (isBreakStatusAvailable)
-            {
-                if (BattleLogicManager.IsGameCharacterInBreakStatus( this, onHit ))
-                {
-                    this.isBreakStatusCausedByStatePoint = true;
-
-                    if (!GetIsInBreakStatus())
-                    {
-                        EnterIntoBreakStatus( 1 );
-                    }
-
-                    AudioManager.Instance.PlaySoundEffect( AUDIO_ID_BREAK );
-                }
-            }
-
-            this.onCharacterInfoUpdated?.Invoke();
-        }
-    }
-
-    public void SetCurrentStatePointToMaximum()
-    {
-        this.currentStatePoint = this.maximumStatePoint;
-        this.onCharacterInfoUpdated?.Invoke();
-    }
-
-    public float AddMaximumStatePoint( float amount )
-    {
-        if (amount > 0)
-        {
-            float _lastValue = this.maximumStatePoint;
-
-            this.maximumStatePoint += amount;
-            this.onCharacterInfoUpdated?.Invoke();
-
-            return ( this.maximumStatePoint - _lastValue );
-        }
-
-        return 0.0f;
-    }
-
-    public float MinusMaximumStatePoint( float amount )
-    {
-        if (amount > 0)
-        {
-            float _lastValue = this.maximumStatePoint;
-
-            this.maximumStatePoint -= amount;
-
-            float _lowestMaximumStatePoint = GameConfiguration.Instance.GetBattleConfiguration().GetLowestMaximumStatePoint();
-            if (this.maximumStatePoint < _lowestMaximumStatePoint)
-            {
-                this.maximumStatePoint = _lowestMaximumStatePoint;
-            }
-
-            this.onCharacterInfoUpdated?.Invoke();
-
-            return ( _lastValue - this.maximumStatePoint );
-        }
-
-        return 0.0f;
-    }
-
-    public void AddCurrentStressValue( float amount, bool isBreakStatusAvailable )
-    {
-        Debug.Log("AddCurrentStressValue");
-        if (amount > 0)
-        {
-            if (!this.isBreakStatusCausedByStressValue)
-            {
-                this.currentStressValue += amount;
-
-                if (isBreakStatusAvailable)
-                {
-                    if (BattleLogicManager.IsGameCharacterInBreakStatus( this ))
-                    {
-                        this.currentStressValue = this.maximumStressValue;
-                        this.isBreakStatusCausedByStressValue = true;
-
-                        if (!GetIsInBreakStatus())
-                        {
-                            EnterIntoBreakStatus( 1 );
-                        }
-                    }
-                }
-                else
-                {
-                    if (this.currentStressValue >= this.maximumStressValue)
-                    {
-                        this.currentStressValue = this.maximumStressValue - 1;
-                    }
-                }
-            }
-
-            this.onCharacterInfoUpdated?.Invoke();
-        }
-    }
-
-    public float MinusCurrentStressValue( float amount )
-    {
-        Debug.Log("MinusCurrentStressValue");
-        if (amount > 0)
-        {
-            float _lastValue = this.currentStressValue;
-
-            this.currentStressValue -= amount;
-
-            if (this.currentStressValue < 0)
-            {
-                this.currentStressValue = 0.0f;
-            }
-
-            this.onCharacterInfoUpdated?.Invoke();
-
-            return ( _lastValue - this.currentStressValue );
-        }
-
-        return 0.0f;
-    }
-
-    public void MinusBreakStatusRemainingATLs()
-    {
-        if (this.breakStatusRemainingATLs > 0)
-        {
-            this.breakStatusRemainingATLs--;
-
-            if (!GetIsInBreakStatus())
-            {
-                if (this.isBreakStatusCausedByStressValue)
-                {
-                    this.isBreakStatusCausedByStressValue = false;
-                    this.currentStressValue = 0.0f;
-                }
-
-                if (this.isBreakStatusCausedByStatePoint)
-                {
-                    this.isBreakStatusCausedByStatePoint = false;
-                    this.maximumStatePoint = this.originalStatePoint;
-                    this.currentStatePoint = this.maximumStatePoint;
-                }
-
-                this.onCharacterInfoUpdated?.Invoke();
-            }
-        }
-    }
-
     public void AddSelectedSkill(CharacterSkill characterSkill)
     {
         if (characterSkill.GetSkillData().skillType == Skill.SkillType.active)
@@ -596,188 +346,10 @@ public partial class GameCharacter : MonoBehaviour
         this.onEventTriggeredCallback?.Invoke( animationEvent, this );
     }
 
-    public bool IsAbleToRepulse( BattleGameManager battleGameManager )
-    {
-        return IsAbleToRepulse( battleGameManager, out _, out _ );
-    }
-
-    public bool IsAbleToRepulse( BattleGameManager battleGameManager, out CharacterSkill repulseSkill, out bool isSpecial )
-    {
-        repulseSkill = null;
-        isSpecial = false;
-
-        if (this.GetIsInBreakStatus())
-        {
-            return false;
-        }
-
-        Subskill _attackerSubskillData = this.currentAttacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
-        if (!_attackerSubskillData.IsInterceptable)
-        {
-            return false;
-        }
-
-        if (battleGameManager.GetBattleFlowManager_V2() == null)
-        {
-            BattleFlowATL _nextATL = battleGameManager.GetBattleFlowManager().GetCurrentRound().GetNextATL( this );
-            if (_nextATL != null)
-            {
-                repulseSkill = _nextATL.GetSelectedSkill().GetCharacterSubskillData().GetSelectedRepulseSkill();
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        if (repulseSkill != null
-            && ( ( int )_attackerSubskillData.EffectType > ( int )repulseSkill.GetCharacterSubskillData().GetSubskillData().EffectType ))
-        {
-            repulseSkill = null;
-        }
-
-        if (repulseSkill == null)
-        {
-            SkillSlotListPanel _skillSlotListPanel = battleGameManager.GetBattleUiManager().GetSkillSlotListPanel();
-            SkillSlot[] _skillSlots = _skillSlotListPanel.GetSkillSlots();
-
-            for (int i = 0; i < _skillSlots.Length; i++)
-            {
-                CharacterSkill _slotSkill = _skillSlots[ i ].GetSelectedSkill();
-                if (_slotSkill != null)
-                {
-                    CharacterSkill _slotRepulseSkill = _slotSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
-                    if (( int )_attackerSubskillData.EffectType <= ( int )_slotRepulseSkill.GetCharacterSubskillData().GetSubskillData().EffectType)
-                    {
-                        repulseSkill = _slotRepulseSkill;
-                        isSpecial = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        if (repulseSkill == null)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public bool IsAbleToDerive()
-    {
-        return IsAbleToDerive( out _ );
-    }
-
-    public bool IsAbleToDerive( out CharacterSkill derivedSkill )
-    {
-        derivedSkill = null;
-
-        if (this.GetIsInBreakStatus())
-        {
-            return false;
-        }
-
-        derivedSkill = this.currentSkill.GetCharacterSubskillData().GetSelectedDerivedSkill();
-
-        if (derivedSkill == null)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public bool IsAbleToCounter()
-    {
-        return IsAbleToCounter( out _ );
-    }
-
-    public bool IsAbleToCounter( out CharacterSkill counterSkill )
-    {
-        counterSkill = null;
-
-        if (this.GetIsInBreakStatus())
-        {
-            return false;
-        }
-
-        if (BattleLogicManager.HasGameCharacterReachedCounterAttackLimit( this ))
-        {
-            return false;
-        }
-
-        counterSkill = this.currentSkill.GetCharacterSubskillData().GetSelectedCounterSkill();
-
-        if (counterSkill == null)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public bool IsAbleToUseBackendSkill( CharacterSkill backendSkill )
-    {
-        if (this.GetIsInBreakStatus())
-        {
-            return false;
-        }
-
-        Subskill _backendSubskillData = backendSkill.GetCharacterSubskillData().GetSubskillData();
-        if (_backendSubskillData.IsEvadingSkill)
-        {
-            if (this.currentStatePoint <= 0)
-            {
-                return false;
-            }
-
-            if (this.currentAttacker != null)
-            {
-                Subskill _attackerSubskillData = this.currentAttacker.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
-                if (( int )_attackerSubskillData.EffectType > ( int )_backendSubskillData.EffectType)
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    public void EnterIntoBreakStatus( int numberOfATLs )
-    {
-        this.breakStatusRemainingATLs = numberOfATLs;
-        TriggerEvent( AnimationEvent.OnBeingInBreakStatus );
-        BattleLogicManager.OnCharacterEnteredIntoBreakStatus( this );
-    }
-
-    public void ShowPopUpDisplayInfo( string text, Color textColor )
-    {
-        GameObject _popUpDisplayInfoObj = Instantiate( this.popUpDisplayInfoPrefab.gameObject );
-        _popUpDisplayInfoObj.transform.position = this.pivot.position;
-
-        PopUpDisplayInfo _popUpDisplayInfo = _popUpDisplayInfoObj.GetComponent<PopUpDisplayInfo>();
-        _popUpDisplayInfo.Show( text, textColor, 5.0f, TMPro.FontStyles.Bold ).MoveUpAndFadeOut( 2.0f, 0.5f, 1.5f ).SetOnDestroyedCallback( OnPopUpDisplayInfoDestroyed );
-
-        this.popUpDisplayInfoList.Add( _popUpDisplayInfo );
-    }
-
     public void ShowPopUpDisplayInfoV2( float healthPointDamage = 0.0f, float maxStatePointUp = 0.0f, float statePointDamage = 0.0f,
                                         float stressValueDamage = 0.0f, float stressValueDown = 0.0f )
     {
         PopUpDisplayInfoV2.SpawnPopUpDisplayInfoV2( popUpDisplayInfoPrefabV2, pivot.position, !isPlayer, healthPointDamage, maxStatePointUp, statePointDamage, stressValueDamage, stressValueDown );
-    }
-
-    private void OnPopUpDisplayInfoDestroyed( PopUpDisplayInfo popUpDisplayInfo )
-    {
-        this.popUpDisplayInfoList.Remove( popUpDisplayInfo );
-    }
-
-    public bool HasPopUpDisplayInfo()
-    {
-        return ( this.popUpDisplayInfoList.Count > 0 );
     }
 
     public string GetId()
@@ -1015,32 +587,6 @@ public partial class GameCharacter : MonoBehaviour
         return this.currentObservingSkill;
     }
 
-    public void SetCurrentObservedSkill( CharacterSkill currentObservedSkill )
-    {
-        this.currentObservedSkill = currentObservedSkill;
-    }
-
-    public CharacterSkill GetCurrentObservedSkill()
-    {
-        return this.currentObservedSkill;
-    }
-
-    public void SetCurrentSkillStatIncrement( int currentSkillStatIncrement )
-    {
-        this.currentSkillStatIncrement = currentSkillStatIncrement;
-    }
-
-    public void ResetCurrentSkillStatIncrement()
-    {
-        this.currentSkillStatIncrement = 0;
-        this.onCharacterInfoUpdated?.Invoke();
-    }
-
-    public int GetCurrentSkillStatIncrement()
-    {
-        return this.currentSkillStatIncrement;
-    }
-
     public void SetCurrentAttacker( GameCharacter currentAttacker )
     {
         if (this.currentAttacker != null)
@@ -1071,17 +617,6 @@ public partial class GameCharacter : MonoBehaviour
         return this.currentAttackTarget;
     }
 
-    public void SetIsAbleToUseSkill( bool isAbleToUseSkill )
-    {
-        this.isAbleToUseSkill = isAbleToUseSkill;
-        this.onCharacterInfoUpdated?.Invoke();
-    }
-
-    public bool GetIsAbleToUseSkill()
-    {
-        return this.isAbleToUseSkill;
-    }
-
     public void SetSkillCountdownTime( float skillCountdownTime )
     {
         this.skillCountdownTime = skillCountdownTime;
@@ -1092,63 +627,6 @@ public partial class GameCharacter : MonoBehaviour
         return this.skillCountdownTime;
     }
 
-    public void IncreaseCounterAttacks()
-    {
-        this.counterAttacks++;
-    }
-
-    public void ResetCounterAttacks()
-    {
-        this.counterAttacks = 0;
-    }
-
-    public int GetCounterAttacks()
-    {
-        return this.counterAttacks;
-    }
-
-    public int GetBreakStatusRemainingATLs()
-    {
-        return this.breakStatusRemainingATLs;
-    }
-
-    public bool GetIsInBreakStatus()
-    {
-        return ( this.breakStatusRemainingATLs > 0 );
-    }
-
-    public bool GetIsBreakStatusCausedByStatePoint()
-    {
-        return this.isBreakStatusCausedByStatePoint;
-    }
-
-    public bool GetIsBreakStatusCausedByStressValue()
-    {
-        return this.isBreakStatusCausedByStressValue;
-    }
-
-    public void SetEnergyMarkerRemainingATLs( int energyMarkerRemainingATLs )
-    {
-        this.energyMarkerRemainingATLs = energyMarkerRemainingATLs;
-        this.hasJustAddedEnergyMarker = true;
-        this.onCharacterInfoUpdated?.Invoke();
-    }
-
-    public void MinusEnergyMarkerRemainingATLs()
-    {
-        if (this.energyMarkerRemainingATLs > 0)
-        {
-            if (this.hasJustAddedEnergyMarker)
-            {
-                this.hasJustAddedEnergyMarker = false;
-            }
-            else
-            {
-                this.energyMarkerRemainingATLs--;
-            }
-        }
-    }
-
     public int GetEnergyMarkerRemainingATLs()
     {
         return this.energyMarkerRemainingATLs;
@@ -1157,12 +635,6 @@ public partial class GameCharacter : MonoBehaviour
     public bool HasEnergyMarker()
     {
         return ( this.energyMarkerRemainingATLs > 0 );
-    }
-
-    public void RemoveEnergyMarker()
-    {
-        this.energyMarkerRemainingATLs = 0;
-        this.onCharacterInfoUpdated?.Invoke();
     }
 
     public GameObject GetOwnContainer()
@@ -1206,6 +678,8 @@ public partial class GameCharacter : MonoBehaviour
     {
         if (battleResultData != null)
         {
+            bool _isDead = this.isDead;
+
             this.maximumHealthPoint = battleResultData.maximumHealthPoint;
             this.currentHealthPoint = battleResultData.currentHealthPoint;
             this.virtualHealthPoint = battleResultData.virtualHealthPoint;
@@ -1226,6 +700,7 @@ public partial class GameCharacter : MonoBehaviour
 
             // 其他狀態
             this.isDead = battleResultData.isDead;
+            this.hasJustDied = ( !_isDead && this.isDead );
 
             ApplyBattleResultData_CategorizedPassiveSkillManager( battleResultData );
 
@@ -1376,6 +851,11 @@ public partial class GameCharacter : MonoBehaviour
     public bool GetIsDead()
     {
         return this.isDead;
+    }
+
+    public bool GetHasJustDied()
+    {
+        return this.hasJustDied;
     }
 
     public void SetTemporaryBattleResultData( BattleResultData_GameCharacter temporaryBattleResultData )

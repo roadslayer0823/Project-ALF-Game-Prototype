@@ -271,11 +271,11 @@ public class BattleGameManager : MonoBehaviour
 
         if (this.battleFlowManager_V2 == null)
         {
-            BattleLogicManager.OnExecutionPhaseFinished( GetCharacterList() );
+            BattleLogicManager.OnExecutionPhaseFinished( GetGameCharacterList() );
         }
         else
         {
-            List<GameCharacter> _gameCharacters = GetCharacterList();
+            List<GameCharacter> _gameCharacters = GetGameCharacterList();
             BattleResultData _battleResultData = BattleLogicManagerV2.OnTheEndOfRound( _gameCharacters.ToArray() );
 
             for (int i = 0; i < _gameCharacters.Count; i++)
@@ -333,7 +333,7 @@ public class BattleGameManager : MonoBehaviour
 
             if (_roundNumber > 1)
             {
-                BattleLogicManager.OnNewRoundStarted( GetCharacterList() );
+                BattleLogicManager.OnNewRoundStarted( GetGameCharacterList() );
             }
         }
         else
@@ -354,7 +354,7 @@ public class BattleGameManager : MonoBehaviour
 
     public void OnNewATLStarted()
     {
-        BattleLogicManager.OnNewATLStarted( GetCharacterList() );
+        BattleLogicManager.OnNewATLStarted( GetGameCharacterList() );
 
         this.battleUiManager.DisablePlayerActionPanelButtons();
     }
@@ -428,7 +428,7 @@ public class BattleGameManager : MonoBehaviour
     {
         this.currentGamePhase = GamePhase.End;
 
-        List<GameCharacter> _gameCharacters = GetCharacterList();
+        List<GameCharacter> _gameCharacters = GetGameCharacterList();
         for (int i = 0; i < _gameCharacters.Count; i++)
         {
             _gameCharacters[ i ].TriggerEvent( BattleAnimationManager.AnimationEvent.OnBattleEnded );
@@ -462,13 +462,13 @@ public class BattleGameManager : MonoBehaviour
         return this.enemyCharacterList;
     }
 
-    public List<GameCharacter> GetCharacterList()
+    public List<GameCharacter> GetGameCharacterList()
     {
-        List<GameCharacter> _characters = new List<GameCharacter>();
-        _characters.AddRange( this.playerCharacterList );
-        _characters.AddRange( this.enemyCharacterList );
+        List<GameCharacter> _gameCharacters = new();
+        _gameCharacters.AddRange( this.playerCharacterList );
+        _gameCharacters.AddRange( this.enemyCharacterList );
 
-        return _characters;
+        return _gameCharacters;
     }
 
     public PlayerCharacter GetPlayerCharacter()
