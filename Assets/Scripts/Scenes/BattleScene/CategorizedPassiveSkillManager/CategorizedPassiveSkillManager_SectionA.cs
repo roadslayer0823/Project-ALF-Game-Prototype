@@ -792,25 +792,24 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         BattleResultData.BattleResultData_GameCharacter gameCharacterData = battleResultData.GetGameCharacterResultData(gameCharacter);
         float skill_PSS8_JieLi = 0.0f;
 
-        if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSS8, out PassiveSkill _passiveSkill))
-        {
-            battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out _);
-            skill_PSS8_JieLi = 0.2f;
-        }
-
         //"己方"成為崩潰狀態的次數是否 >= 2 ?
         if (gameCharacterData.numberOfEnteringIntoBreakStatus >= 2)
         {
-            //"己方"在這場戰鬥中發動 8.借力的次數是否>= 1 ?
-            if (gameCharacter.GetPassiveSkillTriggeredNumber(PASSIVE_SKILL_ID_PSS8) >= 1)
+            if (gameCharacter.GetPassiveSkillTriggeredNumber(PASSIVE_SKILL_ID_PSS8) == 0)
             {
+                if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSS8, out PassiveSkill _passiveSkill))
+                {
+                    battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out _);
+                    skill_PSS8_JieLi = 0.2f;
+                }
+
                 //["己方"當前生命值]+["己方"最大生命值]*[0.2]
                 battleResultData.AddGameCharacterResultData_ActualHealthPointDamageRecovered(gameCharacter, gameCharacterData.maximumHealthPoint * skill_PSS8_JieLi, out _);
-                string _formula = "[己方當前生命值] +[己方最大生命值] *[8.節流]";
+                string _formula = "[己方當前生命值] +[己方最大生命值] *[8.借力]";
                 string _finalString = "角色名稱:" + gameCharacter.GetCharacterName() + "\n" + "\n" +
                                       "當前生命值=" + gameCharacterData.currentHealthPoint + "\n" + "\n" +
                                       "最大生命值=" + gameCharacterData.maximumHealthPoint + "\n" + "\n" +
-                                      "8.節流=" + skill_PSS8_JieLi;
+                                      "8.借力=" + skill_PSS8_JieLi;
                 battleResultData.AddResultLog(_formula + "\n" + "\n" + _finalString);
             }
         }

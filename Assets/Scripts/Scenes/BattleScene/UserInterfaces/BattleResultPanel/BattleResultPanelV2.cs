@@ -37,7 +37,7 @@ public class BattleResultPanelV2: MonoBehaviour
     private void ShowPanel()
     {
         this.container.SetActive( true );
-        this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShader( 30 );
+        this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShader( 10 );
     }
 
     public void ClickToRestartBattle()
