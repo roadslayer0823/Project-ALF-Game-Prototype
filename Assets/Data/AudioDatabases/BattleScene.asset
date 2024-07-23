@@ -79,3 +79,5 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 0c4ed8217076b43218ea4e69d667ab56, type: 3}
   - id: passive_skill_choose
     clip: {fileID: 8300000, guid: 7ac1f9cc9eafc49f5b8f4a1dc95b071a, type: 3}
+  - id: derive_skill_partA
+    clip: {fileID: 8300000, guid: 0ff26bcac22644438a82cb128c0a55a8, type: 3}

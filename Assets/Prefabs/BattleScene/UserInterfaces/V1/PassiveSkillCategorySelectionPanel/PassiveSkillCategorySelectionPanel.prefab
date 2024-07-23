@@ -476,7 +476,7 @@ MonoBehaviour:
   - {fileID: 4822850233260541689}
   - {fileID: 179728114956143420}
   - {fileID: 1789670230948516570}
-  gizmoColor: {r: 0, g: 1, b: 1, a: 0}
+  gizmoColor: {r: 0, g: 1, b: 1, a: 1}
   cursor: {fileID: 6690116246109579031}
 --- !u!1 &2613505489307389411
 GameObject:
@@ -972,12 +972,12 @@ Canvas:
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
-  m_OverrideSorting: 1
+  m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
-  m_SortingOrder: 3
+  m_SortingOrder: 5
   m_TargetDisplay: 0
 --- !u!114 &3299306067055435836
 MonoBehaviour:
