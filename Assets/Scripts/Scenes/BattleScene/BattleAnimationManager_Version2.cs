@@ -15,7 +15,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         ATLSlotListPanelV3 _atlSlotListPanel = this.battleGameManager.GetBattleUiManager().GetATLSlotListPanelV3();
 
         BattleResultData _battleResultData = null;
-        BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = null;
+        BattleResultData.BattleResultData_GameCharacter _leadBattleResultData = null;
         BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = null;
 
         PlayerCharacter _playerCharacter = this.battleGameManager.GetPlayerCharacter();
@@ -78,11 +78,11 @@ public partial class BattleAnimationManager : MonoBehaviour
         // 進入“判定先后手方”頁面。
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定先後手方</color>" );
 
-        var ( _attacker, _attackTarget ) = BattleLogicManagerV2.DetermineLeadAndImproviser( this.battleGameManager, _playerCharacter, _enemyCharacter, out List<string> _resultLogList );
+        var ( _lead, _improviser ) = BattleLogicManagerV2.DetermineLeadAndImproviser( this.battleGameManager, _playerCharacter, _enemyCharacter, out List<string> _resultLogList );
         ShowBattleLog( _resultLogList );
 
         // 如果沒有“先手方”和“後手方”，當前 ATL 結束，直接進入下一個 ATL。
-        if (_attacker == null || _attackTarget == null)
+        if (_lead == null || _improviser == null)
         {
             BattleLog.Instance.AddOnScreenBattleLog( "沒有先後手方。當前 ATL 結束。" );
             _playerCharacter.ResetAssignedSkill();
@@ -92,10 +92,10 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
 
         // “先手方”發動技能。
-        _attacker.ApplyAssignedSkillAsCurrentSkill();
+        _lead.ApplyAssignedSkillAsCurrentSkill();
 
         // 調用“判定距離中途結果”。
-        battleGameManager.GetBattleDistanceManager().UpdateHalfwayDistanceResult( _attacker, out _resultLogList );
+        battleGameManager.GetBattleDistanceManager().UpdateHalfwayDistanceResult( _lead, out _resultLogList );
         ShowBattleLog( _resultLogList );
 
         if (battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen())
@@ -104,11 +104,11 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定結果</color>為"
-                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“先手方”</color>，"
-                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“后手方”</color>。" );
+                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _lead.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“先手方”</color>，"
+                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviser.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“后手方”</color>。" );
 
-        _attacker.PlayCharacterAnimation( "Idle" );
-        _attackTarget.PlayCharacterAnimation( "Idle" );
+        _lead.PlayCharacterAnimation( "Idle" );
+        _improviser.PlayCharacterAnimation( "Idle" );
 
         float _animationDuration = 0.0f;
         float _animationStartTime = 0.0f;
@@ -120,57 +120,47 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         this.gameCharacterList = new List<GameCharacter>()
         {
-            _attacker,
-            _attackTarget
+            _lead,
+            _improviser
         };
 
-        CharacterSkill _attackerCurrentSkill = _attacker.GetCurrentSkill();
-        Subskill _attackerSubskillData = _attackerCurrentSkill.GetCharacterSubskillData().GetSubskillData();
-        SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackerSubskillData.Id );
-        RangeType _attackerRangeType = _attacker.GetCurrentSkillRangeType();
+        CharacterSkill _leadCurrentSkill = _lead.GetCurrentSkill();
+        Subskill _leadSubskillData = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData();
+        SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _leadSubskillData.Id );
+        RangeType _leadRangeType = _lead.GetCurrentSkillRangeType();
 
-        string _attackerCharacterPartA = _skillAnimation.CharacterPartA;
-        string _attackerCharacterPartB = _skillAnimation.CharacterPartB;
-        string _attackerSkillEffectPartA = _skillAnimation.SkillEffectPartA;
-        string _attackerSkillEffectPartB = _skillAnimation.SkillEffectPartB;
+        string _leadCharacterPartB = _skillAnimation.CharacterPartB;
+        string _leadSkillEffectPartB = _skillAnimation.SkillEffectPartB;
 
-        _attacker.GetSortingGroup().sortingOrder = 3;
-        _attackTarget.GetSortingGroup().sortingOrder = 1;
+        _lead.GetSortingGroup().sortingOrder = 3;
+        _improviser.GetSortingGroup().sortingOrder = 1;
 
-        if (_attacker.GetIsPlayer())
+        if (_lead.GetIsPlayer())
         {
-            if (_attackerRangeType == RangeType.melee)
+            if (_leadRangeType == RangeType.melee)
             {
-                _attackerCharacterPartA = "MeleeAttack_Part_A";
-                _attackerCharacterPartB = "MeleeAttack_Part_B";
-                _attackerSkillEffectPartA = "MeleeAttack_Part_A";
-                _attackerSkillEffectPartB = "MeleeAttack_Part_B";
+                _leadCharacterPartB = "MeleeAttack_Part_B";
+                _leadSkillEffectPartB = "MeleeAttack_Part_B";
             }
-            else if (_attackerRangeType == RangeType.ranged)
+            else if (_leadRangeType == RangeType.ranged)
             {
-                _attackerCharacterPartA = "RangedAttack";
-                _attackerCharacterPartB = "-";
-                _attackerSkillEffectPartA = "Fireball_Part_A";
-                _attackerSkillEffectPartB = "Fireball_Part_B";
+                _leadCharacterPartB = "-";
+                _leadSkillEffectPartB = "Fireball_Part_B";
             }
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
             ChangeToBackgroundPartA();
         }
         else
         {
-            if (_attackerRangeType == RangeType.melee)
+            if (_leadRangeType == RangeType.melee)
             {
-                _attackerCharacterPartA = "Attack_Part_A";
-                _attackerCharacterPartB = "Attack_Part_B";
-                _attackerSkillEffectPartA = "-";
-                _attackerSkillEffectPartB = "HittingEffect";
+                _leadCharacterPartB = "Attack_Part_B";
+                _leadSkillEffectPartB = "HittingEffect";
             }
-            else if (_attackerRangeType == RangeType.ranged)
+            else if (_leadRangeType == RangeType.ranged)
             {
-                _attackerCharacterPartA = "RangedAttack";
-                _attackerCharacterPartB = "-";
-                _attackerSkillEffectPartA = "Fireball_Part_A";
-                _attackerSkillEffectPartB = "Fireball_Part_B";
+                _leadCharacterPartB = "-";
+                _leadSkillEffectPartB = "Fireball_Part_B";
             }
 
             ChangeToBackgroundPartB();
@@ -178,40 +168,40 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         this.battleGameManager.GetBattleVisualEffectManager().TriggerAnimationSetDarkenPartA();
 
-        _attacker.GetOwnContainer().SetActive( true );
-        _attacker.ShowCharacterObject();
-        _attacker.GetOpponentContainer().SetActive( false );
+        _lead.GetOwnContainer().SetActive( true );
+        _lead.ShowCharacterObject();
+        _lead.GetOpponentContainer().SetActive( false );
 
         yield return new WaitForSeconds( 0.1f );
 
         // “先手方”發動技能。
-        _attacker.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
-        _attackTarget.SetCurrentAttacker( _attacker );
+        _lead.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
+        _improviser.SetCurrentAttacker( _lead );
 
         BattleLog.Instance.AddOnScreenBattleLog(
-            $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>使出了"
-            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackerSubskillData.DisplayName }</color>"
-            + $" （{ TerminologyManager.GetSkillInformationText( _attackerCurrentSkill ) }）。"
+            $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _lead.GetCharacterName() }</color>使出了"
+            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _leadSubskillData.DisplayName }</color>"
+            + $" （{ TerminologyManager.GetSkillInformationText( _leadCurrentSkill ) }）。"
             );
 
-        yield return StartCoroutine( PlayShowingSkillInformation( _attacker ) );
+        yield return StartCoroutine( PlayShowingSkillInformation( _lead ) );
 
-        bool _isAttackerCounterAttacking = _attacker.GetIsCounterAttacking();
-        _attacker.SetIsCounterAttacking( false );
-        _attackTarget.SetIsCounterAttacking( false );
+        bool _isAttackerCounterAttacking = _lead.GetIsCounterAttacking();
+        _lead.SetIsCounterAttacking( false );
+        _improviser.SetIsCounterAttacking( false );
 
-        Skill.SkillType _attackerSkillType = _attacker.GetCurrentSkill().GetSkillData().skillType;
+        Skill.SkillType _leadSkillType = _lead.GetCurrentSkill().GetSkillData().skillType;
 
         // 是否有一方按下“派生技能”？
         // YES
         // “先手方”使用派生技能。
-        if (_attackerSkillType == Skill.SkillType.derived)
+        if (_leadSkillType == Skill.SkillType.derived)
         {
             // TODO: 取消對方的任何技能指令並進入“判定 Part B 結果及結算”。
 
-            yield return StartCoroutine( RunDerivedSkill( _attacker, _attackTarget, _atlSlotListPanel, battleFlowRound.GetCurrentATL().GetATLNumber() ) );
+            yield return StartCoroutine( RunDerivedSkill( _lead, _improviser, _atlSlotListPanel, battleFlowRound.GetCurrentATL().GetATLNumber() ) );
 
-            if (EndPartB( _attacker, _attackTarget ))
+            if (EndPartB( _lead, _improviser ))
             {
                 yield break;
             }
@@ -225,7 +215,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         else if (_isAttackerCounterAttacking)
         {
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
-            yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, ( _attacker.GetIsPlayer() ) ? "Player_Ariku_Counterattack" : "Enemy_Enemy_Counterattack" ) );
+            yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, ( _lead.GetIsPlayer() ) ? "Player_Ariku_Counterattack" : "Enemy_Enemy_Counterattack" ) );
         }
         // NO
         // 进入“Part A前”。
@@ -236,10 +226,10 @@ public partial class BattleAnimationManager : MonoBehaviour
             // 頁面：Part A前
 
             // 更新"先手方"當前流向
-            _attacker.TriggerEvent( AnimationEvent.OnCategorizedPassiveTypeUpdated );
+            _lead.TriggerEvent( AnimationEvent.OnCategorizedPassiveTypeUpdated );
 
             // 頁面：發動流向效果A
-            BattleLogicManagerV2.TriggerCategorizedPassiveSkillEffectA( ref _battleResultData, _attacker );
+            BattleLogicManagerV2.TriggerCategorizedPassiveSkillEffectA( ref _battleResultData, _lead );
 
             // TODO: 判定PART A演出
 
@@ -252,28 +242,35 @@ public partial class BattleAnimationManager : MonoBehaviour
             // -------------------- 先手方 --------------------
 
             // "先手方"進入【 Part A結算 】。
-            BattleLogicManagerV2.DetermineResultForPartA( ref _battleResultData, _attacker, _attackTarget );
+            BattleLogicManagerV2.DetermineResultForPartA( ref _battleResultData, _lead, _improviser );
 
-            _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( _attacker );
-            _attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
+            _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
+            _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
             ShowBattleLog( _battleResultData.GetResultLogList() );
 
-            StartCoroutine( RunAnimationOfPartA( _attacker, _animationDuration ) );
+            // 頁面：Part A結算
+            // 播放演出動畫
+            StartCoroutine( RunAnimationOfPartA( _lead, _animationDuration ) );
 
             // 播放演出同時，UI反映各項參數。
-            _attacker.ShowPopUpDisplayInfoV2( maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
+            _lead.ShowPopUpDisplayInfoV2( maxStatePointUp: _leadBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
 
             BattleLog.Instance.AddOnScreenBattleLog(
-                $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>"
-                + $"消耗了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackerBattleResultData.statePointCost }{ TerminologyManager.STATE_POINT }</color>"
-                + $"和提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackerBattleResultData.maximumStatePointIncrease }最大{ TerminologyManager.STATE_POINT }</color>。"
+                $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _lead.GetCharacterName() }</color>"
+                + $"消耗了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _leadBattleResultData.statePointCost }{ TerminologyManager.STATE_POINT }</color>"
+                + $"和提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _leadBattleResultData.maximumStatePointIncrease }最大{ TerminologyManager.STATE_POINT }</color>。"
             );
 
             // -----------------------------------------------
 
             // -------------------- 後手方 --------------------
 
-            StartCoroutine( RunAnimationOfPartA( _attackTarget, _animationDuration ) );
+            // "後手方"進入【 迎擊指令時間 】。
+            _improviser.SetIsInRepulseCommandTime( true );
+
+            // 頁面：迎擊指令時間
+            // 播放演出動畫
+            StartCoroutine( RunAnimationOfPartA( _improviser, _animationDuration ) );
 
             // -----------------------------------------------
 
@@ -283,41 +280,41 @@ public partial class BattleAnimationManager : MonoBehaviour
             yield return new WaitWhile( () => Time.time - _animationStartTime < _animationDuration );
 
             // 指令結束，禁用技能。
-            _attacker.TriggerEvent( AnimationEvent.OnTransition );
-            _attackTarget.TriggerEvent( AnimationEvent.OnTransition );
+            _lead.TriggerEvent( AnimationEvent.OnTransition );
+            _improviser.TriggerEvent( AnimationEvent.OnTransition );
 
             // “後手方”發動技能。
-            _attackTarget.ApplyAssignedSkillAsCurrentSkill();
+            _improviser.ApplyAssignedSkillAsCurrentSkill();
 
-            CharacterSkill _attackTargetCurrentSkill = _attackTarget.GetCurrentSkill();
-            if (_attackTargetCurrentSkill != null)
+            CharacterSkill _improviserCurrentSkill = _improviser.GetCurrentSkill();
+            if (_improviserCurrentSkill != null)
             {
-                RangeType _attackTargetCurrentSkillRange = _attackTargetCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
+                RangeType _improviserCurrentSkillRange = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
 
                 // 當前距離是否近距離?
                 // YES
                 if (this.battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType() == BattleDistanceManager.DistanceType.Near)
                 {
                     // 後手方的已按下技能的接觸判定"遠/近"變為"近戰"
-                    if (_attackTargetCurrentSkillRange == RangeType.melee_or_ranged)
+                    if (_improviserCurrentSkillRange == RangeType.melee_or_ranged)
                     {
-                        _attackTarget.SetCurrentSkillRangeType( RangeType.melee );
+                        _improviser.SetCurrentSkillRangeType( RangeType.melee );
                     }
                     // "後手方"的已按下技能是否遠程技能?
                     // YES
-                    else if (_attackTargetCurrentSkillRange == RangeType.ranged)
+                    else if (_improviserCurrentSkillRange == RangeType.ranged)
                     {
                         // "後手方"得到"近距離遠程方"
-                        _attackTarget.AddCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer );
+                        _improviser.AddCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer );
                     }
                 }
                 // NO
                 else
                 {
                     // 後手方的已按下技能的接觸判定"遠/近"變為"遠程"
-                    if (_attackTargetCurrentSkillRange == RangeType.melee_or_ranged)
+                    if (_improviserCurrentSkillRange == RangeType.melee_or_ranged)
                     {
-                        _attackTarget.SetCurrentSkillRangeType( RangeType.ranged );
+                        _improviser.SetCurrentSkillRangeType( RangeType.ranged );
                     }
                 }
             }
@@ -329,12 +326,12 @@ public partial class BattleAnimationManager : MonoBehaviour
         yield return new WaitUntil( () => this.hasTransitionAnimationEnded );
 
         // Hide the attacker for Part B if the attacker's range type is ranged.
-        if (_attackerRangeType == RangeType.ranged)
+        if (_leadRangeType == RangeType.ranged)
         {
-            _attacker.HideCharacterObject();
+            _lead.HideCharacterObject();
         }
 
-        if (_attacker.GetIsPlayer())
+        if (_lead.GetIsPlayer())
         {
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
             ChangeToBackgroundPartB();
@@ -349,26 +346,26 @@ public partial class BattleAnimationManager : MonoBehaviour
         this.targetCamera.transform.position = cameraPosition;
         this.targetCamera.orthographicSize = cameraOrthographicSize;
 
-        _attacker.GetOpponentContainer().SetActive( true );
-        _attackTarget.ShowCharacterObject();
+        _lead.GetOpponentContainer().SetActive( true );
+        _improviser.ShowCharacterObject();
 
-        if (_attackTarget.IsInBreakStatus())
+        if (_improviser.IsInBreakStatus())
         {
-            _attackTarget.Reset();
+            _improviser.Reset();
         }
 
         Skill.SkillType _attackTargetSkillType = Skill.SkillType.none;
         Subskill _attackTargetSubskillData = null;
 
         // “後手方”有已按下的技能。
-        if (_attackTarget.GetCurrentSkill() != null)
+        if (_improviser.GetCurrentSkill() != null)
         {
-            _attackTargetSkillType = _attackTarget.GetCurrentSkill().GetSkillData().skillType;
-            _attackTargetSubskillData = _attackTarget.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+            _attackTargetSkillType = _improviser.GetCurrentSkill().GetSkillData().skillType;
+            _attackTargetSubskillData = _improviser.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
 
             if (_attackTargetSkillType == Skill.SkillType.repulse)
             {
-                _attacker.SetCurrentAttacker( _attackTarget );
+                _lead.SetCurrentAttacker( _improviser );
             }
             else if (_attackTargetSkillType == Skill.SkillType.backend)
             {
@@ -384,36 +381,36 @@ public partial class BattleAnimationManager : MonoBehaviour
         _skillCountdownTimeStartTime = Time.time;
         _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
-        StartPartB( out _battleResultData, out _attackerBattleResultData, out _attackTargetBattleResultData, _attacker, _attackTarget, out GameCharacter _winner, out GameCharacter _loser );
+        StartPartB( out _battleResultData, out _leadBattleResultData, out _attackTargetBattleResultData, _lead, _improviser, out GameCharacter _winner, out GameCharacter _loser );
 
         LeanTween.delayedCall( 0.3f, () =>
         {
-            if (_attacker.GetIsPlayer())
+            if (_lead.GetIsPlayer())
             {
                 this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true );
             }
 
-            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attacker.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _lead.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
 
-            if (_attackTarget.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
+            if (_improviser.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
             {
-                _attackTarget.SetIsCounterAttacking( true );
+                _improviser.SetIsCounterAttacking( true );
 
-                if (_attackTarget.GetIsPlayer())
+                if (_improviser.GetIsPlayer())
                 {
                     this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COUNTER_COMMAND_TIME, true );
                 }
 
-                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COUNTER_COMMAND_TIME } 】</color>。" );
+                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviser.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COUNTER_COMMAND_TIME } 】</color>。" );
             }
             else
             {
-                if (_attackTarget.GetIsPlayer())
+                if (_improviser.GetIsPlayer())
                 {
                     this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true );
                 }
 
-                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _attackTarget.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
+                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviser.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
             }
         } );
 
@@ -437,38 +434,38 @@ public partial class BattleAnimationManager : MonoBehaviour
                 //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
                 //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
-                if (_attackerCharacterPartB != NO_ANIMATION)
+                if (_leadCharacterPartB != NO_ANIMATION)
                 {
-                    yield return StartCoroutine( PlayCharacterAnimation( _attacker, _attackerCharacterPartB ) );
+                    yield return StartCoroutine( PlayCharacterAnimation( _lead, _leadCharacterPartB ) );
                 }
 
-                if (_attackerSkillEffectPartB != NO_ANIMATION)
+                if (_leadSkillEffectPartB != NO_ANIMATION)
                 {
-                    yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
+                    yield return StartCoroutine( PlaySkillEffectAnimation( _lead, _leadSkillEffectPartB ) );
                 }
 
-                _attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
-                _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
+                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
+                _improviser.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
 
                 this.cameraEffect.Shake();
                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
+                yield return StartCoroutine( PlayCharacterAnimation( _improviser, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
                 //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
 
                 break;
 
             case Skill.SkillType.repulse:
 
-                yield return StartCoroutine( PlayShowingSkillInformation( _attackTarget ) );
+                yield return StartCoroutine( PlayShowingSkillInformation( _improviser ) );
 
-                if (_attackerCharacterPartB != NO_ANIMATION)
+                if (_leadCharacterPartB != NO_ANIMATION)
                 {
-                    StartCoroutine( PlayCharacterAnimation( _attacker, _attackerCharacterPartB + "_" + REPULSE_ANIMATION_NAME ) );
+                    StartCoroutine( PlayCharacterAnimation( _lead, _leadCharacterPartB + "_" + REPULSE_ANIMATION_NAME ) );
                 }
 
-                if (_attackerSkillEffectPartB != NO_ANIMATION)
+                if (_leadSkillEffectPartB != NO_ANIMATION)
                 {
-                    StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB + "_" + REPULSE_ANIMATION_NAME ) );
+                    StartCoroutine( PlaySkillEffectAnimation( _lead, _leadSkillEffectPartB + "_" + REPULSE_ANIMATION_NAME ) );
                 }
 
                 //_skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
@@ -479,11 +476,11 @@ public partial class BattleAnimationManager : MonoBehaviour
                 //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
                 //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
-                yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
-                yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, REPULSE_ANIMATION_NAME ) );
+                yield return StartCoroutine( PlayCharacterAnimation( _improviser, REPULSE_ANIMATION_NAME ) );
+                yield return StartCoroutine( PlaySkillEffectAnimation( _improviser, REPULSE_ANIMATION_NAME ) );
 
-                _attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
-                _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
+                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
+                _improviser.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
 
                 bool _hasAssault = false;
                 if (_winner != null)
@@ -504,26 +501,26 @@ public partial class BattleAnimationManager : MonoBehaviour
                         this.cameraEffect.Shake();
                         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
 
-                        string _animationName = GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_" + ( ( _attacker.GetIsPlayer() ) ? "Left" : "Right" );
+                        string _animationName = GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_" + ( ( _lead.GetIsPlayer() ) ? "Left" : "Right" );
 
-                        ShowPopUpDisplayInfo( _attacker, _attackerBattleResultData );
-                        ShowPopUpDisplayInfo( _attackTarget, _attackTargetBattleResultData );
+                        ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
+                        ShowPopUpDisplayInfo( _improviser, _attackTargetBattleResultData );
 
-                        if (_winner == _attacker && _attackTarget.IsCharacterObjectActive())
+                        if (_winner == _lead && _improviser.IsCharacterObjectActive())
                         {
-                            yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, _animationName, _attackTargetBattleResultData ) );
+                            yield return StartCoroutine( PlayCharacterAnimation( _improviser, _animationName, _attackTargetBattleResultData ) );
                         }
-                        else if (_winner == _attackTarget && _attacker.IsCharacterObjectActive())
+                        else if (_winner == _improviser && _lead.IsCharacterObjectActive())
                         {
-                            yield return StartCoroutine( PlayCharacterAnimation( _attacker, _animationName, _attackTargetBattleResultData ) );
+                            yield return StartCoroutine( PlayCharacterAnimation( _lead, _animationName, _attackTargetBattleResultData ) );
                         }
                     }
                 }
 
                 if (!_hasAssault)
                 {
-                    ShowPopUpDisplayInfo( _attacker, _attackerBattleResultData );
-                    ShowPopUpDisplayInfo( _attackTarget, _attackTargetBattleResultData );
+                    ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
+                    ShowPopUpDisplayInfo( _improviser, _attackTargetBattleResultData );
                 }
 
                 //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
@@ -532,7 +529,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             case Skill.SkillType.backend:
 
-                yield return StartCoroutine( PlayShowingSkillInformation( _attackTarget ) );
+                yield return StartCoroutine( PlayShowingSkillInformation( _improviser ) );
 
                 //_skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                 //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
@@ -542,16 +539,16 @@ public partial class BattleAnimationManager : MonoBehaviour
                 //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
                 //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
-                if (_attackerCharacterPartB != NO_ANIMATION)
+                if (_leadCharacterPartB != NO_ANIMATION)
                 {
-                    yield return StartCoroutine( PlayCharacterAnimation( _attacker, _attackerCharacterPartB ) );
+                    yield return StartCoroutine( PlayCharacterAnimation( _lead, _leadCharacterPartB ) );
                 }
 
-                if (_attackerSkillEffectPartB != NO_ANIMATION)
+                if (_leadSkillEffectPartB != NO_ANIMATION)
                 {
-                    if (_attackerSkillEffectPartB != "HittingEffect")
+                    if (_leadSkillEffectPartB != "HittingEffect")
                     {
-                        yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
+                        yield return StartCoroutine( PlaySkillEffectAnimation( _lead, _leadSkillEffectPartB ) );
                     }
                 }
 
@@ -561,14 +558,14 @@ public partial class BattleAnimationManager : MonoBehaviour
                 string _attackTargetBackendSkillAnimationCharacterPartA = _attackTargetBackendSkillAnimation.CharacterPartA;
                 string _attackTargetBackendSkillAnimationSkillEffectPartA = _attackTargetBackendSkillAnimation.SkillEffectPartA;
 
-                _attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
-                _attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
+                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
+                _improviser.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
 
-                if (_winner == _attacker)
+                if (_winner == _lead)
                 {
-                    if (_attackerSkillEffectPartB == "HittingEffect")
+                    if (_leadSkillEffectPartB == "HittingEffect")
                     {
-                        yield return StartCoroutine( PlaySkillEffectAnimation( _attacker, _attackerSkillEffectPartB ) );
+                        yield return StartCoroutine( PlaySkillEffectAnimation( _lead, _leadSkillEffectPartB ) );
                     }
 
                     //_skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
@@ -577,11 +574,11 @@ public partial class BattleAnimationManager : MonoBehaviour
 
                     this.cameraEffect.Shake();
                     AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                    ShowPopUpDisplayInfo( _attacker, _attackerBattleResultData );
-                    yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
+                    ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
+                    yield return StartCoroutine( PlayCharacterAnimation( _improviser, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
                     //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
                 }
-                else if (_winner == _attackTarget)
+                else if (_winner == _improviser)
                 {
                     //_skillCountdownTime = ( GetAttackAnimationLength( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBackendSkillAnimationSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
                     //_attackTarget.SetSkillCountdownTime( _skillCountdownTime );
@@ -596,16 +593,16 @@ public partial class BattleAnimationManager : MonoBehaviour
                         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DODGE );
                     }
 
-                    ShowPopUpDisplayInfo( _attacker, _attackerBattleResultData );
+                    ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
 
                     if (_attackTargetBackendSkillAnimationCharacterPartA != NO_ANIMATION)
                     {
-                        yield return StartCoroutine( PlayCharacterAnimation( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBattleResultData ) );
+                        yield return StartCoroutine( PlayCharacterAnimation( _improviser, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBattleResultData ) );
                     }
 
                     if (_attackTargetBackendSkillAnimationSkillEffectPartA != NO_ANIMATION)
                     {
-                        yield return StartCoroutine( PlaySkillEffectAnimation( _attackTarget, _attackTargetBackendSkillAnimationSkillEffectPartA ) );
+                        yield return StartCoroutine( PlaySkillEffectAnimation( _improviser, _attackTargetBackendSkillAnimationSkillEffectPartA ) );
                     }
 
                     //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
@@ -622,14 +619,14 @@ public partial class BattleAnimationManager : MonoBehaviour
         _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
         _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
 
-        if (EndPartB( _attacker, _attackTarget ))
+        if (EndPartB( _lead, _improviser ))
         {
             yield break;
         }
 
         if (battleFlowRound.GetCurrentATL().GetATLNumber() == GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots())
         {
-            CharacterSkill _attackerAssignedSkill = _attacker.GetAssignedSkill();
+            CharacterSkill _attackerAssignedSkill = _lead.GetAssignedSkill();
             if (_attackerAssignedSkill != null)
             {
                 if (_attackerAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived)
@@ -638,7 +635,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                 }
             }
 
-            CharacterSkill _attackTargetAssignedSkill = _attackTarget.GetAssignedSkill();
+            CharacterSkill _attackTargetAssignedSkill = _improviser.GetAssignedSkill();
             if (_attackTargetAssignedSkill != null)
             {
                 if (_attackTargetAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived)
@@ -662,57 +659,55 @@ public partial class BattleAnimationManager : MonoBehaviour
         {
             yield return StartCoroutine( ZoomInCameraToTarget( gameCharacter, 0.6f ) );
 
-            RangeType _attackerSkillRangeType = gameCharacter.GetCurrentSkillRangeType();
-            string _attackerCharacterPartA = "";
-            string _attackerSkillEffectPartA = "";
+            RangeType _currentSkillRangeType = gameCharacter.GetCurrentSkillRangeType();
+            string _characterPartA = "";
+            string _skillEffectPartA = "";
 
             if (gameCharacter.GetIsPlayer())
             {
-                if (_attackerSkillRangeType == RangeType.melee)
+                if (_currentSkillRangeType == RangeType.melee)
                 {
-                    _attackerCharacterPartA = "MeleeAttack_Part_A";
-                    _attackerSkillEffectPartA = "MeleeAttack_Part_A";
+                    _characterPartA = "MeleeAttack_Part_A";
+                    _skillEffectPartA = "MeleeAttack_Part_A";
                 }
-                else if (_attackerSkillRangeType == RangeType.ranged)
+                else if (_currentSkillRangeType == RangeType.ranged)
                 {
-                    _attackerCharacterPartA = "RangedAttack";
-                    _attackerSkillEffectPartA = "Fireball_Part_A";
+                    _characterPartA = "RangedAttack";
+                    _skillEffectPartA = "Fireball_Part_A";
                 }
             }
             else
             {
-                if (_attackerSkillRangeType == RangeType.melee)
+                if (_currentSkillRangeType == RangeType.melee)
                 {
-                    _attackerCharacterPartA = "Attack_Part_A";
-                    _attackerSkillEffectPartA = "-";
+                    _characterPartA = "Attack_Part_A";
+                    _skillEffectPartA = "-";
                 }
-                else if (_attackerSkillRangeType == RangeType.ranged)
+                else if (_currentSkillRangeType == RangeType.ranged)
                 {
-                    _attackerCharacterPartA = "RangedAttack";
-                    _attackerSkillEffectPartA = "Fireball_Part_A";
+                    _characterPartA = "RangedAttack";
+                    _skillEffectPartA = "Fireball_Part_A";
                 }
             }
 
-            if (_attackerCharacterPartA != NO_ANIMATION)
+            if (_characterPartA != NO_ANIMATION)
             {
-                yield return StartCoroutine( PlayCharacterAnimation( gameCharacter, _attackerCharacterPartA ) );
+                yield return StartCoroutine( PlayCharacterAnimation( gameCharacter, _characterPartA ) );
             }
 
-            if (_attackerSkillEffectPartA != NO_ANIMATION)
+            if (_skillEffectPartA != NO_ANIMATION)
             {
-                if (_attackerSkillEffectPartA == "Fireball_Part_A")
+                if (_skillEffectPartA == "Fireball_Part_A")
                 {
                     AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
                 }
 
-                yield return StartCoroutine( PlaySkillEffectAnimation( gameCharacter, _attackerSkillEffectPartA ) );
+                yield return StartCoroutine( PlaySkillEffectAnimation( gameCharacter, _skillEffectPartA ) );
             }
         }
         // “迎擊指令時間”頁面："己方"播放已判定的演出&特效
         else if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.Improviser ))
         {
-            // "後手方"進入【 迎擊指令時間 】。
-            gameCharacter.SetIsInRepulseCommandTime( true );
             gameCharacter.SetSkillCountdownTime( animationDuration );
 
             if (gameCharacter.GetIsPlayer())

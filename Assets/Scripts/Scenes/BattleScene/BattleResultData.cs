@@ -526,6 +526,23 @@ public class BattleResultData
         return this;
     }
 
+    // 以太崩潰狀態
+    public BattleResultData AddGameCharacterResultData_StateBreakStatus( GameCharacter gameCharacter, int numberOfATLs, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.stateBreakStatusRemainingATLs = numberOfATLs;
+        gameCharacterResultData.numberOfEnteringIntoBreakStatus++;
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "以太崩潰狀態";
+
+#endif
+
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
+    }
+
     // 負荷值傷害
     public BattleResultData AddGameCharacterResultData_StressValueDamage( GameCharacter gameCharacter, float stressValueDamage, bool isBreakStatusAvailable, out BattleResultData_GameCharacter gameCharacterResultData )
     {
@@ -566,6 +583,23 @@ public class BattleResultData
 #if ALF_DEBUG
 
         gameCharacterResultData.eventName = "負荷值傷害";
+
+#endif
+
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
+    }
+
+    // 負荷崩潰狀態
+    public BattleResultData AddGameCharacterResultData_StressBreakStatus( GameCharacter gameCharacter, int numberOfATLs, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.stressBreakStatusRemainingATLs = numberOfATLs;
+        gameCharacterResultData.numberOfEnteringIntoBreakStatus++;
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "負荷崩潰狀態";
 
 #endif
 

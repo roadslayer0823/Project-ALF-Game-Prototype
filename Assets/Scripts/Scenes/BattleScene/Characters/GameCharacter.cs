@@ -161,7 +161,10 @@ public partial class GameCharacter : MonoBehaviour
         IgnoreZhuiFengJiaoLi,
 
         // 無視追風角力激昂方
-        IgnoreZhuiFengJiaoLiJiAng
+        IgnoreZhuiFengJiaoLiJiAng,
+
+        // 無視遠程方
+        IgnoreRangedSkill
     }
 
     public enum CharacterActionType

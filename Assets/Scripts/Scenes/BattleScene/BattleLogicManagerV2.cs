@@ -108,6 +108,20 @@ public partial class BattleLogicManagerV2
         return ( IsAttackingSkill( _gameCharacterOne_Skill ) || IsAttackingSkill( _gameCharacterTwo_Skill ) );
     }
 
+    public static GameCharacter GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType characterIdentityType, GameCharacter[] gameCharacters )
+    {
+        for (int i = 0; i < gameCharacters.Length; i++)
+        {
+            GameCharacter _gameCharacter = gameCharacters[ i ];
+            if (_gameCharacter.HasCharacterIdentityType( characterIdentityType ))
+            {
+                return _gameCharacter;
+            }
+        }
+
+        return null;
+    }
+
     // 頁面：狀態更新
     private static void UpdateGameCharacterStatus( ref BattleResultData battleResultData, GameCharacter gameCharacter )
     {
@@ -452,6 +466,63 @@ public partial class BattleLogicManagerV2
         }
     }
 
+    // 頁面：判定 Part B 結果及結算
+    public static void DetermineResultForPartB( ref BattleResultData battleResultData, GameCharacter lead, GameCharacter improviser, bool hasPartA )
+    {
+        // 更新"先手方"當前流向
+        // 頁面：發動流向效果A
+        lead.TriggerEvent( BattleAnimationManager.AnimationEvent.OnCategorizedPassiveTypeUpdated );
+        BattleLogicManagerV2.TriggerCategorizedPassiveSkillEffectA( ref battleResultData, lead );
+
+        // 更新"後手方"當前流向
+        // 頁面：發動流向效果A
+        improviser.TriggerEvent( BattleAnimationManager.AnimationEvent.OnCategorizedPassiveTypeUpdated );
+        BattleLogicManagerV2.TriggerCategorizedPassiveSkillEffectA( ref battleResultData, improviser );
+
+        // 從“判定先後手方”頁面來到這裡。
+        if (!hasPartA)
+        {
+            DetermineResultForPartA( ref battleResultData, lead, improviser );
+        }
+
+        CharacterSkill _leadCurrentSkill = lead.GetCurrentSkill();
+        CharacterSkill _improviserCurrentSkill = improviser.GetCurrentSkill();
+
+        SkillType _improviserCurrentSkillType = ( _improviserCurrentSkill != null ) ? _improviserCurrentSkill.GetSkillData().skillType : SkillType.none;
+        switch ( _improviserCurrentSkillType )
+        {
+            // 後手方已按下的技能是否迎擊技能？
+            // YES
+            case SkillType.repulse:
+
+                // 進入“判定迎擊結果及結算”頁面。
+                BattleLogicManagerV2.DetermineResultForRepulse( ref battleResultData, lead, improviser );
+
+                break;
+
+            case SkillType.backend:
+
+                Subskill _improviserSubskillData = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData();
+
+                if (_improviserSubskillData.IsDefendingSkill || _improviserSubskillData.IsEvadingSkill)
+                {
+                    if (_improviserSubskillData.IsDefendingSkill)
+                    {
+                        // 判定防禦成敗。
+                    }
+                    else if (_improviserSubskillData.IsEvadingSkill)
+                    {
+                        // 判定迴避成敗。
+                    }
+                }
+
+                break;
+
+            default:
+                break;
+        }
+    }
+
     public static BattleResultData DetermineResultForPartB( GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser )
     {
         BattleResultData _battleResultData = new();
@@ -507,7 +578,7 @@ public partial class BattleLogicManagerV2
                     improviser.AddCharacterIdentityType( CharacterIdentityType.Deuce );
 
                     // 進入“迎擊平手方結算”。
-                    SettleResultForRepulseDraw( ref _battleResultData, lead, improviser );
+                    SettleRepulseResultForDraw( ref _battleResultData, lead, improviser );
                 }
 
                 if (_leadRangeType == RangeType.melee)
