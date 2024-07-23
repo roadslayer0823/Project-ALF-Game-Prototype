@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
 using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
-using static UnityEditor.Rendering.FilterWindow;
 
 public partial class BattleLogicManagerV2
 {
