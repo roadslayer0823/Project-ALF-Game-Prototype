@@ -1300,17 +1300,12 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             }
 
             // [當前以太值]+<[角力最大以太提升*0.5*n]
-            float _totalMaxStatePointIncrease = _gameCharacterOne_BattleResultData.temp_JiaoLiMaxStatePointIncrease * _pSE3_HuiLiu_value * _pSE12_NiFeng_value;
+            float _totalCurrentStatePointIncrease = _gameCharacterOne_BattleResultData.temp_JiaoLiMaxStatePointIncrease * _pSE3_HuiLiu_value * _pSE12_NiFeng_value;
             battleResultData.AddResultLog("[當前以太值]+<[角力最大以太提升*回流*\"己方\"逆風]" +
                                         "\n\n以太流 3.回流：" + _pSE3_HuiLiu_value +
                                         "\n己方 以太流 12.逆風：" + _pSE12_NiFeng_value +
-                                        "\n\n當前以太提升: " + _totalMaxStatePointIncrease);
-            battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacterOne, _totalMaxStatePointIncrease, out _);
-        }
-        else
-        {
-            // 角力追風發動&以太值負荷值結算
-            RunJiaoLiZhuiFengEffectAndStateStressCalculation(ref battleResultData, gameCharacterOne, gameCharacterTwo, isBreakStatusAvailable);
+                                        "\n\n當前以太提升: " + _totalCurrentStatePointIncrease);
+            battleResultData.AddGameCharacterResultData_IncreaseCurrentStatePoint(gameCharacterOne, _totalCurrentStatePointIncrease, out _);
         }
     }
 }
