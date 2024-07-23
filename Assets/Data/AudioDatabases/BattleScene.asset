@@ -18,9 +18,9 @@ MonoBehaviour:
   - id: attack
     clip: {fileID: 8300000, guid: 06591cd2a6cdf48308baf36c77ce2f83, type: 3}
   - id: defend
-    clip: {fileID: 8300000, guid: 09516b63b0712484398f9c60975825ea, type: 3}
+    clip: {fileID: 8300000, guid: 581b725bb30244e6c8bb952ae6a282ae, type: 3}
   - id: dodge
-    clip: {fileID: 8300000, guid: d161aca9032b9458f89bd7857db52bde, type: 3}
+    clip: {fileID: 8300000, guid: c30743387326542bbae4029607903d11, type: 3}
   - id: fireball
     clip: {fileID: 8300000, guid: 467154816850a4863b2be37392e37438, type: 3}
   - id: hit
@@ -79,5 +79,67 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 0c4ed8217076b43218ea4e69d667ab56, type: 3}
   - id: passive_skill_choose
     clip: {fileID: 8300000, guid: 7ac1f9cc9eafc49f5b8f4a1dc95b071a, type: 3}
-  - id: derive_skill_partA
-    clip: {fileID: 8300000, guid: 0ff26bcac22644438a82cb128c0a55a8, type: 3}
+  - id: crash
+    clip: {fileID: 8300000, guid: cc488fa43d1aa42df9a2c7f833b03236, type: 3}
+  - id: ef01_partA
+    clip: {fileID: 8300000, guid: b3c435d7d4f8e4d7bad635eea56cbfa3, type: 3}
+  - id: ef01_partB_typeA
+    clip: {fileID: 8300000, guid: 573259534c4af4d47a35511c8fb42279, type: 3}
+  - id: ef01_partB_typeB
+    clip: {fileID: 8300000, guid: fbda1996a31b847d69e4080694edcf85, type: 3}
+  - id: ef01_partB_typeC
+    clip: {fileID: 8300000, guid: cb100bb826e114a3ea27f2b959bba507, type: 3}
+  - id: ef03_partA
+    clip: {fileID: 8300000, guid: 898b7f2aa51d944969710a1fb789c185, type: 3}
+  - id: ef03_partB_typeA
+    clip: {fileID: 8300000, guid: d95ff49caa25040a28a2f2dbcdbed37b, type: 3}
+  - id: ef03_partB_typeB
+    clip: {fileID: 8300000, guid: ba13caf4f996246bd89440b5e058c814, type: 3}
+  - id: ef03_partB_typeC
+    clip: {fileID: 8300000, guid: 2516acb281a1e4ec19c6cb5798f2b8ad, type: 3}
+  - id: ef05_partA
+    clip: {fileID: 8300000, guid: f1e4e21709b4240ce9d2d897ba19d03b, type: 3}
+  - id: ef05_partB_typeA
+    clip: {fileID: 8300000, guid: 090c39f35e352447c818f753e3485640, type: 3}
+  - id: ef05_partB_typeB
+    clip: {fileID: 8300000, guid: c9e7a4203de08418c8093f3dac21a7b9, type: 3}
+  - id: ef05_partB_typeC
+    clip: {fileID: 8300000, guid: 2b31547cd039e4294b5c315912732c65, type: 3}
+  - id: ef06_partA
+    clip: {fileID: 8300000, guid: 48484a95b550d48e8ad6353c48b4753a, type: 3}
+  - id: ef06_partB_typeA
+    clip: {fileID: 8300000, guid: f956f4e245dd547d59fe03fd716634de, type: 3}
+  - id: ef06_partB_typeB
+    clip: {fileID: 8300000, guid: fb0bfe35d531f440f966f97f6a27e0e9, type: 3}
+  - id: ef06_partB_typeC
+    clip: {fileID: 8300000, guid: 8f77242fa15ce41cba4c4093a70ce967, type: 3}
+  - id: ef07_partA
+    clip: {fileID: 8300000, guid: c4f81a8209a0e464999dd2ce08d7e55c, type: 3}
+  - id: ef07_partB_typeA
+    clip: {fileID: 8300000, guid: 951ac9bf246fe47d5bdb61b109a8be9f, type: 3}
+  - id: ef07_partB_typeB
+    clip: {fileID: 8300000, guid: ca347352571994b938202490e07cfb5f, type: 3}
+  - id: ef07_partB_typeC
+    clip: {fileID: 8300000, guid: 4e01472d398b54067b4aa1fce7fe50b8, type: 3}
+  - id: ef08_partA
+    clip: {fileID: 8300000, guid: e4e892ef79d1d4cdc9da3e5917f8cc71, type: 3}
+  - id: ef08_partB_typeA
+    clip: {fileID: 8300000, guid: 20d03356d6c7547edaf31f5213433e40, type: 3}
+  - id: ef08_partB_typeB
+    clip: {fileID: 8300000, guid: 246713d6a3e2e475ab185d6a530f2478, type: 3}
+  - id: ef08_partB_typeC
+    clip: {fileID: 8300000, guid: d427f6d9f8bf743d4ab462e0dea51043, type: 3}
+  - id: ef09_partA
+    clip: {fileID: 8300000, guid: e7ae827999fda454ab48404ddefe9f90, type: 3}
+  - id: ef09_partB_typeA
+    clip: {fileID: 8300000, guid: f323a25e39d4644b2b64187f3daea879, type: 3}
+  - id: ef09_partB_typeB
+    clip: {fileID: 8300000, guid: ccedbb296e7c84cf9846a4f26c212142, type: 3}
+  - id: ef09_partB_typeC
+    clip: {fileID: 8300000, guid: d0bb40784fc9346e78b681621387e8c4, type: 3}
+  - id: ef12_partA
+    clip: {fileID: 8300000, guid: 6217b9e4c5ce64e4faa86bbaf4429952, type: 3}
+  - id: ef12_partB_typeBVC
+    clip: {fileID: 8300000, guid: a9038d9207645415aab13aeec9da516f, type: 3}
+  - id: ef12_partB_typeC
+    clip: {fileID: 8300000, guid: 09a38ff344e084596b803519bf21467e, type: 3}

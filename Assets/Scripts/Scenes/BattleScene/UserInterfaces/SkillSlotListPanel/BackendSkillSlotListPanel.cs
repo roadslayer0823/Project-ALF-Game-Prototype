@@ -18,6 +18,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
 
     private Action<SkillSlotV2,bool> onSkillSlotSelectedCallback = null;
+    private const string AUDIO_ID_PASSIVE_FLASH = "passive_flash";
     private const string ANIMATION_ID_SHOW_BACKEND_SKILL_SLOT = "ShowBackendSkillList";
     private const string ANIMATION_ID_HIDE_BACKEND_SKILL_SLOT = "HideBackendSkillList";
 
@@ -216,6 +217,7 @@ public class BackendSkillSlotListPanel : MonoBehaviour
             SetQTEActionButton( this.selectedGameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSelectedCounterSkill() );
             this.qteSkillSlot.SetCurrentStateType( StateType.Enabled );
             ShowQTEButton();
+            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_PASSIVE_FLASH);
         }
     }
 

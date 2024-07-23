@@ -57,8 +57,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   part1_Animation: {fileID: 7011522864534453700}
   deriveSkillContainer: {fileID: 212243710488844293}
-  Part1Container: {fileID: 443705761795603348}
-  Part2Container: {fileID: 6752638148757955165}
+  Part1_Container: {fileID: 443705761795603348}
+  Part2_Container: {fileID: 6752638148757955165}
   part2_Animation: {fileID: 7391538474542224746}
   part2_AnimationList:
   - {fileID: 2652825805478740196}

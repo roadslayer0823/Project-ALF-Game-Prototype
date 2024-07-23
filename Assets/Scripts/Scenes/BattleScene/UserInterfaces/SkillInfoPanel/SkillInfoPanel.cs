@@ -88,6 +88,8 @@ public class SkillInfoPanel : MonoBehaviour
     private SkillInfoTabButton skillInfoTabButton = SkillInfoTabButton.none;
     private SkillSelectionBoxV2 skillSelectionBox = null;
 
+    private const string AUDIO_ID_POPUP = "popup";
+
     public enum SkillInfoTabButton
     {
         none,
@@ -117,6 +119,7 @@ public class SkillInfoPanel : MonoBehaviour
         this.skillInfoPanel.gameObject.SetActive(true);
         SetupSkillInfomation(this.selectedSkill, this.skillSelectionBox.GetCharacterSkill());
         Subskill subskill = skillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData();
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_POPUP);
 
         if (this.skillSelectionBox.GetCharacterSkill().GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
         {

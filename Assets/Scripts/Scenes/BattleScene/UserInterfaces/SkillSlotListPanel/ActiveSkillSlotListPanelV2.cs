@@ -23,13 +23,12 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     private Vector3 initialScale = new Vector3(1f, 1f, 1f);
     private GameCharacter selectedGameCharacter = null;
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
-    private const string AUDIO_ID_WHEEL = "wheel";
     private SkillSlotV2 middleSkillSlot = null;
     public bool isAnimationRunning = true;
 
     private Action<SkillSlotV2,bool> onSkillSlotSelectedCallback = null;
-    private const string ANIMATION_ID_SHOW_ATTACK_SKILL_SLOT = "ShowAttackSkillList";
-    private const string ANIMATION_ID_HIDE_ATTACK_SKILL_SLOT = "HideAttackSkillList";
+    private const string AUDIO_ID_WHEEL = "wheel";
+    private const string AUDIO_ID_PASSIVE_FLASH = "passive_flash";
 
     public void Initialize( Action<SkillSlotV2,bool> onSkillSlotSelectedCallback )
     {
@@ -123,6 +122,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
         }
 
         UpdateSkillSlotsWithSelectedSkills( _middleSkillSlotSkillIndex );
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_PASSIVE_FLASH);
     }
 
     public void ChangeToDerivedMode( GameCharacter gameCharacter, bool hasActiveSkillType )
@@ -157,6 +157,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 }
             }
         }
+        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_PASSIVE_FLASH);
     }
 
     private int GetMiddleSkillSlotSkillIndex()
