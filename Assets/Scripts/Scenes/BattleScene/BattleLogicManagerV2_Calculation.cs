@@ -128,14 +128,20 @@ public partial class BattleLogicManagerV2
                     && opponent.GetCurrentSkillRangeType() == DatabaseManager.Subskill.RangeType.ranged)
                 {
                     // "己方"得到"直擊方"&"速度勝方"&"勝利機制優惠方"&"無視遠程方"
-                    gameCharacter.AddCharacterIdentityType( CharacterIdentityType.Assaulter );
-                    gameCharacter.AddCharacterIdentityType( CharacterIdentityType.SpeedWinner );
-                    gameCharacter.AddCharacterIdentityType( CharacterIdentityType.WinningBenefitHolder );
-                    gameCharacter.AddCharacterIdentityType( CharacterIdentityType.IgnoreRangedSkill );
+                    gameCharacter.AddCharacterIdentityTypes( new List<CharacterIdentityType>()
+                    {
+                        CharacterIdentityType.Assaulter,
+                        CharacterIdentityType.SpeedWinner,
+                        CharacterIdentityType.WinningBenefitHolder,
+                        CharacterIdentityType.IgnoreRangedSkill
+                    } );
 
                     // "對方"得到"受擊方"&"速度負方"
-                    opponent.AddCharacterIdentityType( CharacterIdentityType.Recipient );
-                    opponent.AddCharacterIdentityType( CharacterIdentityType.SpeedLoser );
+                    opponent.AddCharacterIdentityTypes( new List<CharacterIdentityType>()
+                    {
+                        CharacterIdentityType.Recipient,
+                        CharacterIdentityType.SpeedLoser
+                    } );
                 }
             }
         }

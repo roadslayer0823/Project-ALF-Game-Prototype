@@ -723,6 +723,11 @@ public partial class GameCharacter : MonoBehaviour
         this.characterIdentityTypeList.Add( characterIdentityType );
     }
 
+    public void AddCharacterIdentityTypes( List<CharacterIdentityType> characterIdentityTypes )
+    {
+        this.characterIdentityTypeList.AddRange( characterIdentityTypes );
+    }
+
     public void AddPermanentCharacterIdentityType( CharacterIdentityType characterIdentityType )
     {
         this.permanentCharacterIdentityTypeList.Add( characterIdentityType );

@@ -28,11 +28,13 @@ public partial class BattleLogicManagerV2
         // 11.以太壓制2
         // 負荷流
         // 7.借風
+        // 對比條件的技能強度/速度結算
         BattleLogicManagerV2.CompareConditionallyForIncreasingSkillStrengthAndSpeed( ref battleResultData, lead, improviser );
         BattleLogicManagerV2.CompareConditionallyForIncreasingSkillStrengthAndSpeed( ref battleResultData, improviser, lead );
 
         // 進行"雙方"因[看破技能]造成已按下的技能的[強度]&[速度]的加算,
         // 參考"雙方"的[看破技能]中,鎖定的"看破ID"與對方的已按下技能的"看破ID"是否相同&[看破技能]的儲蓄值
+        // 看破技能影響的技能強度/速度增加
         BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref battleResultData, lead, improviser );
         BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref battleResultData, improviser, lead );
 
@@ -88,14 +90,12 @@ public partial class BattleLogicManagerV2
                 // 強度較低一方得到"強度負方"
                 if (_lead_BattleResultData.currentSkillStrength > _improviser_BattleResultData.currentSkillStrength)
                 {
-                    lead.AddCharacterIdentityType( CharacterIdentityType.StrengthWinner );
-                    lead.AddCharacterIdentityType( CharacterIdentityType.WinningBenefitHolder );
+                    lead.AddCharacterIdentityTypes( new List<CharacterIdentityType>() { CharacterIdentityType.StrengthWinner, CharacterIdentityType.WinningBenefitHolder } );
                     improviser.AddCharacterIdentityType( CharacterIdentityType.StrengthLoser );
                 }
                 else
                 {
-                    improviser.AddCharacterIdentityType( CharacterIdentityType.StrengthWinner );
-                    improviser.AddCharacterIdentityType( CharacterIdentityType.WinningBenefitHolder );
+                    improviser.AddCharacterIdentityTypes( new List<CharacterIdentityType>() { CharacterIdentityType.StrengthWinner, CharacterIdentityType.WinningBenefitHolder } );
                     lead.AddCharacterIdentityType( CharacterIdentityType.StrengthLoser );
                 }
 
@@ -136,9 +136,7 @@ public partial class BattleLogicManagerV2
         {
             // 速度較高一方得到"速度勝方"&"勝利優惠機制方"&"直擊方"
             // 速度較低一方得到"速度負方"
-            lead.AddCharacterIdentityType( CharacterIdentityType.SpeedWinner );
-            lead.AddCharacterIdentityType( CharacterIdentityType.WinningBenefitHolder );
-            lead.AddCharacterIdentityType( CharacterIdentityType.Assaulter );
+            lead.AddCharacterIdentityTypes( new List<CharacterIdentityType>() { CharacterIdentityType.SpeedWinner, CharacterIdentityType.WinningBenefitHolder, CharacterIdentityType.Assaulter } );
             improviser.AddCharacterIdentityType( CharacterIdentityType.SpeedLoser );
 
             GameCharacter _speedWinner = BattleLogicManagerV2.GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.SpeedWinner, _gameCharacters );
@@ -152,8 +150,7 @@ public partial class BattleLogicManagerV2
             if (_speedWinner_BattleResultData.currentSkillStrength > _speedLoser_BattleResultData.currentSkillStrength)
             {
                 // "速度負方"得到"速度強度負方"&"受擊方"
-                _speedLoser.AddCharacterIdentityType( CharacterIdentityType.SpeedStrengthLoser );
-                _speedLoser.AddCharacterIdentityType( CharacterIdentityType.Recipient );
+                _speedLoser.AddCharacterIdentityTypes( new List<CharacterIdentityType>() { CharacterIdentityType.SpeedStrengthLoser, CharacterIdentityType.Recipient } );
             }
             // NO
             else
@@ -173,35 +170,41 @@ public partial class BattleLogicManagerV2
         RangeType _gameCharacterOne_SkillRangeType = gameCharacterOne.GetCurrentSkillRangeType();
         RangeType _gameCharacterTwo_SkillRangeType = gameCharacterTwo.GetCurrentSkillRangeType();
 
-        // 玩家1的已按下技能是否"遠程"? NO
+        // 玩家1的已按下技能是否"遠程"?
+        // NO
         if (_gameCharacterOne_SkillRangeType != RangeType.ranged)
         {
             // 平手方當前以太值結算
             // 平手方負荷值結算
         }
 
-        // 玩家2的已按下技能是否"遠程"? NO
+        // 玩家2的已按下技能是否"遠程"?
+        // NO
         if (_gameCharacterTwo_SkillRangeType != RangeType.ranged)
         {
             // 平手方當前以太值結算
             // 平手方負荷值結算
         }
 
-        // 是否雙方都是"平手方"? YES
+        // 是否雙方都是"平手方"?
+        // YES
         if (gameCharacterOne.HasCharacterIdentityType( CharacterIdentityType.Deuce )
             && gameCharacterTwo.HasCharacterIdentityType( CharacterIdentityType.Deuce ))
         {
-            // 雙方已按下技能的接觸判定是否相同? YES
+            // 雙方已按下技能的接觸判定是否相同?
+            // YES
             if (_gameCharacterOne_SkillRangeType == _gameCharacterTwo_SkillRangeType)
             {
-                // "玩家1"當前流向是否"生命流"? YES
+                // "玩家1"當前流向是否"生命流"?
+                // YES
                 if (gameCharacterOne.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life)
                 {
                     // 進入“玩家1激昂效果”頁面。
                     CategorizedPassiveSkillManager.RunCharacterExcitementEffect( ref battleResultData, gameCharacterOne, gameCharacterTwo );
                 }
 
-                // "玩家2"當前流向是否"生命流"? YES
+                // "玩家2"當前流向是否"生命流"?
+                // YES
                 if (gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life)
                 {
                     // 進入“玩家2激昂效果”頁面。
@@ -299,8 +302,7 @@ public partial class BattleLogicManagerV2
             // "受擊方"成為負荷崩潰狀態,該維持值為1,"受擊方"得到"重受擊方"&"負荷崩潰方"
             // "直擊方"得到"重直擊方"
             battleResultData.AddGameCharacterResultData_StressBreakStatus( recipient, 1, out _ );
-            recipient.AddCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
-            recipient.AddCharacterIdentityType( CharacterIdentityType.StressBreakStatusHolder );
+            recipient.AddCharacterIdentityTypes( new List<CharacterIdentityType>() { CharacterIdentityType.HeavyRecipient, CharacterIdentityType.StressBreakStatusHolder } );
             assaulter.AddCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
         }
         // NO
@@ -313,8 +315,7 @@ public partial class BattleLogicManagerV2
                 // "受擊方"成為以太崩潰狀態,該維持值為1,"受擊方"得到"重受擊方"&"以太崩潰方"
                 // "直擊方"得到"重直擊方"
                 battleResultData.AddGameCharacterResultData_StateBreakStatus( recipient, 1, out _ );
-                recipient.AddCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
-                recipient.AddCharacterIdentityType( CharacterIdentityType.StateBreakStatusHolder );
+                recipient.AddCharacterIdentityTypes( new List<CharacterIdentityType>() { CharacterIdentityType.HeavyRecipient, CharacterIdentityType.StateBreakStatusHolder } );
                 assaulter.AddCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
             }
         }
@@ -411,7 +412,11 @@ public partial class BattleLogicManagerV2
         BattleLogicManagerV2.UpdateSkillContinuousEffects( ref battleResultData, assaulter );
         BattleLogicManagerV2.UpdateSkillContinuousEffects( ref battleResultData, recipient );
 
-        // 玩家1 = assaulter
+        // 玩家1：assaulter
+        // 玩家2：recipient
+
+        // ------------------------------ 玩家1 ------------------------------
+
         // "玩家1"進入“負荷積分等級結算”頁面。
         CategorizedPassiveSkillManager.StressScoreAndLevelCalculation( ref battleResultData, assaulter );
 
@@ -425,7 +430,10 @@ public partial class BattleLogicManagerV2
         // 頁面：發動流向效果B
         CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, assaulter, recipient, false );
 
-        // 玩家2 = recipient
+        // ------------------------------------------------------------------
+
+        // ------------------------------ 玩家2 ------------------------------
+
         // "玩家2"進入“負荷積分等級結算”頁面。
         CategorizedPassiveSkillManager.StressScoreAndLevelCalculation( ref battleResultData, recipient );
 
@@ -438,6 +446,8 @@ public partial class BattleLogicManagerV2
 
         // 頁面：發動流向效果B
         CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, recipient, assaulter, false );
+
+        // ------------------------------------------------------------------
     }
 
     // 頁面：近戰迎擊獎勵結算
