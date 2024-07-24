@@ -470,17 +470,17 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
     //直擊方負荷值結算
-    public static void RunLeadCurrentStressPointCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recepient)
+    public static void RunAssaulterCurrentStressValueCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient)
     {
         battleResultData.AddResultLog("直擊方負荷值結算");
-        CurrentStressPointCalculation(ref battleResultData ,assaulter ,recepient, false);
+        CurrentStressPointCalculation(ref battleResultData ,assaulter ,recipient, false);
     }
 
     //受擊方負荷值結算
-    public static void RunRecepientCurrentStressPointCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recepient)
+    public static void RunRecepientCurrentStressValueCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient)
     {
         battleResultData.AddResultLog("受擊方負荷值結算");
-        CurrentStressPointCalculation(ref battleResultData, recepient, assaulter, true);
+        CurrentStressPointCalculation(ref battleResultData, recipient, assaulter, true);
     }
 
     //平手方負荷值結算
@@ -729,24 +729,24 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
     //平手方當前以太值結算
-    public static void RunDeuceCurrentStatPointCalculation(ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
+    public static void RunDeuceCurrentStatePointCalculation(ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
     {
         battleResultData.AddResultLog("平手方當前以太值結算");
         CurrentStatePointCalculation(ref battleResultData, gameCharacterOne, gameCharacterTwo);
     }
 
     //直擊方當前以太值結算
-    public static void RunLeadCurrentStatPointCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter receipent)
+    public static void RunAssaulterCurrentStatePointCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient)
     {
         battleResultData.AddResultLog("直擊方當前以太值結算");
-        CurrentStatePointCalculation(ref battleResultData, assaulter, receipent);
+        CurrentStatePointCalculation(ref battleResultData, assaulter, recipient);
     }
 
     //受擊方當前以太值結算
-    public static void RunRecepientCurrentStatPointCalculation(ref BattleResultData battleResultData, GameCharacter recepient, GameCharacter assaulter)
+    public static void RunRecipientCurrentStatePointCalculation(ref BattleResultData battleResultData, GameCharacter recipient, GameCharacter assaulter)
     {
         battleResultData.AddResultLog("受擊方當前以太值結算");
-        CurrentStatePointCalculation(ref battleResultData, recepient, assaulter);
+        CurrentStatePointCalculation(ref battleResultData, recipient, assaulter);
     }
 
     //負荷積分等級結算
@@ -896,12 +896,12 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         _characterOneCurrentIdentity = gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Deuce) ? "平手方" :
           gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SuccessfulResister) ? "抵抗成功方" :
-          gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Lead) ? "直擊方" :
+          gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Assaulter) ? "直擊方" :
           gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Recipient) ? "受擊方" : "己方";
 
         _characterTwoCurrentIdentity = gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Deuce) ? "平手方" :
           gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SuccessfulResister) ? "抵抗成功方" :
-          gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Lead) ? "直擊方" :
+          gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Assaulter) ? "直擊方" :
           gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Recipient) ? "受擊方" : "對方";
 
         if (gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategoryType.State)
