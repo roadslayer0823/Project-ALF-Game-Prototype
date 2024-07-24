@@ -286,7 +286,7 @@ public partial class BattleLogicManagerV2
                 // 6.負荷流轉 / 12.逆風
                 // 負荷流
                 // 3.化勁 / 9.行雲流水
-                CategorizedPassiveSkillManager.RunRecepientCurrentStressValueCalculation( ref battleResultData, assaulter, recipient );
+                CategorizedPassiveSkillManager.RunRecipientCurrentStressValueCalculation( ref battleResultData, assaulter, recipient );
             }
         }
 

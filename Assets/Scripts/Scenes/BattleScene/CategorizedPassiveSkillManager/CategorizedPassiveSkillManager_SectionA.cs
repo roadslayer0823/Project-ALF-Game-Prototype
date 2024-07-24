@@ -473,11 +473,11 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     public static void RunAssaulterCurrentStressValueCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient)
     {
         battleResultData.AddResultLog("直擊方負荷值結算");
-        CurrentStressPointCalculation(ref battleResultData ,assaulter ,recipient, false);
+        CurrentStressPointCalculation(ref battleResultData, assaulter, recipient, false);
     }
 
     //受擊方負荷值結算
-    public static void RunRecepientCurrentStressValueCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient)
+    public static void RunRecipientCurrentStressValueCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient)
     {
         battleResultData.AddResultLog("受擊方負荷值結算");
         CurrentStressPointCalculation(ref battleResultData, recipient, assaulter, true);
