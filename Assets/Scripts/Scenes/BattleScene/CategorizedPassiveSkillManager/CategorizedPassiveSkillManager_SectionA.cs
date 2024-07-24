@@ -470,24 +470,24 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
     //直擊方負荷值結算
-    public static void RunAssaulterCurrentStressValueCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recepient)
+    public static void RunLeadCurrentStressPointCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recepient)
     {
         battleResultData.AddResultLog("直擊方負荷值結算");
-        CurrentStressValueCalculation(ref battleResultData ,assaulter, recepient, false);
+        CurrentStressPointCalculation(ref battleResultData ,assaulter ,recepient, false);
     }
 
     //受擊方負荷值結算
-    public static void RunRecepientCurrentStressValueCalculation(ref BattleResultData battleResultData, GameCharacter lead, GameCharacter recepient)
+    public static void RunRecepientCurrentStressPointCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recepient)
     {
         battleResultData.AddResultLog("受擊方負荷值結算");
-        CurrentStressValueCalculation(ref battleResultData, recepient, lead, true);
+        CurrentStressPointCalculation(ref battleResultData, recepient, assaulter, true);
     }
 
     //平手方負荷值結算
-    public static void RunDeuceCurrentStressValueCalculation(ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
+    public static void RunDeuceCurrentStressPointCalculation(ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
     {
         battleResultData.AddResultLog("平手方負荷值結算");
-        CurrentStressValueCalculation(ref battleResultData, gameCharacterOne, gameCharacterTwo, false);
+        CurrentStressPointCalculation(ref battleResultData, gameCharacterOne, gameCharacterTwo, false);
     }
 
     //抵抗成功方回避當前以太值結算
@@ -722,31 +722,31 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
     //抵抗成功方防禦當前以太值結算
-    public static void SuccessfulResisterDefenseCurrentStatePointCalculation(ref BattleResultData battleResultData, GameCharacter successfulResister, GameCharacter deuce)
+    public static void SuccessfulResisterDefenseCurrentStatePointCalculation(ref BattleResultData battleResultData, GameCharacter successfulResistor, GameCharacter deuce)
     {
         battleResultData.AddResultLog("抵抗成功方防禦當前以太值結算");
-        CurrentStatePointCalculation(ref battleResultData, successfulResister, deuce);
+        CurrentStatePointCalculation(ref battleResultData, successfulResistor, deuce);
     }
 
     //平手方當前以太值結算
-    public static void RunDeuceCurrentStatePointCalculation(ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
+    public static void RunDeuceCurrentStatPointCalculation(ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
     {
         battleResultData.AddResultLog("平手方當前以太值結算");
         CurrentStatePointCalculation(ref battleResultData, gameCharacterOne, gameCharacterTwo);
     }
 
     //直擊方當前以太值結算
-    public static void RunAssaulterCurrentStatePointCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient)
+    public static void RunLeadCurrentStatPointCalculation(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter receipent)
     {
         battleResultData.AddResultLog("直擊方當前以太值結算");
-        CurrentStatePointCalculation(ref battleResultData, assaulter, recipient);
+        CurrentStatePointCalculation(ref battleResultData, assaulter, receipent);
     }
 
     //受擊方當前以太值結算
-    public static void RunRecipientCurrentStatePointCalculation(ref BattleResultData battleResultData, GameCharacter recipient, GameCharacter assaulter)
+    public static void RunRecepientCurrentStatPointCalculation(ref BattleResultData battleResultData, GameCharacter recepient, GameCharacter assaulter)
     {
         battleResultData.AddResultLog("受擊方當前以太值結算");
-        CurrentStatePointCalculation(ref battleResultData, recipient, assaulter);
+        CurrentStatePointCalculation(ref battleResultData, recepient, assaulter);
     }
 
     //負荷積分等級結算
@@ -927,7 +927,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         battleResultData.AddResultLog("算式:" + _formula + "\n"+ "\n" + _finalString);
     }
 
-    public static void CurrentStressValueCalculation(ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo, bool isMultipleZeroPointFive)
+    public static void CurrentStressPointCalculation(ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo, bool isMultipleZeroPointFive)
     {
         //reference
         BattleResultData.BattleResultData_GameCharacter gameCharacterOneData = battleResultData.GetGameCharacterResultData(gameCharacterOne);
