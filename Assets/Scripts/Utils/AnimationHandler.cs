@@ -20,7 +20,7 @@ public class AnimationManager : MonoBehaviour
     public void LoadAndPlayAnimation(string filePath)
     {
         animationClip = Resources.Load<AnimationClip>(filePath);
-        animatorOverrideController["DarkPartB"] = animationClip;
+        animatorOverrideController["default"] = animationClip;
         animator.SetTrigger("trigger");
     }
 }
