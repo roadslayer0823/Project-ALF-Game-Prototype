@@ -735,40 +735,53 @@ public partial class BattleAnimationManager : MonoBehaviour
     }
 
     private void StartPartB( out BattleResultData battleResultData,
-                             out BattleResultData.BattleResultData_GameCharacter attackerBattleResultData, out BattleResultData.BattleResultData_GameCharacter attackTargetBattleResultData,
-                             GameCharacter attacker, GameCharacter attackTarget, out GameCharacter winner, out GameCharacter loser )
+                             out BattleResultData.BattleResultData_GameCharacter leadBattleResultData, out BattleResultData.BattleResultData_GameCharacter improviserBattleResultData,
+                             GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser )
     {
-        bool _isAttackTargetUsingSkill = ( attackTarget.GetCurrentSkill() != null );
+        bool _isImproviserUsingSkill = ( improviser.GetCurrentSkill() != null );
 
-        if (_isAttackTargetUsingSkill)
+        if (_isImproviserUsingSkill)
         {
             // “後手方”發動技能。
             battleResultData = new BattleResultData();
-            BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref battleResultData, attackTarget, attacker );
-            attackTargetBattleResultData = battleResultData.GetGameCharacterResultData( attackTarget );
-            attackTarget.ApplyBattleResultData( attackTargetBattleResultData, this.battleGameManager );
+            BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref battleResultData, improviser, lead );
+            improviserBattleResultData = battleResultData.GetGameCharacterResultData( improviser );
+            improviser.ApplyBattleResultData( improviserBattleResultData, this.battleGameManager );
         }
 
-        // 判定 Part B 結果及結算。
-        battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser );
-        attackerBattleResultData = battleResultData.GetGameCharacterResultData( attacker );
-        attackTargetBattleResultData = battleResultData.GetGameCharacterResultData( attackTarget );
+        // ------------------------------ 判定 Part B 結果及結算 ------------------------------
+
+        //battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser );
+
+        battleResultData = new BattleResultData();
+        BattleLogicManagerV2.DetermineResultForPartB( ref battleResultData, lead, improviser, true );
+        leadBattleResultData = battleResultData.GetGameCharacterResultData( lead );
+        improviserBattleResultData = battleResultData.GetGameCharacterResultData( improviser );
         ShowBattleLog( battleResultData.GetResultLogList() );
 
-        if (_isAttackTargetUsingSkill)
+        GameCharacter[] _gameCharacters = new GameCharacter[] { lead, improviser };
+        winner = BattleLogicManagerV2.GetGameCharacterThatMatchesOneOfCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Assaulter, CharacterIdentityType.LightAssaulter, CharacterIdentityType.HeavyAssaulter }, _gameCharacters );
+        loser = BattleLogicManagerV2.GetGameCharacterThatMatchesOneOfCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.LightRecipient, CharacterIdentityType.HeavyRecipient }, _gameCharacters );
+
+        // ----------------------------------------------------------------------------------
+
+        // 頁面：Part B
+        // TODO: 判定距離結果
+
+        if (_isImproviserUsingSkill)
         {
             // 結算“後手方”已按下的技能的以太值和最大以太值提升。
-            attackTarget.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
-            //StartCoroutine( ShowPopUpDisplayInfo( _attackTarget, statePointReduced: _attackTargetBattleResultData.statePointCost, maximumStatePointIncreased: _attackTargetBattleResultData.maximumStatePointIncrease ) );
-            attackTarget.ShowPopUpDisplayInfoV2( maxStatePointUp: attackTargetBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackTargetBattleResultData.statePointCost*/ );
+            improviser.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
+            //StartCoroutine( ShowPopUpDisplayInfo( improviser, statePointReduced: improviserBattleResultData.statePointCost, maximumStatePointIncreased: improviserBattleResultData.maximumStatePointIncrease ) );
+            improviser.ShowPopUpDisplayInfoV2( maxStatePointUp: improviserBattleResultData.maximumStatePointIncrease/*, statePointDamage: improviserBattleResultData.statePointCost*/ );
         }
 
         this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtPartB();
 
         LeanTween.delayedCall( 0.5f, () =>
         {
-            attacker.TriggerEvent( AnimationEvent.OnPartB );
-            attackTarget.TriggerEvent( AnimationEvent.OnPartB );
+            lead.TriggerEvent( AnimationEvent.OnPartB );
+            improviser.TriggerEvent( AnimationEvent.OnPartB );
         } );
     }
 

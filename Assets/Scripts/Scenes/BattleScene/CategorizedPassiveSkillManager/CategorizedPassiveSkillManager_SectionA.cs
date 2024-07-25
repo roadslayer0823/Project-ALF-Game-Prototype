@@ -729,10 +729,10 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
     //抵抗成功方防禦當前以太值結算
-    public static void SuccessfulResisterDefenseCurrentStatePointCalculation(ref BattleResultData battleResultData, GameCharacter successfulResistor, GameCharacter deuce)
+    public static void SuccessfulResisterDefenseCurrentStatePointCalculation(ref BattleResultData battleResultData, GameCharacter successfulResister, GameCharacter deuce)
     {
         battleResultData.AddResultLog("抵抗成功方防禦當前以太值結算");
-        CurrentStatePointCalculation(ref battleResultData, successfulResistor, deuce);
+        CurrentStatePointCalculation(ref battleResultData, successfulResister, deuce);
     }
 
     //平手方當前以太值結算

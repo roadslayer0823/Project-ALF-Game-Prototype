@@ -18,7 +18,7 @@ public class BattleDistanceManager : MonoBehaviour
         Far
     }
 
-    // 判定距离中途结果
+    // 頁面：判定距离中途结果
     public void UpdateHalfwayDistanceResult( GameCharacter lead, out List<string> resultLogList )
     {
         resultLogList = new List<string>();
@@ -127,6 +127,7 @@ public class BattleDistanceManager : MonoBehaviour
         }
     }
 
+    // 頁面：判定距離結果
     public void UpdateFinalDistanceResult( GameCharacter improviser, DistanceType finalDistance )
     {
         Subskill improviserAssignedSkill = improviser.GetAssignedSkill().GetCharacterSubskillData().GetSubskillData();

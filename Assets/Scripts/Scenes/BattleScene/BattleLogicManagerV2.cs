@@ -122,6 +122,20 @@ public partial class BattleLogicManagerV2
         return null;
     }
 
+    public static GameCharacter GetGameCharacterThatMatchesOneOfCharacterIdentityTypes( CharacterIdentityType[] characterIdentityTypes, GameCharacter[] gameCharacters )
+    {
+        for (int i = 0; i < characterIdentityTypes.Length; i++)
+        {
+            GameCharacter _gameCharacter = GetGameCharacterThatMatchesCharacterIdentityType( characterIdentityTypes[ i ], gameCharacters );
+            if (_gameCharacter != null)
+            {
+                return _gameCharacter;
+            }
+        }
+
+        return null;
+    }
+
     // 頁面：狀態更新
     private static void UpdateGameCharacterStatus( ref BattleResultData battleResultData, GameCharacter gameCharacter )
     {
@@ -528,8 +542,8 @@ public partial class BattleLogicManagerV2
 
                 // 後手方得到"受擊方"&“重受擊方”&"未能抵抗方"
                 // 先手方得到"直擊方"&“重直擊方”。
-                improviser.AddCharacterIdentityTypes( new List<CharacterIdentityType>() { CharacterIdentityType.Recipient, CharacterIdentityType.HeavyRecipient, CharacterIdentityType.NonResister } );
-                lead.AddCharacterIdentityTypes( new List<CharacterIdentityType>() { CharacterIdentityType.Assaulter, CharacterIdentityType.HeavyAssaulter } );
+                improviser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.HeavyRecipient, CharacterIdentityType.NonResister } );
+                lead.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Assaulter, CharacterIdentityType.HeavyAssaulter } );
 
                 // 重受擊方：improviser
                 // 重直擊方：lead
