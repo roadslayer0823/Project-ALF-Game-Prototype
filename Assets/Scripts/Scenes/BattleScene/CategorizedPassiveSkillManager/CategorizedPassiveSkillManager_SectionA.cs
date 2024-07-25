@@ -484,10 +484,17 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
     //平手方負荷值結算
-    public static void RunDeuceCurrentStressPointCalculation(ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
+    public static void RunDeuceCurrentStressValueCalculation(ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
     {
         battleResultData.AddResultLog("平手方負荷值結算");
         CurrentStressPointCalculation(ref battleResultData, gameCharacterOne, gameCharacterTwo, false);
+    }
+
+    //抵抗成功方防禦負荷值結算
+    public static void RunSuccessfulResisterDefenseStressValueCalculation(ref BattleResultData battleResultData, GameCharacter successfulResister, GameCharacter deuce)
+    {
+        battleResultData.AddResultLog("抵抗成功方防禦負荷值結算");
+        CurrentStressPointCalculation(ref battleResultData, successfulResister, deuce, false);
     }
 
     //抵抗成功方回避當前以太值結算
