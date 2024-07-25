@@ -10,14 +10,9 @@ public class CharacterAnimator : MonoBehaviour
         None,
         OnStart,
         OnEnd,
-        ShowLeftView,
-        ShowRightView,
         PlaySoundEffect,
         ShowInfoWhenUsingSkill,
         ShowInfoOnHit,
-        ReadyForRepulse,
-        ReadyForDefense,
-        ReadyForEvasion
     }
 
     public void OnGameCharacterAnimationEventTriggered(CharacterAnimationEventTrigger eventTrigger, string parameter = "")
@@ -32,16 +27,8 @@ public class CharacterAnimator : MonoBehaviour
                 this.gameCharacter.OnAnimationEventTriggered(CharacterAnimationEventType.OnEnd);
                 break;
 
-            case CharacterAnimationEventTrigger.ShowLeftView:
-                this.gameCharacter.OnAnimationEventTriggered(CharacterAnimationEventType.ShowLeftView);
-                break;
-
-            case CharacterAnimationEventTrigger.ShowRightView:
-                this.gameCharacter.OnAnimationEventTriggered(CharacterAnimationEventType.ShowRightView);
-                break;
-
             case CharacterAnimationEventTrigger.PlaySoundEffect:
-                this.gameCharacter.OnAnimationEventTriggered(CharacterAnimationEventType.PlaySoundEffect);
+                this.gameCharacter.OnAnimationEventTriggered(CharacterAnimationEventType.PlaySoundEffect, parameter);
                 break;
 
             case CharacterAnimationEventTrigger.ShowInfoWhenUsingSkill:
@@ -50,18 +37,6 @@ public class CharacterAnimator : MonoBehaviour
 
             case CharacterAnimationEventTrigger.ShowInfoOnHit:
                 this.gameCharacter.OnAnimationEventTriggered(CharacterAnimationEventType.ShowInfoOnHit);
-                break;
-
-            case CharacterAnimationEventTrigger.ReadyForRepulse:
-                this.gameCharacter.OnAnimationEventTriggered(CharacterAnimationEventType.ReadyForRepulse);
-                break;
-
-            case CharacterAnimationEventTrigger.ReadyForDefense:
-                this.gameCharacter.OnAnimationEventTriggered(CharacterAnimationEventType.ReadyForDefense);
-                break;
-
-            case CharacterAnimationEventTrigger.ReadyForEvasion:
-                this.gameCharacter.OnAnimationEventTriggered(CharacterAnimationEventType.ReadyForEvasion);
                 break;
         }
     }
@@ -74,16 +49,6 @@ public class CharacterAnimator : MonoBehaviour
     public void OnEnd()
     {
         OnGameCharacterAnimationEventTriggered(CharacterAnimationEventTrigger.OnEnd);
-    }
-
-    public void ShowLeftView()
-    {
-        OnGameCharacterAnimationEventTriggered(CharacterAnimationEventTrigger.ShowLeftView);
-    }
-
-    public void ShowRightView()
-    {
-        OnGameCharacterAnimationEventTriggered(CharacterAnimationEventTrigger.ShowRightView);
     }
 
     public void PlaySoundEffect(string audioId)
@@ -99,20 +64,5 @@ public class CharacterAnimator : MonoBehaviour
     public void ShowInfoOnHit()
     {
         OnGameCharacterAnimationEventTriggered(CharacterAnimationEventTrigger.ShowInfoOnHit);
-    }
-
-    public void ReadyForRepulse()
-    {
-        OnGameCharacterAnimationEventTriggered(CharacterAnimationEventTrigger.ReadyForRepulse);
-    }
-
-    public void ReadyForDefense()
-    {
-        OnGameCharacterAnimationEventTriggered(CharacterAnimationEventTrigger.ReadyForDefense);
-    }
-
-    public void ReadyForEvasion()
-    {
-        OnGameCharacterAnimationEventTriggered(CharacterAnimationEventTrigger.ReadyForEvasion);
     }
 }
