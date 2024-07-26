@@ -300,6 +300,18 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     // 輕受擊方生命值結算
     public static void CalculateLightAndHeavyRecipientHealthResult(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient)
     {
+        CalculateRecipientHealthResult(ref battleResultData, assaulter, recipient,false);
+    }
+
+    //重受擊相殺
+    public static void RunHeavyRecipientsXiangSha(ref BattleResultData battleResultData, GameCharacter playerOne, GameCharacter playerTwo)
+    {
+        CalculateRecipientHealthResult(ref battleResultData, playerTwo, playerOne, true);
+        CalculateRecipientHealthResult(ref battleResultData, playerOne, playerTwo, true);
+    }
+
+    public static void CalculateRecipientHealthResult(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient, bool isXiangSha)
+    {
         BattleResultData.BattleResultData_GameCharacter _recipient_BattleResultData = battleResultData.GetGameCharacterResultData(recipient);
 
         bool _isHeavyRecipient = recipient.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient);
@@ -324,6 +336,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         float _recipient_pSL12_ShengShengBuXi_value = 0.0f;
 
         float _damageReduction = 0.0f;
+        string recipientPlayer = recipient.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.PlayerOne) ? "玩家1" : "玩家2";
+        string assaulterPlayer = assaulter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.PlayerOne) ? "玩家1" : "玩家2";
 
         CharacterSkill _recipientCurrentSkill = recipient.GetCurrentSkill();
 
@@ -364,14 +378,15 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         // CASE A:"雙方"當前流向為"負荷流"/無流向
         // (assaulter == 負荷流 && recipient == 負荷流) || (assaulter == 無流向 && recipient == 無流向) ||  (assaulter == 無流向 && recipient == 負荷流) ||  (assaulter == 負荷流 && recipient == 無流向)
-        if ((_isAssaulter_StressPassiveSkill && _isRecipient_StressPassiveSkill) ||
+        if (((_isAssaulter_StressPassiveSkill && _isRecipient_StressPassiveSkill) ||
             (_isAssaulter_NonePassiveSkill && _isRecipient_NonePassiveSkill) ||
             (_isAssaulter_StressPassiveSkill && _isRecipient_NonePassiveSkill) ||
             (_isAssaulter_NonePassiveSkill && _isRecipient_StressPassiveSkill))
+            && !isXiangSha)
         {
             // ["重受擊方"生命值]-{["重直擊方"直擊傷害]*[1+n]-["重受擊方"已按下技能的減傷率]}
             _recipientHealthPointDamage = _assaulterSkillDamage * (1 + _energyMarker_value) - _damageReduction;
-            if(_isHeavyRecipient)
+            if (_isHeavyRecipient)
             {
                 battleResultData.AddResultLog("重受擊方生命值結算");
                 battleResultData.AddResultLog("CASE A:雙方當前流向為 負荷流/無流向" +
@@ -386,34 +401,57 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         }
         // CASE B:其中一方當前流向為"生命流"/"以太流"
         // (assaulter == 生命流 || recipient == 生命流 || assaulter == 以太流 || recipient == 以太流)
-        else if(_isAssaulter_LifePassiveSkill || _isRecipient_LifePassiveSkill ||
-            _isAssaulter_StatePassiveSkill || _isRecipient_StatePassiveSkill)
+        else if (_isAssaulter_LifePassiveSkill || _isRecipient_LifePassiveSkill ||
+            _isAssaulter_StatePassiveSkill || _isRecipient_StatePassiveSkill
+            || isXiangSha)
         {
             // ["重受擊方"生命值]-{["重直擊方"直擊傷害]*[1+n+n+n]*[1-n-n-n]-["重受擊方"已按下技能的減傷率]}
+            //相殺 same formula
+
             _recipientHealthPointDamage = _assaulterSkillDamage * (1 + _pSL3_MengLie_value + _assaulter_pSL12_ShengShengBuXi_value + _energyMarker_value)
                 * (1 - _pSL4_JianRen_value - _recipient_pSL12_ShengShengBuXi_value - _pSE12_NiFeng_value) - _damageReduction;
-            if(_isHeavyRecipient)
+            if(isXiangSha)
+            {
+                battleResultData.AddResultLog(recipientPlayer + " 生命值結算");
+                battleResultData.AddResultLog("[\"" + recipientPlayer + "\"生命值]-{[\"" + assaulterPlayer + "\"直擊傷害]*[1+\"" + assaulterPlayer + "\"猛烈+\"" + assaulterPlayer + "\"生生不息+\""
+                    + recipientPlayer + "\"能量殘響]*[1-\"" + recipientPlayer + "\"堅韌-\"" + recipientPlayer + "\"生生不息-\"" + recipientPlayer + "\"逆風]-[\"" + recipientPlayer + "\"已按下技能的減傷率]}*1.5");
+            }
+            else if (_isHeavyRecipient)
             {
                 battleResultData.AddResultLog("重受擊方 生命值結算");
                 battleResultData.AddResultLog("CASE B:其中一方當前流向為 生命流/以太流" +
-                                            "\n\n[\"重受擊方\"生命值]-{[\"重直擊方\"直擊傷害]*[1+\"重受擊方\"猛烈+\"重受擊方\"生生不息+\"重受擊方\"能量殘響]*[1-\"重受擊方\"堅韌-\"重受擊方\"生生不息-\"重受擊方\"逆風]-[\"重受擊方\"已按下技能的減傷率]}");
+                                            "\n\n[\"重受擊方\"生命值]-{[\"重直擊方\"直擊傷害]*[1+\"重直擊方\"猛烈+\"重直擊方\"生生不息+\"重受擊方\"能量殘響]*[1-\"重受擊方\"堅韌-\"重受擊方\"生生不息-\"重受擊方\"逆風]-[\"重受擊方\"已按下技能的減傷率]}");
             }
             else
             {
                 battleResultData.AddResultLog("輕受擊方 生命值結算");
                 battleResultData.AddResultLog("CASE B:其中一方當前流向為 生命流/以太流" +
-                                            "\n\n[\"輕受擊方\"生命值]-{[\"輕直擊方\"直擊傷害]*[1+\"輕受擊方\"猛烈+\"輕受擊方\"生生不息+\"輕受擊方\"能量殘響]*[1-\"輕受擊方\"堅韌-\"輕受擊方\"生生不息-\"輕受擊方\"逆風]-[\"輕受擊方\"已按下技能的減傷率]}");
+                                            "\n\n[\"輕受擊方\"生命值]-{[\"輕直擊方\"直擊傷害]*[1+\"輕直擊方\"猛烈+\"輕直擊方\"生生不息+\"輕受擊方\"能量殘響]*[1-\"輕受擊方\"堅韌-\"輕受擊方\"生生不息-\"輕受擊方\"逆風]-[\"輕受擊方\"已按下技能的減傷率]}");
             }
         }
 
         // 如果是重受擊方 = 傷害 * n
         float _finalHealthPointDamage = recipient.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient) ? _recipientHealthPointDamage * _breakStatus_value : _recipientHealthPointDamage;
+
+        if(isXiangSha)
+        {
+            battleResultData.AddResultLog(recipientPlayer + " 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(recipient.GetSelectedPassiveSkillCategoryType()));
+
+            battleResultData.AddResultLog(recipientPlayer + "的生命值結算: " + recipient.GetCharacterName());
+            battleResultData.AddResultLog(assaulterPlayer + " 直擊傷害: " + _assaulterSkillDamage + "\n" + recipientPlayer + " 能量殘響: " + _energyMarker_value +
+                                        "\n" + recipientPlayer + " 已按下技能的減傷率: " + _damageReduction + "\n" + assaulterPlayer + " 生命流 3.猛烈: " + _pSL3_MengLie_value +
+                                        "\n" + recipientPlayer + " 生命流 4.堅韌: " + _pSL4_JianRen_value + "\n" + recipientPlayer + " 以太流 12.逆風: " + _pSE12_NiFeng_value +
+                                        "\n" + assaulterPlayer + " 生命流 12.生生不息: " + _assaulter_pSL12_ShengShengBuXi_value +
+                                        "\n" + recipientPlayer + " 生命流 12.生生不息: " + _recipient_pSL12_ShengShengBuXi_value +
+                                        "\n\n" + recipientPlayer + " 受到傷害: " + Mathf.Round(_finalHealthPointDamage));
+
+        }
         if (_isHeavyRecipient)
         {
             battleResultData.AddResultLog("重直擊方: " + assaulter.GetCharacterName() + "\n重受擊方: " + recipient.GetCharacterName());
             battleResultData.AddResultLog("重直擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(assaulter.GetSelectedPassiveSkillCategoryType()) +
                                         "\n重受擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(recipient.GetSelectedPassiveSkillCategoryType()) +
-                                        "\n重受擊方 直擊傷害: " + _assaulterSkillDamage + "\n重受擊方 能量殘響: " + _energyMarker_value +
+                                        "\n重直擊方 直擊傷害: " + _assaulterSkillDamage + "\n重受擊方 能量殘響: " + _energyMarker_value +
                                         "\n重受擊方 已按下技能的減傷率: " + _damageReduction + "\n重直擊方 生命流 3.猛烈: " + _pSL3_MengLie_value +
                                         "\n重受擊方 生命流 4.堅韌: " + _pSL4_JianRen_value + "\n重受擊方 以太流 12.逆風: " + _pSE12_NiFeng_value +
                                         "\n重直擊方 生命流 12.生生不息: " + _assaulter_pSL12_ShengShengBuXi_value +
@@ -425,7 +463,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             battleResultData.AddResultLog("輕直擊方: " + assaulter.GetCharacterName() + "\n輕受擊方: " + recipient.GetCharacterName());
             battleResultData.AddResultLog("輕直擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(assaulter.GetSelectedPassiveSkillCategoryType()) +
                                         "\n輕受擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(recipient.GetSelectedPassiveSkillCategoryType()) +
-                                        "\n輕受擊方 直擊傷害: " + _assaulterSkillDamage + "\n輕受擊方 能量殘響: " + _energyMarker_value +
+                                        "\n輕直擊方 直擊傷害: " + _assaulterSkillDamage + "\n輕受擊方 能量殘響: " + _energyMarker_value +
                                         "\n輕受擊方 已按下技能的減傷率: " + _damageReduction + "\n輕直擊方 生命流 3.猛烈: " + _pSL3_MengLie_value +
                                         "\n輕受擊方 生命流 4.堅韌: " + _pSL4_JianRen_value + "\n輕受擊方 以太流 12.逆風: " + _pSE12_NiFeng_value +
                                         "\n輕直擊方 生命流 12.生生不息: " + _assaulter_pSL12_ShengShengBuXi_value +
@@ -433,6 +471,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                         "\n\n輕受擊方 受到傷害: " + Mathf.Round(_finalHealthPointDamage));
         }
         battleResultData.AddGameCharacterResultData_ActualHealthPointDamage(recipient, _finalHealthPointDamage, out _);
+
     }
 
     // 生命流能量循環負荷循環相關數值結算
