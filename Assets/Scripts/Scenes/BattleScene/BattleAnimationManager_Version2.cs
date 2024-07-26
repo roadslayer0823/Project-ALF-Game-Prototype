@@ -252,8 +252,13 @@ public partial class BattleAnimationManager : MonoBehaviour
             // 播放演出動畫
             StartCoroutine( RunAnimationOfPartA( _lead, _animationDuration ) );
 
-            // 播放演出同時，UI反映各項參數。
-            _lead.ShowPopUpDisplayInfoV2( maxStatePointUp: _leadBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
+            // 結算演出時機 A - 在 Part A 的第 0.1 秒起播放。
+            // 參數：以太值消耗、以太值提升
+            LeanTween.delayedCall( 0.1f, () =>
+            {
+                // 播放演出同時，UI反映各項參數。
+                _lead.ShowPopUpDisplayInfoV2( maxStatePointUp: _leadBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
+            } );
 
             BattleLog.Instance.AddOnScreenBattleLog(
                 $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _lead.GetCharacterName() }</color>"
@@ -381,7 +386,12 @@ public partial class BattleAnimationManager : MonoBehaviour
         _skillCountdownTimeStartTime = Time.time;
         _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
-        StartPartB( out _battleResultData, out _leadBattleResultData, out _attackTargetBattleResultData, _lead, _improviser, out GameCharacter _winner, out GameCharacter _loser );
+        StartPartB( out List<BattleResultData> _battleResultDataList, _lead, _improviser, out GameCharacter _winner, out GameCharacter _loser );
+
+        _battleResultData = _battleResultDataList[ 1 ];
+        _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
+        _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _improviser );
+        ShowBattleLog( _battleResultData.GetResultLogList() );
 
         LeanTween.delayedCall( 0.3f, () =>
         {
@@ -734,30 +744,15 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
     }
 
-    private void StartPartB( out BattleResultData battleResultData,
-                             out BattleResultData.BattleResultData_GameCharacter leadBattleResultData, out BattleResultData.BattleResultData_GameCharacter improviserBattleResultData,
+    private void StartPartB( out List<BattleResultData> battleResultDataList,
                              GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser )
     {
-        bool _isImproviserUsingSkill = ( improviser.GetCurrentSkill() != null );
-
-        if (_isImproviserUsingSkill)
-        {
-            // “後手方”發動技能。
-            battleResultData = new BattleResultData();
-            BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref battleResultData, improviser, lead );
-            improviserBattleResultData = battleResultData.GetGameCharacterResultData( improviser );
-            improviser.ApplyBattleResultData( improviserBattleResultData, this.battleGameManager );
-        }
-
         // ------------------------------ 判定 Part B 結果及結算 ------------------------------
 
         //battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser );
 
-        battleResultData = new BattleResultData();
-        BattleLogicManagerV2.DetermineResultForPartB( ref battleResultData, lead, improviser, true );
-        leadBattleResultData = battleResultData.GetGameCharacterResultData( lead );
-        improviserBattleResultData = battleResultData.GetGameCharacterResultData( improviser );
-        ShowBattleLog( battleResultData.GetResultLogList() );
+        battleResultDataList = new List<BattleResultData>();
+        BattleLogicManagerV2.DetermineResultForPartB( ref battleResultDataList, lead, improviser, true );
 
         GameCharacter[] _gameCharacters = new GameCharacter[] { lead, improviser };
         winner = BattleLogicManagerV2.GetGameCharacterThatMatchesOneOfCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Assaulter, CharacterIdentityType.LightAssaulter, CharacterIdentityType.HeavyAssaulter }, _gameCharacters );
@@ -768,12 +763,18 @@ public partial class BattleAnimationManager : MonoBehaviour
         // 頁面：Part B
         // TODO: 判定距離結果
 
-        if (_isImproviserUsingSkill)
+        if (improviser.GetCurrentSkill() != null)
         {
-            // 結算“後手方”已按下的技能的以太值和最大以太值提升。
-            improviser.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
-            //StartCoroutine( ShowPopUpDisplayInfo( improviser, statePointReduced: improviserBattleResultData.statePointCost, maximumStatePointIncreased: improviserBattleResultData.maximumStatePointIncrease ) );
-            improviser.ShowPopUpDisplayInfoV2( maxStatePointUp: improviserBattleResultData.maximumStatePointIncrease/*, statePointDamage: improviserBattleResultData.statePointCost*/ );
+            BattleResultData.BattleResultData_GameCharacter _improviserBattleResultData = battleResultDataList[ 0 ].GetGameCharacterResultData( improviser );
+
+            // 結算演出時機 A - 在 Part B 的第 0.1 秒起播放。
+            // 參數：以太值消耗、以太值提升
+            LeanTween.delayedCall( 0.1f, () =>
+            {
+                improviser.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
+                //StartCoroutine( ShowPopUpDisplayInfo( improviser, statePointReduced: improviserBattleResultData.statePointCost, maximumStatePointIncreased: improviserBattleResultData.maximumStatePointIncrease ) );
+                improviser.ShowPopUpDisplayInfoV2( maxStatePointUp: _improviserBattleResultData.maximumStatePointIncrease/*, statePointDamage: improviserBattleResultData.statePointCost*/ );
+            } );
         }
 
         this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtPartB();
@@ -850,10 +851,13 @@ public partial class BattleAnimationManager : MonoBehaviour
     //private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber,
     private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV3 atlSlotListPanel, int atlNumber )
     {
-        StartPartB( out BattleResultData _battleResultData,
-                    out BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData,
-                    out BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData,
+        StartPartB( out List<BattleResultData> _battleResultDataList,
                     attacker, attackTarget, out GameCharacter _, out GameCharacter _ );
+
+        BattleResultData _battleResultData = _battleResultDataList[ 1 ];
+        BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( attacker );
+        BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( attackTarget );
+        ShowBattleLog( _battleResultData.GetResultLogList() );
 
         attacker.GetSortingGroup().sortingOrder = 3;
         attackTarget.GetSortingGroup().sortingOrder = 1;

@@ -304,13 +304,13 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     }
 
     //重受擊相殺
-    public static void RunHeavyRecipientsXiangSha(ref BattleResultData battleResultData, GameCharacter playerOne, GameCharacter playerTwo)
+    public static void RunHeavyRecipientsHittingEachOther(ref BattleResultData battleResultData, GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
     {
-        CalculateRecipientHealthResult(ref battleResultData, playerTwo, playerOne, true);
-        CalculateRecipientHealthResult(ref battleResultData, playerOne, playerTwo, true);
+        CalculateRecipientHealthResult(ref battleResultData, gameCharacterTwo, gameCharacterOne, true);
+        CalculateRecipientHealthResult(ref battleResultData, gameCharacterOne, gameCharacterTwo, true);
     }
 
-    public static void CalculateRecipientHealthResult(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient, bool isXiangSha)
+    public static void CalculateRecipientHealthResult(ref BattleResultData battleResultData, GameCharacter assaulter, GameCharacter recipient, bool isHittingEachOther)
     {
         BattleResultData.BattleResultData_GameCharacter _recipient_BattleResultData = battleResultData.GetGameCharacterResultData(recipient);
 
@@ -382,7 +382,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             (_isAssaulter_NonePassiveSkill && _isRecipient_NonePassiveSkill) ||
             (_isAssaulter_StressPassiveSkill && _isRecipient_NonePassiveSkill) ||
             (_isAssaulter_NonePassiveSkill && _isRecipient_StressPassiveSkill))
-            && !isXiangSha)
+            && !isHittingEachOther)
         {
             // ["重受擊方"生命值]-{["重直擊方"直擊傷害]*[1+n]-["重受擊方"已按下技能的減傷率]}
             _recipientHealthPointDamage = _assaulterSkillDamage * (1 + _energyMarker_value) - _damageReduction;
@@ -403,14 +403,14 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         // (assaulter == 生命流 || recipient == 生命流 || assaulter == 以太流 || recipient == 以太流)
         else if (_isAssaulter_LifePassiveSkill || _isRecipient_LifePassiveSkill ||
             _isAssaulter_StatePassiveSkill || _isRecipient_StatePassiveSkill
-            || isXiangSha)
+            || isHittingEachOther)
         {
             // ["重受擊方"生命值]-{["重直擊方"直擊傷害]*[1+n+n+n]*[1-n-n-n]-["重受擊方"已按下技能的減傷率]}
             //相殺 same formula
 
             _recipientHealthPointDamage = _assaulterSkillDamage * (1 + _pSL3_MengLie_value + _assaulter_pSL12_ShengShengBuXi_value + _energyMarker_value)
                 * (1 - _pSL4_JianRen_value - _recipient_pSL12_ShengShengBuXi_value - _pSE12_NiFeng_value) - _damageReduction;
-            if(isXiangSha)
+            if(isHittingEachOther)
             {
                 battleResultData.AddResultLog(recipientPlayer + " 生命值結算");
                 battleResultData.AddResultLog("[\"" + recipientPlayer + "\"生命值]-{[\"" + assaulterPlayer + "\"直擊傷害]*[1+\"" + assaulterPlayer + "\"猛烈+\"" + assaulterPlayer + "\"生生不息+\""
@@ -433,7 +433,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         // 如果是重受擊方 = 傷害 * n
         float _finalHealthPointDamage = recipient.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyRecipient) ? _recipientHealthPointDamage * _breakStatus_value : _recipientHealthPointDamage;
 
-        if(isXiangSha)
+        if(isHittingEachOther)
         {
             battleResultData.AddResultLog(recipientPlayer + " 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(recipient.GetSelectedPassiveSkillCategoryType()));
 
