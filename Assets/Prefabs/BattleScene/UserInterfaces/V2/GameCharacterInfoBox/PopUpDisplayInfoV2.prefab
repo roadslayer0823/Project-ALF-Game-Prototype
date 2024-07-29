@@ -651,6 +651,7 @@ MonoBehaviour:
   statePointDamageDisplay: {fileID: 5253034995604299155}
   stressValueDamageDisplay: {fileID: 3660306814785651265}
   stressValueDownDisplay: {fileID: 8257032558277915844}
+  evasionStressDamageDisplay: {fileID: 4471358213003043341}
 --- !u!210 &8363255808010676762
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -1653,7 +1654,7 @@ GameObject:
   - component: {fileID: 7053779710763313418}
   - component: {fileID: 4471358213003043341}
   m_Layer: 6
-  m_Name: EvasionStress
+  m_Name: EvasionStressDamage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
