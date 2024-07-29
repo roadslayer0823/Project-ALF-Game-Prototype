@@ -135,6 +135,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 29e85f12d176143dc8cf7acb4e0526fc, type: 3}
   - {fileID: 21300000, guid: c6971722cae5943ce8b65023be35a237, type: 3}
   - {fileID: 21300000, guid: 4668e922ca189428b9c72ad0c0b02af2, type: 3}
+  - {fileID: 21300000, guid: d4ec3f223fe224734a6cee2cc2a8c8f9, type: 3}
   - {fileID: 21300000, guid: 0304cd32a3af545739e5ade081801165, type: 3}
   - {fileID: 21300000, guid: 0de0e3425c7eb4bbcb9c87931a8db249, type: 3}
   - {fileID: 21300000, guid: aae15e420bc8f4d89b773da1056cc60c, type: 3}
@@ -555,6 +556,7 @@ SpriteAtlas:
   - GodSPD_01
   - "\u6575\u65B9_\u4F7F\u7528\u6642"
   - BGB01
+  - "\u56DE\u907F\u538B\u529B"
   - "\u8FCE\u64CAICON"
   - "\u8CA0\u8377break (39)"
   - "\u4EE5\u592A\u6D41\u672A\u9078\u4E2D"
