@@ -50,12 +50,6 @@ public class BattleVisualEffectManager : MonoBehaviour
         }
     }
 
-    // 迎擊點
-    public void ApplyBlurShaderAtRepulse()
-    {
-        ApplyBlurShaderWithCenter(0.55f, 0.2f);
-    }
-
     public void ApplyBlurShaderWithCenter(float centerX,float centerY)
     {
         this.cameraRadiusBlur.onShader = true;
@@ -85,8 +79,10 @@ public class BattleVisualEffectManager : MonoBehaviour
         }
     }
 
+    // 迎擊點
     public void ApplyBlurShaderAnimationAtRepulse()
     {
+        ApplyBlurShaderWithCenter(0.55f, 0.2f);
         this.cameraRadiusBlur.onShader = true;
         StartCoroutine(SetBlurDelay());
     }
