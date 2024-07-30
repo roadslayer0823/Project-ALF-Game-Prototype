@@ -33,16 +33,35 @@ public class BattleVisualEffectManager : MonoBehaviour
         }
     }
 
-#region Radius Blur
+    #region Radius Blur
 
-    public void ApplyBlurShaderAtPartB()
+    // 直擊類的演出: 受擊方的中心處
+    public void ApplyBlurShaderAtRecipient(bool isPlayer = false)
+    {
+        // 受擊方: 我方
+        if (isPlayer)
+        {
+            ApplyBlurShaderWithCenter(0.4f, 0.5f);
+        }
+        // 受擊方: 敵方
+        else
+        {
+            ApplyBlurShaderWithCenter(0.6f,0.5f);
+        }
+    }
+
+    // 迎擊點
+    public void ApplyBlurShaderAtRepulse()
+    {
+        ApplyBlurShaderWithCenter(0.55f, 0.2f);
+    }
+
+    public void ApplyBlurShaderWithCenter(float centerX,float centerY)
     {
         this.cameraRadiusBlur.onShader = true;
 
-        float _centerX = 0.5f;
-        float _centerY = 0.5f;
         float _radiusOffset = 0.004f;
-        Vector3 _radiusData = new Vector3(_centerX, _centerY, _radiusOffset);
+        Vector3 _radiusData = new Vector3(centerX, centerY, _radiusOffset);
 
         this.cameraRadiusBlur.SetShaderValue(_radiusData, 5, 0);
     }

@@ -777,7 +777,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             } );
         }
 
-        this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtPartB();
+        this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtRecipient();
 
         LeanTween.delayedCall( 0.5f, () =>
         {
