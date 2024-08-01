@@ -2,24 +2,24 @@ using UnityEngine;
 
 public class BattleAnimationEventManager : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private SpriteRenderer background = null;
-    [SerializeField] private Sprite leftBackgroundSprite = null;
-    [SerializeField] private Sprite rightBackgroundSprite = null;
+    [SerializeField] private GameObject playerContainer = null;
+    [SerializeField] private GameObject opponentContainer = null;
+    private BattleVisualEffectManager battleVisualEffectManager = null;
 
     public enum CharacterAnimationEventType
     {
         None,
         OnStart,
         OnEnd,
-        ShowLeftView,
-        ShowRightView,
         PlaySoundEffect,
         ShowInfoWhenUsingSkill,
         ShowInfoOnHit,
-        ReadyForRepulse,
-        ReadyForDefense,
-        ReadyForEvasion
+        StartPartB,
+    }
+
+    public void SetUp(BattleVisualEffectManager battleVisualEffectManager)
+    {
+        this.battleVisualEffectManager = battleVisualEffectManager;
     }
 
     public void OnAnimationEventTriggered (CharacterAnimationEventType animationEventType, string parameter = "")
@@ -32,14 +32,6 @@ public class BattleAnimationEventManager : MonoBehaviour
             case CharacterAnimationEventType.OnEnd:
                 break;
 
-            case CharacterAnimationEventType.ShowLeftView:
-                this.background.sprite = this.leftBackgroundSprite;
-                break;
-
-            case CharacterAnimationEventType.ShowRightView:
-                this.background.sprite = this.rightBackgroundSprite;
-                break;
-
             case CharacterAnimationEventType.PlaySoundEffect:
                 AudioManager.Instance.PlaySoundEffect(parameter);
                 break;
@@ -50,13 +42,8 @@ public class BattleAnimationEventManager : MonoBehaviour
             case CharacterAnimationEventType.ShowInfoOnHit:
                 break;
 
-            case CharacterAnimationEventType.ReadyForRepulse:
-                break;
-
-            case CharacterAnimationEventType.ReadyForDefense:
-                break;
-
-            case CharacterAnimationEventType.ReadyForEvasion:
+            case CharacterAnimationEventType.StartPartB:
+                battleVisualEffectManager.ApplyBlurShaderAtRecipient();
                 break;
         }
     }
