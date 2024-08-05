@@ -161,6 +161,7 @@ MonoBehaviour:
   subskillSheetName: Subskills
   skillAnimationSheetName: Skill_Animations
   passiveSkillSheetName: Passive_Skills
+  animationSheetName: Animations
 --- !u!4 &37411784
 Transform:
   m_ObjectHideFlags: 0
