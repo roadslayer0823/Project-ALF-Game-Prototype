@@ -168,6 +168,10 @@ public class AdminPage : MonoBehaviour
             {
                 _tableStatus = _databaseManager.GetPassiveSkillTableStatus();
             }
+            else if(_sheetName == _databaseManager.GetAnimationSheetName())
+            {
+                _tableStatus = _databaseManager.GetAnimationTableStatus();
+            }
 
             UpdateTableRowStatus( _tableRow, _tableStatus );
         }

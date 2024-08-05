@@ -19,6 +19,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
     [SerializeField] private string subskillSheetName = "";
     [SerializeField] private string skillAnimationSheetName = "";
     [SerializeField] private string passiveSkillSheetName = "";
+    [SerializeField] private string animationSheetName = "";
 
     private List<Version> versionList = new();
     private List<Configuration> configurationList = new();
@@ -27,6 +28,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
     private List<Subskill> subskillList = new();
     private List<SkillAnimation> skillAnimationList = new();
     private List<PassiveSkill> passiveSkillList = new();
+    private List<AnimationTable> animationList = new();
 
     private TableStatus versionTableStatus = TableStatus.None;
     private TableStatus configurationTableStatus = TableStatus.None;
@@ -35,6 +37,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
     private TableStatus subskillTableStatus = TableStatus.None;
     private TableStatus skillAnimationTableStatus = TableStatus.None;
     private TableStatus passiveSkillTableStatus = TableStatus.None;
+    private TableStatus animationTableStatus = TableStatus.None;
 
     public Action onAllVersionsLoadedCallback = null;
     public Action onDataCheckingCallback = null;
@@ -74,6 +77,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
             string _subskillJsonData = PlayerPrefsManager.LoadSubskillDatabase();
             string _skillAnimationJsonData = PlayerPrefsManager.LoadSkillAnimationDatabase();
             string _passiveSkillJsonData = PlayerPrefsManager.LoadPassiveSkillDatabase();
+            string _animationJsonData = PlayerPrefsManager.LoadAnimationDatabase();
 
             if (!string.IsNullOrEmpty( _versionJsonData )
                 && !string.IsNullOrEmpty( _configurationJsonData )
@@ -82,6 +86,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 && !string.IsNullOrEmpty( _subskillJsonData )
                 && !string.IsNullOrEmpty( _skillAnimationJsonData )
                 && !string.IsNullOrEmpty( _passiveSkillJsonData )
+                && !string.IsNullOrEmpty( _animationJsonData )
                 )
             {
                 ProcessJsonData<Configuration>(_configurationJsonData, this.configurationSheetName);
@@ -90,6 +95,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 ProcessJsonData<Subskill>( _subskillJsonData, this.subskillSheetName );
                 ProcessJsonData<SkillAnimation>(_skillAnimationJsonData, this.skillAnimationSheetName);
                 ProcessJsonData<PassiveSkill>( _passiveSkillJsonData, this.passiveSkillSheetName );
+                ProcessJsonData<AnimationTable>(_animationJsonData, this.animationSheetName);
             }
             else
             {
@@ -159,6 +165,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
                                 StartCoroutine( GetJsonData<PassiveSkill>( this.passiveSkillSheetName, _latestVersionNumber ) );
                                 Debug.Log( "Update: " + this.passiveSkillSheetName );
                             }
+                            else if(_latestDatabaseVersion.SheetName == this.animationSheetName)
+                            {
+                                StartCoroutine(GetJsonData<AnimationTable>(this.animationSheetName, _latestVersionNumber));
+                                Debug.Log("Update: " + this.animationSheetName);
+                            }
                         }
                         else
                         {
@@ -193,6 +204,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         StartCoroutine( GetJsonData<Subskill>( this.subskillSheetName ) );
         StartCoroutine( GetJsonData<SkillAnimation>( this.skillAnimationSheetName ) );
         StartCoroutine( GetJsonData<PassiveSkill>( this.passiveSkillSheetName ) );
+        StartCoroutine( GetJsonData<AnimationTable>(this.animationSheetName));
     }
 
     private IEnumerator GetJsonData<T>( string sheetName, int versionNumber = 0 ) where T : class
@@ -232,7 +244,8 @@ public class DatabaseManager : Singleton<DatabaseManager>
             && this.skillTableStatus == TableStatus.UpToDate
             && this.subskillTableStatus == TableStatus.UpToDate
             && this.skillTableStatus == TableStatus.UpToDate
-            && this.passiveSkillTableStatus == TableStatus.UpToDate)
+            && this.passiveSkillTableStatus == TableStatus.UpToDate
+            && this.animationTableStatus == TableStatus.UpToDate)
         {
             onAllDataLoadedCallback?.Invoke();
         }
@@ -330,6 +343,20 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
             PlayerPrefsManager.SavePassiveSkillDatabase( jsonData );
         }
+        else if (sheetName == this.animationSheetName)
+        {
+            this.animationList = dataList as List<AnimationTable>;
+
+            foreach(AnimationTable animation in this.animationList)
+            {
+                animation.Code = (AnimationTable.CodeType)Enum.Parse(typeof(AnimationTable.CodeType), animation.CodeString);
+                animation.SubskillIdsArray = ConvertStringToStringArray(animation.SubskillIdsArrayString);
+                animation.ActionsArray = ConvertStringToStringArray(animation.ActionsArrayString);
+                animation.EffectsArray = ConvertStringToStringArray(animation.EffectsArrayString);
+                animation.AudiosArray = ConvertStringToStringArray(animation.AudiosArrayString);
+            }
+            PlayerPrefsManager.SaveAnimationDatabase(jsonData);
+        }
 
         UpdateTableStatus( sheetName, TableStatus.UpToDate );
     }
@@ -363,6 +390,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
         else if (sheetName == this.passiveSkillSheetName)
         {
             this.passiveSkillTableStatus = tableStatus;
+        }
+        else if(sheetName == this.animationSheetName)
+        {
+            this.animationTableStatus = tableStatus;
         }
 
         if (this.onDataUpdatedCallback != null)
@@ -493,6 +524,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.passiveSkillList;
     }
 
+    public List<AnimationTable> GetAnimationSkillList()
+    {
+        return this.animationList;
+    }
+
     public string GetVersionSheetName()
     {
         return this.versionSheetName;
@@ -528,6 +564,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.passiveSkillSheetName;
     }
 
+    public string GetAnimationSheetName()
+    {
+        return this.animationSheetName;
+    }
+
     public TableStatus GetVersionTableStatus()
     {
         return this.versionTableStatus;
@@ -561,6 +602,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
     public TableStatus GetPassiveSkillTableStatus()
     {
         return this.passiveSkillTableStatus;
+    }
+
+    public TableStatus GetAnimationTableStatus()
+    {
+        return this.animationTableStatus;
     }
 
     // Inner classes declaration
@@ -868,6 +914,75 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
         [JsonProperty( "description" )]
         public string Description { get; private set; }
+    }
+
+    [Serializable]
+    public class AnimationTable
+    {
+        [JsonProperty("id")]
+        public string Id { get; private set; }
+
+        [JsonProperty("code")]
+        [HideInInspector] public string CodeString { get; private set; }
+        public enum CodeType
+        {
+            camB_partA_V1,
+            camB_partA_VF,
+            camA_type_BDVC,
+            camA_type_BDV1,
+            camA_type_BDV2,
+            camB_type_CDV1,
+            camB_type_CDV2,
+            camB_type_CDVF,
+            camA_type_AVC,
+            camA_type_AV1,
+            camBA_type_AV1,
+            camA_type_AV2,
+            camB_type_CFW,
+            camB_type_CFWVF,
+            camA_type_BFL,
+            camA_type_D_L,
+            camB_type_D_H,
+            camB_type_BLPVC_L,
+            camB_type_BLPVC_H,
+            camA_type_BLPV1_L,
+            camA_type_BLPV1_H,
+            camA_type_BLPV2_L,
+            camA_type_BLPV2_H,
+            camB_type_CDV3,
+            camB_type_CLSV1_L,
+            camB_type_CLSV1_H,
+            camB_type_CLSV2_L,
+            camB_type_CLSV2_H,
+            camB_type_CLSVF_L,
+            camB_type_CLSVF_H,
+            camB_type_CLPV1_L,
+            camB_type_CLPV1_H,
+            camB_type_CLPV2_L,
+            camB_type_CLPV2_H,
+            camB_type_CLPVF_L,
+            camB_type_CLPVF_H,
+        }
+        public CodeType Code;
+
+        [JsonProperty("subskill_ids")]
+        [HideInInspector] public string SubskillIdsArrayString { get; private set; }
+        public string[] SubskillIdsArray;
+
+        [JsonProperty("type")]
+        public string Type { get; private set; }
+
+        [JsonProperty("actions")]
+        [HideInInspector] public string ActionsArrayString { get; private set; }
+        public string[] ActionsArray;
+
+        [JsonProperty("effects")]
+        [HideInInspector] public string EffectsArrayString { get; private set; }
+        public string[] EffectsArray;
+
+        [JsonProperty("audios")]
+        [HideInInspector] public string AudiosArrayString { get; private set; }
+        public string[] AudiosArray;
     }
 
     #endregion
