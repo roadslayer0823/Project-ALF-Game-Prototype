@@ -32,6 +32,7 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private float statePointCostMultiplier = 0.0f;
         private float statePointCostMultiplierOnSkillUpdate = 0.0f;
         private float statePointDamageMultiplier = 0.0f;
+        private float highestMaximumStatePoint = 0.0f;
         private float lowestMaximumStatePoint = 0.0f;
         private float minimumCurrentStatePoint = 0.0f;
         private float stressValueDamageMultiplier = 0.0f;
@@ -61,6 +62,7 @@ public class GameConfiguration : Singleton<GameConfiguration>
         private const string STATE_POINT_COST_MULTIPLIER = "state_point_cost_multiplier";
         private const string STATE_POINT_COST_MULTIPLIER_ON_SKILL_UPDATE = "state_point_cost_multiplier_on_skill_update";
         private const string STATE_POINT_DAMAGE_MULTIPLIER = "state_point_damage_multiplier";
+        private const string HIGHEST_MAXIMUM_STATE_POINT = "highest_maximum_state_point";
         private const string LOWEST_MAXIMUM_STATE_POINT = "lowest_maximum_state_point";
         private const string MINIMUM_CURRENT_STATE_POINT = "minimum_current_state_point";
         private const string STRESS_VALUE_DAMAGE_MULTIPLIER = "stress_value_damage_multiplier";
@@ -127,6 +129,10 @@ public class GameConfiguration : Singleton<GameConfiguration>
 
                     case STATE_POINT_DAMAGE_MULTIPLIER:
                         this.statePointDamageMultiplier = _configurationValue;
+                        break;
+
+                    case HIGHEST_MAXIMUM_STATE_POINT:
+                        this.highestMaximumStatePoint = _configurationValue;
                         break;
 
                     case LOWEST_MAXIMUM_STATE_POINT:
@@ -255,6 +261,11 @@ public class GameConfiguration : Singleton<GameConfiguration>
         public float GetStatePointDamageMultiplier()
         {
             return this.statePointDamageMultiplier;
+        }
+
+        public float GetHighestMaximumStatePoint()
+        {
+            return this.highestMaximumStatePoint;
         }
 
         public float GetLowestMaximumStatePoint()

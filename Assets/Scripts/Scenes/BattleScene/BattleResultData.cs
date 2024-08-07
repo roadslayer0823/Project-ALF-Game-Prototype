@@ -169,8 +169,9 @@ public class BattleResultData
 
         public void SetMaximumStatePoint( float value )
         {
-            float _lowestMaximumStatePoint = GameConfiguration.Instance.GetBattleConfiguration().GetLowestMaximumStatePoint();
-            this.maximumStatePoint = ( this.maximumStatePoint < _lowestMaximumStatePoint ) ? _lowestMaximumStatePoint : value;
+            this.maximumStatePoint = Mathf.Clamp( value,
+                GameConfiguration.Instance.GetBattleConfiguration().GetLowestMaximumStatePoint(),
+                GameConfiguration.Instance.GetBattleConfiguration().GetHighestMaximumStatePoint() );
         }
 
         public void SetCurrentStatePoint( float value )
