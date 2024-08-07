@@ -2152,6 +2152,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3144905139374242528, guid: 45271a9521e5547f082a91cbf85c29c0, type: 3}
+      propertyPath: cutScreenMoveDuration
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 5587696620142100854, guid: 45271a9521e5547f082a91cbf85c29c0, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
