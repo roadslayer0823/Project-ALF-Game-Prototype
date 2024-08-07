@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 
 public class DatabaseManager : Singleton<DatabaseManager>
@@ -28,7 +29,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
     private List<Subskill> subskillList = new();
     private List<SkillAnimation> skillAnimationList = new();
     private List<PassiveSkill> passiveSkillList = new();
-    private List<AnimationTable> animationList = new();
+    private List<AnimationData> animationList = new();
 
     private TableStatus versionTableStatus = TableStatus.None;
     private TableStatus configurationTableStatus = TableStatus.None;
@@ -95,7 +96,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 ProcessJsonData<Subskill>( _subskillJsonData, this.subskillSheetName );
                 ProcessJsonData<SkillAnimation>(_skillAnimationJsonData, this.skillAnimationSheetName);
                 ProcessJsonData<PassiveSkill>( _passiveSkillJsonData, this.passiveSkillSheetName );
-                ProcessJsonData<AnimationTable>(_animationJsonData, this.animationSheetName);
+                ProcessJsonData<AnimationData>(_animationJsonData, this.animationSheetName);
             }
             else
             {
@@ -167,7 +168,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
                             }
                             else if(_latestDatabaseVersion.SheetName == this.animationSheetName)
                             {
-                                StartCoroutine(GetJsonData<AnimationTable>(this.animationSheetName, _latestVersionNumber));
+                                StartCoroutine(GetJsonData<AnimationData>(this.animationSheetName, _latestVersionNumber));
                                 Debug.Log("Update: " + this.animationSheetName);
                             }
                         }
@@ -204,7 +205,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         StartCoroutine( GetJsonData<Subskill>( this.subskillSheetName ) );
         StartCoroutine( GetJsonData<SkillAnimation>( this.skillAnimationSheetName ) );
         StartCoroutine( GetJsonData<PassiveSkill>( this.passiveSkillSheetName ) );
-        StartCoroutine( GetJsonData<AnimationTable>(this.animationSheetName));
+        StartCoroutine( GetJsonData<AnimationData>(this.animationSheetName));
     }
 
     private IEnumerator GetJsonData<T>( string sheetName, int versionNumber = 0 ) where T : class
@@ -345,11 +346,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
         }
         else if (sheetName == this.animationSheetName)
         {
-            this.animationList = dataList as List<AnimationTable>;
+            this.animationList = dataList as List<AnimationData>;
 
-            foreach(AnimationTable animation in this.animationList)
+            foreach(AnimationData animation in this.animationList)
             {
-                animation.Code = (AnimationTable.CodeType)Enum.Parse(typeof(AnimationTable.CodeType), animation.CodeString);
+                animation.Code = (AnimationData.CodeType)Enum.Parse(typeof(AnimationData.CodeType), animation.CodeString);
                 animation.SubskillIdsArray = ConvertStringToStringArray(animation.SubskillIdsArrayString);
                 animation.ActionsArray = ConvertStringToStringArray(animation.ActionsArrayString);
                 animation.EffectsArray = ConvertStringToStringArray(animation.EffectsArrayString);
@@ -524,9 +525,32 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.passiveSkillList;
     }
 
-    public List<AnimationTable> GetAnimationSkillList()
+    public AnimationData GetAnimationData(AnimationData.CodeType codeType, string subskillId = "", int type = 0)
     {
-        return this.animationList;
+        for(int i = 0; i < animationList.Count; i++)
+        {
+            AnimationData animationData = animationList[i];
+
+            if(codeType == animationData.Code)
+            {
+                if(String.IsNullOrEmpty(subskillId))
+                {
+                   if(type == 0)
+                   {
+                        return animationData;
+                   }
+                   else if (type == animationData.Type)
+                   {
+                        return animationData;
+                   }
+                }
+                else if(animationData.SubskillIdsArray.ToList().Contains(subskillId) && type == animationData.Type)
+                {
+                    return animationData;
+                }
+            }
+        }
+        return null;
     }
 
     public string GetVersionSheetName()
@@ -917,7 +941,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
     }
 
     [Serializable]
-    public class AnimationTable
+    public class AnimationData
     {
         [JsonProperty("id")]
         public string Id { get; private set; }
@@ -970,7 +994,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         public string[] SubskillIdsArray;
 
         [JsonProperty("type")]
-        public string Type { get; private set; }
+        public int Type { get; private set; }
 
         [JsonProperty("actions")]
         [HideInInspector] public string ActionsArrayString { get; private set; }
