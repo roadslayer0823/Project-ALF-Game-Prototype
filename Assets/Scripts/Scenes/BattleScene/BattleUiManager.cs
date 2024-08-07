@@ -19,6 +19,7 @@ public class BattleUiManager : MonoBehaviour
 
     [Header( "Version 2" )]
     [SerializeField] private ScreenSizeController screenSizeController = null;
+    [SerializeField] private GameObjectPositionHandler gameObjectPositionHandler = null;
     [SerializeField] private PreparationSection preparationSection = null;
     [SerializeField] private SkillSelectionPanelV2 skillSelectionPanelV2 = null;
     [SerializeField] private SkillInfoPanel skillInfoPanel = null;
@@ -56,6 +57,7 @@ public class BattleUiManager : MonoBehaviour
         this.battleGameManager = battleGameManager;
 
         this.screenSizeController.Initialize();
+        this.gameObjectPositionHandler.Initialize();
         Canvas.ForceUpdateCanvases();
 
         if (this.preparationSection == null)
