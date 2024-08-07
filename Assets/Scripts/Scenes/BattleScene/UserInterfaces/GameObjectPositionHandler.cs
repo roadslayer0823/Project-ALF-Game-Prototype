@@ -17,17 +17,10 @@ public class GameObjectPositionHandler : MonoBehaviour
     [SerializeField] private CanvasScaler canvasScaler;
     [SerializeField] private Camera mainCamera;
 
-    private const float maximumAspectRatio = 19.5f / 9.0f;
-
     public void Initialize()
     {
         float _aspectRatio = (float)Screen.width / (float)Screen.height;
         float _targetAspectRatio = AspectRatioX / AspectRatioY;
-
-       
-        this.canvasScaler.matchWidthOrHeight = (_aspectRatio < _targetAspectRatio) ? 0.0f :
-                                               (_aspectRatio <= maximumAspectRatio) ? 1.0f - (((_aspectRatio - _targetAspectRatio) / (maximumAspectRatio - _targetAspectRatio)) * 0.25f) :
-                                               0.75f + ((((_aspectRatio - _targetAspectRatio) / (maximumAspectRatio - _targetAspectRatio)) - 1.0f) * 0.065f);
 
         if(_aspectRatio > _targetAspectRatio)
         {
@@ -46,6 +39,5 @@ public class GameObjectPositionHandler : MonoBehaviour
             _battleFieldPosition.y = -0.5f;
             BattleFieldPosition.position = _battleFieldPosition;
         }
-        this.mainCamera.orthographicSize = (_aspectRatio < 1.6f) ? 8.0f : (_aspectRatio < 1.9f) ? 6.2f : 5.6f;
     }
 }
