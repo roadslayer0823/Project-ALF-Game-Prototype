@@ -14,8 +14,6 @@ public class GameObjectPositionHandler : MonoBehaviour
     [SerializeField] private RectTransform BackendSkillSlotList;
     [SerializeField] private RectTransform SkillSelectionPanelList;
     [SerializeField] private RectTransform DebugContainer;
-    [SerializeField] private CanvasScaler canvasScaler;
-    [SerializeField] private Camera mainCamera;
 
     public void Initialize()
     {
