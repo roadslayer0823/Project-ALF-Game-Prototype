@@ -80,7 +80,7 @@ MonoBehaviour:
   - id: passive_skill_choose
     clip: {fileID: 8300000, guid: 7ac1f9cc9eafc49f5b8f4a1dc95b071a, type: 3}
   - id: crash
-    clip: {fileID: 8300000, guid: cc488fa43d1aa42df9a2c7f833b03236, type: 3}
+    clip: {fileID: 8300000, guid: 17b0c37ac09a44f85b403077e267707c, type: 3}
   - id: ef01_partA
     clip: {fileID: 8300000, guid: b3c435d7d4f8e4d7bad635eea56cbfa3, type: 3}
   - id: ef01_partB_typeA
