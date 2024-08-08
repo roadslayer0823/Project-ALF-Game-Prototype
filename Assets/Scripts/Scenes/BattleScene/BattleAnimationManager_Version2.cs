@@ -206,6 +206,9 @@ public partial class BattleAnimationManager : MonoBehaviour
                 yield break;
             }
 
+            battleFlowRound.EndCurrentRound();
+            yield return StartCoroutine( RunTransitioningToNextATL() );
+
             yield break;
         }
         // NO
@@ -392,6 +395,8 @@ public partial class BattleAnimationManager : MonoBehaviour
         _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
         _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _improviser );
         ShowBattleLog( _battleResultData.GetResultLogList() );
+
+        StartCoroutine( RunCheckingIfDerivedSkillIsSelected( _winner, _skillCountdownTime, _skillCountdownTimeStartTime ) );
 
         LeanTween.delayedCall( 0.3f, () =>
         {
@@ -655,6 +660,22 @@ public partial class BattleAnimationManager : MonoBehaviour
             }
         }
 
+        yield return StartCoroutine( RunTransitioningToNextATL() );
+    }
+
+    private IEnumerator RunCheckingIfDerivedSkillIsSelected( GameCharacter gameCharacter, float countdownTime, float countdownStartTime )
+    {
+        yield return new WaitUntil( () => gameCharacter.GetAssignedSkill() != null );
+
+        if (gameCharacter.GetAssignedSkill().GetSkillData().skillType == Skill.SkillType.derived)
+        {
+            this.deriveSkillAnimationHandler.gameObject.SetActive( true );
+            this.deriveSkillAnimationHandler.PlayDeriveAnimationPart1( countdownTime - ( Time.time - countdownStartTime ) );
+        }
+    }
+
+    private IEnumerator RunTransitioningToNextATL()
+    {
         this.hasTransitionAnimationEnded = false;
         this.battleGameManager.GetBattleVisualEffectManager().TransitionToNextATL( () => { this.hasTransitionAnimationEnded = true; } );
         yield return new WaitUntil( () => this.hasTransitionAnimationEnded );
@@ -859,6 +880,16 @@ public partial class BattleAnimationManager : MonoBehaviour
         BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( attackTarget );
         ShowBattleLog( _battleResultData.GetResultLogList() );
 
+        this.isAnimationEventTriggered = false;
+        this.deriveSkillAnimationHandler.PlayDeriveAnimationPart2();
+        yield return new WaitUntil( () => this.isAnimationEventTriggered );
+        attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
+        attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
+        attackTarget.ShowPopUpDisplayInfoV2( healthPointDamage: _attackTargetBattleResultData.actualHealthPointDamageTaken, stressValueDamage: _attackTargetBattleResultData.stressValueDamageTaken, statePointDamage: _attackTargetBattleResultData.statePointDamageTaken );
+        this.isAnimationEventTriggered = false;
+        yield return new WaitUntil( () => this.isAnimationEventTriggered );
+
+        /*
         attacker.GetSortingGroup().sortingOrder = 3;
         attackTarget.GetSortingGroup().sortingOrder = 1;
 
@@ -901,16 +932,19 @@ public partial class BattleAnimationManager : MonoBehaviour
                 yield return new WaitForSeconds( 0.7f );
             }
         }
+        */
 
         if (_battleResultData != null)
         {
-            yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+            //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
         }
         else
         {
             OnCasterBeingUnableToUseSkill( attacker );
             yield return new WaitForSeconds( 1.0f );
         }
+
+        this.deriveSkillAnimationHandler.gameObject.SetActive( false );
     }
 
     private IEnumerator PlayCharacterAnimation( GameCharacter gameCharacter, string animationName, BattleResultData.BattleResultData_GameCharacter battleResultData )

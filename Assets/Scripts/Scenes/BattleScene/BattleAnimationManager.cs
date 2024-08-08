@@ -22,6 +22,7 @@ public partial class BattleAnimationManager : MonoBehaviour
     [SerializeField] private Sprite backgroundPartB = null;
     [SerializeField] private Animator skillEffectAnimator = null;
     [SerializeField] private Animator skillEffectUiAnimator = null;
+    [SerializeField] private DeriveSkillAnimationHandler deriveSkillAnimationHandler = null;
 
     [SerializeField] private Camera targetCamera = null;
     [SerializeField] private CameraEffects cameraEffect = null;

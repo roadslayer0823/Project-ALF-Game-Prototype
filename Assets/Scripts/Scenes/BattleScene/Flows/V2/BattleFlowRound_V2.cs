@@ -14,6 +14,8 @@ public class BattleFlowRound_V2
     private Action<PhaseType> onCurrentPhaseChangedCallback = null;
     private BattleFlowATL_V2 extraATL = null;
 
+    private Coroutine runningCoroutine = null;
+
     public enum PhaseType
     {
         None,
@@ -40,7 +42,7 @@ public class BattleFlowRound_V2
     public void StartRunningATL()
     {
         this.flowATLIndex = 0;
-        this.battleFlowManager.StartCoroutine( RunATLFlow() );
+        this.runningCoroutine = this.battleFlowManager.StartCoroutine( RunATLFlow() );
     }
 
     private IEnumerator RunATLFlow()
@@ -84,6 +86,12 @@ public class BattleFlowRound_V2
         }
         while ( true );
 
+        this.runningCoroutine = null;
+        this.battleFlowManager.StartCoroutine( RunRoundEnding() );
+    }
+
+    private IEnumerator RunRoundEnding()
+    {
         //this.battleFlowManager.GetBattleGameManager().GetBattleUiManager().GetATLSlotListPanelV2().GoToFinish( 0.2f );
         this.battleFlowManager.GetBattleGameManager().GetBattleUiManager().GetATLSlotListPanelV3().GoToFinish( 0.2f );
         yield return new WaitForSeconds( 0.3f );
@@ -107,6 +115,16 @@ public class BattleFlowRound_V2
         }
 
         return _currentATL;
+    }
+
+    public void EndCurrentRound()
+    {
+        if (this.runningCoroutine != null)
+        {
+            this.battleFlowManager.StopCoroutine( this.runningCoroutine );
+        }
+
+        this.battleFlowManager.StartCoroutine( RunRoundEnding() );
     }
 
     private void OnAttackOpportunityEnded()
