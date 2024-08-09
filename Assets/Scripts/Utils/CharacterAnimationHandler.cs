@@ -94,7 +94,7 @@ public class CharacterAnimationHandler : MonoBehaviour
         {
             for (int i = 0; i < _effectClipArray.Length; i++)
             {
-                _animationClip = Resources.Load<AnimationClip>("Animations/Battle/Effects/" + _effectClipArray[i]);
+                _animationClip = Resources.Load<AnimationClip>("Animations/Battle/SkillEffects/" + _effectClipArray[i]);
                 if(isFront)
                 {
                     this.skillEffectFrontAnimatorOverrideController["Animation_" + i] = _animationClip;
@@ -117,7 +117,7 @@ public class CharacterAnimationHandler : MonoBehaviour
         // visual effect
         if (!string.IsNullOrEmpty(visualEffectName))
         {
-            _animationClip = Resources.Load<AnimationClip>("Animations/Battle/Effects/" + visualEffectName);
+            _animationClip = Resources.Load<AnimationClip>("Animations/Battle/VisualEffects/" + visualEffectName);
             this.skillEffectBackAnimatorOverrideController["Animation_0"] = _animationClip;
         }
 
