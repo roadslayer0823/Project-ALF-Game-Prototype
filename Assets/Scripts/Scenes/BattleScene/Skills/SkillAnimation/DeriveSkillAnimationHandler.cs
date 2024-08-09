@@ -30,11 +30,11 @@ public class DeriveSkillAnimationHandler : MonoBehaviour
 
     public void ResetAnimation()
     {
-        LeanTween.alpha(part1_Animation.GetComponent<RectTransform>(), 0f, 0.1f).setOnComplete(() =>
-        {
-            Part1_Container.SetActive(true);
-            ResetAnimationPart2();
-        });
+        Color part1AnimationAlpha = this.part1_Animation.color;
+        part1AnimationAlpha.a = 0;
+        this.part1_Animation.color = part1AnimationAlpha;
+        Part1_Container.SetActive(true);
+        ResetAnimationPart2();
     }
 
     public void ResetAnimationPart2()

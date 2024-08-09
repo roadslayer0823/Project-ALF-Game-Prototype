@@ -165,6 +165,8 @@ MonoBehaviour:
   skillInfoPopSpeed: 0.25
   passiveSkillSlotFadeSpeed: 0.5
   passiveSkillSlotShowingDuration: 1.5
+  speedEffectImage: {fileID: 924451552446208861}
+  strengthEffectImage: {fileID: 924451551546000946}
   speedEffectAnimator: {fileID: 924451551512430708}
   strengthEffectAnimator: {fileID: 2047246005996423186}
   skillNameGO: {fileID: 924451550840975135}

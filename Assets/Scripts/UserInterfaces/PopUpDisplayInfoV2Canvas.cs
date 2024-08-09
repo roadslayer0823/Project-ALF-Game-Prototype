@@ -1,0 +1,29 @@
+using UnityEngine;
+
+public class PopUpDisplayInfoV2Canvas : MonoBehaviour
+{
+    [SerializeField] private DisplayInfoV2Canvas healthPointDamageDisplay = null;
+    [SerializeField] private DisplayInfoV2Canvas maxStatePointUpDisplay = null;
+    [SerializeField] private DisplayInfoV2Canvas statePointDamageDisplay = null;
+    [SerializeField] private DisplayInfoV2Canvas stressValueDamageDisplay = null;
+    [SerializeField] private DisplayInfoV2Canvas stressValueDownDisplay = null;
+    [SerializeField] private DisplayInfoV2Canvas evasionStressDamageDisplay = null;
+
+    public static void SpawnPopUpDisplayInfoV2(PopUpDisplayInfoV2Canvas popUpDisplayInfoV2, Vector3 pivotPosition, bool isLeft,
+                                             float healthPointDamage = 0.0f, float maxStatePointUp = 0.0f, float statePointDamage = 0.0f,
+                                             float stressValueDamage = 0.0f, float stressValueDown = 0.0f, float evasionStressPoint = 0.0f)
+    {
+        GameObject _popUpDisplayInfoV2Obj = Instantiate(popUpDisplayInfoV2.gameObject);
+        _popUpDisplayInfoV2Obj.transform.position = pivotPosition + new Vector3(0, 2, 0);
+
+        PopUpDisplayInfoV2Canvas _popUpDisplayInfoV2 = _popUpDisplayInfoV2Obj.GetComponent<PopUpDisplayInfoV2Canvas>();
+        _popUpDisplayInfoV2.healthPointDamageDisplay.DisplayPopUpNumber(healthPointDamage, false);
+        _popUpDisplayInfoV2.maxStatePointUpDisplay.DisplayPopUpNumber(maxStatePointUp, isLeft);
+        _popUpDisplayInfoV2.statePointDamageDisplay.DisplayPopUpNumber(statePointDamage, isLeft);
+        _popUpDisplayInfoV2.stressValueDamageDisplay.DisplayPopUpNumber(stressValueDamage, isLeft);
+        _popUpDisplayInfoV2.stressValueDownDisplay.DisplayPopUpNumber(stressValueDown, isLeft);
+        _popUpDisplayInfoV2.evasionStressDamageDisplay.DisplayPopUpNumber(evasionStressPoint, isLeft);
+
+        Destroy(_popUpDisplayInfoV2Obj, 1.2f);
+    }
+}

@@ -10,6 +10,8 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [SerializeField] private float skillInfoPopSpeed = 0.1f;
     [SerializeField] private float passiveSkillSlotFadeSpeed = 0.5f;
     [SerializeField] private float passiveSkillSlotShowingDuration = 1.5f;
+    [SerializeField] private RectTransform speedEffectImage = null;
+    [SerializeField] private RectTransform strengthEffectImage = null;
 
     [Header("")]
     [SerializeField] private Animator speedEffectAnimator = null;
@@ -165,7 +167,8 @@ public class SkillPromptPanelV2 : MonoBehaviour
 
         if (_speed + _skillStatIncrement == 3)
         {
-            this.speedEffectAnimator.Play("SpeedV2");
+            //this.speedEffectAnimator.Play("SpeedV2");
+            this.speedEffectAnimator.Play("SpeedV3");
         }
         else if (_speed + _skillStatIncrement >= 4)
         {
@@ -174,7 +177,8 @@ public class SkillPromptPanelV2 : MonoBehaviour
 
         if (_strength + _skillStatIncrement == 2)
         {
-            this.strengthEffectAnimator.Play("Strength_1_V2");
+            //this.strengthEffectAnimator.Play("Strength_1_V2");
+            this.strengthEffectAnimator.Play("Strength_1_V3");
         }
         else if (_strength + _skillStatIncrement >= 3)
         {
@@ -187,10 +191,12 @@ public class SkillPromptPanelV2 : MonoBehaviour
         if (caster.GetIsPlayer())
         {
             ShowSkillTag(_characterSkill, true);
+            ChangeSpeedAndStrengthEffectScaleX(-2);
         }
         else
         {
             ShowSkillTag(_characterSkill, false);
+            ChangeSpeedAndStrengthEffectScaleX(2);
         }
     }
 
@@ -528,5 +534,18 @@ public class SkillPromptPanelV2 : MonoBehaviour
         LeanTween.alpha(slotBackground.rectTransform, 0f, this.passiveSkillSlotFadeSpeed);
         LeanTween.moveLocalX(slotToPush, isPlayer ? 600.0f : -600f, this.skillInfoPopSpeed).setDelay(this.passiveSkillSlotFadeSpeed)
             .setOnComplete(OnCompleteTweenGameObject).setOnCompleteParam(slotToPush);
+    }
+
+    private void ChangeSpeedAndStrengthEffectScaleX(float currentScale)
+    {
+        /*Vector3 playerSpeedEffectScaleX = this.speedEffectImage.localScale;
+        Vector3 playerStrengthEffectScaleX = this.strengthEffectImage.localScale;
+        playerSpeedEffectScaleX.x = currentScale;
+        playerStrengthEffectScaleX.x = currentScale;
+        this.speedEffectImage.localScale = playerSpeedEffectScaleX;
+        this.strengthEffectImage.localScale = playerStrengthEffectScaleX;*/
+
+        this.speedEffectImage.localScale = this.strengthEffectImage.localScale =
+            new Vector3(currentScale, this.speedEffectImage.localScale.y, this.speedEffectImage.localScale.z);
     }
 }
