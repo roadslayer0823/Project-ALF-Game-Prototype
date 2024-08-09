@@ -531,9 +531,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         {
             AnimationData animationData = animationList[i];
 
-            if(codeType == animationData.Code)
+            if (codeType == animationData.Code)
             {
-                if(String.IsNullOrEmpty(subskillId))
+                if (String.IsNullOrEmpty(subskillId))
                 {
                    if(type == 0)
                    {
@@ -544,9 +544,15 @@ public class DatabaseManager : Singleton<DatabaseManager>
                         return animationData;
                    }
                 }
-                else if(animationData.SubskillIdsArray.ToList().Contains(subskillId) && type == animationData.Type)
+                else if(type == animationData.Type)
                 {
-                    return animationData;
+                    for(int j = 0; j < animationData.SubskillIdsArray.Length;j++)
+                    {
+                        if (animationData.SubskillIdsArray[j] == subskillId)
+                        {
+                            return animationData;
+                        }
+                    }
                 }
             }
         }

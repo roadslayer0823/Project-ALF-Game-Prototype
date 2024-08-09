@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/BattleSceneV3.unity
     guid: e9288a6a8fdf64a418b5e67b183ee97d
+  - enabled: 0
+    path: Assets/Scenes/_Testing/CharacterDemo.unity
+    guid: ae0ee27e920e641f7846513a8bedee08
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: d6901261516754b0a992e0b79366080d, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 933772f958d7345b7a68ff28a015fad7, type: 2}
