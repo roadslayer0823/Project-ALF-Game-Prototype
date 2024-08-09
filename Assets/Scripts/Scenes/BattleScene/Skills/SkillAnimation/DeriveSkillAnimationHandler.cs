@@ -15,6 +15,7 @@ public class DeriveSkillAnimationHandler : MonoBehaviour
 
     public void PlayDeriveAnimationPart1(float duration)
     {
+        ResetAnimation();
         LeanTween.alpha(part1_Animation.GetComponent<RectTransform>(), 0.9f, duration).setOnComplete(() =>
         {
             Part2_Container.SetActive(true);
@@ -24,6 +25,7 @@ public class DeriveSkillAnimationHandler : MonoBehaviour
 
     public void PlayDeriveAnimationPart2()
     {
+        ResetAnimation();
         part2_Animation.Play();
         Part1_Container.SetActive(false);
     }
