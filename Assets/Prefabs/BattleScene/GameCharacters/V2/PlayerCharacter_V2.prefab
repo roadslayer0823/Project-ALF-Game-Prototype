@@ -78,7 +78,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 12.8, y: 9.6}
+  m_Size: {x: 25.6, y: 19.2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -1947,10 +1947,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab626e02e62964018b6ae94fd1a95915, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isFront: 0
-  codeType: 0
-  subSkillId: 
-  type: 0
+  isFront: {fileID: 0}
+  subSkillId: {fileID: 0}
+  type: {fileID: 0}
+  dropdown: {fileID: 0}
   playerAnimator: {fileID: 7390055747839694509}
   skillEffectBackAnimator: {fileID: 6428194587670660119}
   skillEffectFrontAnimator: {fileID: 6410295446148079859}
