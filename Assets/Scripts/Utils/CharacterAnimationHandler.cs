@@ -125,7 +125,7 @@ public class CharacterAnimationHandler : MonoBehaviour
         string[] _audioArray = _animationData.AudiosArray;
         if (_audioArray != null && _audioArray.Length > 0)
         {
-            AudioManager.Instance.PlaySoundEffect(_audioArray[0]);        
+            AudioManager.Instance.PlaySoundEffect(_audioArray[0]);
         }
 
         if(!string.IsNullOrEmpty(visualEffectAudioId))
@@ -137,7 +137,7 @@ public class CharacterAnimationHandler : MonoBehaviour
     public void OnClick()
     {
         this.selectedCodeType = (AnimationData.CodeType)Enum.Parse(typeof(AnimationData.CodeType), codeType);
-        LoadAndPlayAnimation(this.isFront, this.selectedCodeType, this.subSkillId.text, int.Parse(this.type.text));
+        LoadAndPlayAnimation(this.isFront.isOn, this.selectedCodeType, this.subSkillId.text, int.Parse(this.type.text));
     }
 
     public void OnValueChanged()
