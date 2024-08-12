@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class StartSceneManager : MonoBehaviour
 {
@@ -10,11 +9,6 @@ public class StartSceneManager : MonoBehaviour
 
     void Start()
     {
-        GoToAdminPage();
-    }
-
-    private void GoToAdminPage()
-    {
-        SceneManager.LoadScene("OptionPage");
+        SceneControlManager.GoToOptionPage();
     }
 }

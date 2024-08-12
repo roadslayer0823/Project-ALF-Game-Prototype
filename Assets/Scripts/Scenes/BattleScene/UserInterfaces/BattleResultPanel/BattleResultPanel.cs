@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using TMPro;
 
 public class BattleResultPanel : MonoBehaviour
@@ -31,8 +30,7 @@ public class BattleResultPanel : MonoBehaviour
 
     public void ClickToRestartBattle()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-
-        SceneManager.LoadScene( SceneManager.GetActiveScene().name );
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+        SceneControlManager.RestartCurrentScene();
     }
 }

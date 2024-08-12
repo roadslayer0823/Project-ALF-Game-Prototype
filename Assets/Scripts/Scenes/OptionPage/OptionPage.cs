@@ -1,12 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Version = DatabaseManager.Version;
-using Configuration = DatabaseManager.Configuration;
-using Character = DatabaseManager.Character;
-using Skill = DatabaseManager.Skill;
-using SubSkill = DatabaseManager.Subskill;
-using Animation = DatabaseManager.AnimationData;
-using PassiveSkill = DatabaseManager.PassiveSkill;
 
 public class OptionPage : MonoBehaviour
 {
@@ -17,67 +9,34 @@ public class OptionPage : MonoBehaviour
     [SerializeField] private string subskillString = null;
     [SerializeField] private string animationString = null;
     [SerializeField] private string passiveSkillString = null;
-    
-    public void GoToBattleScene()
+    [SerializeField] private AudioClip buttonClickingAudioClip = null;
+
+    public void ClickToUseLocalSettings()
     {
-        LoadDataFromResource();
+        AudioManager.Instance.PlaySoundEffect( this.buttonClickingAudioClip );
+
+        string _versionsJsonString = Resources.Load<TextAsset>( "Data/GoogleSpreadsheet/Versions" ).text;
+        string _configurationsJsonString = Resources.Load<TextAsset>( "Data/GoogleSpreadsheet/Configurations" ).text;
+        string _charactersJsonString = Resources.Load<TextAsset>( "Data/GoogleSpreadsheet/Characters" ).text;
+        string _skillsJsonString = Resources.Load<TextAsset>( "Data/GoogleSpreadsheet/Skills" ).text;
+        string _subskillsJsonString = Resources.Load<TextAsset>( "Data/GoogleSpreadsheet/Subskills" ).text;
+        string _animationJsonString = Resources.Load<TextAsset>( "Data/GoogleSpreadsheet/Animations" ).text;
+        string _passiveSkillsJsonString = Resources.Load<TextAsset>( "Data/GoogleSpreadsheet/Passive_Skills" ).text;
+
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Version>( _versionsJsonString, this.versionString );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Configuration>( _configurationsJsonString, this.configurationString );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Character>( _charactersJsonString, this.characterString );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Skill>( _skillsJsonString, this.skillString );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Subskill>( _subskillsJsonString, this.subskillString );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.AnimationData>( _animationJsonString, this.animationString );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.PassiveSkill>( _passiveSkillsJsonString, this.passiveSkillString );
+
+        SceneControlManager.GoToBattleScene();
     }
 
-    public void GoToAdminPage()
+    public void ClickToUseCloudSettings()
     {
-        SceneManager.LoadScene("AdminPage");
-    }
-
-    private void LoadDataFromResource()
-    {
-        TextAsset Version = (TextAsset)Resources.Load("Data/GoogleSpreadsheet/Versions");
-        TextAsset Configuration = (TextAsset)Resources.Load("Data/GoogleSpreadsheet/Configurations");
-        TextAsset Characters = (TextAsset)Resources.Load("Data/GoogleSpreadsheet/Characters");
-        TextAsset Skills = (TextAsset)Resources.Load("Data/GoogleSpreadsheet/Skills");
-        TextAsset Subskills = (TextAsset)Resources.Load("Data/GoogleSpreadsheet/Subskills");
-        TextAsset Animations = (TextAsset)Resources.Load("Data/GoogleSpreadsheet/Animations");
-        TextAsset Passive_Skills = (TextAsset)Resources.Load("Data/GoogleSpreadsheet/Passive_Skills");
-
-        string VersionText = Version.text;
-        string ConfigurationText = Configuration.text;
-        string CharactersText = Characters.text;
-        string SkillsText = Skills.text;
-        string SubskillsText = Subskills.text;
-        string AnimationsText = Animations.text;
-        string Passive_Skills_Text = Passive_Skills.text;
-
-        if (!string.IsNullOrEmpty(VersionText) &&
-            !string.IsNullOrEmpty(ConfigurationText) &&
-            !string.IsNullOrEmpty(CharactersText) &&
-            !string.IsNullOrEmpty(SkillsText) &&
-            !string.IsNullOrEmpty(SubskillsText) &&
-            !string.IsNullOrEmpty(AnimationsText) &&
-            !string.IsNullOrEmpty(Passive_Skills_Text))
-        {
-            DatabaseManager.Instance.ProcessJsonData<Version> (VersionText, this.versionString);
-            DatabaseManager.Instance.ProcessJsonData<Configuration>(ConfigurationText, this.configurationString);
-            DatabaseManager.Instance.ProcessJsonData<Character>(CharactersText, this.characterString);
-            DatabaseManager.Instance.ProcessJsonData<Skill>(SkillsText, this.skillString);
-            DatabaseManager.Instance.ProcessJsonData<SubSkill>(SubskillsText, this.subskillString);
-            DatabaseManager.Instance.ProcessJsonData<Animation>(AnimationsText, this.animationString);
-            DatabaseManager.Instance.ProcessJsonData<PassiveSkill>(Passive_Skills_Text, this.passiveSkillString);
-
-            if (SceneUtility.GetBuildIndexByScenePath("BattleSceneV3") != -1)
-            {
-                SceneManager.LoadScene("BattleSceneV3");
-            }
-            else if (SceneUtility.GetBuildIndexByScenePath("BattleSceneV2") != -1)
-            {
-                SceneManager.LoadScene("BattleSceneV2");
-            }
-            else
-            {
-                SceneManager.LoadScene("BattleScene");
-            }
-        }
-        else
-        {
-            return;
-        }
+        AudioManager.Instance.PlaySoundEffect( this.buttonClickingAudioClip );
+        SceneControlManager.GoToAdminPage();
     }
 }

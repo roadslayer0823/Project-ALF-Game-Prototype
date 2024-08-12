@@ -71,17 +71,9 @@ public class AdminPage : MonoBehaviour
         {
             SceneManager.LoadScene("CharacterDemo");
         }
-        else if (SceneUtility.GetBuildIndexByScenePath( "BattleSceneV3" ) != -1)
-        {
-            SceneManager.LoadScene( "BattleSceneV3" );
-        }
-        else if (SceneUtility.GetBuildIndexByScenePath( "BattleSceneV2" ) != -1)
-        {
-            SceneManager.LoadScene( "BattleSceneV2" );
-        }
         else
         {
-            SceneManager.LoadScene( "BattleScene" );
+            SceneControlManager.GoToBattleScene();
         }
     }
 

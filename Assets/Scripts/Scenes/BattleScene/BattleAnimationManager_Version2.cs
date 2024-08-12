@@ -126,11 +126,10 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         CharacterSkill _leadCurrentSkill = _lead.GetCurrentSkill();
         Subskill _leadSubskillData = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData();
-        SkillAnimation _skillAnimation = DatabaseManager.Instance.GetSkillAnimation( _leadSubskillData.Id );
         RangeType _leadRangeType = _lead.GetCurrentSkillRangeType();
 
-        string _leadCharacterPartB = _skillAnimation.CharacterPartB;
-        string _leadSkillEffectPartB = _skillAnimation.SkillEffectPartB;
+        string _leadCharacterPartB = "";
+        string _leadSkillEffectPartB = "";
 
         _lead.GetSortingGroup().sortingOrder = 3;
         _improviser.GetSortingGroup().sortingOrder = 1;
@@ -390,13 +389,20 @@ public partial class BattleAnimationManager : MonoBehaviour
         _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
         StartPartB( out List<BattleResultData> _battleResultDataList, _lead, _improviser, out GameCharacter _winner, out GameCharacter _loser );
-        ShowBattleLog(_battleResultDataList[0].GetResultLogList());
+
+        for (int i = 0; i < _battleResultDataList.Count; i++)
+        {
+            ShowBattleLog( _battleResultDataList[ i ].GetResultLogList() );
+        }
+
         _battleResultData = _battleResultDataList[ 1 ];
         _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
         _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _improviser );
-        ShowBattleLog( _battleResultData.GetResultLogList() );
 
-        StartCoroutine( RunCheckingIfDerivedSkillIsSelected( _winner, _skillCountdownTime, _skillCountdownTimeStartTime ) );
+        if (_winner != null)
+        {
+            StartCoroutine( RunCheckingIfDerivedSkillIsSelected( _winner, _skillCountdownTime, _skillCountdownTimeStartTime ) );
+        }
 
         LeanTween.delayedCall( 0.3f, () =>
         {
