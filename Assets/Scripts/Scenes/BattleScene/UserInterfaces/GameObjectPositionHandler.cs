@@ -20,7 +20,7 @@ public class GameObjectPositionHandler : MonoBehaviour
         float _aspectRatio = (float)Screen.width / (float)Screen.height;
         float _targetAspectRatio = AspectRatioX / AspectRatioY;
 
-        if(_aspectRatio > _targetAspectRatio)
+        if(_aspectRatio > _targetAspectRatio + 0.001f)
         {
             //anchor position
             this.PassiveSkillSelectionList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2300);

@@ -414,7 +414,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     {
         float stressScore = this.selectedCharacter.GetStressScore();
         float convertStressScore = Mathf.RoundToInt(stressScore);
-        if (convertStressScore >= 0)
+        if (convertStressScore > 0)
         {
             this.stressScoreProgressBar.fillAmount = convertStressScore / 150;
         }
