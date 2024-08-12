@@ -252,7 +252,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         }
     }
 
-    private void ProcessJsonData<T>(string jsonData, string sheetName) where T : class
+    public void ProcessJsonData<T>(string jsonData, string sheetName) where T : class
     {
         List<T> dataList = JsonConvert.DeserializeObject<List<T>>( jsonData );
 

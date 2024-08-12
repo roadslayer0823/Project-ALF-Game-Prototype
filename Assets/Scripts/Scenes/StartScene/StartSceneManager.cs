@@ -15,6 +15,6 @@ public class StartSceneManager : MonoBehaviour
 
     private void GoToAdminPage()
     {
-        SceneManager.LoadScene("AdminPage");
+        SceneManager.LoadScene("OptionPage");
     }
 }
