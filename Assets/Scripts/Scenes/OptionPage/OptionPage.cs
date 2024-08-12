@@ -25,7 +25,7 @@ public class OptionPage : MonoBehaviour
 
     public void GoToAdminPage()
     {
-        SceneManager.LoadScene("StartScene");
+        SceneManager.LoadScene("AdminPage");
     }
 
     private void LoadDataFromResource()
