@@ -40,8 +40,8 @@ public partial class BattleLogicManagerV2
         // 負荷流
         // 7.借風
         // 對比條件的技能強度/速度結算
-        BattleLogicManagerV2.CompareConditionallyForIncreasingSkillStrengthAndSpeed( ref _battleResultData, lead, improviser );
-        BattleLogicManagerV2.CompareConditionallyForIncreasingSkillStrengthAndSpeed( ref _battleResultData, improviser, lead );
+        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref _battleResultData, lead, improviser );
+        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref _battleResultData, improviser, lead );
 
         // 進行"雙方"因[看破技能]造成已按下的技能的[強度]&[速度]的加算,
         // 參考"雙方"的[看破技能]中,鎖定的"看破ID"與對方的已按下技能的"看破ID"是否相同&[看破技能]的儲蓄值

@@ -575,9 +575,19 @@ public partial class BattleAnimationManager : MonoBehaviour
 
                 BattleLog.Instance.AddOnScreenBattleLog( _log );
 
-                SkillAnimation _attackTargetBackendSkillAnimation = DatabaseManager.Instance.GetSkillAnimation( _attackTargetSubskillData.Id );
-                string _attackTargetBackendSkillAnimationCharacterPartA = _attackTargetBackendSkillAnimation.CharacterPartA;
-                string _attackTargetBackendSkillAnimationSkillEffectPartA = _attackTargetBackendSkillAnimation.SkillEffectPartA;
+                string _attackTargetBackendSkillAnimationCharacterPartA = "";
+                string _attackTargetBackendSkillAnimationSkillEffectPartA = "";
+
+                if (_attackTargetSubskillData.IsDefendingSkill)
+                {
+                    _attackTargetBackendSkillAnimationCharacterPartA = "Defend";
+                    _attackTargetBackendSkillAnimationSkillEffectPartA = "Defend";
+                }
+                else if (_attackTargetSubskillData.IsEvadingSkill)
+                {
+                    _attackTargetBackendSkillAnimationCharacterPartA = "Evade";
+                    _attackTargetBackendSkillAnimationSkillEffectPartA = NO_ANIMATION;
+                }
 
                 _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
                 _improviser.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
