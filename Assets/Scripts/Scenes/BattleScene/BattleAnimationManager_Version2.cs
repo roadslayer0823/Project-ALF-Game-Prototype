@@ -390,7 +390,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
         StartPartB( out List<BattleResultData> _battleResultDataList, _lead, _improviser, out GameCharacter _winner, out GameCharacter _loser );
-
+        ShowBattleLog(_battleResultDataList[0].GetResultLogList());
         _battleResultData = _battleResultDataList[ 1 ];
         _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
         _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _improviser );
