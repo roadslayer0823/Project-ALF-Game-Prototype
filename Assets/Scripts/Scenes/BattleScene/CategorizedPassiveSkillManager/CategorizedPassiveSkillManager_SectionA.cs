@@ -855,7 +855,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     //"己方"已按下技能強度+1&速度+1
                     battleResultData.AddGameCharacterResultData_ChangeCurrentSkillSpeed(gameCharacter, skill_PSE11_YiTaiYaZhi, out _);
                     battleResultData.AddGameCharacterResultData_ChangeCurrentSkillStrength(gameCharacter, skill_PSE11_YiTaiYaZhi, out _);
-                    _activatingSkill = "11.以太壓制= +" + skill_PSE11_YiTaiYaZhi;
+                    _activatingSkill = "11.以太壓制 = +" + skill_PSE11_YiTaiYaZhi;
                 }
                 break;
 
@@ -869,7 +869,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                         //"己方"已按下技能強度 + 1 & 速度 + 1
                         battleResultData.AddGameCharacterResultData_ChangeCurrentSkillSpeed(gameCharacter, skill_PSS7_JieFeng, out _);
                         battleResultData.AddGameCharacterResultData_ChangeCurrentSkillStrength(gameCharacter, skill_PSS7_JieFeng, out _);
-                        _activatingSkill = "7.借風= +" + skill_PSE11_YiTaiYaZhi;
+                        _activatingSkill = "7.借風 = +" + skill_PSE11_YiTaiYaZhi;
                     }
                 }
                 break;
@@ -940,8 +940,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         BattleResultData.BattleResultData_GameCharacter gameCharacterTwoData = battleResultData.GetGameCharacterResultData(gameCharacterTwo);
         CategoryType gameCharacterOnePassiveSkillCategory = gameCharacterOne.GetSelectedPassiveSkillCategoryType();
         float skill_PSS11_FuheYaZhi2 = 0.0f;
+        float skill_PSE6_FuHeLiuZhuan = 0.0f;
         float skill_PSL9_ShengMingYaZhi = 0.0f;
-        float skill_PSS6_FuHeLiuZhuan = 0.0f;
         float skill_PSS12_NiFeng = 0.0f;
         float skill_PSS3_HuaJing = 0.0f;
         float skill_PSS9_XingYunLiuShui = 0.0f;
@@ -992,10 +992,10 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         YES = 0.1(發動6.負荷流轉)
         NO = 0
         */
-        if (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSS6, out _passiveSkill) && (gameCharacterOneData.maximumStatePoint >= 120))
+        if (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE6, out _passiveSkill) && (gameCharacterOneData.maximumStatePoint >= 120))
         {
             battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
-            skill_PSS6_FuHeLiuZhuan = 0.1f;
+            skill_PSE6_FuHeLiuZhuan = 0.1f;
         }
 
         /*
@@ -1026,6 +1026,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
             skill_PSS11_FuheYaZhi2 = 1.0f;
             _activatingPassiveSkillString = "11.負荷壓制2=" + skill_PSS11_FuheYaZhi2;
+            Debug.Log("PSL11 activate");
         }
 
         /*
@@ -1038,6 +1039,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         {
             battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, _passiveSkill, out _);
             skill_PSS12_NiFeng = 0.2f;
+            Debug.Log("PSS12 activate");
         }
 
         /*
@@ -1061,7 +1063,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             //["己方"負荷值]+["對方"負荷傷害] *[1 + n + n] *[1 - (己方負荷抗性) - n - n]
             battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacterOne, gameCharacterOneData.currentStressValue + (gameCharacterTwoData.stressValueDamageDealt *
                 (1 + activatingPassiveSkill + gameCharacterOneEnergyMarker) *
-                (1 - (gameCharacterOneStressResistance - skill_PSS6_FuHeLiuZhuan - skill_PSS12_NiFeng))) * multiplyZeroPointFive, false, out _);
+                (1 - (gameCharacterOneStressResistance - skill_PSE6_FuHeLiuZhuan - skill_PSS12_NiFeng))) * multiplyZeroPointFive, false, out _);
 
             _formula = "[" +_characterOneCurrentIdentity + "負荷值] +[" +_characterTwoCurrentIdentity + "負荷傷害] *[1 + 9.生命壓制 或者 11.負荷壓制2 + 能量殘響] * [1 -"
                            +_characterOneCurrentIdentity + "負荷抗性) -6.負荷流轉 - 12.逆風]]" + _isMultipleWithZeroPointFive;
@@ -1072,8 +1074,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                            "能量殘響=" + gameCharacterOneEnergyMarker + "\n" +
                                            "負荷抗性=" + gameCharacterOneStressResistance + "\n" +
                                            _activatingPassiveSkillString + "\n" +
-                                           "6.負荷流轉=" + skill_PSS6_FuHeLiuZhuan + "\n" +
-                                           "2.逆風=" + skill_PSS12_NiFeng;
+                                           "6.負荷流轉=" + skill_PSE6_FuHeLiuZhuan + "\n" +
+                                           "12.逆風=" + skill_PSS12_NiFeng;
 
             _gameCharacterTwofinalString = _characterTwoCurrentIdentity + ":" + gameCharacterTwo.GetCharacterName() + "\n" +
                                            "當前流向:" + gameCharacterTwo.GetSelectedPassiveSkillCategoryType() + "\n" +

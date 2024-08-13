@@ -18,9 +18,9 @@ MonoBehaviour:
   - id: attack
     clip: {fileID: 8300000, guid: 06591cd2a6cdf48308baf36c77ce2f83, type: 3}
   - id: defend
-    clip: {fileID: 8300000, guid: 581b725bb30244e6c8bb952ae6a282ae, type: 3}
+    clip: {fileID: 8300000, guid: 09516b63b0712484398f9c60975825ea, type: 3}
   - id: dodge
-    clip: {fileID: 8300000, guid: c30743387326542bbae4029607903d11, type: 3}
+    clip: {fileID: 8300000, guid: 1f43ad151035344eca6e296fdaac772b, type: 3}
   - id: fireball
     clip: {fileID: 8300000, guid: 467154816850a4863b2be37392e37438, type: 3}
   - id: hit

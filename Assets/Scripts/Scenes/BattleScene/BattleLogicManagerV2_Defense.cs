@@ -80,7 +80,7 @@ public partial class BattleLogicManagerV2
 
         // --------------- Case B: 先手方的攻擊速度 <= 後手方的防禦速度。 ---------------
 
-        if (_lead_BattleResultData.currentSkillSpeed <= _improviser_BattleResultData.currentSkillSpeed)
+        else if (_lead_BattleResultData.currentSkillSpeed <= _improviser_BattleResultData.currentSkillSpeed)
         {
             // "先手方"技能的強度是否大於"後手方"?
             // YES
