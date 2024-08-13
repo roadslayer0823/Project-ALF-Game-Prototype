@@ -54,95 +54,98 @@ public partial class BattleLogicManagerV2
 
         // --------------- Case A: 先手方的攻擊速度 > 後手方的回避速度。 ---------------
         // 後手方回避失敗
-
-        // 先手方得到"重直擊方"
-        lead.AddCharacterIdentityType( GameCharacter.CharacterIdentityType.HeavyAssaulter );
-
-        // 後手方得到"受擊方"&"重受擊方"
-        improviser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.HeavyRecipient } );
-
-        // 重直擊方：lead
-        // 重受擊方：improviser
-
-        // 進行"重受擊方"[當前以太值]的結算,參考"重直擊方"的已按下的技能的[以太傷害]
-        // 以太流
-        // 5.破流;
-        // "受擊方"的[能量殘響]
-        // 重受擊方當前以太值結算
-        CategorizedPassiveSkillManager.CalculateHeavyRecipientStatePoint( ref _battleResultData, assaulter: lead, recipient: improviser, false );
-
-        // "重受擊方"有沒有因"重直擊方"的以太傷害導致當前以太值<0?
-        // YES
-        if (_improviser_BattleResultData.currentStatePoint < 0.0f)
+        if(_lead_BattleResultData.currentSkillSpeed > _improviser_BattleResultData.currentSkillSpeed)
         {
-            _battleResultData.AddGameCharacterResultData_StateBreakStatus( improviser, 1, out _ );
-            improviser.AddCharacterIdentityType( CharacterIdentityType.StateBreakStatusHolder );
-        }
+            // 先手方得到"重直擊方"
+            lead.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
 
-        // 進行"重受擊方"[生命值]的結算,
-        // 參考：
-        // "重直擊方"的已按下的技能的[直擊傷害],
-        // 生命流
-        // 3.猛烈 / 12.生生不息;
-        // "重受擊方"的[能量殘響]/[崩潰狀態],已按下的技能的[減傷率],
-        // 生命流
-        // 4.堅韌 / 12.生生不息
-        // 以太流
-        // 12.逆風
-        // 重受擊方生命值結算
-        CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult( ref _battleResultData, assaulter: lead, recipient: improviser );
+            // 後手方得到"受擊方"&"重受擊方"
+            improviser.AddCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.HeavyRecipient });
+
+            // 重直擊方：lead
+            // 重受擊方：improviser
+
+            // 進行"重受擊方"[當前以太值]的結算,參考"重直擊方"的已按下的技能的[以太傷害]
+            // 以太流
+            // 5.破流;
+            // "受擊方"的[能量殘響]
+            // 重受擊方當前以太值結算
+            CategorizedPassiveSkillManager.CalculateHeavyRecipientStatePoint(ref _battleResultData, assaulter: lead, recipient: improviser, false);
+
+            // "重受擊方"有沒有因"重直擊方"的以太傷害導致當前以太值<0?
+            // YES
+            if (_improviser_BattleResultData.currentStatePoint < 0.0f)
+            {
+                _battleResultData.AddGameCharacterResultData_StateBreakStatus(improviser, 1, out _);
+                improviser.AddCharacterIdentityType(CharacterIdentityType.StateBreakStatusHolder);
+            }
+
+            // 進行"重受擊方"[生命值]的結算,
+            // 參考：
+            // "重直擊方"的已按下的技能的[直擊傷害],
+            // 生命流
+            // 3.猛烈 / 12.生生不息;
+            // "重受擊方"的[能量殘響]/[崩潰狀態],已按下的技能的[減傷率],
+            // 生命流
+            // 4.堅韌 / 12.生生不息
+            // 以太流
+            // 12.逆風
+            // 重受擊方生命值結算
+            CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult(ref _battleResultData, assaulter: lead, recipient: improviser);
+        }
 
         // ------------------------------------------------------------------------
 
         // --------------- Case B: 先手方的攻擊速度 <= 後手方的回避速度。 ---------------
-        // 後手方回避成功
-
-        // 先手方得到"平手方"
-        lead.AddCharacterIdentityType( CharacterIdentityType.Deuce );
-
-        // 後手方得到"抵抗成功方"
-        improviser.AddCharacterIdentityType( CharacterIdentityType.SuccessfulResister );
-
-        // 平手方：lead
-        // 抵抗成功方：improviser
-
-        // 進行"抵抗成功方"[當前以太值]的結算,
-        // 參考：
-        // "抵抗成功方"
-        // 生命流
-        // 9.生命壓制
-        // 以太流
-        // 8.節流 / 9.游刃
-        // "平手方"的已按下的技能的[ 回避壓力 ]
-        // 生命流
-        // 9.生命壓制
-        // 負荷流
-        // 11.負荷壓制2
-        // 抵抗成功方回避當前以太值結算
-        CategorizedPassiveSkillManager.SuccessfulResisterEvadeCurrentStatePointFirstCalculation( ref _battleResultData, successfulResister: improviser, deuce: lead );
-
-        // "抵抗成功方"的當前流向是否"以太流"&"回避壓力消耗">=20?
-        // YES
-        if (improviser.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.State
-            && _improviser_BattleResultData.temp_StressEvasionCost >= 20.0f)
+        if(_lead_BattleResultData.currentSkillSpeed <= _improviser_BattleResultData.currentSkillSpeed)
         {
-            // 進行"抵抗成功方"[最大以太值]的結算,
-            // 參考：
-            // "抵抗成功方"的[回避壓力消耗],
-            // 以太流
-            // 4.擴流 / 12.逆風
-            // 抵抗成功方回避最大以太值結算
-            CategorizedPassiveSkillManager.SuccessfulResisterEvadeMaximumStatePointCalculation( ref _battleResultData, improviser );
+            // 後手方回避成功
+            // 先手方得到"平手方"
+            lead.AddCharacterIdentityType(CharacterIdentityType.Deuce);
+
+            // 後手方得到"抵抗成功方"
+            improviser.AddCharacterIdentityType(CharacterIdentityType.SuccessfulResister);
+
+            // 平手方：lead
+            // 抵抗成功方：improviser
 
             // 進行"抵抗成功方"[當前以太值]的結算,
             // 參考：
-            // "抵抗成功方"的[ 回避壓力消耗以太提升 ]
+            // "抵抗成功方"
+            // 生命流
+            // 9.生命壓制
             // 以太流
-            // 3.回流 / 12.逆風
-            // 抵抗成功方回避當前以太值2次結算
-            CategorizedPassiveSkillManager.SuccessfulResisterEvadeCurrentStatePointSecondCalculation( ref _battleResultData, improviser );
-        }
+            // 8.節流 / 9.游刃
+            // "平手方"的已按下的技能的[ 回避壓力 ]
+            // 生命流
+            // 9.生命壓制
+            // 負荷流
+            // 11.負荷壓制2
+            // 抵抗成功方回避當前以太值結算
+            CategorizedPassiveSkillManager.SuccessfulResisterEvadeCurrentStatePointFirstCalculation(ref _battleResultData, successfulResister: improviser, deuce: lead);
 
+            // "抵抗成功方"的當前流向是否"以太流"&"回避壓力消耗">=20?
+            // YES
+            if (improviser.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.State
+                && _improviser_BattleResultData.temp_StressEvasionCost >= 20.0f)
+            {
+                // 進行"抵抗成功方"[最大以太值]的結算,
+                // 參考：
+                // "抵抗成功方"的[回避壓力消耗],
+                // 以太流
+                // 4.擴流 / 12.逆風
+                // 抵抗成功方回避最大以太值結算
+                CategorizedPassiveSkillManager.SuccessfulResisterEvadeMaximumStatePointCalculation(ref _battleResultData, improviser);
+
+                // 進行"抵抗成功方"[當前以太值]的結算,
+                // 參考：
+                // "抵抗成功方"的[ 回避壓力消耗以太提升 ]
+                // 以太流
+                // 3.回流 / 12.逆風
+                // 抵抗成功方回避當前以太值2次結算
+                CategorizedPassiveSkillManager.SuccessfulResisterEvadeCurrentStatePointSecondCalculation(ref _battleResultData, improviser);
+            }
+        }
         // -------------------------------------------------------------------------
 
         // "雙方"的技能持續效果更新(例如:能量殘響)
