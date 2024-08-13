@@ -4,7 +4,6 @@ using UnityEngine;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
-using SkillAnimation = DatabaseManager.SkillAnimation;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
 
 public partial class BattleAnimationManager : MonoBehaviour
@@ -792,8 +791,25 @@ public partial class BattleAnimationManager : MonoBehaviour
         BattleLogicManagerV2.DetermineResultForPartB( ref battleResultDataList, lead, improviser, true );
 
         GameCharacter[] _gameCharacters = new GameCharacter[] { lead, improviser };
-        winner = BattleLogicManagerV2.GetGameCharacterThatMatchesOneOfCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Assaulter, CharacterIdentityType.LightAssaulter, CharacterIdentityType.HeavyAssaulter }, _gameCharacters );
-        loser = BattleLogicManagerV2.GetGameCharacterThatMatchesOneOfCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.LightRecipient, CharacterIdentityType.HeavyRecipient }, _gameCharacters );
+
+        winner = BattleLogicManagerV2.GetGameCharacterThatMatchesOneOfCharacterIdentityTypes(
+            new CharacterIdentityType[]
+            {
+                CharacterIdentityType.Assaulter,
+                CharacterIdentityType.LightAssaulter,
+                CharacterIdentityType.HeavyAssaulter,
+                CharacterIdentityType.SuccessfulResister
+            },
+            _gameCharacters );
+
+        loser = BattleLogicManagerV2.GetGameCharacterThatMatchesOneOfCharacterIdentityTypes(
+            new CharacterIdentityType[]
+            {
+                CharacterIdentityType.Recipient,
+                CharacterIdentityType.LightRecipient,
+                CharacterIdentityType.HeavyRecipient
+            },
+            _gameCharacters );
 
         // ----------------------------------------------------------------------------------
 

@@ -43,9 +43,25 @@ public class AudioManager : Singleton<AudioManager>
             Debug.LogError( "The audio database is not set up yet." );
         }
 
-        AudioClip _clip = this.audioDatabase.GetAudioDataById( audioId ).GetClip();
-        PlaySoundEffect( _clip, volumeScale );
-        StartCoroutine( WaitAndCallback( _clip.length, onCompleteCallback ) );
+        AudioDatabase.AudioData _audioData = this.audioDatabase.GetAudioDataById( audioId );
+        if (_audioData != null)
+        {
+            AudioClip _clip = _audioData.GetClip();
+
+            if (_clip != null)
+            {
+                PlaySoundEffect( _clip, volumeScale );
+                StartCoroutine( WaitAndCallback( _clip.length, onCompleteCallback ) );
+            }
+            else
+            {
+                Debug.LogError( $"The audio clip for the audio ID of \"{ audioId }\" is missing." );
+            }
+        }
+        else
+        {
+            Debug.LogError( $"The audio ID of \"{ audioId }\" is not found." );
+        }
     }
 
     public void SetUpAudioDatabase( AudioDatabase audioDatabase )
