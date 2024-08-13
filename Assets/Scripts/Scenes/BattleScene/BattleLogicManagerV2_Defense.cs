@@ -1,3 +1,4 @@
+using UnityEngine;
 using System.Collections.Generic;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
 
@@ -54,60 +55,60 @@ public partial class BattleLogicManagerV2
         bool _hasImproviserDefendedSuccessfully = false;
 
         // --------------- Case A: 先手方的攻擊速度 > 後手方的防禦速度。 ---------------
-
-        // 後手方防禦失敗
-        _hasImproviserDefendedSuccessfully = false;
-
-        // "先手方"技能的強度是否大於"後手方"?
-        // YES
-        if (_lead_BattleResultData.currentSkillStrength > _improviser_BattleResultData.currentSkillStrength)
+        if(_lead_BattleResultData.currentSkillSpeed > _improviser_BattleResultData.currentSkillSpeed)
         {
-            // 先手方得到"直擊方","速度勝方","迎擊勝利優惠方"
-            // 後手方得到"受擊方"&"速度強度負方"
-            lead.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Assaulter, CharacterIdentityType.SpeedWinner, CharacterIdentityType.WinningBenefitHolder } );
-            improviser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.SpeedStrengthLoser } );
+            // 後手方防禦失敗
+            _hasImproviserDefendedSuccessfully = false;
+            // "先手方"技能的強度是否大於"後手方"?
+            // YES
+            if (_lead_BattleResultData.currentSkillStrength > _improviser_BattleResultData.currentSkillStrength)
+            {
+                // 先手方得到"直擊方","速度勝方","迎擊勝利優惠方"
+                // 後手方得到"受擊方"&"速度強度負方"
+                lead.AddCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Assaulter, CharacterIdentityType.SpeedWinner, CharacterIdentityType.WinningBenefitHolder });
+                improviser.AddCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.SpeedStrengthLoser });
+            }
+            // NO
+            {
+                // 先手方得到"直擊方","速度勝方","迎擊勝利優惠方"
+                // 後手方得到"受擊方","速度負方"
+                lead.AddCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Assaulter, CharacterIdentityType.SpeedWinner, CharacterIdentityType.WinningBenefitHolder });
+                improviser.AddCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.SpeedLoser });
+            }
         }
-        // NO
-        {
-            // 先手方得到"直擊方","速度勝方","迎擊勝利優惠方"
-            // 後手方得到"受擊方","速度負方"
-            lead.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Assaulter, CharacterIdentityType.SpeedWinner, CharacterIdentityType.WinningBenefitHolder } );
-            improviser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.SpeedLoser } );
-        }
-
         // ------------------------------------------------------------------------
 
         // --------------- Case B: 先手方的攻擊速度 <= 後手方的防禦速度。 ---------------
 
-        // "先手方"技能的強度是否大於"後手方"?
-        // YES
-        if (_lead_BattleResultData.currentSkillStrength > _improviser_BattleResultData.currentSkillStrength)
+        if (_lead_BattleResultData.currentSkillSpeed <= _improviser_BattleResultData.currentSkillSpeed)
         {
-            // 後手方防禦失敗
-            _hasImproviserDefendedSuccessfully = false;
-
-            // 先手方得到"直擊方","強度勝方","迎擊勝利優惠方"
-            // 後手方得到"受擊方","強度負方"
-            lead.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Assaulter, CharacterIdentityType.StrengthWinner, CharacterIdentityType.WinningBenefitHolder } );
-            improviser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.StrengthLoser } );
+            // "先手方"技能的強度是否大於"後手方"?
+            // YES
+            if (_lead_BattleResultData.currentSkillStrength > _improviser_BattleResultData.currentSkillStrength)
+            {
+                // 後手方防禦失敗
+                _hasImproviserDefendedSuccessfully = false;
+                // 先手方得到"直擊方","強度勝方","迎擊勝利優惠方"
+                // 後手方得到"受擊方","強度負方"
+                lead.AddCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Assaulter, CharacterIdentityType.StrengthWinner, CharacterIdentityType.WinningBenefitHolder });
+                improviser.AddCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.StrengthLoser });
+            }
+            // NO
+            else
+            {
+                // 後手方防禦成功
+                _hasImproviserDefendedSuccessfully = true;
+                // 先手方得到"平手方"
+                // 後手方得到"抵抗成功方"
+                lead.AddCharacterIdentityType(CharacterIdentityType.Deuce);
+                improviser.AddCharacterIdentityType(CharacterIdentityType.SuccessfulResister);
+            }
         }
-        // NO
-        else
-        {
-            // 後手方防禦成功
-            _hasImproviserDefendedSuccessfully = true;
-
-            // 先手方得到"平手方"
-            // 後手方得到"抵抗成功方"
-            lead.AddCharacterIdentityType( CharacterIdentityType.Deuce );
-            improviser.AddCharacterIdentityType( CharacterIdentityType.SuccessfulResister );
-        }
-
         // -------------------------------------------------------------------------
 
         bool _hasHeavyRecipient = false;
 
-        if (_hasImproviserDefendedSuccessfully)
+        if (!_hasImproviserDefendedSuccessfully)
         {
             // 受擊方：improviser
             // 直擊方：lead
