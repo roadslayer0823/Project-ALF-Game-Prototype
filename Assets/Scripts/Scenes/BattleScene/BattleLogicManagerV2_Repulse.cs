@@ -319,7 +319,7 @@ public partial class BattleLogicManagerV2
     // 頁面：迎擊平手方結算 -> 玩家1的已按下技能是否"遠程"? -> NO
     private static void SettleRepulseResultForDraw_NotRangedSkill( ref BattleResultData battleResultData, GameCharacter gameCharacter, GameCharacter opponent )
     {
-        // 近戰迎擊獎勵結算
+        // 頁面：近戰迎擊獎勵結算
         SettleMeleeRepulseBonusResult( ref battleResultData, gameCharacter, opponent );
 
         // 玩家1：gameCharacter
@@ -376,6 +376,54 @@ public partial class BattleLogicManagerV2
     // 頁面：近戰迎擊獎勵結算
     private static void SettleMeleeRepulseBonusResult( ref BattleResultData battleResultData, GameCharacter gameCharacter, GameCharacter opponent )
     {
+        // "己方"是否"速度負方"/"速度強度負方?
+        // NO
+        if (!gameCharacter.HasCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedLoser, CharacterIdentityType.SpeedStrengthLoser } ))
+        {
+            // "己方"已按下技能是否"近戰"?
+            // YES
+            if (gameCharacter.GetCurrentSkillRangeType() == RangeType.melee)
+            {
+                // "對方"已按下技能是否"遠程"?
+                // YES
+                if (opponent.GetCurrentSkillRangeType() == RangeType.ranged)
+                {
+                    float _maxStatePointUp = gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().MaxStatePointUp;
+
+                    // "己方"[最大以太值]+[最大以太提升]
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease( gameCharacter, _maxStatePointUp, out BattleResultData.BattleResultData_GameCharacter gameCharacterResultData );
+
+                    // "己方"當前流向是否"以太流"?
+                    // YES
+                    if (gameCharacter.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.State)
+                    {
+                        float _skill_PSE3_HuiLiu_value = 0.0f;
+                        float _skill_PSE12_NiFeng_value = 1.0f;
+
+                        if (gameCharacter.HasCategorizedPassiveSkill( CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE3 ))
+                        {
+                            // "己方"發動3.回流
+                            gameCharacter.TriggerPassiveSkill( CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE3 );
+                            _skill_PSE3_HuiLiu_value = 0.5f;
+                        }
+
+                        // "己方"最大以太值是否<80?
+                        // YES = 2 (發動12.逆風)
+                        // NO = 1
+                        if (gameCharacterResultData.maximumStatePoint < 80)
+                        {
+                            if (gameCharacter.HasCategorizedPassiveSkill( CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE12 ))
+                            {
+                                _skill_PSE12_NiFeng_value = 2.0f;
+                            }
+                        }
+
+                        // [當前以太值]+[最大以太提升*0.5*n]
+                        battleResultData.AddGameCharacterResultData_IncreaseCurrentStatePoint( gameCharacter, _maxStatePointUp * _skill_PSE3_HuiLiu_value * _skill_PSE12_NiFeng_value, out _ );
+                    }
+                }
+            }
+        }
     }
 
     // 頁面：迎擊直擊方受擊方結算
@@ -383,6 +431,7 @@ public partial class BattleLogicManagerV2
     {
         // -------------------- "受擊方"的數值&狀態結算 --------------------
 
+        // 頁面：近戰迎擊獎勵結算
         SettleMeleeRepulseBonusResult( ref battleResultData, recipient, assaulter );
 
         // 進行"受擊方"[當前以太值]的結算,參考：
