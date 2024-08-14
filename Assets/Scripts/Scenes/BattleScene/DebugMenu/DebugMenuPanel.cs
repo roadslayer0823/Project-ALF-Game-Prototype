@@ -179,6 +179,22 @@ public class DebugMenuPanel : MonoBehaviour
                 DisplaySuccessText(characterObject == this.playerCharacter);
             }
         }
+        else if (statNames == "最大以太值") //maximum state point
+        {
+            if (float.TryParse(newStatValue, out float value))
+            {
+                float _difference = value - characterObject.GetCurrentStatePoint();
+                if (_difference > 0)
+                {
+                    characterObject.AddMaximumStatePoint(_difference);
+                }
+                else if (_difference < 0)
+                {
+                    characterObject.MinusMaximumStatePoint(Mathf.Abs(_difference));
+                }
+                DisplaySuccessText(characterObject == this.playerCharacter);
+            }
+        }
         else if (statNames == "當前負荷值")//current stress point
         {
             if (float.TryParse(newStatValue, out float value))

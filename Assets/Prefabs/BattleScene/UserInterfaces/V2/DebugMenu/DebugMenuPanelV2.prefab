@@ -1132,6 +1132,8 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: "\u7576\u524D\u4EE5\u592A\u503C"
       m_Image: {fileID: 0}
+    - m_Text: "\u6700\u5927\u4EE5\u592A\u503C"
+      m_Image: {fileID: 0}
     - m_Text: "\u7576\u524D\u8CA0\u8377\u503C"
       m_Image: {fileID: 0}
     - m_Text: "\u865B\u50B7"
@@ -5348,6 +5350,8 @@ MonoBehaviour:
     - m_Text: "\u7576\u524D\u751F\u547D\u503C"
       m_Image: {fileID: 0}
     - m_Text: "\u7576\u524D\u4EE5\u592A\u503C"
+      m_Image: {fileID: 0}
+    - m_Text: "\u6700\u5927\u4EE5\u592A\u503C"
       m_Image: {fileID: 0}
     - m_Text: "\u7576\u524D\u8CA0\u8377\u503C"
       m_Image: {fileID: 0}
