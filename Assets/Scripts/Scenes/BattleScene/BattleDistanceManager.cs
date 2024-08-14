@@ -128,81 +128,141 @@ public class BattleDistanceManager : MonoBehaviour
     }
 
     // 頁面：判定距離結果
-    public void UpdateFinalDistanceResult( GameCharacter improviser, DistanceType finalDistance )
+    public void UpdateFinalDistanceResult( GameCharacter improviser )
     {
-        Subskill improviserAssignedSkill = improviser.GetAssignedSkill().GetCharacterSubskillData().GetSubskillData();
-        SkillType improviserSkillType = improviser.GetAssignedSkill().GetSkillData().skillType;
-        CategorizedPassiveSkillManager.CategoryType improviserSelectedCategoryType = improviser.GetSelectedPassiveSkillCategoryType();
+        CategorizedPassiveSkillManager.CategoryType _improviserSelectedPassiveSkillCategoryType = improviser.GetSelectedPassiveSkillCategoryType();
+        CharacterSkill _improviserCurrentSkill = improviser.GetCurrentSkill();
+        RangeType _improviserCurrentSkillRangeType = improviser.GetCurrentSkillRangeType();
+        bool _isImproviserUsingEvadingSkill = false;
 
-        switch (finalDistance)
+        if (_improviserCurrentSkill != null)
         {
+            _isImproviserUsingEvadingSkill = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().IsEvadingSkill;
+        }
+
+        switch ( this.currentDistanceType )
+        {
+            // 當前距離為[近距離]
             case DistanceType.Near:
-                if (improviserAssignedSkill.IsEvadingSkill)
+
+                // "後手方"已按下技能是否"回避技能"?
+                // NO
+                if (!_isImproviserUsingEvadingSkill)
                 {
-                    if (improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.State || improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.None)
+                    // "後手方"已按下技能是否"遠程技能"?
+                    // YES
+                    if (_improviserCurrentSkillRangeType == RangeType.ranged)
                     {
-                        finalDistance = DistanceType.Normal;
+                        SetCurrentDistanceType( DistanceType.Normal );
                     }
+                    // NO
                     else
                     {
-                        finalDistance = DistanceType.Near;
+                        SetCurrentDistanceType( DistanceType.Near );
                     }
                 }
-                else if (improviserAssignedSkill.IsDefendingSkill)
-                {
-                    finalDistance = DistanceType.Normal;
-                }
+                // YES
                 else
                 {
-                    finalDistance = DistanceType.Near;
+                    // "後手方"當前流向是否"生命流"?
+                    // NO
+                    if (_improviserSelectedPassiveSkillCategoryType == CategorizedPassiveSkillManager.CategoryType.Life)
+                    {
+                        SetCurrentDistanceType( DistanceType.Near );
+                    }
+                    // YES
+                    else
+                    {
+                        SetCurrentDistanceType( DistanceType.Normal );
+                    }
                 }
+
                 break;
 
+            // 當前距離為[中距離]
             case DistanceType.Normal:
-                if (improviserAssignedSkill.IsEvadingSkill)
+
+                // "後手方"已按下技能是否"回避技能"?
+                // NO
+                if (_isImproviserUsingEvadingSkill)
                 {
-                    if(improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.State || improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.None)
+                    SetCurrentDistanceType( DistanceType.Normal );
+                }
+                // YES
+                else
+                {
+                    // "後手方"當前流向是否"生命流"?
+                    // NO
+                    if (_improviserSelectedPassiveSkillCategoryType != CategorizedPassiveSkillManager.CategoryType.Life)
                     {
-                        finalDistance = DistanceType.Far;
+                        // "後手方"當前流向是否"負荷流"?
+                        // NO
+                        if (_improviserSelectedPassiveSkillCategoryType != CategorizedPassiveSkillManager.CategoryType.Stress)
+                        {
+                            SetCurrentDistanceType( DistanceType.Normal );
+                        }
+                        // YES
+                        else
+                        {
+                            SetCurrentDistanceType( DistanceType.Near );
+                        }
                     }
-                    else if(improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.Stress)
-                    {
-                        finalDistance = DistanceType.Near;
-                    }
+                    // YES
                     else
                     {
-                        finalDistance = DistanceType.Normal;
+                        SetCurrentDistanceType( DistanceType.Far );
                     }
                 }
-                else
-                {
-                    finalDistance = DistanceType.Normal;
-                }
-              
+
                 break;
 
+            // 當前距離為[遠距離]
             case DistanceType.Far:
-                if (improviserAssignedSkill.IsEvadingSkill)
+
+                // "後手方"已按下技能是否"回避技能"?
+                // NO
+                if (_isImproviserUsingEvadingSkill)
                 {
-                    if(improviserSelectedCategoryType == CategorizedPassiveSkillManager.CategoryType.Stress)
+                    // "後手方"已按下技能是否"迎擊技能"?
+                    // YES
+                    if (_improviserCurrentSkill != null && _improviserCurrentSkill.GetSkillData().skillType == SkillType.repulse)
                     {
-                        finalDistance = DistanceType.Normal;
+                        // "後手方"已按下技能是否"近戰"?
+                        // YES
+                        if (_improviserCurrentSkillRangeType == RangeType.melee)
+                        {
+                            SetCurrentDistanceType( DistanceType.Normal );
+                        }
+                        // NO
+                        else
+                        {
+                            SetCurrentDistanceType( DistanceType.Far );
+                        }
+                    }
+                    // NO
+                    else
+                    {
+                        SetCurrentDistanceType( DistanceType.Far );
                     }
                 }
-                if(improviserSkillType == SkillType.repulse)
-                {
-                    if(improviserAssignedSkill.Range == Subskill.RangeType.melee)
-                    {
-                        finalDistance = DistanceType.Normal;
-                    }
-                }
+                // YES
                 else
                 {
-                    finalDistance = DistanceType.Far;
+                    // "後手方"當前流向是否"負荷流"?
+                    // NO
+                    if (_improviserSelectedPassiveSkillCategoryType == CategorizedPassiveSkillManager.CategoryType.Stress)
+                    {
+                        SetCurrentDistanceType( DistanceType.Far );
+                    }
+                    // YES
+                    else
+                    {
+                        SetCurrentDistanceType( DistanceType.Normal );
+                    }
                 }
+
                 break;
         }
-        SetCurrentDistanceType( finalDistance );
     }
 
     public void SetCurrentDistanceType( DistanceType currentDistanceType )

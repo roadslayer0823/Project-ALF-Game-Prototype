@@ -745,14 +745,14 @@ public partial class GameCharacter : MonoBehaviour
 
     public bool HasCharacterIdentityType( CharacterIdentityType characterIdentityType )
     {
-        return this.characterIdentityTypeList.Contains( characterIdentityType );
+        return this.GetAllCharacterIdentityTypes().Contains( characterIdentityType );
     }
 
     public bool HasCharacterIdentityTypes( CharacterIdentityType[] characterIdentityTypes )
     {
         for (int i = 0; i < characterIdentityTypes.Length; i++)
         {
-            if (this.characterIdentityTypeList.Contains( characterIdentityTypes[ i ] ))
+            if (this.GetAllCharacterIdentityTypes().Contains( characterIdentityTypes[ i ] ))
             {
                 return true;
             }

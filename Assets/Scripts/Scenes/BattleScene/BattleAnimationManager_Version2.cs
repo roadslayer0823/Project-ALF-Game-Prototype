@@ -324,14 +324,14 @@ public partial class BattleAnimationManager : MonoBehaviour
                     }
                 }
             }
+
+            // 開始0.2秒的“PART A戰鬥過場演出”並進入“判定 Part B 結果及結算”。
+            this.hasTransitionAnimationEnded = false;
+            this.battleGameManager.GetBattleVisualEffectManager().TransitionToNextPart( () => { this.hasTransitionAnimationEnded = true; } );
+            yield return new WaitUntil( () => this.hasTransitionAnimationEnded );
         }
 
-        // 開始0.2秒的“PART A戰鬥過場演出”並進入“判定 Part B 結果及結算”。
-        this.hasTransitionAnimationEnded = false;
-        this.battleGameManager.GetBattleVisualEffectManager().TransitionToNextPart( () => { this.hasTransitionAnimationEnded = true; } );
-        yield return new WaitUntil( () => this.hasTransitionAnimationEnded );
-
-        // Hide the attacker for Part B if the attacker's range type is ranged.
+        // Hide the lead for Part B if the lead's range type is ranged.
         if (_leadRangeType == RangeType.ranged)
         {
             _lead.HideCharacterObject();
@@ -814,7 +814,23 @@ public partial class BattleAnimationManager : MonoBehaviour
         // ----------------------------------------------------------------------------------
 
         // 頁面：Part B
-        // TODO: 判定距離結果
+        // 頁面：判定距離結果
+        battleGameManager.GetBattleDistanceManager().UpdateFinalDistanceResult( improviser );
+
+        // "先手方"已按下技能是否"派生技能"?
+        // YES
+        if (lead.GetCurrentSkill().GetSkillData().skillType == Skill.SkillType.derived)
+        {
+            // TODO: 派生技能演出
+        }
+
+        // TODO: 判定"己方"的指令時間
+
+        // TODO: 判定己方PART B演出
+
+        // TODO: 判定敵方PART B演出
+
+        // TODO: 判定PART B共用特效
 
         if (improviser.GetCurrentSkill() != null)
         {
