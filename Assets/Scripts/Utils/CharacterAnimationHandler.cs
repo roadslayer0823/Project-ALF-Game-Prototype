@@ -33,6 +33,10 @@ public class CharacterAnimationHandler : MonoBehaviour
     private AnimatorOverrideController visualEffectFrontAnimatorOverrideController;
     private AnimationData.CodeType codeTypeForLastATL;
 
+    private float actionAnimationLength = 0;
+    private float effectAnimationLength = 0;
+    private float audioLength = 0;
+
     void Awake()
     {
         this.playerAnimatorOverrideController = new AnimatorOverrideController(playerAnimator.runtimeAnimatorController)
@@ -99,7 +103,7 @@ public class CharacterAnimationHandler : MonoBehaviour
         return CheckIfSameAsLastATLCodeType(new string[] { lastCode });
     }
 
-    public void LoadAndPlayAnimation(bool isFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0, string visualEffectName = "", string visualEffectAudioId = "")
+    public void LoadAndPlayAnimation(bool isSkillEffectFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0, string visualEffectName = "", string visualEffectAudioId = "")
     {
         AnimationClip _animationClip = null;
         AnimationData _animationData = DatabaseManager.Instance.GetAnimationData(codeType,subskillId,type);
@@ -118,6 +122,7 @@ public class CharacterAnimationHandler : MonoBehaviour
            {
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/Actions/" + _actionClipArray[i]);
                 this.playerAnimatorOverrideController["Animation_"+ i] = _animationClip;
+                actionAnimationLength += _animationClip.length;
            }
             this.playerAnimator.SetTrigger("trigger");
         }
@@ -129,7 +134,7 @@ public class CharacterAnimationHandler : MonoBehaviour
             for (int i = 0; i < _effectClipArray.Length; i++)
             {
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/SkillEffects/" + _effectClipArray[i]);
-                if(isFront)
+                if(isSkillEffectFront)
                 {
                     this.skillEffectFrontAnimatorOverrideController["Animation_" + i] = _animationClip;
                 }
@@ -139,7 +144,7 @@ public class CharacterAnimationHandler : MonoBehaviour
                 }
             }
 
-            if (isFront)
+            if (isSkillEffectFront)
             {
                 this.skillEffectFrontAnimator.SetTrigger("trigger");
             }
@@ -147,6 +152,7 @@ public class CharacterAnimationHandler : MonoBehaviour
             {
                 this.skillEffectBackAnimator.SetTrigger("trigger");
             }
+            effectAnimationLength += _animationClip.length;
         }
         // visual effect
         if (!string.IsNullOrEmpty(visualEffectName))
@@ -160,6 +166,7 @@ public class CharacterAnimationHandler : MonoBehaviour
         if (_audioArray != null && _audioArray.Length > 0)
         {
             AudioManager.Instance.PlaySoundEffect(_audioArray[0]);
+            audioLength += _audioArray[0].Length;
         }
 
         if(!string.IsNullOrEmpty(visualEffectAudioId))
@@ -177,6 +184,33 @@ public class CharacterAnimationHandler : MonoBehaviour
     {
         this.selectedCodeType = (AnimationData.CodeType)Enum.Parse(typeof(AnimationData.CodeType), codeType);
         LoadAndPlayAnimation(this.isFront.isOn,this.needToRecord, this.selectedCodeType, this.subSkillId.text, int.Parse(this.type.text));
+
+        Debug.Log("actionAnimationLength: " + actionAnimationLength + "\neffectAnimationLength: " + effectAnimationLength + "\naudioLength: " + audioLength); ;
+        Debug.Log("GetAnimationClipTotalLength(): " + GetAnimationClipTotalLength());
+    }
+
+    // compare action, effect and audio length
+    public float GetAnimationClipTotalLength()
+    {
+        if(actionAnimationLength > effectAnimationLength)
+        {
+            if(actionAnimationLength > audioLength)
+            {
+                return actionAnimationLength;
+            }
+            else
+            {
+                return audioLength;
+            }
+        }
+        else if(effectAnimationLength > audioLength)
+        {
+            return effectAnimationLength;
+        }
+        else
+        {
+            return audioLength;
+        }
     }
 
     public void OnValueChanged()

@@ -53,18 +53,17 @@ public class CombatCommandAnimationHandler : MonoBehaviour
         onCompleteCallback?.Invoke();
     }
 
+    public void RunPlayerTurnFrontAnimation()
+    {
+        this.playerAnimator.SetTrigger("isPlayer");
+    }
+
     public IEnumerator VerticalCutOut( bool hasPlayerAnimation, Action onCompleteCallback = null)
     {
         isShowing = false;
 
         this.rightPartGo.SetActive(true);
         this.leftPartGo.SetActive(true);
-
-        if(hasPlayerAnimation)
-        {
-            this.playerAnimator.SetTrigger("isPlayer");
-            yield return new WaitForSeconds(1f);
-        }
 
         Vector3 _movingRightPosition = new Vector3((Screen.width * 0.4f) + Screen.width, Screen.height * 0.5f, 0);
         Vector3 _movingLeftPosition = new Vector3((Screen.width * 0.4f) - Screen.width, Screen.height * 0.5f, 0);
