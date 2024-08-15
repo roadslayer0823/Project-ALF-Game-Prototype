@@ -23,6 +23,7 @@ public partial class GameCharacter : MonoBehaviour
 
     [Header( "Version 2" )]
     [SerializeField] private PopUpDisplayInfoV2 popUpDisplayInfoPrefabV2 = null;
+    [SerializeField] private CharacterAnimationHandler characterAnimationHandler = null;
 
     private string id = null;
     private string characterName = null;
@@ -891,6 +892,10 @@ public partial class GameCharacter : MonoBehaviour
         this.allSkills.Add( characterSkill );
     }
 
+    public CharacterAnimationHandler GetCharacterAnimationHandler()
+    {
+        return this.characterAnimationHandler;
+    }
 #endregion
 
 #region Battle Animation Event Manager
