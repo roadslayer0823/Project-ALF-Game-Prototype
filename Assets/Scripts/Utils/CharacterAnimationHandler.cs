@@ -81,16 +81,22 @@ public class CharacterAnimationHandler : MonoBehaviour
         return this.codeTypeForLastATL;
     }
 
-    public bool CheckIfSameAsLastATLCodeType(AnimationData.CodeType codeType)
+    public bool CheckIfSameAsLastATLCodeType(string[] lastCode)
     {
-        if(codeType == this.codeTypeForLastATL)
+        string codeTypeForLastATL = this.codeTypeForLastATL.ToString();
+        foreach(string subString in lastCode)
         {
-            return true;
+            if (codeTypeForLastATL.Contains(subString))
+            {
+                return true;
+            }
         }
-        else
-        {
-            return false;
-        }
+        return false;
+    }
+
+    public bool CheckIfSameAsLastATLCodeType(string lastCode)
+    {
+        return CheckIfSameAsLastATLCodeType(new string[] { lastCode });
     }
 
     public void LoadAndPlayAnimation(bool isFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0, string visualEffectName = "", string visualEffectAudioId = "")

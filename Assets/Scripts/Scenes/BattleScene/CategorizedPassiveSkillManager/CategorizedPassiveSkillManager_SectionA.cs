@@ -665,7 +665,6 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             _stressEvasionMaxStatePointIncrease = stressEvasionCost * skill_PSE4_KuoLiu * skill_PSE12_NiFeng;
             battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, _stressEvasionMaxStatePointIncrease, out _);
             gameCharacterData.temp_StressEvasionMaxStatePointIncrease = _stressEvasionMaxStatePointIncrease;
-            Debug.Log("is working");
         }
         string _formula = "[最大以太值]+<[回避壓力消耗*4.擴流*12.逆風]";
         string _finalString = "當前身份: 抵抗成功方" + "\n" +
