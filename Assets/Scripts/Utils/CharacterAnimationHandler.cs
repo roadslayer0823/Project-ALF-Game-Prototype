@@ -81,6 +81,18 @@ public class CharacterAnimationHandler : MonoBehaviour
         return this.codeTypeForLastATL;
     }
 
+    public bool CheckIfSameAsLastATLCodeType(AnimationData.CodeType codeType)
+    {
+        if(codeType == this.codeTypeForLastATL)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public void LoadAndPlayAnimation(bool isFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0, string visualEffectName = "", string visualEffectAudioId = "")
     {
         AnimationClip _animationClip = null;
