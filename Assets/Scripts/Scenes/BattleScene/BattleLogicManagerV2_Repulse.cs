@@ -59,12 +59,12 @@ public partial class BattleLogicManagerV2
         // 2.追風 / 9.行雲流水 / 10.負荷壓制
 
         // 角力追風發動&以太值負荷值結算
-        CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref _battleResultData, lead, improviser, false );
-        CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref _battleResultData, improviser, lead, false );
+        BattleResultData _battleResultDataOld = battleResultDataList[0];
+        CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref _battleResultDataOld, lead, improviser, false );
+        CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref _battleResultDataOld, improviser, lead, false );
 
         // 雙方技能強度速度最終結算
-        CategorizedPassiveSkillManager.CalculateBothCharacterStrengthSpeed( ref _battleResultData, lead, improviser );
-        CategorizedPassiveSkillManager.CalculateBothCharacterStrengthSpeed( ref _battleResultData, improviser, lead );
+        CategorizedPassiveSkillManager.CalculateBothCharacterStrengthSpeed( ref _battleResultDataOld, lead, improviser );
 
         // 對比條件的技能效果
         BattleLogicManagerV2.CompareConditionallyForSkillEffects( ref _battleResultData, lead, improviser );
