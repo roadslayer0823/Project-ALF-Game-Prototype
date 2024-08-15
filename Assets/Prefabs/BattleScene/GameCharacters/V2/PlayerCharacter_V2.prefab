@@ -1951,6 +1951,12 @@ MonoBehaviour:
   subSkillId: {fileID: 0}
   type: {fileID: 0}
   dropdown: {fileID: 0}
+  containers:
+  - {fileID: 3174712552481293222}
+  - {fileID: 2427942532151461047}
+  - {fileID: 7215210616887193445}
+  - {fileID: 7215210618600483730}
+  - {fileID: 9005853308038288350}
   playerAnimator: {fileID: 7390055747839694509}
   skillEffectBackAnimator: {fileID: 6428194587670660119}
   skillEffectFrontAnimator: {fileID: 6410295446148079859}

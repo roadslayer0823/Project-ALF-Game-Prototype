@@ -1,10 +1,10 @@
 using UnityEngine;
-using static DatabaseManager;
 using TMPro;
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using AnimationData = DatabaseManager.AnimationData;
 
 public class CharacterAnimationHandler : MonoBehaviour
 {
@@ -12,10 +12,12 @@ public class CharacterAnimationHandler : MonoBehaviour
     private AnimationData.CodeType selectedCodeType;
 
     [SerializeField] private Toggle isFront;
+    [SerializeField] private Toggle needToRecord;
     [SerializeField] private TMP_InputField subSkillId;
     [SerializeField] private TMP_InputField type;
     [SerializeField] private TMP_Dropdown dropdown;
 
+    [SerializeField] private Transform[] containers;
     [SerializeField] private Animator playerAnimator;
     [SerializeField] private Animator skillEffectBackAnimator;
     [SerializeField] private Animator skillEffectFrontAnimator;
@@ -29,6 +31,7 @@ public class CharacterAnimationHandler : MonoBehaviour
     private AnimatorOverrideController skillEffectFrontAnimatorOverrideController;
     private AnimatorOverrideController visualEffectBackAnimatorOverrideController;
     private AnimatorOverrideController visualEffectFrontAnimatorOverrideController;
+    private AnimationData.CodeType codeTypeForLastATL;
 
     void Awake()
     {
@@ -65,7 +68,20 @@ public class CharacterAnimationHandler : MonoBehaviour
         this.dropdown.AddOptions(values);
     }
 
-    public void LoadAndPlayAnimation(bool isFront, AnimationData.CodeType codeType, string subskillId = "", int type = 0, string visualEffectName = "", string visualEffectAudioId = "")
+    public void FlipContainer()
+    {
+        for(int i = 0; i < this.containers.Length; i ++)
+        {
+            containers[i].transform.localScale.Set(-1, 0, 0);
+        }
+    }
+
+    public AnimationData.CodeType GetLastATLCodeType()
+    {
+        return this.codeTypeForLastATL;
+    }
+
+    public void LoadAndPlayAnimation(bool isFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0, string visualEffectName = "", string visualEffectAudioId = "")
     {
         AnimationClip _animationClip = null;
         AnimationData _animationData = DatabaseManager.Instance.GetAnimationData(codeType,subskillId,type);
@@ -132,12 +148,17 @@ public class CharacterAnimationHandler : MonoBehaviour
         {
             AudioManager.Instance.PlaySoundEffect(visualEffectAudioId);
         }
+
+        if(needToRecord)
+        {
+            this.codeTypeForLastATL = codeType;
+        }
     }
 
     public void OnClick()
     {
         this.selectedCodeType = (AnimationData.CodeType)Enum.Parse(typeof(AnimationData.CodeType), codeType);
-        LoadAndPlayAnimation(this.isFront.isOn, this.selectedCodeType, this.subSkillId.text, int.Parse(this.type.text));
+        LoadAndPlayAnimation(this.isFront.isOn,this.needToRecord, this.selectedCodeType, this.subSkillId.text, int.Parse(this.type.text));
     }
 
     public void OnValueChanged()
