@@ -7,7 +7,6 @@ using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
 using SkillAnimation = DatabaseManager.SkillAnimation;
-using CharacterIdentityType = GameCharacter.CharacterIdentityType;
 
 public partial class BattleAnimationManager : MonoBehaviour
 {
