@@ -4,14 +4,13 @@ using Subskill = DatabaseManager.Subskill;
 
 public partial class BattleAnimationManager: MonoBehaviour
 {
-    public static CharacterAnimationHandler characterAnimationHandler;
-    public static BattleDistanceManager battleDistanceManager;
-
     public void DeterminePartBAnimation(GameCharacter gameCharacter, GameCharacter opponent, string subSkillID, int skillType)
     {
         string[] lastCodeV1andV2 = { "V1", "V2" };
         Subskill characterSubskillData = gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
         Subskill oppoentSubskillData = opponent.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        CharacterAnimationHandler characterAnimationHandler = gameCharacter.GetCharacterAnimationHandler();
+        BattleDistanceManager battleDistanceManager = battleGameManager.GetBattleDistanceManager();
 
         //抵抗成功方
         if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SuccessfulResister))
@@ -22,7 +21,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 //己方當前流向是否"以太流" / "無流向" ?
                 if (gameCharacter.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.State || gameCharacter.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.None)
                 {
-                    characterAnimationHandler.LoadAndPlayAnimation(true, true, DatabaseManager.AnimationData.CodeType.camB_type_CDV1, subSkillID, skillType);
+                    gameCharacter.GetCharacterAnimationHandler().LoadAndPlayAnimation(true, true, DatabaseManager.AnimationData.CodeType.camB_type_CDV1, subSkillID, skillType);
                 }
                 //己方當前流向是否"生命流" ? 或者 當前距離是否近距離 ?
                 else if (gameCharacter.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life || battleDistanceManager.GetCurrentDistanceType() == BattleDistanceManager.DistanceType.Near)
@@ -137,7 +136,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 //己方是否"無視遠程方" ?
                 if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.IgnoreRangedSkill))
                 {
-                    StartCoroutine(PlayCFWAnimation(subSkillID, skillType));
+                    StartCoroutine(PlayCFWAnimation(gameCharacter,subSkillID, skillType));
                 }
 
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
@@ -153,11 +152,11 @@ public partial class BattleAnimationManager: MonoBehaviour
                     //己方是否"近距離遠程方" ?
                     if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NearDistanceRangedDealer))
                     {
-                        StartCoroutine(PlayCFWVFAnimation(subSkillID, skillType));
+                        StartCoroutine(PlayCFWVFAnimation(gameCharacter,subSkillID, skillType));
                     }
                     else
                     {
-                        StartCoroutine(PlayCFWAnimation(subSkillID, skillType));
+                        StartCoroutine(PlayCFWAnimation(gameCharacter,subSkillID, skillType));
                     }
                 }
                 //己方是否"近距離遠程方" ?
@@ -212,7 +211,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     //己方是否"速度負方" ? or 雙方已按下技能是否都是"遠程" ?
                     if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser) || (characterSubskillData.Range == Subskill.RangeType.ranged && oppoentSubskillData.Range == Subskill.RangeType.ranged))
                     {
-                        StartCoroutine(PlayBFLAnimation(subSkillID, skillType));
+                        StartCoroutine(PlayBFLAnimation(gameCharacter,subSkillID, skillType));
                         characterAnimationHandler.LoadAndPlayAnimation(true, true, DatabaseManager.AnimationData.CodeType.camB_type_D_L, subSkillID, skillType);
                     }
                     else
@@ -223,7 +222,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 //己方是否"速度負方" ?  or 雙方已按下技能是否都是"遠程" ?
                 else if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser) || (characterSubskillData.Range == Subskill.RangeType.ranged && oppoentSubskillData.Range == Subskill.RangeType.ranged))
                 {
-                    StartCoroutine(PlayBFLAnimation(subSkillID, skillType));
+                    StartCoroutine(PlayBFLAnimation(gameCharacter,subSkillID, skillType));
                     characterAnimationHandler.LoadAndPlayAnimation(true, true, DatabaseManager.AnimationData.CodeType.camB_type_D_H, subSkillID, skillType);
                 }
                 else
@@ -317,22 +316,25 @@ public partial class BattleAnimationManager: MonoBehaviour
         }
     }
 
-    private IEnumerator PlayCFWAnimation(string subSkillID, int skillType)
+    private IEnumerator PlayCFWAnimation(GameCharacter gameCharacter, string subSkillID, int skillType)
     {
+        CharacterAnimationHandler characterAnimationHandler = gameCharacter.GetCharacterAnimationHandler();
         characterAnimationHandler.LoadAndPlayAnimation(true, true, DatabaseManager.AnimationData.CodeType.camB_type_CFW, subSkillID, skillType);
         yield return new WaitForSeconds(characterAnimationHandler.GetAnimationClipTotalLength());
         characterAnimationHandler.LoadAndPlayAnimation(false, true, DatabaseManager.AnimationData.CodeType.camA_type_AV1, subSkillID, skillType);
     }
 
-    private IEnumerator PlayCFWVFAnimation(string subSkillID, int skillType)
+    private IEnumerator PlayCFWVFAnimation(GameCharacter gameCharacter, string subSkillID, int skillType)
     {
+        CharacterAnimationHandler characterAnimationHandler = gameCharacter.GetCharacterAnimationHandler();
         characterAnimationHandler.LoadAndPlayAnimation(true, true, DatabaseManager.AnimationData.CodeType.camB_type_CFWVF, subSkillID, skillType);
         yield return new WaitForSeconds(characterAnimationHandler.GetAnimationClipTotalLength());
         characterAnimationHandler.LoadAndPlayAnimation(false, true, DatabaseManager.AnimationData.CodeType.camA_type_AV1, subSkillID, skillType);
     }
 
-    private IEnumerator PlayBFLAnimation(string subSkillID, int skillType)
+    private IEnumerator PlayBFLAnimation(GameCharacter gameCharacter, string subSkillID, int skillType)
     {
+        CharacterAnimationHandler characterAnimationHandler = gameCharacter.GetCharacterAnimationHandler();
         characterAnimationHandler.LoadAndPlayAnimation(false, true, DatabaseManager.AnimationData.CodeType.camA_type_BFL, subSkillID, skillType);
         yield return new WaitForSeconds(characterAnimationHandler.GetAnimationClipTotalLength());
     }
