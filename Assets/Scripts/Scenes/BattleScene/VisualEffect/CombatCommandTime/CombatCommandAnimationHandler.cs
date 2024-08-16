@@ -53,9 +53,9 @@ public class CombatCommandAnimationHandler : MonoBehaviour
         onCompleteCallback?.Invoke();
     }
 
-    public void RunPlayerTurnFrontAnimation()
+    public void RunCharacterTurningAnimation()
     {
-        this.playerAnimator.SetTrigger("isPlayer");
+        this.playerAnimator.Play("Player");
     }
 
     public IEnumerator VerticalCutOut(Action onCompleteCallback = null)
