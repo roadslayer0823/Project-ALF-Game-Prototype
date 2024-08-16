@@ -99,7 +99,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         if (battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen())
         {
-            battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutOut( true );
+            battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutOut();
         }
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定結果</color>為"

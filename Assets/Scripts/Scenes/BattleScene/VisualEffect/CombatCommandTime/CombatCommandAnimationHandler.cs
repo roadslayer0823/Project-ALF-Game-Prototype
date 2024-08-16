@@ -58,7 +58,7 @@ public class CombatCommandAnimationHandler : MonoBehaviour
         this.playerAnimator.SetTrigger("isPlayer");
     }
 
-    public IEnumerator VerticalCutOut( bool hasPlayerAnimation, Action onCompleteCallback = null)
+    public IEnumerator VerticalCutOut(Action onCompleteCallback = null)
     {
         isShowing = false;
 
@@ -70,10 +70,6 @@ public class CombatCommandAnimationHandler : MonoBehaviour
 
         LeanTween.move(this.rightPartGo, _movingRightPosition, this.cutScreenMoveDuration).setOnComplete(() => {
             ResetVerticalCutScreen();
-            if(hasPlayerAnimation)
-            {
-                this.playerAnimator.SetTrigger("reset");
-            }
         });
         LeanTween.move(this.leftPartGo, _movingLeftPosition, this.cutScreenMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); });
 

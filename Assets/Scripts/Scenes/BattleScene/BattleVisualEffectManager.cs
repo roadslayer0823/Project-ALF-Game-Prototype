@@ -154,9 +154,9 @@ public class BattleVisualEffectManager : MonoBehaviour
         StartCoroutine( this.combatCommandAnimationHandler.VerticalCutIn( onCompleteCallback ) );
     }
 
-    public void TriggerCombatCommandCutOut(bool hasPlayerAnimation, Action onCompleteCallback = null )
+    public void TriggerCombatCommandCutOut(Action onCompleteCallback = null )
     {
-        StartCoroutine( this.combatCommandAnimationHandler.VerticalCutOut(hasPlayerAnimation, onCompleteCallback ) );
+        StartCoroutine( this.combatCommandAnimationHandler.VerticalCutOut(onCompleteCallback ) );
     }
 
     public bool IsShowingCombatCommandCutScreen()
