@@ -66,8 +66,6 @@ public partial class BattleAnimationManager : MonoBehaviour
             yield return new WaitUntil( () => ( !battleFlowATL.GetIsDuringAttackOpportunityPeriod() || ( _playerCharacter.GetAssignedSkill() != null && _enemyCharacter.GetAssignedSkill() != null ) ) );
             battleFlowATL.StopAttackOpportunityCountdownTimer();
             yield return new WaitWhile( () => this.battleGameManager.GetBattleVisualEffectManager().IsPlayingCharacterTurningAnimation() );
-            this.battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutOut();
-            yield return new WaitWhile( () => this.battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen() );
 
             _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
             _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
@@ -169,6 +167,9 @@ public partial class BattleAnimationManager : MonoBehaviour
         _lead.GetOwnContainer().SetActive( true );
         _lead.ShowCharacterObject();
         _lead.GetOpponentContainer().SetActive( false );
+
+        this.battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutOut();
+        yield return new WaitWhile( () => this.battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen() );
 
         // “先手方”發動技能。
         _lead.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
