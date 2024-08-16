@@ -57,7 +57,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             {
                 _characterOneAnimationHandler.FlipVisualEffectContainer();
             }
-            _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_drawef");
+            _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_drawef","draw");
         }
 
         if (gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Deuce))
@@ -67,7 +67,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             {
                 _characterTwoAnimationHandler.FlipVisualEffectContainer();
             }
-            _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_drawef");
+            _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_drawef","draw");
         }
 
         /*
@@ -81,11 +81,11 @@ public partial class BattleAnimationManager : MonoBehaviour
             if (GetBackgroundIndex() == 1)
             {
                 _characterOneAnimationHandler.FlipVisualEffectContainer();
-                _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef");
+                _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef","crash");
             }
             else if(GetBackgroundIndex() == 2)
             {
-                _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef");
+                _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef", "crash");
             }      
         }
 
@@ -96,12 +96,12 @@ public partial class BattleAnimationManager : MonoBehaviour
             if (GetBackgroundIndex() == 1)
             {
                 _characterTwoAnimationHandler.FlipVisualEffectContainer();
-                _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef");
+                _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef", "crash");
             }
             // PART B場景為camB_bg
             else if (GetBackgroundIndex() == 2)
             {
-                _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef");
+                _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef", "crash");
             }
         }
 
@@ -125,7 +125,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                 gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser) ||
                 gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedStrengthLoser))
             {
-                _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeD_crashef");
+                _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeD_crashef", "crash");
             }
             else
             {
@@ -133,12 +133,12 @@ public partial class BattleAnimationManager : MonoBehaviour
                 if (GetBackgroundIndex() == 1)
                 {
                     _characterOneAnimationHandler.FlipVisualEffectContainer();
-                    _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef");
+                    _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef", "crash");
                 }
                 // PART B場景為camB_bg
                 else if (GetBackgroundIndex() == 2)
                 {
-                    _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef");
+                    _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef", "crash");
                 }
             }
         }
@@ -151,7 +151,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                 gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedStrengthLoser))
             {
                 _characterTwoAnimationHandler.FlipVisualEffectContainer();
-                _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeD_crashef");
+                _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeD_crashef", "crash");
             }
             else
             {
@@ -159,12 +159,12 @@ public partial class BattleAnimationManager : MonoBehaviour
                 if (GetBackgroundIndex() == 1)
                 {
                     _characterTwoAnimationHandler.FlipVisualEffectContainer();
-                    _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef");
+                    _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef", "crash");
                 }
                 // PART B場景為camB_bg
                 else if (GetBackgroundIndex() == 2)
                 {
-                    _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef");
+                    _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef", "crash");
                 }
             }
         }

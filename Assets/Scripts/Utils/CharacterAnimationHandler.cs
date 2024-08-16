@@ -180,22 +180,13 @@ public class CharacterAnimationHandler : MonoBehaviour
         }
     }
 
-    public void LoadAndPlayVisualEffect(string visualEffectName = "", string visualEffectAudioId = "")
+    public void LoadAndPlayVisualEffect(string visualEffectName, string visualEffectAudioId)
     {
-        AnimationClip _animationClip = null;
-
         // visual effect
-        if (!string.IsNullOrEmpty(visualEffectName))
-        {
-            _animationClip = Resources.Load<AnimationClip>("Animations/Battle/VisualEffects/" + visualEffectName);
-            this.skillEffectBackAnimatorOverrideController["Animation_0"] = _animationClip;
-        }
+        AnimationClip _animationClip = Resources.Load<AnimationClip>("Animations/Battle/VisualEffects/" + visualEffectName);
+        this.skillEffectBackAnimatorOverrideController["Animation_0"] = _animationClip;
 
-        if (!string.IsNullOrEmpty(visualEffectAudioId))
-        {
-            AudioManager.Instance.PlaySoundEffect(visualEffectAudioId);
-        }
-
+        AudioManager.Instance.PlaySoundEffect(visualEffectAudioId);
     }
 
     public void OnClick()
