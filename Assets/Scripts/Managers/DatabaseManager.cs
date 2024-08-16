@@ -971,7 +971,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
             camB_type_CFW,
             camB_type_CFWVF,
             camA_type_BFL,
-            camA_type_D_L,
+            camB_type_D_L,
             camB_type_D_H,
             camA_type_BLPVC_L,
             camA_type_BLPVC_H,
