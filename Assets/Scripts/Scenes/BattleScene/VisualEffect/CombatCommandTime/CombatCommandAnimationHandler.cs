@@ -55,7 +55,7 @@ public class CombatCommandAnimationHandler : MonoBehaviour
 
     public void RunCharacterTurningAnimation()
     {
-        this.playerAnimator.Play("Player");
+        this.playerAnimator.Play("Turn");
     }
 
     public IEnumerator VerticalCutOut(Action onCompleteCallback = null)
