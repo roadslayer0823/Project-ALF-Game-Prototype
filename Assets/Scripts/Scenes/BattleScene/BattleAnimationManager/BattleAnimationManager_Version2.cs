@@ -62,7 +62,12 @@ public partial class BattleAnimationManager : MonoBehaviour
             battleFlowATL.StartAttackOpportunityCountdownTimer( this.skillPromptPanel );
             _atlSlotListPanel.GoToATL( battleFlowATL.GetATLNumber(), battleFlowATL.GetAttackOpportunityDuration() );
 
+            StartCoroutine( RunCheckingIfSkillIsSelectedInCommandCombatTime( _playerCharacter ) );
             yield return new WaitUntil( () => ( !battleFlowATL.GetIsDuringAttackOpportunityPeriod() || ( _playerCharacter.GetAssignedSkill() != null && _enemyCharacter.GetAssignedSkill() != null ) ) );
+            battleFlowATL.StopAttackOpportunityCountdownTimer();
+            yield return new WaitWhile( () => this.battleGameManager.GetBattleVisualEffectManager().IsPlayingCharacterTurningAnimation() );
+            this.battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutOut();
+            yield return new WaitWhile( () => this.battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen() );
 
             _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
             _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
@@ -96,11 +101,6 @@ public partial class BattleAnimationManager : MonoBehaviour
         // 調用“判定距離中途結果”。
         battleGameManager.GetBattleDistanceManager().UpdateHalfwayDistanceResult( _lead, out _resultLogList );
         ShowBattleLog( _resultLogList );
-
-        if (battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen())
-        {
-            battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutOut();
-        }
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定結果</color>為"
                                                  + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _lead.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“先手方”</color>，"
@@ -169,8 +169,6 @@ public partial class BattleAnimationManager : MonoBehaviour
         _lead.GetOwnContainer().SetActive( true );
         _lead.ShowCharacterObject();
         _lead.GetOpponentContainer().SetActive( false );
-
-        yield return new WaitForSeconds( 0.1f );
 
         // “先手方”發動技能。
         _lead.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
@@ -676,6 +674,16 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
 
         yield return StartCoroutine( RunTransitioningToNextATL() );
+    }
+
+    private IEnumerator RunCheckingIfSkillIsSelectedInCommandCombatTime( GameCharacter gameCharacter )
+    {
+        yield return new WaitUntil( () => gameCharacter.GetAssignedSkill() != null );
+
+        if (this.battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen())
+        {
+            this.battleGameManager.GetBattleVisualEffectManager().TriggerCharacterTurningAnimation();
+        }
     }
 
     private IEnumerator RunCheckingIfDerivedSkillIsSelected( GameCharacter gameCharacter, float countdownTime, float countdownStartTime )

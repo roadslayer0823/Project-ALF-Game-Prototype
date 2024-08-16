@@ -154,14 +154,24 @@ public class BattleVisualEffectManager : MonoBehaviour
         StartCoroutine( this.combatCommandAnimationHandler.VerticalCutIn( onCompleteCallback ) );
     }
 
-    public void TriggerCombatCommandCutOut(Action onCompleteCallback = null )
+    public void TriggerCombatCommandCutOut( Action onCompleteCallback = null )
     {
-        StartCoroutine( this.combatCommandAnimationHandler.VerticalCutOut(onCompleteCallback ) );
+        StartCoroutine( this.combatCommandAnimationHandler.VerticalCutOut( onCompleteCallback ) );
+    }
+
+    public void TriggerCharacterTurningAnimation()
+    {
+        this.combatCommandAnimationHandler.RunCharacterTurningAnimation();
     }
 
     public bool IsShowingCombatCommandCutScreen()
     {
         return this.combatCommandAnimationHandler.GetIsShowing();
+    }
+
+    public bool IsPlayingCharacterTurningAnimation()
+    {
+        return this.combatCommandAnimationHandler.GetIsPlayingCharacterTurningAnimation();
     }
 
     public void SwitchCombatCommandBackground(int backgroundId)

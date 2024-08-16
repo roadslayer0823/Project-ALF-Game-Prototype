@@ -26,6 +26,7 @@ public class CombatCommandAnimationHandler : MonoBehaviour
     [SerializeField] private Sprite leftPartBackgroundTwo = null;
 
     private bool isShowing = false;
+    private bool isPlayingCharacterTurningAnimation = false;
 
     public void Initialize()
     {
@@ -34,7 +35,7 @@ public class CombatCommandAnimationHandler : MonoBehaviour
 
     public IEnumerator VerticalCutIn( Action onCompleteCallback = null )
     {
-        isShowing = true;
+        this.isShowing = true;
 
         ResetVerticalCutScreen();
 
@@ -55,13 +56,13 @@ public class CombatCommandAnimationHandler : MonoBehaviour
 
     public void RunCharacterTurningAnimation()
     {
-        this.playerAnimator.Play("Turn");
+        this.isPlayingCharacterTurningAnimation = true;
+        this.playerAnimator.Play( "Turn", 0, 0.0f );
+        LeanTween.delayedCall( this.playerAnimator.GetCurrentAnimatorClipInfo( 0 ).Length, () => { this.isPlayingCharacterTurningAnimation = false; } );
     }
 
     public IEnumerator VerticalCutOut(Action onCompleteCallback = null)
     {
-        isShowing = false;
-
         this.rightPartGo.SetActive(true);
         this.leftPartGo.SetActive(true);
 
@@ -74,6 +75,7 @@ public class CombatCommandAnimationHandler : MonoBehaviour
         LeanTween.move(this.leftPartGo, _movingLeftPosition, this.cutScreenMoveDuration).setOnComplete(() => { ResetVerticalCutScreen(); });
 
         yield return new WaitForSeconds( this.cutScreenMoveDuration );
+        this.isShowing = false;
         onCompleteCallback?.Invoke();
     }
 
@@ -89,6 +91,8 @@ public class CombatCommandAnimationHandler : MonoBehaviour
 
         this.leftPartGo.transform.position = new Vector3(Screen.width * 0.4f - Screen.width, Screen.height * 0.5f, 0);
         this.rightPartGo.transform.position = new Vector3(Screen.width * 0.4f + Screen.width, Screen.height * 0.5f, 0);
+
+        this.playerAnimator.Play( "Default" );
     }
 
     private void BrightnessLoopAnimation(Image darkLayer)
@@ -105,6 +109,11 @@ public class CombatCommandAnimationHandler : MonoBehaviour
     public bool GetIsShowing()
     {
         return this.isShowing;
+    }
+
+    public bool GetIsPlayingCharacterTurningAnimation()
+    {
+        return this.isPlayingCharacterTurningAnimation;
     }
 
     public void SetBackgroundSprites(int backgroundId = 1)

@@ -267,8 +267,6 @@ public class BattleGameManager : MonoBehaviour
 
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>【 第 { _roundNumber } 回合結束 】</color>" );
 
-        this.battleVisualEffectManager.TriggerCombatCommandCutOut();
-
         if (this.battleFlowManager_V2 == null)
         {
             BattleLogicManager.OnExecutionPhaseFinished( GetGameCharacterList() );

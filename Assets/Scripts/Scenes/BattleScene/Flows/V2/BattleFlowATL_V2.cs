@@ -13,6 +13,8 @@ public class BattleFlowATL_V2
     private bool isDuringAttackOpportunityPeriod = false;
     private Action onAttackOpportunityEndedCallback = null;
 
+    private Coroutine runningCoroutine = null;
+
     public BattleFlowATL_V2( BattleFlowManager_V2 battleFlowManager, int atlNumber, float attackOpportunityDuration, Action onAttackOpportunityEndedCallback )
     {
         this.battleFlowManager = battleFlowManager;
@@ -49,7 +51,14 @@ public class BattleFlowATL_V2
     public void StartAttackOpportunityCountdownTimer( SkillPromptPanelV2 skillPromptPanel )
     {
         this.isDuringAttackOpportunityPeriod = true;
-        this.battleFlowManager.StartCoroutine( RunAttackOpportunityCountdownTimer( skillPromptPanel ) );
+        this.runningCoroutine = this.battleFlowManager.StartCoroutine( RunAttackOpportunityCountdownTimer( skillPromptPanel ) );
+    }
+
+    public void StopAttackOpportunityCountdownTimer()
+    {
+        this.runningCoroutine = null;
+        this.isDuringAttackOpportunityPeriod = false;
+        this.onAttackOpportunityEndedCallback?.Invoke();
     }
 
     private IEnumerator RunAttackOpportunityCountdownTimer( SkillPromptPanelV2 skillPromptPanel )
@@ -74,8 +83,7 @@ public class BattleFlowATL_V2
         }
         while (_remainingTime > 0);
 
-        this.isDuringAttackOpportunityPeriod = false;
-        this.onAttackOpportunityEndedCallback?.Invoke();
+        StopAttackOpportunityCountdownTimer();
     }
 
     public float GetAttackOpportunityDuration()
