@@ -136,15 +136,11 @@ public class SkillPromptPanelV2 : MonoBehaviour
     public void ShowCasterCurrentSkillInfo(GameCharacter caster)
     {
         CharacterSkill _characterSkill = caster.GetCurrentSkill();
-        int _skillStatIncrement = caster.GetCurrentSkillStatIncrement();
 
         if (_characterSkill == null || this.skillNameGO.activeInHierarchy)
         {
             return;
         }
-
-        this.speedEffectGO.gameObject.SetActive(true);
-        this.strengthEffectGO.gameObject.SetActive(true);
 
         if (_characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active
             || _characterSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.repulse
@@ -162,6 +158,29 @@ public class SkillPromptPanelV2 : MonoBehaviour
         this.skillNameBackgroundImage.rectTransform.anchoredPosition = new Vector3(0f, 0f, 0f);
         this.skillNameText.SetText(_characterSkill.GetCharacterSubskillData().GetSubskillData().DisplayName);
 
+
+        this.skillNameGO.SetActive(true);
+        LeanTween.delayedCall(skillNameShowingDuration, Hide);
+
+        if (caster.GetIsPlayer())
+        {
+            ShowSkillTag(_characterSkill, true);
+        }
+        else
+        {
+            ShowSkillTag(_characterSkill, false);
+        }
+
+    }
+
+    public void PlaySpeedStrengthAnimation(GameCharacter gameCharacter)
+    {
+        CharacterSkill _characterSkill = gameCharacter.GetCurrentSkill();
+        int _skillStatIncrement = gameCharacter.GetCurrentSkillStatIncrement();
+
+        this.speedEffectGO.gameObject.SetActive(true);
+        this.strengthEffectGO.gameObject.SetActive(true);
+
         int _speed = _characterSkill.GetCharacterSubskillData().GetSubskillData().Speed;
         int _strength = _characterSkill.GetCharacterSubskillData().GetSubskillData().Strength;
 
@@ -175,7 +194,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
             this.speedEffectAnimator.Play("GodSpeedV2");
         }
 
-        if (_strength + _skillStatIncrement == 2)
+        else if (_strength + _skillStatIncrement == 2)
         {
             //this.strengthEffectAnimator.Play("Strength_1_V2");
             this.strengthEffectAnimator.Play("Strength_1_V3");
@@ -185,17 +204,12 @@ public class SkillPromptPanelV2 : MonoBehaviour
             this.strengthEffectAnimator.Play("Strength_2_V2");
         }
 
-        this.skillNameGO.SetActive(true);
-        LeanTween.delayedCall(skillNameShowingDuration, Hide);
-
-        if (caster.GetIsPlayer())
+        if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Lead))
         {
-            ShowSkillTag(_characterSkill, true);
             ChangeSpeedAndStrengthEffectScaleX(-2);
         }
         else
         {
-            ShowSkillTag(_characterSkill, false);
             ChangeSpeedAndStrengthEffectScaleX(2);
         }
     }

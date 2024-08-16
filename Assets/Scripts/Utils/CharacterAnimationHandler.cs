@@ -80,6 +80,12 @@ public class CharacterAnimationHandler : MonoBehaviour
         }
     }
 
+    public void FlipVisualEffectContainer()
+    {
+        containers[0].transform.localScale.Set(-1, 0, 0);
+        containers[4].transform.localScale.Set(-1, 0, 0);
+    }
+
     public AnimationData.CodeType GetLastATLCodeType()
     {
         return this.codeTypeForLastATL;
@@ -103,10 +109,13 @@ public class CharacterAnimationHandler : MonoBehaviour
         return CheckIfSameAsLastATLCodeType(new string[] { lastCode });
     }
 
-    public void LoadAndPlayAnimation(bool isSkillEffectFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0, string visualEffectName = "", string visualEffectAudioId = "")
+    public void LoadAndPlayAnimation(bool isSkillEffectFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0)
     {
         AnimationClip _animationClip = null;
         AnimationData _animationData = DatabaseManager.Instance.GetAnimationData(codeType,subskillId,type);
+        actionAnimationLength = 0;
+        effectAnimationLength = 0;
+        audioLength = 0;
 
         if(_animationData == null)
         {
@@ -154,6 +163,27 @@ public class CharacterAnimationHandler : MonoBehaviour
             }
             effectAnimationLength += _animationClip.length;
         }
+
+        //audio
+        string[] _audioArray = _animationData.AudiosArray;
+        if (_audioArray != null && _audioArray.Length > 0)
+        {
+            AudioManager.Instance.PlaySoundEffect(_audioArray[0]);
+            AudioDatabase.AudioData _audioData = this.audioDatabase.GetAudioDataById(_audioArray[0]);
+            audioLength += _audioData.GetClip().length;
+        }
+
+
+        if(needToRecord)
+        {
+            this.codeTypeForLastATL = codeType;
+        }
+    }
+
+    public void LoadAndPlayVisualEffect(string visualEffectName = "", string visualEffectAudioId = "")
+    {
+        AnimationClip _animationClip = null;
+
         // visual effect
         if (!string.IsNullOrEmpty(visualEffectName))
         {
@@ -161,23 +191,11 @@ public class CharacterAnimationHandler : MonoBehaviour
             this.skillEffectBackAnimatorOverrideController["Animation_0"] = _animationClip;
         }
 
-        //audio
-        string[] _audioArray = _animationData.AudiosArray;
-        if (_audioArray != null && _audioArray.Length > 0)
-        {
-            AudioManager.Instance.PlaySoundEffect(_audioArray[0]);
-            audioLength += _audioArray[0].Length;
-        }
-
-        if(!string.IsNullOrEmpty(visualEffectAudioId))
+        if (!string.IsNullOrEmpty(visualEffectAudioId))
         {
             AudioManager.Instance.PlaySoundEffect(visualEffectAudioId);
         }
 
-        if(needToRecord)
-        {
-            this.codeTypeForLastATL = codeType;
-        }
     }
 
     public void OnClick()

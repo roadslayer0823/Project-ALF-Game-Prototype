@@ -1,0 +1,174 @@
+using UnityEngine;
+
+public partial class BattleAnimationManager : MonoBehaviour
+{
+    //判定PART A演出&PART A特效
+    public void RunPartAPerformance(ref BattleResultData battleResultData, GameCharacter lead, GameCharacter improviser)
+    {
+        BattleResultData.BattleResultData_GameCharacter _lead_BattleResultData = battleResultData.GetGameCharacterResultData(lead);
+        BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = battleResultData.GetGameCharacterResultData(improviser);
+        CharacterAnimationHandler _leadAnimationHandler = lead.GetCharacterAnimationHandler();
+        CharacterAnimationHandler _improviserAnimationHandler = improviser.GetCharacterAnimationHandler();
+        string _leadSubskillId = _lead_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().SkillId;
+        string _improviserSubskillId = _improviser_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().SkillId;
+
+        /*先手方已按下的技能速度是否3以上?*/
+        /*先手方已按下的技能強度是否2以上?*/
+        skillPromptPanel.PlaySpeedStrengthAnimation(lead);
+        skillPromptPanel.PlaySpeedStrengthAnimation(improviser);
+
+
+        /*
+         先手方是否
+        "近距離遠程方"?
+         */
+        if (_lead_BattleResultData.gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NearDistanceRangedDealer))
+        {
+            _leadAnimationHandler.LoadAndPlayAnimation(true, false, DatabaseManager.AnimationData.CodeType.camB_partA_VF, _leadSubskillId, 2);
+        }
+        else
+        {
+            _leadAnimationHandler.LoadAndPlayAnimation(true, false, DatabaseManager.AnimationData.CodeType.camB_partA_V1, _leadSubskillId, 0);
+        }
+
+        // same code type but flip 
+        _improviserAnimationHandler.FlipContainer();
+        if (_improviser_BattleResultData.gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NearDistanceRangedDealer))
+        {
+            _improviserAnimationHandler.LoadAndPlayAnimation(false, false, DatabaseManager.AnimationData.CodeType.camB_partA_VF, _improviserSubskillId, 2);
+        }
+        else
+        {
+            _improviserAnimationHandler.LoadAndPlayAnimation(false, false, DatabaseManager.AnimationData.CodeType.camB_partA_V1, _improviserSubskillId, 0);
+        }
+    }
+
+    // 判定PART B共用特效
+    public void RunPartBShareEffects(GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
+    {
+        CharacterAnimationHandler _characterOneAnimationHandler = gameCharacterOne.GetCharacterAnimationHandler();
+        CharacterAnimationHandler _characterTwoAnimationHandler = gameCharacterTwo.GetCharacterAnimationHandler();
+    
+        // "平手方"        
+        if (gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Deuce))
+        {
+            // PART B場景是否 camA_bg
+            if (GetBackgroundIndex() == 1)
+            {
+                _characterOneAnimationHandler.FlipVisualEffectContainer();
+            }
+            _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_drawef");
+        }
+
+        if (gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Deuce))
+        {
+            // PART B場景是否 camA_bg
+            if (GetBackgroundIndex() == 1)
+            {
+                _characterTwoAnimationHandler.FlipVisualEffectContainer();
+            }
+            _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_drawef");
+        }
+
+        /*
+         * "強度負方"&"受擊方
+            (同時有這2個身份)
+         */
+        if (gameCharacterOne.HasCharacterIdentityTypes(new GameCharacter.CharacterIdentityType[]
+        {GameCharacter.CharacterIdentityType.StrengthLoser,GameCharacter.CharacterIdentityType.Recipient}))
+        {
+            // PART B場景是否 camA_bg
+            if (GetBackgroundIndex() == 1)
+            {
+                _characterOneAnimationHandler.FlipVisualEffectContainer();
+                _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef");
+            }
+            else if(GetBackgroundIndex() == 2)
+            {
+                _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef");
+            }      
+        }
+
+        if (gameCharacterTwo.HasCharacterIdentityTypes(new GameCharacter.CharacterIdentityType[]
+        { GameCharacter.CharacterIdentityType.StrengthLoser, GameCharacter.CharacterIdentityType.Recipient }))
+        {
+            // PART B場景是否 camA_bg
+            if (GetBackgroundIndex() == 1)
+            {
+                _characterTwoAnimationHandler.FlipVisualEffectContainer();
+                _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef");
+            }
+            // PART B場景為camB_bg
+            else if (GetBackgroundIndex() == 2)
+            {
+                _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef");
+            }
+        }
+
+        /*
+         * "以太崩潰方"
+            或
+            "負荷崩潰方"
+         */
+        if (gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StressBreakStatusHolder) ||
+            gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StateBreakStatusHolder))
+        {
+            /*
+             * "敵方"是否
+                "未能抵抗方"
+                或
+                "速度負方"
+                或
+                "速度強度負方"?
+             */
+            if (gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NonResister) ||
+                gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser) ||
+                gameCharacterOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedStrengthLoser))
+            {
+                _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeD_crashef");
+            }
+            else
+            {
+                // PART B場景是否 camA_bg
+                if (GetBackgroundIndex() == 1)
+                {
+                    _characterOneAnimationHandler.FlipVisualEffectContainer();
+                    _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef");
+                }
+                // PART B場景為camB_bg
+                else if (GetBackgroundIndex() == 2)
+                {
+                    _characterOneAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef");
+                }
+            }
+        }
+
+        if (gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StressBreakStatusHolder) ||
+            gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StateBreakStatusHolder))
+        {
+            if (gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NonResister) ||
+                gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser)  ||
+                gameCharacterTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedStrengthLoser))
+            {
+                _characterTwoAnimationHandler.FlipVisualEffectContainer();
+                _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeD_crashef");
+            }
+            else
+            {
+                // PART B場景是否 camA_bg
+                if (GetBackgroundIndex() == 1)
+                {
+                    _characterTwoAnimationHandler.FlipVisualEffectContainer();
+                    _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeC_crashef");
+                }
+                // PART B場景為camB_bg
+                else if (GetBackgroundIndex() == 2)
+                {
+                    _characterTwoAnimationHandler.LoadAndPlayVisualEffect("camB_typeB_crashef");
+                }
+            }
+        }
+    }
+}
+
+ 
