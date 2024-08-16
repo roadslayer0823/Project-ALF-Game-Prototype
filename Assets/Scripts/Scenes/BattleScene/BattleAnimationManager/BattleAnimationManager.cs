@@ -29,6 +29,10 @@ public partial class BattleAnimationManager : MonoBehaviour
 
     [SerializeField] private DebugBattleDialogMenu debugBattleDialogMenu = null;
 
+    [Space]
+    [SerializeField] private Transform canvasTransform = null;
+    [SerializeField] private PopUpDisplayInfoV2Canvas popUpDisplayInfoPrefabV2 = null;
+
     private BattleGameManager battleGameManager = null;
     private SkillPromptPanelV2 skillPromptPanel = null;
     private bool isAnimationEventTriggered = false;

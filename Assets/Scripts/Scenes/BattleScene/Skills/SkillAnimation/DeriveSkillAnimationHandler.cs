@@ -9,7 +9,8 @@ public class DeriveSkillAnimationHandler : MonoBehaviour
     [SerializeField] private GameObject Part1_Container = null;
     [SerializeField] private GameObject Part2_Container = null;
     [SerializeField] private PlayableDirector part2_Animation = null;
-    [SerializeField] private Image[] part2_AnimationList = null; 
+    [SerializeField] private Image[] part2_AnimationList = null;
+    [SerializeField] private Transform pivot = null;
 
     private const string AUDIO_ID_DERIVE_SKILL_PART_A = "derive_skill_partA";
 
@@ -59,5 +60,10 @@ public class DeriveSkillAnimationHandler : MonoBehaviour
 
        part2_AnimationList[0].color = color02;
        part2_AnimationList[1].color = color03;
+    }
+
+    public Transform GetPivot()
+    {
+        return this.pivot;
     }
 }

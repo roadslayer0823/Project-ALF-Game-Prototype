@@ -5948,6 +5948,8 @@ MonoBehaviour:
   cameraEffect: {fileID: 794048808}
   darkLayer: {fileID: 2065764080}
   debugBattleDialogMenu: {fileID: 295793604}
+  canvasTransform: {fileID: 1050411305}
+  popUpDisplayInfoPrefabV2: {fileID: 3295578866375033916, guid: 2bafa194dd5bb4591a44c621115d8697, type: 3}
 --- !u!1001 &2033466327
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -942,7 +942,13 @@ public partial class BattleAnimationManager : MonoBehaviour
         yield return new WaitUntil( () => this.isAnimationEventTriggered );
         attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
         attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
-        attackTarget.ShowPopUpDisplayInfoV2( healthPointDamage: _attackTargetBattleResultData.actualHealthPointDamageTaken, stressValueDamage: _attackTargetBattleResultData.stressValueDamageTaken, statePointDamage: _attackTargetBattleResultData.statePointDamageTaken );
+
+        PopUpDisplayInfoV2Canvas.SpawnPopUpDisplayInfoV2( this.popUpDisplayInfoPrefabV2, this.canvasTransform,
+                                                          this.deriveSkillAnimationHandler.GetPivot().position, !attackTarget.GetIsPlayer(),
+                                                          healthPointDamage: _attackTargetBattleResultData.actualHealthPointDamageTaken,
+                                                          stressValueDamage: _attackTargetBattleResultData.stressValueDamageTaken,
+                                                          statePointDamage: _attackTargetBattleResultData.statePointDamageTaken );
+
         this.isAnimationEventTriggered = false;
         yield return new WaitUntil( () => this.isAnimationEventTriggered );
 
