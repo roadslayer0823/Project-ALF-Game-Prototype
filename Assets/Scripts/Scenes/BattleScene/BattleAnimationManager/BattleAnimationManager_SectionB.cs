@@ -9,13 +9,23 @@ public partial class BattleAnimationManager : MonoBehaviour
         BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = battleResultData.GetGameCharacterResultData(improviser);
         CharacterAnimationHandler _leadAnimationHandler = lead.GetCharacterAnimationHandler();
         CharacterAnimationHandler _improviserAnimationHandler = improviser.GetCharacterAnimationHandler();
-        string _leadSubskillId = _lead_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().SkillId;
-        string _improviserSubskillId = _improviser_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().SkillId;
+        string _leadSubskillId = _lead_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Id;
+        string _improviserSubskillId = "";
+
+        CharacterSkill _improviserCurrentSkill = _improviser_BattleResultData.gameCharacter.GetCurrentSkill();
+        if (_improviserCurrentSkill != null)
+        {
+            _improviserSubskillId = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().Id;
+        }
 
         /*先手方已按下的技能速度是否3以上?*/
         /*先手方已按下的技能強度是否2以上?*/
         skillPromptPanel.PlaySpeedStrengthAnimation(lead);
-        skillPromptPanel.PlaySpeedStrengthAnimation(improviser);
+
+        if (_improviserCurrentSkill != null)
+        {
+            skillPromptPanel.PlaySpeedStrengthAnimation( improviser );
+        }
 
 
         /*

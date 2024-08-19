@@ -30,6 +30,11 @@ public class SceneControlManager
 
     public static void RestartCurrentScene()
     {
-        SceneManager.LoadScene( SceneManager.GetActiveScene().name );
+        SceneManager.LoadScene( GetCurrentSceneName() );
+    }
+
+    public static string GetCurrentSceneName()
+    {
+        return SceneManager.GetActiveScene().name;
     }
 }

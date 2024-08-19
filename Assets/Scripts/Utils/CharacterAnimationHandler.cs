@@ -68,8 +68,11 @@ public class CharacterAnimationHandler : MonoBehaviour
 
         AudioManager.Instance.SetUpAudioDatabase(this.audioDatabase);
 
-        List<string> values = Enum.GetValues(typeof(AnimationData.CodeType)).Cast<AnimationData.CodeType>().Select(v => v.ToString()).ToList();
-        this.dropdown.AddOptions(values);
+        if (this.dropdown != null)
+        {
+            List<string> values = Enum.GetValues( typeof( AnimationData.CodeType ) ).Cast<AnimationData.CodeType>().Select( v => v.ToString() ).ToList();
+            this.dropdown.AddOptions( values );
+        }
     }
 
     public void FlipContainer()

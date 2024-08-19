@@ -231,8 +231,15 @@ public partial class GameCharacter : MonoBehaviour
 
         if (this.battleAnimationEventManager == null)
         {
-            this.characterEventHandler.GetCallback().AddListener( OnCharacterAnimationTriggered );
-            this.skillEffectEventHandler.GetCallback().AddListener( OnSkillEffectAnimationTriggered );
+            if (this.characterEventHandler != null)
+            {
+                this.characterEventHandler.GetCallback().AddListener( OnCharacterAnimationTriggered );
+            }
+
+            if (this.skillEffectEventHandler != null)
+            {
+                this.skillEffectEventHandler.GetCallback().AddListener( OnSkillEffectAnimationTriggered );
+            }
         }
 
         this.onInitialized?.Invoke();
@@ -290,13 +297,21 @@ public partial class GameCharacter : MonoBehaviour
     public void PlayCharacterAnimation( string animationName, Action<string> onAnimationTriggeredCallback = null )
     {
         this.onCharacterAnimationTriggeredCallback = onAnimationTriggeredCallback;
-        this.characterAnimator.Play( animationName, 0, 0.0f );
+
+        if (this.characterAnimator != null)
+        {
+            this.characterAnimator.Play( animationName, 0, 0.0f );
+        }
     }
 
     public void PlaySkillEffectAnimation( string animationName, Action<string> onAnimationTriggeredCallback = null )
     {
         this.onSkillEffectAnimationTriggeredCallback = onAnimationTriggeredCallback;
-        this.skillEffectAnimator.Play( animationName, 0, 0.0f );
+
+        if (this.skillEffectAnimator != null)
+        {
+            this.skillEffectAnimator.Play( animationName, 0, 0.0f );
+        }
     }
 
     public void OnCharacterAnimationTriggered( string parameterValue )

@@ -4,13 +4,29 @@ using Subskill = DatabaseManager.Subskill;
 
 public partial class BattleAnimationManager: MonoBehaviour
 {
-    public void DeterminePartBAnimation(GameCharacter gameCharacter, GameCharacter opponent, string subSkillID, int skillType)
+    public void DeterminePartBAnimation(GameCharacter gameCharacter, GameCharacter opponent)
     {
         string[] lastCodeV1andV2 = { "V1", "V2" };
-        Subskill characterSubskillData = gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
-        Subskill oppoentSubskillData = opponent.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        Subskill characterSubskillData = null;
+        Subskill opponentSubskillData = null;
+
+        CharacterSkill _characterSkill = gameCharacter.GetCurrentSkill();
+        if (_characterSkill != null)
+        {
+            characterSubskillData = _characterSkill.GetCharacterSubskillData().GetSubskillData();
+        }
+
+        CharacterSkill _opponentCurrentSkill = opponent.GetCurrentSkill();
+        if (_opponentCurrentSkill != null)
+        {
+            opponentSubskillData = _opponentCurrentSkill.GetCharacterSubskillData().GetSubskillData();
+        }
+
         CharacterAnimationHandler characterAnimationHandler = gameCharacter.GetCharacterAnimationHandler();
         BattleDistanceManager battleDistanceManager = battleGameManager.GetBattleDistanceManager();
+
+        string subSkillID = ( characterSubskillData != null ) ? characterSubskillData.Id : "";
+        int skillType = 0;
 
         //抵抗成功方
         if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SuccessfulResister))
@@ -94,7 +110,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 //雙方已按下技能是否都是"遠程" ?
                 //己方是否"速度勝方"?
                 if (opponent.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NonResister) ||
-                    (characterSubskillData.Range == Subskill.RangeType.ranged && oppoentSubskillData.Range == Subskill.RangeType.ranged) ||
+                    (characterSubskillData.Range == Subskill.RangeType.ranged && opponentSubskillData.Range == Subskill.RangeType.ranged) ||
                     (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedWinner)))
                 {
                     //己方是否"中距離近戰方"&已按下技能有"vc演出" ?
@@ -147,7 +163,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 }
                 //是否有強度負方&雙方已按下技能是"遠程" ?
                 else if((gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StrengthLoser) || opponent.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StrengthLoser)) &&
-                    (characterSubskillData.Range == Subskill.RangeType.ranged) && (oppoentSubskillData.Range == Subskill.RangeType.ranged))
+                    (characterSubskillData.Range == Subskill.RangeType.ranged) && (opponentSubskillData.Range == Subskill.RangeType.ranged))
                 {
                     //己方是否"近距離遠程方" ?
                     if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NearDistanceRangedDealer))
@@ -209,7 +225,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 else if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient))
                 {
                     //己方是否"速度負方" ? or 雙方已按下技能是否都是"遠程" ?
-                    if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser) || (characterSubskillData.Range == Subskill.RangeType.ranged && oppoentSubskillData.Range == Subskill.RangeType.ranged))
+                    if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser) || (characterSubskillData.Range == Subskill.RangeType.ranged && opponentSubskillData.Range == Subskill.RangeType.ranged))
                     {
                         StartCoroutine(PlayBFLAnimation(gameCharacter,subSkillID, skillType));
                         characterAnimationHandler.LoadAndPlayAnimation(true, true, DatabaseManager.AnimationData.CodeType.camB_type_D_L, subSkillID, skillType);
@@ -220,7 +236,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     }
                 }
                 //己方是否"速度負方" ?  or 雙方已按下技能是否都是"遠程" ?
-                else if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser) || (characterSubskillData.Range == Subskill.RangeType.ranged && oppoentSubskillData.Range == Subskill.RangeType.ranged))
+                else if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser) || (characterSubskillData.Range == Subskill.RangeType.ranged && opponentSubskillData.Range == Subskill.RangeType.ranged))
                 {
                     StartCoroutine(PlayBFLAnimation(gameCharacter,subSkillID, skillType));
                     characterAnimationHandler.LoadAndPlayAnimation(true, true, DatabaseManager.AnimationData.CodeType.camB_type_D_H, subSkillID, skillType);

@@ -139,6 +139,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: ccedbb296e7c84cf9846a4f26c212142, type: 3}
   - id: ef09_partB_typeC
     clip: {fileID: 8300000, guid: d0bb40784fc9346e78b681621387e8c4, type: 3}
+  - id: ef11_partB_typeC
+    clip: {fileID: 8300000, guid: 26247c0e2957044e8929f91147e7fdc0, type: 3}
   - id: ef12_partA
     clip: {fileID: 8300000, guid: 6217b9e4c5ce64e4faa86bbaf4429952, type: 3}
   - id: ef12_partB_typeBVC
