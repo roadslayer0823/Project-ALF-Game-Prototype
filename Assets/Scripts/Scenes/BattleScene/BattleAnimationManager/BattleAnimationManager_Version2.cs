@@ -87,9 +87,15 @@ public partial class BattleAnimationManager : MonoBehaviour
         if (_lead == null || _improviser == null)
         {
             BattleLog.Instance.AddOnScreenBattleLog( "沒有先後手方。當前 ATL 結束。" );
+
+            _playerCharacter.SetLastAtlSkill( _playerCharacter.GetAssignedSkill() );
+            _enemyCharacter.SetLastAtlSkill( _enemyCharacter.GetAssignedSkill() );
+
             _playerCharacter.ResetAssignedSkill();
             _enemyCharacter.ResetAssignedSkill();
+
             BattleLogicManagerV2.OnTheEndOfATL( _gameCharacters );
+
             yield break;
         }
 

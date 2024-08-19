@@ -1304,7 +1304,9 @@ public partial class BattleLogicManagerV2
     {
         for (int i = 0; i < gameCharacters.Length; i++)
         {
-            gameCharacters[ i ].TriggerEvent( BattleAnimationManager.AnimationEvent.OnAtlEnded );
+            GameCharacter _gameCharacter = gameCharacters[ i ];
+            _gameCharacter.SetLastAtlSkill( _gameCharacter.GetCurrentSkill() );
+            _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnAtlEnded );
         }
     }
 

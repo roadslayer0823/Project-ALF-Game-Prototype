@@ -80,6 +80,7 @@ public partial class GameCharacter : MonoBehaviour
     private List<CharacterIdentityType> characterIdentityTypeList = null; // 暫時性身份列表
     private List<CharacterIdentityType> permanentCharacterIdentityTypeList = null; // 永久性身份列表
     private List<CharacterSkill> allSkills = null;
+    private CharacterSkill lastAtlSkill = null;
 
     public enum CharacterIdentityType
     {
@@ -890,6 +891,16 @@ public partial class GameCharacter : MonoBehaviour
     public void AddToAllSkills( CharacterSkill characterSkill )
     {
         this.allSkills.Add( characterSkill );
+    }
+
+    public void SetLastAtlSkill( CharacterSkill lastAtlSkill )
+    {
+        this.lastAtlSkill = lastAtlSkill;
+    }
+
+    public CharacterSkill GetLastAtlSkill()
+    {
+        return this.lastAtlSkill;
     }
 
     public CharacterAnimationHandler GetCharacterAnimationHandler()
