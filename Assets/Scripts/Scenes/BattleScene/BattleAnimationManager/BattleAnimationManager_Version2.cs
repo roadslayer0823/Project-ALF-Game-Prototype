@@ -653,9 +653,11 @@ public partial class BattleAnimationManager : MonoBehaviour
             yield break;
         }
 
+        CharacterSkill _attackerAssignedSkill = _lead.GetAssignedSkill();
+        CharacterSkill _attackTargetAssignedSkill = _improviser.GetAssignedSkill();
+
         if (battleFlowRound.GetCurrentATL().GetATLNumber() == GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots())
         {
-            CharacterSkill _attackerAssignedSkill = _lead.GetAssignedSkill();
             if (_attackerAssignedSkill != null)
             {
                 if (_attackerAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived)
@@ -664,7 +666,6 @@ public partial class BattleAnimationManager : MonoBehaviour
                 }
             }
 
-            CharacterSkill _attackTargetAssignedSkill = _improviser.GetAssignedSkill();
             if (_attackTargetAssignedSkill != null)
             {
                 if (_attackTargetAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived)
@@ -674,7 +675,18 @@ public partial class BattleAnimationManager : MonoBehaviour
             }
         }
 
-        yield return StartCoroutine( RunTransitioningToNextATL() );
+        bool _isDerivedSkill = false;
+
+        if (( _attackerAssignedSkill != null && _attackerAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived )
+            || ( _attackTargetAssignedSkill != null && _attackTargetAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived ))
+        {
+            _isDerivedSkill = true;
+        }
+
+        if (!_isDerivedSkill)
+        {
+            yield return StartCoroutine( RunTransitioningToNextATL() );
+        }
     }
 
     private IEnumerator RunCheckingIfSkillIsSelectedInCommandCombatTime( GameCharacter gameCharacter )
@@ -857,11 +869,14 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtRecipient();
 
-        LeanTween.delayedCall( 0.5f, () =>
+        if (lead.GetCurrentSkill().GetSkillData().skillType != Skill.SkillType.derived)
         {
-            lead.TriggerEvent( AnimationEvent.OnPartB );
-            improviser.TriggerEvent( AnimationEvent.OnPartB );
-        } );
+            LeanTween.delayedCall( 0.5f, () =>
+            {
+                lead.TriggerEvent( AnimationEvent.OnPartB );
+                improviser.TriggerEvent( AnimationEvent.OnPartB );
+            } );
+        }
     }
 
     private bool EndPartB( GameCharacter attacker, GameCharacter attackTarget )
@@ -951,51 +966,6 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         this.isAnimationEventTriggered = false;
         yield return new WaitUntil( () => this.isAnimationEventTriggered );
-
-        /*
-        attacker.GetSortingGroup().sortingOrder = 3;
-        attackTarget.GetSortingGroup().sortingOrder = 1;
-
-        CharacterSkill _attackerSkill = attacker.GetCurrentSkill();
-        Subskill _attackerSubskillData = _attackerSkill.GetCharacterSubskillData().GetSubskillData();
-        RangeType _attackerRangeType = _attackerSubskillData.Range;
-
-        if (_attackerRangeType == RangeType.melee)
-        {
-            if (_battleResultData != null)
-            {
-                yield return StartCoroutine( RunMeleeDerivedSkillAnimation( attacker, _attackerSkill, DatabaseManager.Instance.GetSkillAnimation( _attackerSubskillData.Id ), atlSlotListPanel, atlNumber ) );
-
-                attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
-                attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
-
-                this.cameraEffect.Shake();
-                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                yield return StartCoroutine( PlayCharacterAnimation( attackTarget, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
-            }
-        }
-        else
-        {
-            attacker.ShowCharacterObject();
-            ChangeToBackgroundPartA();
-            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
-            attacker.GetOpponentContainer().SetActive( false );
-
-            if (_battleResultData != null)
-            {
-                yield return StartCoroutine( RunRangedDerivedSkillAnimation( attacker, _attackerSkill, attackTarget, atlSlotListPanel, atlNumber ) );
-
-                attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
-                attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
-
-                this.cameraEffect.Shake();
-                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                yield return null;
-                ShowPopUpDisplayInfo( attackTarget, _attackTargetBattleResultData );
-                yield return new WaitForSeconds( 0.7f );
-            }
-        }
-        */
 
         if (_battleResultData != null)
         {
