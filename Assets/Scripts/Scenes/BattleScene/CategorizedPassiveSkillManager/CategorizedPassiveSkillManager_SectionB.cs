@@ -1103,7 +1103,11 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             }
             else if(!_isTriggerOnce)
             {
-                battleResultData.AddResultLog("未能達成條件 無法發動 角力追風 流向效果");
+                battleResultData.AddResultLog(gameCharacterOne.GetCharacterName() + " 未能達成條件 無法發動 角力追風 流向效果");
+            }
+            else
+            {
+                battleResultData.AddResultLog(gameCharacterOne.GetCharacterName() + " 未能達成條件 無法發動 角力");
             }
         }
         else if (_passiveSkillCategoryType == CategoryType.Stress)
@@ -1207,7 +1211,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             }
             else if (!_isTriggerOnce)
             {
-                battleResultData.AddResultLog("未能達成條件 無法發動 角力追風 流向效果");
+                battleResultData.AddResultLog(gameCharacterOne.GetCharacterName() + " 未能達成條件 無法發動 角力追風 流向效果");
             }
         }
         else
@@ -1407,8 +1411,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         battleResultData.AddResultLog("[當前以太值]-<[最終以太消耗*角力]*[1-\"己方\"節流/游刃]>\n<此以太消耗為\"角力以太消耗\">" +
                                     "\n\n最終以太消耗: " + _gameCharacterOne_BattleResultData.temp_FinalTotalStatePointCost +
                                     "\n以太流 2.角力：" + _pSE2_JiaoLi_value +
-                                    "\n" + _psE8_JieLiu_PSE9_YouRen_text + _pSE8_JieLiu_PSE9_YouRen_value +
-                                    "\n角力以太消耗: " + _gameCharacterOne_BattleResultData.temp_JiaoLiStatePointCost);
+                                    "\n" + _psE8_JieLiu_PSE9_YouRen_text + _pSE8_JieLiu_PSE9_YouRen_value);
+        battleResultData.AddResultLog("角力以太消耗: " + _gameCharacterOne_BattleResultData.temp_JiaoLiStatePointCost);
         battleResultData.AddGameCharacterResultData_StatePointCost(gameCharacterOne, _gameCharacterOne_BattleResultData.temp_JiaoLiStatePointCost, out _gameCharacterOne_BattleResultData);
 
         /*
@@ -1436,8 +1440,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             _gameCharacterOne_BattleResultData.temp_JiaoLiMaxStatePointIncrease = _gameCharacterOne_BattleResultData.temp_JiaoLiStatePointCost * _pSE4_KuoLiu_value * _pSE12_NiFeng_value;
             battleResultData.AddResultLog("[最大以太值]+<[角力以太消耗*擴流*\"己方\"逆風>\n<此最大以太提升為\"角力最大以太提升\">" +
                                         "\n\n以太流 4.擴流：" + _pSE4_KuoLiu_value +
-                                        "\n己方 以太流 12.逆風：" + _pSE12_NiFeng_value +
-                                        "\n\n角力最大以太提升: " + _gameCharacterOne_BattleResultData.temp_JiaoLiMaxStatePointIncrease);
+                                        "\n己方 以太流 12.逆風：" + _pSE12_NiFeng_value);
+            battleResultData.AddResultLog("角力最大以太提升: " + _gameCharacterOne_BattleResultData.temp_JiaoLiMaxStatePointIncrease);
             battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacterOne, _gameCharacterOne_BattleResultData.temp_JiaoLiMaxStatePointIncrease, out _gameCharacterOne_BattleResultData);
 
             /*
@@ -1454,8 +1458,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             float _totalCurrentStatePointIncrease = _gameCharacterOne_BattleResultData.temp_JiaoLiMaxStatePointIncrease * _pSE3_HuiLiu_value * _pSE12_NiFeng_value;
             battleResultData.AddResultLog("[當前以太值]+<[角力最大以太提升*回流*\"己方\"逆風]" +
                                         "\n\n以太流 3.回流：" + _pSE3_HuiLiu_value +
-                                        "\n己方 以太流 12.逆風：" + _pSE12_NiFeng_value +
-                                        "\n\n當前以太提升: " + _totalCurrentStatePointIncrease);
+                                        "\n己方 以太流 12.逆風：" + _pSE12_NiFeng_value);
+            battleResultData.AddResultLog("當前以太提升: " + _totalCurrentStatePointIncrease);
             battleResultData.AddGameCharacterResultData_IncreaseCurrentStatePoint(gameCharacterOne, _totalCurrentStatePointIncrease, out _);
         }
     }

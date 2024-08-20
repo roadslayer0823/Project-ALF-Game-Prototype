@@ -114,6 +114,9 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void LoadAndPlayAnimation(bool isSkillEffectFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0)
     {
+        Debug.Log("codeType: " + codeType);
+        Debug.Log("subskillId: " + subskillId);
+        Debug.Log("type: " + type);
         AnimationClip _animationClip = null;
         AnimationData _animationData = DatabaseManager.Instance.GetAnimationData(codeType,subskillId,type);
         actionAnimationLength = 0;
@@ -127,26 +130,32 @@ public class CharacterAnimationHandler : MonoBehaviour
         }
 
         //action
-        string[] _actionClipArray = _animationData.ActionsArray;
-        if(_actionClipArray.Length > 0)
+        if(_animationData.ActionsArray != null)
         {
-           for(int i = 0; i < _actionClipArray.Length;i++)
-           {
+            string[] _actionClipArray = _animationData.ActionsArray;
+            for (int i = 0; i < _actionClipArray.Length; i++)
+            {
+                Debug.Log("_actionClipArray[i]: " + _actionClipArray[i]);
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/Actions/" + _actionClipArray[i]);
-                this.playerAnimatorOverrideController["Animation_"+ i] = _animationClip;
+                this.playerAnimatorOverrideController["Animation_" + i] = _animationClip;
                 actionAnimationLength += _animationClip.length;
-           }
+            }
             this.playerAnimator.SetTrigger("trigger");
         }
-
-        //skill effect 
-        string[] _effectClipArray = _animationData.EffectsArray;
-        if (_effectClipArray != null && _effectClipArray.Length > 0)
+        else
         {
+            Debug.Log("ActionsArray is empty");
+        }
+        
+
+        //skill effect
+        if(_animationData.EffectsArray != null)
+        {
+            string[] _effectClipArray = _animationData.EffectsArray;
             for (int i = 0; i < _effectClipArray.Length; i++)
             {
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/SkillEffects/" + _effectClipArray[i]);
-                if(isSkillEffectFront)
+                if (isSkillEffectFront)
                 {
                     this.skillEffectFrontAnimatorOverrideController["Animation_" + i] = _animationClip;
                 }
@@ -166,18 +175,26 @@ public class CharacterAnimationHandler : MonoBehaviour
             }
             effectAnimationLength += _animationClip.length;
         }
+        else
+        {
+            Debug.Log("EffectsArray is empty");
+        }
+        
 
         //audio
-        string[] _audioArray = _animationData.AudiosArray;
-        if (_audioArray != null && _audioArray.Length > 0)
+        if(_animationData.AudiosArray != null)
         {
+            string[] _audioArray = _animationData.AudiosArray;
             AudioManager.Instance.PlaySoundEffect(_audioArray[0]);
             AudioDatabase.AudioData _audioData = this.audioDatabase.GetAudioDataById(_audioArray[0]);
             audioLength += _audioData.GetClip().length;
         }
+        else
+        {
+            Debug.Log("AudiosArray is empty");
+        }
 
-
-        if(needToRecord)
+        if (needToRecord)
         {
             this.codeTypeForLastATL = codeType;
         }

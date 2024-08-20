@@ -5,19 +5,25 @@ public partial class BattleAnimationManager : MonoBehaviour
     //判定PART A演出&PART A特效
     public void RunPartAPerformance(ref BattleResultData battleResultData, GameCharacter lead, GameCharacter improviser)
     {
+        Debug.Log("RunPartAPerformance");
         BattleResultData.BattleResultData_GameCharacter _lead_BattleResultData = battleResultData.GetGameCharacterResultData(lead);
         BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = battleResultData.GetGameCharacterResultData(improviser);
+        DatabaseManager.Subskill _leadSubskill = _lead_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        
         CharacterAnimationHandler _leadAnimationHandler = lead.GetCharacterAnimationHandler();
         CharacterAnimationHandler _improviserAnimationHandler = improviser.GetCharacterAnimationHandler();
-        string _leadSubskillId = _lead_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Id;
-        string _improviserSubskillId = "";
 
+        int _leadSkillType = (int)_lead_BattleResultData.gameCharacter.GetCurrentSkillRangeType();
+        int _improviserSkillType = 0;
+        string _leadSubskillId = _leadSubskill.Id;    
+        string _improviserSubskillId = "";
+        
         CharacterSkill _improviserCurrentSkill = _improviser_BattleResultData.gameCharacter.GetCurrentSkill();
         if (_improviserCurrentSkill != null)
         {
             _improviserSubskillId = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().Id;
+            _improviserSkillType = (int)_improviser_BattleResultData.gameCharacter.GetCurrentSkillRangeType();
         }
-
         /*先手方已按下的技能速度是否3以上?*/
         /*先手方已按下的技能強度是否2以上?*/
         skillPromptPanel.PlaySpeedStrengthAnimation(lead);
@@ -27,35 +33,38 @@ public partial class BattleAnimationManager : MonoBehaviour
             skillPromptPanel.PlaySpeedStrengthAnimation( improviser );
         }
 
-
         /*
          先手方是否
         "近距離遠程方"?
          */
         if (_lead_BattleResultData.gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NearDistanceRangedDealer))
-        {
-            _leadAnimationHandler.LoadAndPlayAnimation(true, false, DatabaseManager.AnimationData.CodeType.camB_partA_VF, _leadSubskillId, 2);
+        {       
+            _leadAnimationHandler.LoadAndPlayAnimation(true, false, DatabaseManager.AnimationData.CodeType.camB_partA_VF, _leadSubskillId, _leadSkillType);
         }
         else
-        {
-            _leadAnimationHandler.LoadAndPlayAnimation(true, false, DatabaseManager.AnimationData.CodeType.camB_partA_V1, _leadSubskillId, 0);
+        {            
+            _leadAnimationHandler.LoadAndPlayAnimation(true, false, DatabaseManager.AnimationData.CodeType.camB_partA_V1, _leadSubskillId, _leadSkillType);
         }
 
-        // same code type but flip 
-        _improviserAnimationHandler.FlipContainer();
-        if (_improviser_BattleResultData.gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NearDistanceRangedDealer))
+        // same code type but flip
+        if(_improviserCurrentSkill != null)
         {
-            _improviserAnimationHandler.LoadAndPlayAnimation(false, false, DatabaseManager.AnimationData.CodeType.camB_partA_VF, _improviserSubskillId, 2);
-        }
-        else
-        {
-            _improviserAnimationHandler.LoadAndPlayAnimation(false, false, DatabaseManager.AnimationData.CodeType.camB_partA_V1, _improviserSubskillId, 0);
-        }
+            _improviserAnimationHandler.FlipContainer();
+            if (_improviser_BattleResultData.gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NearDistanceRangedDealer))
+            {
+                _improviserAnimationHandler.LoadAndPlayAnimation(false, false, DatabaseManager.AnimationData.CodeType.camB_partA_VF, _improviserSubskillId, _improviserSkillType);
+            }
+            else
+            {
+                _improviserAnimationHandler.LoadAndPlayAnimation(false, false, DatabaseManager.AnimationData.CodeType.camB_partA_V1, _improviserSubskillId, _improviserSkillType);
+            }
+        }  
     }
 
     // 判定PART B共用特效
     public void RunPartBShareEffects(GameCharacter gameCharacterOne, GameCharacter gameCharacterTwo)
     {
+        Debug.Log(gameCharacterOne.GetCharacterName() + " RunPartBShareEffects");
         CharacterAnimationHandler _characterOneAnimationHandler = gameCharacterOne.GetCharacterAnimationHandler();
         CharacterAnimationHandler _characterTwoAnimationHandler = gameCharacterTwo.GetCharacterAnimationHandler();
     
