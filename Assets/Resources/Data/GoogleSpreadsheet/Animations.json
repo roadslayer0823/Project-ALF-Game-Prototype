@@ -1247,7 +1247,7 @@
         "subskill_ids": "[S1_2,S2_2]",
         "type": "2",
         "actions": "[]",
-        "effects": "[ef03_camA_partA_typeA]",
+        "effects": "[ef03_camA_partB_typeA]",
         "audios": "[ef03_partB_typeA]"
     },
     {
