@@ -147,6 +147,8 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: a9038d9207645415aab13aeec9da516f, type: 3}
   - id: ef12_partB_typeC
     clip: {fileID: 8300000, guid: 09a38ff344e084596b803519bf21467e, type: 3}
+  - id: ef13_partB_typeC
+    clip: {fileID: 8300000, guid: d68cc88a79ac44cedb28ba0696cbc15e, type: 3}
   - id: 1S_ef12_partB_typeCFW
     clip: {fileID: 8300000, guid: b79ab032142ed4c6982e856af3e5347f, type: 3}
   - id: derive_skill_partA
