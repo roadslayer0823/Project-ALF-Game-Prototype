@@ -1049,7 +1049,7 @@
         "subskill_ids": "[S1_1,S2_1]",
         "type": "2",
         "actions": "[]",
-        "effects": "[ef01_camA_partA_typeBD]",
+        "effects": "[ef01_camA_partB_typeBD]",
         "audios": "[ef01_partB_typeB]"
     },
     {
@@ -1058,7 +1058,7 @@
         "subskill_ids": "[S1_1,S2_1]",
         "type": "2",
         "actions": "[act01_camB]",
-        "effects": "[ef01_camB_partA_typeCD]",
+        "effects": "[ef01_camB_partB_typeCD]",
         "audios": "[ef01_partB_typeC]"
     },
     {
@@ -1067,7 +1067,7 @@
         "subskill_ids": "[S1_1,S2_1]",
         "type": "2",
         "actions": "[act01_camB_VF]",
-        "effects": "[ef01_camB_partA_typeCD]",
+        "effects": "[ef01_camB_partB_typeCD]",
         "audios": "[ef01_partB_typeC]"
     },
     {
@@ -1076,7 +1076,7 @@
         "subskill_ids": "[S1_1,S2_1]",
         "type": "2",
         "actions": "[]",
-        "effects": "[ef01_camA_partA_typeA]",
+        "effects": "[ef01_camA_partB_typeA]",
         "audios": "[ef01_partB_typeA]"
     },
     {
