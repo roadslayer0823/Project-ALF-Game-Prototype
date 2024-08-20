@@ -290,6 +290,8 @@ public partial class BattleAnimationManager : MonoBehaviour
             this.battleGameManager.GetBattleDistanceManager().UpdateBattleDistancePanel();
 
             yield return new WaitWhile( () => Time.time - _animationStartTime < _animationDuration );
+            _lead.GetCharacterAnimationHandler().ResetAnimation();
+            _improviser.GetCharacterAnimationHandler().ResetAnimation();
 
             // 指令結束，禁用技能。
             _lead.TriggerEvent( AnimationEvent.OnTransition );
@@ -445,9 +447,9 @@ public partial class BattleAnimationManager : MonoBehaviour
             ShowCommandPhaseCountdownTimer( true, _playerCharacter, 1.3f );
         } );
 
-        if (SceneControlManager.GetCurrentSceneName() != "BattleSceneV3")
+        if (!this.isUsingGameCharacterV2)
         {
-            switch (_attackTargetSkillType)
+            switch ( _attackTargetSkillType )
             {
                 case Skill.SkillType.none:
 
@@ -654,6 +656,9 @@ public partial class BattleAnimationManager : MonoBehaviour
         {
             yield return null;
         }
+
+        _playerCharacter.GetCharacterAnimationHandler().ResetAnimation();
+        _enemyCharacter.GetCharacterAnimationHandler().ResetAnimation();
 
         _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
         _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );

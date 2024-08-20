@@ -155,14 +155,12 @@ public class CharacterAnimationHandler : MonoBehaviour
             for (int i = 0; i < _effectClipArray.Length; i++)
             {
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/SkillEffects/" + _effectClipArray[i]);
-                if (isSkillEffectFront)
-                {
-                    this.skillEffectFrontAnimatorOverrideController["Animation_" + i] = _animationClip;
-                }
-                else
-                {
-                    this.skillEffectBackAnimatorOverrideController["Animation_" + i] = _animationClip;
-                }
+
+                ( ( isSkillEffectFront ) ? this.skillEffectFrontAnimatorOverrideController
+                                         : this.skillEffectBackAnimatorOverrideController )
+                                         [ "Animation_" + i ] = _animationClip;
+
+                effectAnimationLength += _animationClip.length;
             }
 
             if (isSkillEffectFront)
@@ -173,7 +171,6 @@ public class CharacterAnimationHandler : MonoBehaviour
             {
                 this.skillEffectBackAnimator.SetTrigger("trigger");
             }
-            effectAnimationLength += _animationClip.length;
         }
         else
         {
@@ -209,6 +206,15 @@ public class CharacterAnimationHandler : MonoBehaviour
         AudioManager.Instance.PlaySoundEffect(visualEffectAudioId);
     }
 
+    public void ResetAnimation()
+    {
+        SpriteRenderer[] _spriteRenderers = this.GetComponentsInChildren<SpriteRenderer>();
+        for (int i = 0; i < _spriteRenderers.Length; i++)
+        {
+            _spriteRenderers[ i ].sprite = null;
+        }
+    }
+
     public void OnClick()
     {
         this.selectedCodeType = (AnimationData.CodeType)Enum.Parse(typeof(AnimationData.CodeType), codeType);
@@ -221,25 +227,7 @@ public class CharacterAnimationHandler : MonoBehaviour
     // compare action, effect and audio length
     public float GetAnimationClipTotalLength()
     {
-        if(actionAnimationLength > effectAnimationLength)
-        {
-            if(actionAnimationLength > audioLength)
-            {
-                return actionAnimationLength;
-            }
-            else
-            {
-                return audioLength;
-            }
-        }
-        else if(effectAnimationLength > audioLength)
-        {
-            return effectAnimationLength;
-        }
-        else
-        {
-            return audioLength;
-        }
+        return new float[] { actionAnimationLength, effectAnimationLength, audioLength }.Max();
     }
 
     public void OnValueChanged()

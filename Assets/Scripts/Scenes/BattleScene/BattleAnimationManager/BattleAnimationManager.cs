@@ -14,6 +14,7 @@ public partial class BattleAnimationManager : MonoBehaviour
     [SerializeField] private float backgroundDarknessDuration = 0.6f;
     [SerializeField] private float skillNormalDarkness = 0.5f;
     [SerializeField] private float skillTimeStopDarkness = 0.8f;
+    [SerializeField] private bool isUsingGameCharacterV2 = false;
 
     [Header( "References" )]
     [SerializeField] private SpriteRenderer background = null;
