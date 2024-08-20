@@ -23,14 +23,14 @@ public class GameObjectPositionHandler : MonoBehaviour
         if(_aspectRatio > _targetAspectRatio + 0.001f)
         {
             //anchor position
-            this.PassiveSkillSelectionList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2300);
-            this.BattleLog.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2350);
-            this.UiMiddleFrame.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2300);
+            this.PassiveSkillSelectionList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2350);
+            this.BattleLog.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2300);
+            this.UiMiddleFrame.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2350);
             this.DebugContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2200);
-            this.PreparationSection.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2350);
-            this.ActiveSkillSlotList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2300);
-            this.BackendSkillSlotList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2400);
-            this.SkillSelectionPanelList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2300);
+            this.PreparationSection.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2400);
+            this.ActiveSkillSlotList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2250);
+            this.BackendSkillSlotList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2350);
+            this.SkillSelectionPanelList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2350);
 
             //position
             Vector3 _battleFieldPosition = BattleFieldPosition.position;

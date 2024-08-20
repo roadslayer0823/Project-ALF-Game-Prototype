@@ -28,6 +28,15 @@ public partial class BattleAnimationManager: MonoBehaviour
         string subSkillID = ( characterSubskillData != null ) ? characterSubskillData.Id : "";
         int skillType = 0;
 
+        if(gameCharacter.GetCurrentSkillRangeType() == Subskill.RangeType.melee)
+        {
+            skillType = 1;
+        }
+        else if(gameCharacter.GetCurrentSkillRangeType() == Subskill.RangeType.ranged)
+        {
+            skillType = 2;
+        }
+
         //抵抗成功方
         if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SuccessfulResister))
         {
@@ -67,8 +76,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     characterAnimationHandler.LoadAndPlayAnimation(false, true, DatabaseManager.AnimationData.CodeType.camA_type_BDVC, subSkillID, skillType);
                 }
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                //TODO: add a condition for checking the last skill used by character
-                else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2))
+                else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2) && gameCharacter.GetLastAtlSkill() == _characterSkill)
                 {
                     characterAnimationHandler.LoadAndPlayAnimation(false, true, DatabaseManager.AnimationData.CodeType.camA_type_BDV2, subSkillID, skillType);
                 }
@@ -81,8 +89,7 @@ public partial class BattleAnimationManager: MonoBehaviour
             else if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Improviser))
             {
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                //TODO: add a condition for checking the last skill used by character
-                if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2))
+                if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2) && gameCharacter.GetLastAtlSkill() == _characterSkill)
                 {
                     characterAnimationHandler.LoadAndPlayAnimation(true, true, DatabaseManager.AnimationData.CodeType.camB_type_CDV2, subSkillID, skillType);
                 }
@@ -120,8 +127,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     }
 
                     //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                    //TODO: add a condition for checking the last skill used by character
-                    else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2))
+                    else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2) && gameCharacter.GetLastAtlSkill() == _characterSkill)
                     {
                         characterAnimationHandler.LoadAndPlayAnimation(false, true, DatabaseManager.AnimationData.CodeType.camA_type_AV2, subSkillID, skillType);
                     }
@@ -131,13 +137,12 @@ public partial class BattleAnimationManager: MonoBehaviour
                     }
                 }
                 //己方是否"中距離近戰方"&已按下技能有"vc演出" ?
-                //TODO: add a condition for checking the last skill used by character
                 else if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NormalDistanceMeleeDealer) && characterAnimationHandler.CheckIfSameAsLastATLCodeType("VC"))
                 {
                     characterAnimationHandler.LoadAndPlayAnimation(false, true, DatabaseManager.AnimationData.CodeType.camA_type_BDVC, subSkillID, skillType);
                 }
                 //已按下技能是否與上1ATL 相同&有"v2演出" ?
-                else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType("V2"))
+                else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType("V2") && gameCharacter.GetLastAtlSkill() == _characterSkill)
                 {
                     characterAnimationHandler.LoadAndPlayAnimation(false, true, DatabaseManager.AnimationData.CodeType.camA_type_BDV2, subSkillID, skillType);
                 }
@@ -156,8 +161,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 }
 
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                //TODO: add a condition for checking the last skill used by character
-                else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2))
+                else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2) && gameCharacter.GetLastAtlSkill() == _characterSkill)
                 {
                     characterAnimationHandler.LoadAndPlayAnimation(true, true, DatabaseManager.AnimationData.CodeType.camB_type_CDV2, subSkillID, skillType);
                 }
@@ -208,8 +212,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     }
                 }
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                //TODO: add a condition for checking the last skill used by character
-                else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2))
+                else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2) && gameCharacter.GetLastAtlSkill() == _characterSkill)
                 {
                     //己方是否"輕受擊方" ?
                     if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient))
@@ -257,8 +260,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 //己方是否"速度負方" /"速度強度負方" ?
                 else if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser) || gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedStrengthLoser))
                 {
-                    //TODO: add a condition for checking the last skill used by character
-                    if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2))
+                    if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2) && gameCharacter.GetLastAtlSkill() == _characterSkill)
                     {
                         //己方是否"輕受擊方" ?
                         if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient))
@@ -293,8 +295,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                         characterAnimationHandler.LoadAndPlayAnimation(true, true, DatabaseManager.AnimationData.CodeType.camB_type_CLSV1_H, subSkillID, skillType);
                     }
                 }
-                //TODO: add a condition for checking the last skill used by character
-                else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2))
+                //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
+                else if (characterAnimationHandler.CheckIfSameAsLastATLCodeType(lastCodeV1andV2) && gameCharacter.GetLastAtlSkill() == _characterSkill)
                 {
                     //己方是否"輕受擊方" ?
                     if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.LightRecipient))
