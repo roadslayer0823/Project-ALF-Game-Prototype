@@ -140,14 +140,7 @@ public class CharacterAnimationHandler : MonoBehaviour
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/Actions/" + _actionClipArray[i]);
                 this.playerAnimatorOverrideController["Animation_" + i] = _animationClip;
                 actionAnimationLength += _animationClip.length;
-                if(i > 0)
-                {
-                    this.playerAnimator.SetBool("animation_" + i, true);
-                }
-                else
-                {
-                    this.playerAnimator.SetBool("animation_" + i, false);
-                }
+                this.playerAnimator.SetBool("animation_" + i, i > 0);
             }
             this.playerAnimator.SetTrigger("trigger");
         }
@@ -171,14 +164,14 @@ public class CharacterAnimationHandler : MonoBehaviour
                                          [ "Animation_" + i ] = _animationClip;
 
                 effectAnimationLength += _animationClip.length;
-                if (i > 0)
+                if(isSkillEffectFront)
                 {
-                    this.playerAnimator.SetBool("animation_" + i, true);
+                    this.skillEffectFrontAnimator.SetBool("animation_" + i, i > 0);
                 }
                 else
                 {
-                    this.playerAnimator.SetBool("animation_" + i, false);
-                }
+                    this.skillEffectBackAnimator.SetBool("animation_" + i, i > 0);
+                }            
             }
 
             if (isSkillEffectFront)
@@ -227,6 +220,7 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void ResetAnimation()
     {
+        Debug.Log("Reset Animation");
         SpriteRenderer[] _spriteRenderers = this.GetComponentsInChildren<SpriteRenderer>();
         for (int i = 0; i < _spriteRenderers.Length; i++)
         {
