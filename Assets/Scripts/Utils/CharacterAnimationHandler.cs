@@ -135,7 +135,7 @@ public class CharacterAnimationHandler : MonoBehaviour
             string[] _actionClipArray = _animationData.ActionsArray;
             for (int i = 0; i < _actionClipArray.Length; i++)
             {
-                Debug.Log("_actionClipArray[i]: " + _actionClipArray[i]);
+                Debug.Log("_actionClipArray["+i+"]: " + _actionClipArray[i]);
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/Actions/" + _actionClipArray[i]);
                 this.playerAnimatorOverrideController["Animation_" + i] = _animationClip;
                 actionAnimationLength += _animationClip.length;
@@ -154,6 +154,7 @@ public class CharacterAnimationHandler : MonoBehaviour
             string[] _effectClipArray = _animationData.EffectsArray;
             for (int i = 0; i < _effectClipArray.Length; i++)
             {
+                Debug.Log("_effectClipArray[" + i + "]: " + _effectClipArray[i]);
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/SkillEffects/" + _effectClipArray[i]);
 
                 ( ( isSkillEffectFront ) ? this.skillEffectFrontAnimatorOverrideController
@@ -183,6 +184,7 @@ public class CharacterAnimationHandler : MonoBehaviour
         {
             string[] _audioArray = _animationData.AudiosArray;
             AudioManager.Instance.PlaySoundEffect(_audioArray[0]);
+            Debug.Log("_audioArray: " + _audioArray[0]);
             AudioDatabase.AudioData _audioData = this.audioDatabase.GetAudioDataById(_audioArray[0]);
             audioLength += _audioData.GetClip().length;
         }
