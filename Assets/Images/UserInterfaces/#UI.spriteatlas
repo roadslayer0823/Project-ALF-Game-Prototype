@@ -101,6 +101,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: e9f239c05dfdc43e5ab4a128fa1e1d38, type: 3}
   - {fileID: 21300000, guid: a46ff0d0d15cb4c2d87fbdf5bc953686, type: 3}
   - {fileID: 21300000, guid: d3da64d0fd9724a6bad66e2d7db9f2d7, type: 3}
+  - {fileID: 21300000, guid: a5563b013d06b41778d13a1d3dd7f7ea, type: 3}
   - {fileID: 21300000, guid: 9e803211be8be44ec910fbbf1d62ab87, type: 3}
   - {fileID: 21300000, guid: 2c216221de5a04b12b75e6b326e73c4d, type: 3}
   - {fileID: 21300000, guid: 1754cd2171ad840d4abce9a47079d434, type: 3}
@@ -534,6 +535,7 @@ SpriteAtlas:
   - Start__00042
   - "\u611F\u6B4E\u865F_012"
   - "\u653B\u64CA\u6280\u80FD"
+  - "\u5C0D\u65B9\u7AD9\u4F4D02"
   - "\u96D9\u91CDBREAK (22)"
   - "\u96D9\u91CDBREAK (15)"
   - "\u8D1F\u8377\u6D41\u672A\u9009\u4E2D"
