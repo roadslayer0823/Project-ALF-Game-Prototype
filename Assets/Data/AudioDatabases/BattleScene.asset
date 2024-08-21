@@ -28,57 +28,57 @@ MonoBehaviour:
   - id: break
     clip: {fileID: 8300000, guid: ce92c80feb11d41b0999dac4867e6dd9, type: 3}
   - id: boost_level_up
-    clip: {fileID: 8300000, guid: defd1a6849e854d3e8830c41bee8668e, type: 3}
+    clip: {fileID: 8300000, guid: 16365a8e118eb4b399e1c4907b2758ad, type: 3}
   - id: boost_level_down
-    clip: {fileID: 8300000, guid: 050342442f9594102ab4b5413d40c217, type: 3}
+    clip: {fileID: 8300000, guid: 57414df593ee04e6ca39c9d69a7d19f9, type: 3}
   - id: counter
-    clip: {fileID: 8300000, guid: fe44230f5873d4ba6b752d3bde35fec3, type: 3}
+    clip: {fileID: 8300000, guid: d70379e5691c14345b26446466a6cf8c, type: 3}
   - id: execute
-    clip: {fileID: 8300000, guid: 56c02e4db042248f2a6a453b7e84d869, type: 3}
+    clip: {fileID: 8300000, guid: 0965130baef674ef88dafecdb7efde54, type: 3}
   - id: highlight
-    clip: {fileID: 8300000, guid: 73b872f16b148438c98aac1e3239c54e, type: 3}
+    clip: {fileID: 8300000, guid: 0022bbb11455d4044a1f1f6fd8c8da58, type: 3}
   - id: passive_flash
-    clip: {fileID: 8300000, guid: df69ddf98b3d341468347f6458a49a02, type: 3}
+    clip: {fileID: 8300000, guid: 08884ea8270704266a6c68a8dbb2f0e4, type: 3}
   - id: popup
-    clip: {fileID: 8300000, guid: 8c1f5e7ded5864efaaeb98ca1d03cc41, type: 3}
+    clip: {fileID: 8300000, guid: ac03b8d2698334cc088c5d666bf4b3d2, type: 3}
   - id: skill_off
-    clip: {fileID: 8300000, guid: ca5017e02bf8e452e83f1567ac907e02, type: 3}
+    clip: {fileID: 8300000, guid: 8d2057fbe6a224fcca53828e6817e61f, type: 3}
   - id: active_skill_on
-    clip: {fileID: 8300000, guid: 079df039f69e343c38ed801ac11c2bcb, type: 3}
+    clip: {fileID: 8300000, guid: 512f46046dc15401a842bf294d8abe13, type: 3}
   - id: backend_skill_on
-    clip: {fileID: 8300000, guid: 74817dc9a418e4252a68941ef396e83d, type: 3}
+    clip: {fileID: 8300000, guid: e03d03b6a9d24437ba263555aeb56108, type: 3}
   - id: wheel
-    clip: {fileID: 8300000, guid: 1573e9d249f95432aa70d15ab83fcf41, type: 3}
+    clip: {fileID: 8300000, guid: 287e60809a73d46f895974e75339607d, type: 3}
   - id: victory
     clip: {fileID: 8300000, guid: c45488bfb8668411ea0a192746afa7b7, type: 3}
   - id: defeat
     clip: {fileID: 8300000, guid: 926f2e0ec66c4476da89871f3627f44c, type: 3}
   - id: crossing_action_mode
-    clip: {fileID: 8300000, guid: c846203a6695f47c1934868c256c042c, type: 3}
+    clip: {fileID: 8300000, guid: 8a80d4576d81e4d469e44a09fddd297b, type: 3}
   - id: command_phase
-    clip: {fileID: 8300000, guid: 2c714bac5cc1949e4b1636e261b3c281, type: 3}
+    clip: {fileID: 8300000, guid: d635660e4e7604cb6b12c8bbd0ec0884, type: 3}
   - id: hints
-    clip: {fileID: 8300000, guid: e9cd501fa207242cc93a412892c39ce8, type: 3}
+    clip: {fileID: 8300000, guid: 41825f39033c94605b498726dce26800, type: 3}
   - id: line_break
-    clip: {fileID: 8300000, guid: a31575c26153347d09c15d87128942ae, type: 3}
+    clip: {fileID: 8300000, guid: ffdeaf7c19860496299fe7c7ee12dee3, type: 3}
   - id: skill_enabled
-    clip: {fileID: 8300000, guid: c1de27eac01b84687a3c73620f9bbed9, type: 3}
+    clip: {fileID: 8300000, guid: 5671cba329aa3415c9dd151d489f9584, type: 3}
   - id: active_skill_selected
-    clip: {fileID: 8300000, guid: ba8685a2867524dbdba2cad782fc633d, type: 3}
+    clip: {fileID: 8300000, guid: 749bd82f0214c4cbcbc3e183dde6d5f0, type: 3}
   - id: backend_skill_selected
-    clip: {fileID: 8300000, guid: 985ebbd1907c84b349fc6644b1d0299f, type: 3}
+    clip: {fileID: 8300000, guid: d7a65bd1089954c1fa720cc02e20ee1f, type: 3}
   - id: back
-    clip: {fileID: 8300000, guid: 59cd336fc3ce044a380bc61544f76e86, type: 3}
+    clip: {fileID: 8300000, guid: 00cbeaf6f91634d9ca67cadac914c3b4, type: 3}
   - id: camera_change
-    clip: {fileID: 8300000, guid: 38c3d5ddd1ffb4f2684db705ff4684fb, type: 3}
+    clip: {fileID: 8300000, guid: 0a6dbbd44f90e4c519b03140299e6526, type: 3}
   - id: repulse
-    clip: {fileID: 8300000, guid: 742883f7b7c554352bcfdf7cd5c77bba, type: 3}
+    clip: {fileID: 8300000, guid: 96db861226907442dbaac433c0112bef, type: 3}
   - id: passive_skill_press
-    clip: {fileID: 8300000, guid: 1a72ef682b74d40b99cb17096fcf8131, type: 3}
+    clip: {fileID: 8300000, guid: 6c27d677fbf3d4733835a3850dcef39e, type: 3}
   - id: passive_skill_select
-    clip: {fileID: 8300000, guid: 0c4ed8217076b43218ea4e69d667ab56, type: 3}
+    clip: {fileID: 8300000, guid: f5b3cf5ce85684df3902c65406ec80ba, type: 3}
   - id: passive_skill_choose
-    clip: {fileID: 8300000, guid: 7ac1f9cc9eafc49f5b8f4a1dc95b071a, type: 3}
+    clip: {fileID: 8300000, guid: 3cb6a47d8b47b4763bc5aae1549c1792, type: 3}
   - id: crash
     clip: {fileID: 8300000, guid: 17b0c37ac09a44f85b403077e267707c, type: 3}
   - id: draw
