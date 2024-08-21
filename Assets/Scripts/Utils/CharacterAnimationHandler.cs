@@ -118,6 +118,7 @@ public class CharacterAnimationHandler : MonoBehaviour
         Debug.Log("subskillId: " + subskillId);
         Debug.Log("type: " + type);
         AnimationClip _animationClip = null;
+        AudioClip _audioClip = null;
         AnimationData _animationData = DatabaseManager.Instance.GetAnimationData(codeType,subskillId,type);
         actionAnimationLength = 0;
         effectAnimationLength = 0;
@@ -139,6 +140,14 @@ public class CharacterAnimationHandler : MonoBehaviour
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/Actions/" + _actionClipArray[i]);
                 this.playerAnimatorOverrideController["Animation_" + i] = _animationClip;
                 actionAnimationLength += _animationClip.length;
+                if(i > 0)
+                {
+                    this.playerAnimator.SetBool("animation_" + i, true);
+                }
+                else
+                {
+                    this.playerAnimator.SetBool("animation_" + i, false);
+                }
             }
             this.playerAnimator.SetTrigger("trigger");
         }
@@ -162,6 +171,14 @@ public class CharacterAnimationHandler : MonoBehaviour
                                          [ "Animation_" + i ] = _animationClip;
 
                 effectAnimationLength += _animationClip.length;
+                if (i > 0)
+                {
+                    this.playerAnimator.SetBool("animation_" + i, true);
+                }
+                else
+                {
+                    this.playerAnimator.SetBool("animation_" + i, false);
+                }
             }
 
             if (isSkillEffectFront)
@@ -183,10 +200,10 @@ public class CharacterAnimationHandler : MonoBehaviour
         if(_animationData.AudiosArray != null)
         {
             string[] _audioArray = _animationData.AudiosArray;
-            AudioManager.Instance.PlaySoundEffect(_audioArray[0]);
+            _audioClip = Resources.Load<AudioClip>("Audios/Battle/Audios/" + _audioArray[0]);
+            AudioManager.Instance.PlaySoundEffect(_audioClip);
             Debug.Log("_audioArray: " + _audioArray[0]);
-            AudioDatabase.AudioData _audioData = this.audioDatabase.GetAudioDataById(_audioArray[0]);
-            audioLength += _audioData.GetClip().length;
+            audioLength += _audioClip.length;
         }
         else
         {
