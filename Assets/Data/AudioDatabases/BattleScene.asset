@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioDataArray:
   - id: click
-    clip: {fileID: 8300000, guid: 73b872f16b148438c98aac1e3239c54e, type: 3}
+    clip: {fileID: 8300000, guid: f4f30a082243444ecb511ffaa3e0c587, type: 3}
   - id: attack
     clip: {fileID: 8300000, guid: 06591cd2a6cdf48308baf36c77ce2f83, type: 3}
   - id: defend
