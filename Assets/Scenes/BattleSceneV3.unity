@@ -678,11 +678,11 @@ PrefabInstance:
     - target: {fileID: 5598917719164618234, guid: 64c2bf0f5aa2a4547b864e348dc9df50, type: 3}
       propertyPath: enemyCharacter
       value: 
-      objectReference: {fileID: 946000569}
+      objectReference: {fileID: 2052794733}
     - target: {fileID: 5598917719164618234, guid: 64c2bf0f5aa2a4547b864e348dc9df50, type: 3}
       propertyPath: playerCharacter
       value: 
-      objectReference: {fileID: 1236949912}
+      objectReference: {fileID: 1132883002}
     - target: {fileID: 5598917719164618234, guid: 64c2bf0f5aa2a4547b864e348dc9df50, type: 3}
       propertyPath: battleGameManager
       value: 
