@@ -126,8 +126,17 @@ public class CharacterAnimationHandler : MonoBehaviour
 
         if(_animationData == null)
         {
-            Debug.Log("Failed to get animation data");
-            return;
+            Debug.Log("Failed to get animation data. Change type and load again");
+            if (type == 1) type = 2;
+            else if (type == 2) type = 1;
+            _animationData = DatabaseManager.Instance.GetAnimationData(codeType, subskillId, type);
+            Debug.Log("codeType: " + codeType);
+            Debug.Log("subskillId: " + subskillId);
+            Debug.Log("type: " + type);
+            if (_animationData == null)
+            {
+                Debug.LogError("Even changed type still cannot found animation data from database");
+            }
         }
 
         //action
@@ -140,8 +149,11 @@ public class CharacterAnimationHandler : MonoBehaviour
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/Actions/" + _actionClipArray[i]);
                 this.playerAnimatorOverrideController["Animation_" + i] = _animationClip;
                 actionAnimationLength += _animationClip.length;
-                this.playerAnimator.SetBool("animation_" + i, i > 0);
+
+                // reset
+                this.playerAnimator.SetBool("animation_" + i, false);
             }
+            this.playerAnimator.SetBool("animation_" + (_actionClipArray.Length - 1), true);
             this.playerAnimator.SetTrigger("trigger");
         }
         else
@@ -166,20 +178,23 @@ public class CharacterAnimationHandler : MonoBehaviour
                 effectAnimationLength += _animationClip.length;
                 if(isSkillEffectFront)
                 {
-                    this.skillEffectFrontAnimator.SetBool("animation_" + i, i > 0);
+                    this.skillEffectFrontAnimator.SetBool("animation_" + i, false);
                 }
                 else
                 {
-                    this.skillEffectBackAnimator.SetBool("animation_" + i, i > 0);
+                    this.skillEffectBackAnimator.SetBool("animation_" + i, false);
                 }            
             }
 
+            int index = _effectClipArray.Length - 1;
             if (isSkillEffectFront)
             {
+                this.skillEffectFrontAnimator.SetBool("animation_" + index, true);
                 this.skillEffectFrontAnimator.SetTrigger("trigger");
             }
             else
             {
+                this.skillEffectBackAnimator.SetBool("animation_" + index, true);
                 this.skillEffectBackAnimator.SetTrigger("trigger");
             }
         }
@@ -213,7 +228,7 @@ public class CharacterAnimationHandler : MonoBehaviour
     {
         // visual effect
         AnimationClip _animationClip = Resources.Load<AnimationClip>("Animations/Battle/VisualEffects/" + visualEffectName);
-        this.skillEffectBackAnimatorOverrideController["Animation_0"] = _animationClip;
+        this.visualEffectBackAnimatorOverrideController["Animation_0"] = _animationClip;
 
         AudioManager.Instance.PlaySoundEffect(visualEffectAudioId);
     }
