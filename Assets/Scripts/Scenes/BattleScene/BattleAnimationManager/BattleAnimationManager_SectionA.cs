@@ -354,21 +354,25 @@ public partial class BattleAnimationManager: MonoBehaviour
         yield return new WaitForSeconds(characterAnimationHandler.GetAnimationClipTotalLength());
     }
 
-    private void CheckSkillMeleeOrRange(GameCharacter gameCharacter, int skillType, string subSkillID, bool isFlip ,DatabaseManager.AnimationData.CodeType animationData)
+    private void CheckSkillMeleeOrRange(GameCharacter gameCharacter, int skillType, string subSkillID, bool isFront ,DatabaseManager.AnimationData.CodeType animationData)
     {
         int _skillType = skillType;
         CharacterAnimationHandler characterAnimationHandler = gameCharacter.GetCharacterAnimationHandler();
         if (_skillType == 0)
         {
-            characterAnimationHandler.LoadAndPlayAnimation(isFlip, true, animationData, subSkillID, _skillType);
+            characterAnimationHandler.LoadAndPlayAnimation(isFront, true, animationData, subSkillID, 0);
         }
         else if (_skillType == 1)
         {
-            characterAnimationHandler.LoadAndPlayAnimation(isFlip, true, animationData, subSkillID, _skillType);
+            characterAnimationHandler.LoadAndPlayAnimation(isFront, true, animationData, subSkillID, 1);
         }
         else if (_skillType == 2)
         {
-            characterAnimationHandler.LoadAndPlayAnimation(isFlip, true, animationData, subSkillID, _skillType);
+            characterAnimationHandler.LoadAndPlayAnimation(isFront, true, animationData, subSkillID, 2);
+        }
+        else
+        {
+            return;
         }
     }
 }
