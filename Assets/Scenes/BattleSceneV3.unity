@@ -268,7 +268,7 @@ PrefabInstance:
     - target: {fileID: 2023521671941314727, guid: e121d1c8ebf9d49e480ce76186639700, type: 3}
       propertyPath: selectedCharacter
       value: 
-      objectReference: {fileID: 946000569}
+      objectReference: {fileID: 2052794733}
     - target: {fileID: 3872705662303918340, guid: e121d1c8ebf9d49e480ce76186639700, type: 3}
       propertyPath: m_Name
       value: EnemyCharacterInfoBox_V4

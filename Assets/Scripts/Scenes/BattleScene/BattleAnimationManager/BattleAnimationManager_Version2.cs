@@ -15,7 +15,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         BattleResultData _battleResultData = null;
         BattleResultData.BattleResultData_GameCharacter _leadBattleResultData = null;
-        BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = null;
+        BattleResultData.BattleResultData_GameCharacter _improviserBattleResultData = null;
 
         PlayerCharacter _playerCharacter = this.battleGameManager.GetPlayerCharacter();
         EnemyCharacter _enemyCharacter = this.battleGameManager.GetEnemyCharacter();
@@ -221,7 +221,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         else if (_isAttackerCounterAttacking)
         {
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
-            yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, ( _lead.GetIsPlayer() ) ? "Player_Ariku_Counterattack" : "Enemy_Enemy_Counterattack" ) );
+            yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, ( _lead.GetIsPlayer() ) ? "Player_Ariku_Counterattack" : ( this.isUsingGameCharacterV2 ) ? "Player_Ariku_Counterattack-enemy" : "Enemy_Enemy_Counterattack" ) );
         }
         // NO
         // 进入“Part A前”。
@@ -252,7 +252,6 @@ public partial class BattleAnimationManager : MonoBehaviour
             BattleLogicManagerV2.DetermineResultForPartA( ref _battleResultData, _lead, _improviser );
 
             _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
-            _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
             ShowBattleLog( _battleResultData.GetResultLogList() );
 
             // 頁面：Part A結算
@@ -264,6 +263,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             LeanTween.delayedCall( 0.1f, () =>
             {
                 // 播放演出同時，UI反映各項參數。
+                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
                 _lead.ShowPopUpDisplayInfoV2( maxStatePointUp: _leadBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
             } );
 
@@ -404,7 +404,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         _battleResultData = _battleResultDataList[ 1 ];
         _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
-        _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( _improviser );
+        _improviserBattleResultData = _battleResultData.GetGameCharacterResultData( _improviser );
 
         if (_winner != null)
         {
@@ -447,7 +447,27 @@ public partial class BattleAnimationManager : MonoBehaviour
             ShowCommandPhaseCountdownTimer( true, _playerCharacter, 1.3f );
         } );
 
-        if (!this.isUsingGameCharacterV2)
+        if (this.isUsingGameCharacterV2)
+        {
+            // 結算演出時機B - 在partB的第0.6秒起播放。
+            // 參數：以太傷害, 負荷傷害, 回避壓力消耗, break字樣演出
+            // 生命傷害(只限沒有出現包含“crashef”的演出時)
+            // (近戰獎勵版) 以太提升, 回流造成的當前以太增加
+            LeanTween.delayedCall( 0.6f, () =>
+            {
+                // 播放演出同時，UI反映結算階段的各項參數。
+                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
+                _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
+            } );
+
+            // 結算演出時機C - 在partB的第1.2秒起播放。
+            // 參數：生命傷害(當該次演出出現包含“crashef”的演出時)
+            LeanTween.delayedCall( 1.2f, () =>
+            {
+
+            } );
+        }
+        else
         {
             switch ( _attackTargetSkillType )
             {
@@ -475,11 +495,11 @@ public partial class BattleAnimationManager : MonoBehaviour
                     }
 
                     _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
-                    _improviser.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
+                    _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
 
                     this.cameraEffect.Shake();
                     AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                    yield return StartCoroutine( PlayCharacterAnimation( _improviser, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
+                    yield return StartCoroutine( PlayCharacterAnimation( _improviser, GETTING_HIT_ANIMATION_NAME, _improviserBattleResultData ) );
                     //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
 
                     break;
@@ -510,7 +530,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                     yield return StartCoroutine( PlaySkillEffectAnimation( _improviser, REPULSE_ANIMATION_NAME ) );
 
                     _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
-                    _improviser.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
+                    _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
 
                     bool _hasAssault = false;
                     if (_winner != null)
@@ -534,15 +554,15 @@ public partial class BattleAnimationManager : MonoBehaviour
                             string _animationName = GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_" + ( ( _lead.GetIsPlayer() ) ? "Left" : "Right" );
 
                             ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
-                            ShowPopUpDisplayInfo( _improviser, _attackTargetBattleResultData );
+                            ShowPopUpDisplayInfo( _improviser, _improviserBattleResultData );
 
                             if (_winner == _lead && _improviser.IsCharacterObjectActive())
                             {
-                                yield return StartCoroutine( PlayCharacterAnimation( _improviser, _animationName, _attackTargetBattleResultData ) );
+                                yield return StartCoroutine( PlayCharacterAnimation( _improviser, _animationName, _improviserBattleResultData ) );
                             }
                             else if (_winner == _improviser && _lead.IsCharacterObjectActive())
                             {
-                                yield return StartCoroutine( PlayCharacterAnimation( _lead, _animationName, _attackTargetBattleResultData ) );
+                                yield return StartCoroutine( PlayCharacterAnimation( _lead, _animationName, _improviserBattleResultData ) );
                             }
                         }
                     }
@@ -550,7 +570,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                     if (!_hasAssault)
                     {
                         ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
-                        ShowPopUpDisplayInfo( _improviser, _attackTargetBattleResultData );
+                        ShowPopUpDisplayInfo( _improviser, _improviserBattleResultData );
                     }
 
                     //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
@@ -599,7 +619,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                     }
 
                     _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
-                    _improviser.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
+                    _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
 
                     if (_winner == _lead)
                     {
@@ -615,7 +635,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                         this.cameraEffect.Shake();
                         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
                         ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
-                        yield return StartCoroutine( PlayCharacterAnimation( _improviser, GETTING_HIT_ANIMATION_NAME, _attackTargetBattleResultData ) );
+                        yield return StartCoroutine( PlayCharacterAnimation( _improviser, GETTING_HIT_ANIMATION_NAME, _improviserBattleResultData ) );
                         //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
                     }
                     else if (_winner == _improviser)
@@ -637,7 +657,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
                         if (_attackTargetBackendSkillAnimationCharacterPartA != NO_ANIMATION)
                         {
-                            yield return StartCoroutine( PlayCharacterAnimation( _improviser, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBattleResultData ) );
+                            yield return StartCoroutine( PlayCharacterAnimation( _improviser, _attackTargetBackendSkillAnimationCharacterPartA, _improviserBattleResultData ) );
                         }
 
                         if (_attackTargetBackendSkillAnimationSkillEffectPartA != NO_ANIMATION)
@@ -739,52 +759,55 @@ public partial class BattleAnimationManager : MonoBehaviour
         // “Part A結算”頁面："己方"播放已判定的[已按下技能演出]&[共用特效]
         if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.Lead ))
         {
-            yield return StartCoroutine( ZoomInCameraToTarget( gameCharacter, 0.6f ) );
-
-            RangeType _currentSkillRangeType = gameCharacter.GetCurrentSkillRangeType();
-            string _characterPartA = "";
-            string _skillEffectPartA = "";
-
-            if (gameCharacter.GetIsPlayer())
+            if (!this.isUsingGameCharacterV2)
             {
-                if (_currentSkillRangeType == RangeType.melee)
-                {
-                    _characterPartA = "MeleeAttack_Part_A";
-                    _skillEffectPartA = "MeleeAttack_Part_A";
-                }
-                else if (_currentSkillRangeType == RangeType.ranged)
-                {
-                    _characterPartA = "RangedAttack";
-                    _skillEffectPartA = "Fireball_Part_A";
-                }
-            }
-            else
-            {
-                if (_currentSkillRangeType == RangeType.melee)
-                {
-                    _characterPartA = "Attack_Part_A";
-                    _skillEffectPartA = "-";
-                }
-                else if (_currentSkillRangeType == RangeType.ranged)
-                {
-                    _characterPartA = "RangedAttack";
-                    _skillEffectPartA = "Fireball_Part_A";
-                }
-            }
+                yield return StartCoroutine( ZoomInCameraToTarget( gameCharacter, 0.6f ) );
 
-            if (_characterPartA != NO_ANIMATION)
-            {
-                yield return StartCoroutine( PlayCharacterAnimation( gameCharacter, _characterPartA ) );
-            }
+                RangeType _currentSkillRangeType = gameCharacter.GetCurrentSkillRangeType();
+                string _characterPartA = "";
+                string _skillEffectPartA = "";
 
-            if (_skillEffectPartA != NO_ANIMATION)
-            {
-                if (_skillEffectPartA == "Fireball_Part_A")
+                if (gameCharacter.GetIsPlayer())
                 {
-                    AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
+                    if (_currentSkillRangeType == RangeType.melee)
+                    {
+                        _characterPartA = "MeleeAttack_Part_A";
+                        _skillEffectPartA = "MeleeAttack_Part_A";
+                    }
+                    else if (_currentSkillRangeType == RangeType.ranged)
+                    {
+                        _characterPartA = "RangedAttack";
+                        _skillEffectPartA = "Fireball_Part_A";
+                    }
+                }
+                else
+                {
+                    if (_currentSkillRangeType == RangeType.melee)
+                    {
+                        _characterPartA = "Attack_Part_A";
+                        _skillEffectPartA = "-";
+                    }
+                    else if (_currentSkillRangeType == RangeType.ranged)
+                    {
+                        _characterPartA = "RangedAttack";
+                        _skillEffectPartA = "Fireball_Part_A";
+                    }
                 }
 
-                yield return StartCoroutine( PlaySkillEffectAnimation( gameCharacter, _skillEffectPartA ) );
+                if (_characterPartA != NO_ANIMATION)
+                {
+                    yield return StartCoroutine( PlayCharacterAnimation( gameCharacter, _characterPartA ) );
+                }
+
+                if (_skillEffectPartA != NO_ANIMATION)
+                {
+                    if (_skillEffectPartA == "Fireball_Part_A")
+                    {
+                        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_FIREBALL );
+                    }
+
+                    yield return StartCoroutine( PlaySkillEffectAnimation( gameCharacter, _skillEffectPartA ) );
+                }
             }
         }
         // “迎擊指令時間”頁面："己方"播放已判定的演出&特效
@@ -859,36 +882,39 @@ public partial class BattleAnimationManager : MonoBehaviour
         {
             // TODO: 派生技能演出
         }
-
-        // TODO: 判定"己方"的指令時間
-
-        // TODO: 判定己方PART B演出
-        DeterminePartBAnimation( lead, improviser );
-
-        // TODO: 判定敵方PART B演出
-        DeterminePartBAnimation( improviser, lead );
-
-        // TODO: 判定PART B共用特效
-        RunPartBShareEffects( lead, improviser );
-
-        if (improviser.GetCurrentSkill() != null)
+        // NO
+        else
         {
-            BattleResultData.BattleResultData_GameCharacter _improviserBattleResultData = battleResultDataList[ 0 ].GetGameCharacterResultData( improviser );
+            // TODO: 判定"己方"的指令時間
 
-            // 結算演出時機 A - 在 Part B 的第 0.1 秒起播放。
-            // 參數：以太值消耗、以太值提升
-            LeanTween.delayedCall( 0.1f, () =>
+            // TODO: 判定己方PART B演出
+            DeterminePartBAnimation( lead, improviser );
+
+            // TODO: 判定敵方PART B演出
+            DeterminePartBAnimation( improviser, lead );
+
+            // TODO: 判定PART B共用特效
+            RunPartBShareEffects( lead, improviser );
+
+            if (improviser.GetCurrentSkill() != null)
             {
-                improviser.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
-                //StartCoroutine( ShowPopUpDisplayInfo( improviser, statePointReduced: improviserBattleResultData.statePointCost, maximumStatePointIncreased: improviserBattleResultData.maximumStatePointIncrease ) );
-                improviser.ShowPopUpDisplayInfoV2( maxStatePointUp: _improviserBattleResultData.maximumStatePointIncrease/*, statePointDamage: improviserBattleResultData.statePointCost*/ );
-            } );
-        }
+                BattleResultData.BattleResultData_GameCharacter _improviserBattleResultData = battleResultDataList[ 0 ].GetGameCharacterResultData( improviser );
 
-        this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtRecipient();
+                // 結算演出時機 A - 在 Part B 的第 0.1 秒起播放。
+                // 參數：以太值消耗、以太值提升
+                LeanTween.delayedCall( 0.1f, () =>
+                {
+                    improviser.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
 
-        if (lead.GetCurrentSkill().GetSkillData().skillType != Skill.SkillType.derived)
-        {
+                    // 播放演出同時，UI反映各項參數。
+                    improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
+                    //StartCoroutine( ShowPopUpDisplayInfo( improviser, statePointReduced: improviserBattleResultData.statePointCost, maximumStatePointIncreased: improviserBattleResultData.maximumStatePointIncrease ) );
+                    improviser.ShowPopUpDisplayInfoV2( maxStatePointUp: _improviserBattleResultData.maximumStatePointIncrease/*, statePointDamage: improviserBattleResultData.statePointCost*/ );
+                } );
+            }
+
+            this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtRecipient();
+
             LeanTween.delayedCall( 0.5f, () =>
             {
                 lead.TriggerEvent( AnimationEvent.OnPartB );
