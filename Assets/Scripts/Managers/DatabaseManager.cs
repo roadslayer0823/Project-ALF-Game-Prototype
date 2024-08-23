@@ -992,6 +992,8 @@ public class DatabaseManager : Singleton<DatabaseManager>
             camB_type_CLPV2_H,
             camB_type_CLPVF_L,
             camB_type_CLPVF_H,
+            camA_partA_VF,
+            camA_partA_V1,
         }
         public CodeType Code;
 
@@ -1002,6 +1004,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
         [JsonProperty("type")]
         public int Type { get; private set; }
 
+        [JsonProperty("is_flipped")]
+        public bool IsFlipped { get; private set; }
+        
         [JsonProperty("actions")]
         [HideInInspector] public string ActionsArrayString { get; private set; }
         public string[] ActionsArray;

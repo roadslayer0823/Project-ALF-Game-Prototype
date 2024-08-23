@@ -68,25 +68,28 @@ public class CharacterAnimationHandler : MonoBehaviour
 
         AudioManager.Instance.SetUpAudioDatabase(this.audioDatabase);
 
-        if (this.dropdown != null)
+        if (this.dropdown != null)  
         {
             List<string> values = Enum.GetValues( typeof( AnimationData.CodeType ) ).Cast<AnimationData.CodeType>().Select( v => v.ToString() ).ToList();
             this.dropdown.AddOptions( values );
         }
     }
 
-    public void FlipContainer()
+    public void FlipContainer(bool isFlipped)
     {
+        float scaleX = isFlipped ? -1 : 1;
+
         for(int i = 0; i < this.containers.Length; i ++)
         {
-            containers[i].transform.localScale.Set(-1, 0, 0);
+            this.containers[i].transform.localScale.Set(scaleX, 1.0f, 1.0f);
         }
     }
 
-    public void FlipVisualEffectContainer()
+    public void FlipVisualEffectContainer(bool isFlipped)
     {
-        containers[0].transform.localScale.Set(-1, 0, 0);
-        containers[4].transform.localScale.Set(-1, 0, 0);
+        float scaleX = isFlipped ? -1 : 1;
+        this.containers[0].transform.localScale.Set(scaleX, 1.0f, 1.0f);
+        this.containers[4].transform.localScale.Set(scaleX, 1.0f, 1.0f);
     }
 
     public AnimationData.CodeType GetLastATLCodeType()
@@ -110,6 +113,55 @@ public class CharacterAnimationHandler : MonoBehaviour
     public bool CheckIfSameAsLastATLCodeType(string lastCode)
     {
         return CheckIfSameAsLastATLCodeType(new string[] { lastCode });
+    }
+
+    public class AnimationParameterData
+    {
+        bool isSkillEffectFront;
+        bool needToRecord;
+        AnimationData.CodeType codeType;
+        string subskillId = "";
+        int type = 0;
+
+        public AnimationParameterData (bool isSkillEffectFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0)
+        {
+            this.isSkillEffectFront = isSkillEffectFront;
+            this.needToRecord = needToRecord;
+            this.codeType = codeType;
+            this.subskillId = subskillId;
+            this.type = type;
+        }
+
+        public bool GetIsSkillEffectFront()
+        {
+            return this.isSkillEffectFront;
+        }
+
+        public bool GetNeedToRecord()
+        {
+            return this.needToRecord;
+        }
+
+        public AnimationData.CodeType GetCodeType()
+        {
+            return this.codeType;
+        }
+
+        public string GetSubSkillId()
+        {
+            return this.subskillId;
+        }
+
+        public int GetDataType()
+        {
+            return this.type;
+        }
+    }
+
+    public void LoadAndPlayAnimation(AnimationParameterData animationParameterData)
+    {
+        LoadAndPlayAnimation(animationParameterData.GetIsSkillEffectFront(),animationParameterData.GetNeedToRecord(),
+            animationParameterData.GetCodeType(),animationParameterData.GetSubSkillId(),animationParameterData.GetDataType());
     }
 
     public void LoadAndPlayAnimation(bool isSkillEffectFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0)
@@ -139,6 +191,8 @@ public class CharacterAnimationHandler : MonoBehaviour
             }
         }
 
+        FlipContainer(_animationData.IsFlipped);
+
         //action
         if(_animationData.ActionsArray != null)
         {
@@ -151,9 +205,8 @@ public class CharacterAnimationHandler : MonoBehaviour
                 actionAnimationLength += _animationClip.length;
 
                 // reset
-                this.playerAnimator.SetBool("animation_" + i, false);
+                this.playerAnimator.SetBool("animation_" + i, i == (_actionClipArray.Length - 1));
             }
-            this.playerAnimator.SetBool("animation_" + (_actionClipArray.Length - 1), true);
             this.playerAnimator.SetTrigger("trigger");
         }
         else
@@ -166,6 +219,7 @@ public class CharacterAnimationHandler : MonoBehaviour
         if(_animationData.EffectsArray != null)
         {
             string[] _effectClipArray = _animationData.EffectsArray;
+            Animator _skillEffectAnimator = isSkillEffectFront ? this.skillEffectFrontAnimator : this.skillEffectBackAnimator;
             for (int i = 0; i < _effectClipArray.Length; i++)
             {
                 Debug.Log("_effectClipArray[" + i + "]: " + _effectClipArray[i]);
@@ -176,27 +230,11 @@ public class CharacterAnimationHandler : MonoBehaviour
                                          [ "Animation_" + i ] = _animationClip;
 
                 effectAnimationLength += _animationClip.length;
-                if(isSkillEffectFront)
-                {
-                    this.skillEffectFrontAnimator.SetBool("animation_" + i, false);
-                }
-                else
-                {
-                    this.skillEffectBackAnimator.SetBool("animation_" + i, false);
-                }            
+
+                _skillEffectAnimator.SetBool("animation_" + i, i == _effectClipArray.Length - 1);
             }
 
-            int index = _effectClipArray.Length - 1;
-            if (isSkillEffectFront)
-            {
-                this.skillEffectFrontAnimator.SetBool("animation_" + index, true);
-                this.skillEffectFrontAnimator.SetTrigger("trigger");
-            }
-            else
-            {
-                this.skillEffectBackAnimator.SetBool("animation_" + index, true);
-                this.skillEffectBackAnimator.SetTrigger("trigger");
-            }
+            _skillEffectAnimator.SetTrigger("trigger");
         }
         else
         {
@@ -224,9 +262,40 @@ public class CharacterAnimationHandler : MonoBehaviour
         }
     }
 
-    public void LoadAndPlayVisualEffect(string visualEffectName, string visualEffectAudioId)
+    public class VisualEffectParameterData
+    {
+        private bool isFlipped = false;
+        private string visualEffectName = "";
+        private string visualEffectAudioId = "";
+
+        public VisualEffectParameterData (bool isFlipped, string visualEffectName, string visualEffectAudioId)
+        {
+            this.isFlipped = isFlipped;
+            this.visualEffectName = visualEffectName;
+            this.visualEffectAudioId = visualEffectAudioId;
+        }
+
+        public bool GetIsFlipped()
+        {
+            return this.isFlipped;
+        }
+
+        public string GetVisualEffectName()
+        {
+            return this.visualEffectName;
+        }
+
+        public string GetVisualEffectAudioId()
+        {
+            return this.visualEffectAudioId;
+        }
+    }
+
+
+    public void LoadAndPlayVisualEffect(bool isFlipped, string visualEffectName, string visualEffectAudioId)
     {
         // visual effect
+        FlipVisualEffectContainer(isFlipped);
         AnimationClip _animationClip = Resources.Load<AnimationClip>("Animations/Battle/VisualEffects/" + visualEffectName);
         this.visualEffectBackAnimatorOverrideController["Animation_0"] = _animationClip;
 

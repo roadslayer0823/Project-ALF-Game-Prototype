@@ -204,13 +204,13 @@ public class SkillPromptPanelV2 : MonoBehaviour
             this.strengthEffectAnimator.Play("Strength_2_V2");
         }
 
-        if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Lead))
+        if (gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.PlayerOne))
         {
-            ChangeSpeedAndStrengthEffectScaleX(-2);
+            ChangeSpeedAndStrengthEffectScaleX(2);
         }
         else
         {
-            ChangeSpeedAndStrengthEffectScaleX(2);
+            ChangeSpeedAndStrengthEffectScaleX(-2);
         }
     }
 
