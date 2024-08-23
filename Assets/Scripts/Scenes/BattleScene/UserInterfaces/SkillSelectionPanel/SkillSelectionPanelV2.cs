@@ -600,7 +600,10 @@ public class SkillSelectionPanelV2 : MonoBehaviour
 
             for (int j = 0; j < _selectedCharacterSkill.Count; j++)
             {
-                if (_selectedCharacterSkill[j].GetSkillData().Id == _backendSkillSelectionBox.GetCharacterSkill().GetCharacterSubskillData().GetSubskillData().SkillId)
+                CharacterSkill _backendSkillSelectionBoxCharacterSkill = _backendSkillSelectionBox.GetCharacterSkill();
+
+                if (_backendSkillSelectionBoxCharacterSkill != null
+                    && _selectedCharacterSkill[j].GetSkillData().Id == _backendSkillSelectionBoxCharacterSkill.GetCharacterSubskillData().GetSubskillData().SkillId)
                 {
                     _backendSkillSelectionBox.UpdateSkillIcon(true);
                     _backendSkillSelectionBox.SetIsSelected(true);

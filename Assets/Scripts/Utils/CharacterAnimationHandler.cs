@@ -166,6 +166,8 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void LoadAndPlayAnimation(bool isSkillEffectFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0)
     {
+        ResetAnimation();
+
         Debug.Log("codeType: " + codeType);
         Debug.Log("subskillId: " + subskillId);
         Debug.Log("type: " + type);
@@ -298,6 +300,8 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void LoadAndPlayVisualEffect(bool isFlipped, string visualEffectName, string visualEffectAudioId)
     {
+        ResetAnimation();
+
         // visual effect
         FlipVisualEffectContainer(isFlipped);
         AnimationClip _animationClip = Resources.Load<AnimationClip>("Animations/Battle/VisualEffects/" + visualEffectName);
@@ -308,7 +312,18 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void ResetAnimation()
     {
-        Debug.Log("Reset Animation");
+        Debug.Log( "Reset Animation" );
+
+        Transform[] _transforms = this.GetComponentsInChildren<Transform>();
+        for (int i = 0; i < _transforms.Length; i++)
+        {
+            Transform _transform = _transforms[ i ];
+            if (_transform != this.transform)
+            {
+                _transform.localScale = Vector3.one;
+            }
+        }
+
         SpriteRenderer[] _spriteRenderers = this.GetComponentsInChildren<SpriteRenderer>();
         for (int i = 0; i < _spriteRenderers.Length; i++)
         {

@@ -194,6 +194,21 @@ public class BattleResultData
             return 0.0f;
         }
 
+        public float GetHealthPointDamageTaken()
+        {
+            if (this.actualHealthPointDamageTaken > 0)
+            {
+                return this.actualHealthPointDamageTaken;
+            }
+
+            if (this.virtualHealthPointDamageTaken > 0)
+            {
+                return this.virtualHealthPointDamageTaken;
+            }
+
+            return 0.0f;
+        }
+
         public bool HasPassiveSkillTriggered( string skillId )
         {
             return ( triggeredPassiveSkillList.FirstOrDefault( ps => ps.Id == skillId ) != null );
