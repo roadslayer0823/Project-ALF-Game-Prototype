@@ -291,6 +291,10 @@ public class CharacterAnimationHandler : MonoBehaviour
         }
     }
 
+    public void LoadAndPlayVisualEffect(VisualEffectParameterData visualEffectParameterData)
+    {
+        LoadAndPlayVisualEffect(visualEffectParameterData.GetIsFlipped(), visualEffectParameterData.GetVisualEffectName(), visualEffectParameterData.GetVisualEffectAudioId());
+    }
 
     public void LoadAndPlayVisualEffect(bool isFlipped, string visualEffectName, string visualEffectAudioId)
     {

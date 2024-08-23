@@ -4,28 +4,26 @@ using static CharacterAnimationHandler;
 public partial class BattleAnimationManager : MonoBehaviour
 {
     //判定PART A演出&PART A特效
-    public AnimationParameterData DetermineAnimationAndVisualEffectForPartA(ref BattleResultData battleResultData, GameCharacter lead,GameCharacter playerOne, GameCharacter playerTwo)
+    public AnimationParameterData DetermineAnimationAndVisualEffectForPartA(GameCharacter lead, GameCharacter playerOne, GameCharacter playerTwo)
     {
         AnimationParameterData _animationParameterData = null;
-        BattleResultData.BattleResultData_GameCharacter _playerOne_BattleResultData = battleResultData.GetGameCharacterResultData(playerOne);
-        BattleResultData.BattleResultData_GameCharacter _playerTwo_BattleResultData = battleResultData.GetGameCharacterResultData(playerTwo);
-        DatabaseManager.Subskill _playerOneSubskill = _playerOne_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        DatabaseManager.Subskill _playerOneSubskill = playerOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
 
-        int _playerOneSkillType = (int)_playerOne_BattleResultData.gameCharacter.GetCurrentSkillRangeType();
+        int _playerOneSkillType = (int)playerOne.GetCurrentSkillRangeType();
         int _playerTwoSkillType = 0;
         string _playerOneSubskillId = _playerOneSubskill.Id;
         string _playerTwoSubskillId = "";
 
-        CharacterSkill _playerTwoCurrentSkill = _playerTwo_BattleResultData.gameCharacter.GetCurrentSkill();
+        CharacterSkill _playerTwoCurrentSkill = playerTwo.GetCurrentSkill();
         if (_playerTwoCurrentSkill != null)
         {
             _playerTwoSubskillId = _playerTwoCurrentSkill.GetCharacterSubskillData().GetSubskillData().Id;
-            _playerTwoSkillType = (int)_playerTwo_BattleResultData.gameCharacter.GetCurrentSkillRangeType();
+            _playerTwoSkillType = (int)playerTwo.GetCurrentSkillRangeType();
         }
 
         /*先手方已按下的技能速度是否3以上?*/
         /*先手方已按下的技能強度是否2以上?*/
-        skillPromptPanel.PlaySpeedStrengthAnimation(lead);
+        //skillPromptPanel.PlaySpeedStrengthAnimation(lead);
 
         /*
          先手方是否
