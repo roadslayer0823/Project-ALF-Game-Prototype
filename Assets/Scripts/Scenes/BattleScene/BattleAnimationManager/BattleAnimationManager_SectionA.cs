@@ -32,16 +32,7 @@ public partial class BattleAnimationManager: MonoBehaviour
 
         CharacterAnimationHandler _playerOne_CharacterAnimationHandler = playerOne.GetCharacterAnimationHandler();
         string _playerOne_SubskillId = ( _playerOne_SubskillData != null ) ? _playerOne_SubskillData.Id : "";
-        int _playerOne_AnimationType = 0;
-
-        if (playerOne.GetCurrentSkillRangeType() == RangeType.melee)
-        {
-            _playerOne_AnimationType = 1;
-        }
-        else if (playerOne.GetCurrentSkillRangeType() == RangeType.ranged)
-        {
-            _playerOne_AnimationType = 2;
-        }
+        int _playerOne_AnimationType = AnimationParameterData.ConvertToAnimationType( playerOne );
 
         //抵抗成功方
         if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
@@ -363,16 +354,7 @@ public partial class BattleAnimationManager: MonoBehaviour
 
         CharacterAnimationHandler _playerTwo_CharacterAnimationHandler = playerTwo.GetCharacterAnimationHandler();
         string _playerTwo_SubskillId = ( _playerTwo_SubskillData != null ) ? _playerTwo_SubskillData.Id : "";
-        int _playerTwo_AnimationType = 0;
-
-        if (playerTwo.GetCurrentSkillRangeType() == RangeType.melee)
-        {
-            _playerTwo_AnimationType = 1;
-        }
-        else if (playerTwo.GetCurrentSkillRangeType() == RangeType.ranged)
-        {
-            _playerTwo_AnimationType = 2;
-        }
+        int _playerTwo_AnimationType = AnimationParameterData.ConvertToAnimationType( playerTwo );
 
         // 抵抗成功方
         if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))

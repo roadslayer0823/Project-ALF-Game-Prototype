@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using AnimationData = DatabaseManager.AnimationData;
+using RangeType = DatabaseManager.Subskill.RangeType;
 
 public class CharacterAnimationHandler : MonoBehaviour
 {
@@ -117,11 +118,11 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public class AnimationParameterData
     {
-        bool isSkillEffectFront;
-        bool needToRecord;
-        AnimationData.CodeType codeType;
-        string subskillId = "";
-        int type = 0;
+        private bool isSkillEffectFront = false;
+        private bool needToRecord = false;
+        private AnimationData.CodeType codeType;
+        private string subskillId = "";
+        private int type = 0;
 
         public AnimationParameterData (bool isSkillEffectFront, bool needToRecord, AnimationData.CodeType codeType, string subskillId = "", int type = 0)
         {
@@ -130,6 +131,22 @@ public class CharacterAnimationHandler : MonoBehaviour
             this.codeType = codeType;
             this.subskillId = subskillId;
             this.type = type;
+        }
+
+        public static int ConvertToAnimationType( GameCharacter gameCharacter )
+        {
+            RangeType _gameCharacterCurrentSkillRangeType = gameCharacter.GetCurrentSkillRangeType();
+
+            if (_gameCharacterCurrentSkillRangeType == RangeType.melee)
+            {
+                return 1;
+            }
+            else if (_gameCharacterCurrentSkillRangeType == RangeType.ranged)
+            {
+                return 2;
+            }
+
+            return 0;
         }
 
         public bool GetIsSkillEffectFront()

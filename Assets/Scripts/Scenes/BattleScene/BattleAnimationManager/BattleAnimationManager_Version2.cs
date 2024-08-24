@@ -156,7 +156,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                 _leadCharacterPartB = "-";
                 _leadSkillEffectPartB = "Fireball_Part_B";
             }
-            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
+
             ChangeToBackgroundPartA();
         }
         else
@@ -352,7 +352,6 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         if (_lead.GetIsPlayer())
         {
-            AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
             ChangeToBackgroundPartB();
         }
         else
@@ -426,13 +425,13 @@ public partial class BattleAnimationManager : MonoBehaviour
             CharacterAnimationHandler _playerCharacterAnimationHandler = _playerCharacter.GetCharacterAnimationHandler();
             CharacterAnimationHandler _enemyCharacterAnimationHandler = _enemyCharacter.GetCharacterAnimationHandler();
 
-            // TODO: 判定己方PART B演出
+            // 判定己方PART B演出
             var ( _animationParameterDataForPlayerOne, _extraAnimationParameterDataForPlayerOne ) = DetermineAnimationOfPlayerOneForPartB( _playerCharacter, _enemyCharacter );
 
-            // TODO: 判定敵方PART B演出
-            var ( _animationParameterDataForPlayerTwo, _extraAnimationParameterDataForPlayerTwo ) = DetermineAnimationOfPlayerTwoForPartB( _enemyCharacter, _playerCharacter );
+            // 判定敵方PART B演出
+            var ( _animationParameterDataForPlayerTwo, _extraAnimationParameterDataForPlayerTwo ) = DetermineAnimationOfPlayerTwoForPartB( _playerCharacter, _enemyCharacter );
 
-            // TODO: 判定PART B共用特效
+            // 判定PART B共用特效
             var ( _visualEffectParameterDataForPlayerOne, _visualEffectParameterDataForPlayerTwo ) = DetermineVisualEffectForPartB( _playerCharacter, _enemyCharacter );
 
             this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtRecipient();
@@ -481,14 +480,20 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             // 播放已判定的[己方PART B演出]&[敵方PART B演出]&[PART B特效]
 
-            _playerCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerOne );
+            if (_animationParameterDataForPlayerOne != null)
+            {
+                _playerCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerOne );
+            }
 
             if (_visualEffectParameterDataForPlayerOne != null)
             {
                 _playerCharacterAnimationHandler.LoadAndPlayVisualEffect( _visualEffectParameterDataForPlayerOne );
             }
 
-            _enemyCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerTwo );
+            if (_animationParameterDataForPlayerTwo != null)
+            {
+                _enemyCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerTwo );
+            }
 
             if (_visualEffectParameterDataForPlayerTwo != null)
             {
@@ -903,6 +908,8 @@ public partial class BattleAnimationManager : MonoBehaviour
         {
             if (this.isUsingGameCharacterV2)
             {
+                this.skillPromptPanel.PlaySpeedStrengthAnimation( gameCharacter );
+
                 if (animationParameterData != null)
                 {
                     gameCharacter.GetCharacterAnimationHandler().LoadAndPlayAnimation( animationParameterData );

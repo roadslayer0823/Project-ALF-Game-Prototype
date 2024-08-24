@@ -50,7 +50,7 @@ public class BattleGameManager : MonoBehaviour
 
         this.battleUiManager.SetAllActive( false );
         //this.battleUiManager.HideEnemyCharacterInfoBox();
-        this.battleAnimationManager.ChangeToBackgroundPartB();
+        this.battleAnimationManager.ChangeToBackgroundPartB( false );
         this.playerCharacter.PlayCharacterAnimation( "Prepare" );
         this.enemyCharacter.PlayCharacterAnimation( "Idle" );
     }
@@ -145,7 +145,7 @@ public class BattleGameManager : MonoBehaviour
 
     public void ShowPreparationView()
     {
-        this.battleAnimationManager.ChangeToBackgroundPartB();
+        this.battleAnimationManager.ChangeToBackgroundPartB( false );
         this.playerContainer.SetActive( true );
         this.opponentContainer.SetActive( true );
         this.playerCharacter.PlayCharacterAnimation( "Prepare" );

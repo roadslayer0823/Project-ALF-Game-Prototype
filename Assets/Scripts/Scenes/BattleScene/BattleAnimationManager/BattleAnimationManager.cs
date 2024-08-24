@@ -1276,16 +1276,26 @@ public partial class BattleAnimationManager : MonoBehaviour
         UpdateBackground();
     }
 
-    public void ChangeToBackgroundPartA()
+    public void ChangeToBackgroundPartA( bool hasSoundEffect = true )
     {
         this.backgroundIndex = 1;
         UpdateBackground();
+
+        if (hasSoundEffect)
+        {
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CAMERACHANGE );
+        }
     }
 
-    public void ChangeToBackgroundPartB()
+    public void ChangeToBackgroundPartB( bool hasSoundEffect = true )
     {
         this.backgroundIndex = 2;
         UpdateBackground();
+
+        if (hasSoundEffect)
+        {
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CAMERACHANGE );
+        }
     }
 
     private void UpdateBackground()

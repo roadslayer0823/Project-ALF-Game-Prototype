@@ -19,14 +19,14 @@ public partial class BattleAnimationManager : MonoBehaviour
         if (_playerOneCurrentSkill != null)
         {
             _playerOne_SubskillId = _playerOneCurrentSkill.GetCharacterSubskillData().GetSubskillData().Id;
-            _playerOne_AnimationType = ( int )playerOne.GetCurrentSkillRangeType();
+            _playerOne_AnimationType = AnimationParameterData.ConvertToAnimationType( playerOne );
         }
 
         CharacterSkill _playerTwoCurrentSkill = playerTwo.GetCurrentSkill();
         if (_playerTwoCurrentSkill != null)
         {
             _playerTwo_SubskillId = _playerTwoCurrentSkill.GetCharacterSubskillData().GetSubskillData().Id;
-            _playerTwo_AnimationType = (int)playerTwo.GetCurrentSkillRangeType();
+            _playerTwo_AnimationType = AnimationParameterData.ConvertToAnimationType( playerTwo );
         }
 
         /*先手方已按下的技能速度是否3以上?*/
