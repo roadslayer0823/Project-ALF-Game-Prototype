@@ -623,7 +623,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 // NO
                 // 敵方是否"速度負方"/"速度強度負方"?
                 // YES
-                else if (playerOne.HasCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedLoser, CharacterIdentityType.SpeedStrengthLoser } ))
+                else if (playerTwo.HasCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedLoser, CharacterIdentityType.SpeedStrengthLoser } ))
                 {
                     // 已按下技能是否與上1ATL相同&上1ATL播放了"v1演出"&有"v2演出"?
                     // YES
