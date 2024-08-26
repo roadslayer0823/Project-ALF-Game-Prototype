@@ -1495,7 +1495,7 @@ Transform:
   m_GameObject: {fileID: 7215210616887193446}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: -1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2153725635038805945}
@@ -1620,7 +1620,7 @@ Transform:
   m_GameObject: {fileID: 7215210616897525857}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5462761962804955452}
@@ -1958,6 +1958,7 @@ MonoBehaviour:
   - {fileID: 2427942532151461047}
   - {fileID: 7215210618600483730}
   - {fileID: 9005853308038288350}
+  - {fileID: 7215210616887193445}
   playerAnimator: {fileID: 7390055747839694509}
   skillEffectBackAnimator: {fileID: 6428194587670660119}
   skillEffectFrontAnimator: {fileID: 6410295446148079859}
