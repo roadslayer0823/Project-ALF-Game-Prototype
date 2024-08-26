@@ -79,18 +79,20 @@ public class CharacterAnimationHandler : MonoBehaviour
     public void FlipContainer(bool isFlipped)
     {
         float scaleX = isFlipped ? -1 : 1;
+        Vector3 newScale = new Vector3(scaleX, 1.0f, 1.0f);
 
         for(int i = 0; i < this.containers.Length; i ++)
         {
-            this.containers[i].transform.localScale.Set(scaleX, 1.0f, 1.0f);
+            this.containers[i].transform.localScale = newScale;
         }
     }
 
     public void FlipVisualEffectContainer(bool isFlipped)
     {
         float scaleX = isFlipped ? -1 : 1;
-        this.containers[0].transform.localScale.Set(scaleX, 1.0f, 1.0f);
-        this.containers[4].transform.localScale.Set(scaleX, 1.0f, 1.0f);
+        Vector3 newScale = new Vector3(scaleX, 1.0f, 1.0f);
+        this.containers[0].transform.localScale = newScale;
+        this.containers[3].transform.localScale = newScale;
     }
 
     public AnimationData.CodeType GetLastATLCodeType()
