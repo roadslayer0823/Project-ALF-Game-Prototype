@@ -922,6 +922,22 @@ public partial class GameCharacter : MonoBehaviour
     {
         return this.characterAnimationHandler;
     }
+
+    public void PlayIdleAnimation()
+    {
+        PlayCharacterAnimation( "Idle" );
+
+        if (this.characterAnimationHandler != null)
+        {
+            this.characterAnimationHandler.FlipContainer( !this.isPlayer );
+        }
+    }
+
+    public void PlayPrepareAnimation()
+    {
+        PlayCharacterAnimation( "Prepare" );
+    }
+
 #endregion
 
 #region Battle Animation Event Manager

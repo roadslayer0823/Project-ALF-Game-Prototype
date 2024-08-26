@@ -693,8 +693,8 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             _attacker.GetOwnContainer().SetActive( false );
             _attacker.ShowCharacterObject();
-            _attacker.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
-            _attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
+            _attacker.PlayIdleAnimation();
+            _attackTarget.PlayIdleAnimation();
 
             if (_hasCounterAttack)
             {
@@ -726,7 +726,7 @@ public partial class BattleAnimationManager : MonoBehaviour
     private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound battleFlowRound, ATLSlotListPanelV3 atlSlotListPanel )
     {
         attackTarget.Reset();
-        attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
+        attackTarget.PlayIdleAnimation();
 
         bool _isAbleToUseSkill = BattleLogicManager.IsAbleToUseSkill( attacker );
 
@@ -751,7 +751,7 @@ public partial class BattleAnimationManager : MonoBehaviour
     private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, BattleFlowRound_V2 battleFlowRound, ATLSlotListPanelV3 atlSlotListPanel )
     {
         attackTarget.Reset();
-        attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
+        attackTarget.PlayIdleAnimation();
 
         BattleResultData _battleResultData = new();
         BattleLogicManagerV2.ExecuteCasterSkillOnUse( ref _battleResultData, attacker, attackTarget );
