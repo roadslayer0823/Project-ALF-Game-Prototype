@@ -694,7 +694,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 {
                     // 敵方是否"近距離遠程方"?
                     // YES
-                    if (playerOne.HasCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer ))
+                    if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer ))
                     {
                         _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CLPVF_L, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     }
