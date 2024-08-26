@@ -309,7 +309,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     //己方是否"近距離遠程方" ?
                     if (playerOne.HasCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer ))
                     {
-                        _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CLSVF_L, _playerOne_SubskillId, _playerOne_AnimationType );
+                        _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CLPVF_L, _playerOne_SubskillId, _playerOne_AnimationType );
                     }
                     else
                     {
@@ -696,7 +696,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     // YES
                     if (playerOne.HasCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer ))
                     {
-                        _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CLSVF_L, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                        _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CLPVF_L, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     }
                     // NO
                     else
