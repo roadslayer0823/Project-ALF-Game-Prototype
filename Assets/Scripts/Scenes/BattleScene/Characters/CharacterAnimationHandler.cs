@@ -214,6 +214,19 @@ public class CharacterAnimationHandler : MonoBehaviour
 
         FlipContainer(_animationData.IsFlipped);
 
+        for (int i = 0; i < 2; i++)
+        {
+            string _stateName = "Animation_" + i;
+            this.playerAnimatorOverrideController[ _stateName ] = null;
+            this.skillEffectFrontAnimatorOverrideController[ _stateName ] = null;
+            this.skillEffectBackAnimatorOverrideController[ _stateName ] = null;
+
+            string _parameterName = "animation_" + i;
+            this.playerAnimator.SetBool( _parameterName, false );
+            this.skillEffectFrontAnimator.SetBool( _parameterName, false );
+            this.skillEffectBackAnimator.SetBool( _parameterName, false );
+        }
+
         //action
         if(_animationData.ActionsArray != null)
         {
@@ -267,10 +280,14 @@ public class CharacterAnimationHandler : MonoBehaviour
         if(_animationData.AudiosArray != null)
         {
             string[] _audioArray = _animationData.AudiosArray;
-            _audioClip = Resources.Load<AudioClip>("Audios/Battle/Audios/" + _audioArray[0]);
-            AudioManager.Instance.PlaySoundEffect(_audioClip);
-            Debug.Log("_audioArray: " + _audioArray[0]);
-            audioLength += _audioClip.length;
+
+            if (_audioArray.Length > 0)
+            {
+                _audioClip = Resources.Load<AudioClip>( "Audios/Battle/Audios/" + _audioArray[ 0 ] );
+                AudioManager.Instance.PlaySoundEffect( _audioClip );
+                Debug.Log( "_audioArray: " + _audioArray[ 0 ] );
+                audioLength += _audioClip.length;
+            }
         }
         else
         {
@@ -319,7 +336,7 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void LoadAndPlayVisualEffect(bool isFlipped, string visualEffectName, string visualEffectAudioId)
     {
-        ResetAnimation();
+        //ResetAnimation();
 
         // visual effect
         FlipVisualEffectContainer(isFlipped);
@@ -348,6 +365,17 @@ public class CharacterAnimationHandler : MonoBehaviour
         {
             _spriteRenderers[ i ].sprite = null;
         }
+    }
+
+    public void GoToResetState()
+    {
+        Debug.Log( "Go To Reset State" );
+
+        this.playerAnimator.Play( "Reset" );
+        this.skillEffectBackAnimator.Play( "Reset" );
+        this.skillEffectFrontAnimator.Play( "Reset" );
+        this.visualEffectBackAnimator.Play( "Reset" );
+        this.visualEffectFrontAnimator.Play( "Reset" );
     }
 
     public void OnClick()

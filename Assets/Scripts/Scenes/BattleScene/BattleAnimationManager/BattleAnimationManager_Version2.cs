@@ -117,8 +117,8 @@ public partial class BattleAnimationManager : MonoBehaviour
                                                  + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _lead.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“先手方”</color>，"
                                                  + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviser.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“后手方”</color>。" );
 
-        _lead.PlayCharacterAnimation( "Idle" );
-        _improviser.PlayCharacterAnimation( "Idle" );
+        _lead.PlayIdleAnimation();
+        _improviser.PlayIdleAnimation();
 
         float _animationDuration = 0.0f;
         float _animationStartTime = 0.0f;
@@ -363,6 +363,9 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         this.targetCamera.transform.position = cameraPosition;
         this.targetCamera.orthographicSize = cameraOrthographicSize;
+
+        _playerCharacter.GetCharacterAnimationHandler().GoToResetState();
+        _enemyCharacter.GetCharacterAnimationHandler().GoToResetState();
 
         _lead.GetOpponentContainer().SetActive( true );
         _improviser.ShowCharacterObject();
@@ -826,6 +829,9 @@ public partial class BattleAnimationManager : MonoBehaviour
                 yield return null;
             }
 
+            _playerCharacter.GetCharacterAnimationHandler().GoToResetState();
+            _enemyCharacter.GetCharacterAnimationHandler().GoToResetState();
+
             _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
             _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
 
@@ -1053,10 +1059,10 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         attacker.GetOwnContainer().SetActive( false );
         attacker.ShowCharacterObject();
-        attacker.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
+        attacker.PlayIdleAnimation();
         attacker.Reset();
 
-        attackTarget.PlayCharacterAnimation( IDLE_ANIMATION_NAME );
+        attackTarget.PlayIdleAnimation();
         attackTarget.Reset();
 
         // ---------------------------------------------------------------

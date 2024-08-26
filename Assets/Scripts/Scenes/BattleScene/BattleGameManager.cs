@@ -51,8 +51,8 @@ public class BattleGameManager : MonoBehaviour
         this.battleUiManager.SetAllActive( false );
         //this.battleUiManager.HideEnemyCharacterInfoBox();
         this.battleAnimationManager.ChangeToBackgroundPartB( false );
-        this.playerCharacter.PlayCharacterAnimation( "Prepare" );
-        this.enemyCharacter.PlayCharacterAnimation( "Idle" );
+        this.playerCharacter.PlayPrepareAnimation();
+        this.enemyCharacter.PlayIdleAnimation();
     }
 
     void Start()
@@ -148,8 +148,8 @@ public class BattleGameManager : MonoBehaviour
         this.battleAnimationManager.ChangeToBackgroundPartB( false );
         this.playerContainer.SetActive( true );
         this.opponentContainer.SetActive( true );
-        this.playerCharacter.PlayCharacterAnimation( "Prepare" );
-        this.enemyCharacter.PlayCharacterAnimation( "Idle" );
+        this.playerCharacter.PlayPrepareAnimation();
+        this.enemyCharacter.PlayIdleAnimation();
     }
 
     public void OnPreparationPhaseStarted()
@@ -225,8 +225,8 @@ public class BattleGameManager : MonoBehaviour
 
         if (this.battleFlowManager_V2 == null)
         {
-            this.playerCharacter.PlayCharacterAnimation( "Idle" );
-            this.enemyCharacter.PlayCharacterAnimation( "Idle" );
+            this.playerCharacter.PlayIdleAnimation();
+            this.enemyCharacter.PlayIdleAnimation();
             this.battleUiManager.ShowATLSlotListPanel( this.battleFlowManager.GetCurrentRound().GetFlowATLs() );
         }
         else

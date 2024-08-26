@@ -420,6 +420,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
     private string[] ConvertStringToStringArray(string arrayString)
     {
+        if (arrayString == "[]")
+        {
+            return new string[ 0 ];
+        }
+
         arrayString = RemoveSquareBracket(arrayString);
 
         if (arrayString != "")
@@ -525,37 +530,52 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.passiveSkillList;
     }
 
-    public AnimationData GetAnimationData(AnimationData.CodeType codeType, string subskillId = "", int type = 0)
+    public AnimationData GetAnimationData( AnimationData.CodeType codeType, string subskillId = "", int type = 0 )
     {
-        for(int i = 0; i < animationList.Count; i++)
+        for (int i = 0; i < this.animationList.Count; i++)
         {
-            AnimationData animationData = animationList[i];
+            AnimationData _animationData = this.animationList[ i ];
 
-            if (codeType == animationData.Code)
+            if (codeType != _animationData.Code)
             {
-                if (String.IsNullOrEmpty(subskillId))
+                continue;
+            }
+
+            if (_animationData.SubskillIdsArray.Length > 0)
+            {
+                if (string.IsNullOrEmpty( subskillId ))
                 {
-                   if(type == 0)
-                   {
-                        return animationData;
-                   }
-                   else if (type == animationData.Type)
-                   {
-                        return animationData;
-                   }
+                    continue;
                 }
-                else if(type == animationData.Type)
+                else
                 {
-                    for(int j = 0; j < animationData.SubskillIdsArray.Length;j++)
+                    bool _hasMatchedSubskillId = false;
+
+                    for (int j = 0; j < _animationData.SubskillIdsArray.Length; j++)
                     {
-                        if (animationData.SubskillIdsArray[j] == subskillId)
+                        if (_animationData.SubskillIdsArray[ j ] == subskillId)
                         {
-                            return animationData;
+                            _hasMatchedSubskillId = true;
+                            break;
                         }
+                    }
+
+                    if (!_hasMatchedSubskillId)
+                    {
+                        continue;
                     }
                 }
             }
+
+            if (_animationData.Type != 0
+                && type != _animationData.Type)
+            {
+                continue;
+            }
+
+            return _animationData;
         }
+
         return null;
     }
 
