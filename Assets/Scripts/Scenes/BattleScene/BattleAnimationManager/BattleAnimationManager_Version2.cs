@@ -141,8 +141,8 @@ public partial class BattleAnimationManager : MonoBehaviour
         string _leadCharacterPartB = "";
         string _leadSkillEffectPartB = "";
 
-        _lead.GetSortingGroup().sortingOrder = 3;
-        _improviser.GetSortingGroup().sortingOrder = 1;
+        BringGameCharacterToFront( _lead );
+        BringGameCharacterToBack( _improviser );
 
         if (_lead.GetIsPlayer())
         {
@@ -157,7 +157,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                 _leadSkillEffectPartB = "Fireball_Part_B";
             }
 
-            ChangeToBackgroundPartA();
+            ChangeToBackgroundPartB();
         }
         else
         {
@@ -172,7 +172,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                 _leadSkillEffectPartB = "Fireball_Part_B";
             }
 
-            ChangeToBackgroundPartB();
+            ChangeToBackgroundPartA();
         }
 
         this.battleGameManager.GetBattleVisualEffectManager().TriggerAnimationSetDarkenPartA();
@@ -352,11 +352,11 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         if (_lead.GetIsPlayer())
         {
-            ChangeToBackgroundPartB();
+            ChangeToBackgroundPartA();
         }
         else
         {
-            ChangeToBackgroundPartA();
+            ChangeToBackgroundPartB();
         }
 
         this.battleGameManager.GetBattleVisualEffectManager().TriggerAnimationSetDarkenPartB();
@@ -447,7 +447,12 @@ public partial class BattleAnimationManager : MonoBehaviour
                 _needToWaitForOneSecond = true;
 
                 // "己方"播放已判定的[己方1秒演出]。
+                UpdateCameraView( _playerCharacter, _animationParameterDataForPlayerOne );
                 _playerCharacterAnimationHandler.LoadAndPlayAnimation( _extraAnimationParameterDataForPlayerOne );
+            }
+            else
+            {
+                _playerCharacter.HideCharacterObject();
             }
 
             // 判定後是否有[敵方1秒演出]?
@@ -456,7 +461,12 @@ public partial class BattleAnimationManager : MonoBehaviour
                 _needToWaitForOneSecond = true;
 
                 // "敵方"播放已判定的[敵方1秒演出]。
+                UpdateCameraView( _enemyCharacter, _extraAnimationParameterDataForPlayerTwo );
                 _enemyCharacterAnimationHandler.LoadAndPlayAnimation( _extraAnimationParameterDataForPlayerTwo );
+            }
+            else
+            {
+                _enemyCharacter.HideCharacterObject();
             }
 
             if (_improviser.GetCurrentSkill() != null)
@@ -485,7 +495,12 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             if (_animationParameterDataForPlayerOne != null)
             {
+                UpdateCameraView( _playerCharacter, _animationParameterDataForPlayerOne );
                 _playerCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerOne );
+            }
+            else
+            {
+                _playerCharacter.HideCharacterObject();
             }
 
             if (_visualEffectParameterDataForPlayerOne != null)
@@ -495,7 +510,12 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             if (_animationParameterDataForPlayerTwo != null)
             {
+                UpdateCameraView( _enemyCharacter, _animationParameterDataForPlayerTwo );
                 _enemyCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerTwo );
+            }
+            else
+            {
+                _enemyCharacter.HideCharacterObject();
             }
 
             if (_visualEffectParameterDataForPlayerTwo != null)
@@ -1184,5 +1204,37 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    private void UpdateCameraView( GameCharacter gameCharacter, AnimationParameterData animationParameterData )
+    {
+        string _codeTypeString = animationParameterData.GetCodeType().ToString();
+        PlayerCharacter _playerCharacter = this.battleGameManager.GetPlayerCharacter();
+        EnemyCharacter _enemyCharacter = this.battleGameManager.GetEnemyCharacter();
+
+        if (_codeTypeString.Contains( "camA" ))
+        {
+            ChangeToBackgroundPartA();
+            gameCharacter.ShowCharacterObject();
+            BringGameCharacterToFront( _playerCharacter );
+            BringGameCharacterToBack( _enemyCharacter );
+        }
+        else if (_codeTypeString.Contains( "camB" ))
+        {
+            ChangeToBackgroundPartB();
+            gameCharacter.ShowCharacterObject();
+            BringGameCharacterToBack( _playerCharacter );
+            BringGameCharacterToFront( _enemyCharacter );
+        }
+    }
+
+    private void BringGameCharacterToFront( GameCharacter gameCharacter )
+    {
+        gameCharacter.GetSortingGroup().sortingOrder = 3;
+    }
+
+    private void BringGameCharacterToBack( GameCharacter gameCharacter )
+    {
+        gameCharacter.GetSortingGroup().sortingOrder = 1;
     }
 }

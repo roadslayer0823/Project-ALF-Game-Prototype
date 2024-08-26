@@ -173,7 +173,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             if (_attacker.GetIsPlayer())
             {
                 AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
-                ChangeToBackgroundPartA();
+                ChangeToBackgroundPartB();
             }
             else
             {
@@ -183,7 +183,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                 _attackerSkillEffectPartA = "-";
                 _attackerSkillEffectPartB = "HittingEffect";
 
-                ChangeToBackgroundPartB();
+                ChangeToBackgroundPartA();
             }
 
             _attacker.GetOwnContainer().SetActive( true );
@@ -263,11 +263,11 @@ public partial class BattleAnimationManager : MonoBehaviour
             if (_attacker.GetIsPlayer())
             {
                 AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
-                ChangeToBackgroundPartB();
+                ChangeToBackgroundPartA();
             }
             else
             {
-                ChangeToBackgroundPartA();
+                ChangeToBackgroundPartB();
             }
 
             this.targetCamera.transform.position = cameraPosition;
@@ -805,7 +805,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         else
         {
             attacker.ShowCharacterObject();
-            ChangeToBackgroundPartA();
+            ChangeToBackgroundPartB();
             attacker.GetOpponentContainer().SetActive( false );
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
 
@@ -843,7 +843,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         if (attacker.GetIsPlayer())
         {
-            ChangeToBackgroundPartB();
+            ChangeToBackgroundPartA();
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
         }
         else
@@ -851,7 +851,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             _characterPartB = "Attack_Part_B";
             _skillEffectPartB = "HittingEffect";
 
-            ChangeToBackgroundPartA();
+            ChangeToBackgroundPartB();
         }
 
         attacker.GetOpponentContainer().SetActive( true );
@@ -878,11 +878,11 @@ public partial class BattleAnimationManager : MonoBehaviour
         if (attacker.GetIsPlayer())
         {
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
-            ChangeToBackgroundPartA();
+            ChangeToBackgroundPartB();
         }
         else
         {
-            ChangeToBackgroundPartB();
+            ChangeToBackgroundPartA();
         }
 
         yield return StartCoroutine( PlayShowingSkillInformation( attacker ) );
@@ -894,11 +894,11 @@ public partial class BattleAnimationManager : MonoBehaviour
         if (attacker.GetIsPlayer())
         {
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
-            ChangeToBackgroundPartB();
+            ChangeToBackgroundPartA();
         }
         else
         {
-            ChangeToBackgroundPartA();
+            ChangeToBackgroundPartB();
         }
 
         attacker.GetOpponentContainer().SetActive( true );
@@ -910,11 +910,11 @@ public partial class BattleAnimationManager : MonoBehaviour
         if (attacker.GetIsPlayer())
         {
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
-            ChangeToBackgroundPartA();
+            ChangeToBackgroundPartB();
         }
         else
         {
-            ChangeToBackgroundPartB();
+            ChangeToBackgroundPartA();
         }
 
         attacker.GetOpponentContainer().SetActive( false );
@@ -926,11 +926,11 @@ public partial class BattleAnimationManager : MonoBehaviour
         if (attacker.GetIsPlayer())
         {
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CAMERACHANGE);
-            ChangeToBackgroundPartB();
+            ChangeToBackgroundPartA();
         }
         else
         {
-            ChangeToBackgroundPartA();
+            ChangeToBackgroundPartB();
         }
 
         attacker.GetOpponentContainer().SetActive( true );

@@ -5940,8 +5940,8 @@ MonoBehaviour:
   skillTimeStopDarkness: 0.8
   isUsingGameCharacterV2: 0
   background: {fileID: 1003058115}
-  backgroundPartA: {fileID: 21300000, guid: 49cc91a6c0bc44c8e98869c1791c695b, type: 3}
-  backgroundPartB: {fileID: 21300000, guid: e9e644f3e70da42c8935b7dfbbf66d21, type: 3}
+  backgroundPartA: {fileID: 21300000, guid: e9e644f3e70da42c8935b7dfbbf66d21, type: 3}
+  backgroundPartB: {fileID: 21300000, guid: 49cc91a6c0bc44c8e98869c1791c695b, type: 3}
   skillEffectAnimator: {fileID: 538904519}
   skillEffectUiAnimator: {fileID: 118554126}
   deriveSkillAnimationHandler: {fileID: 2133711624}

@@ -5173,10 +5173,10 @@ MonoBehaviour:
   playerInputPlaceHolder: {fileID: 1282530397211866370}
   debugModeButtonLabel: {fileID: 8830624310851392781}
   validateInputWord: 53005f007300
-  backgroundOnePartA: {fileID: 21300000, guid: 49cc91a6c0bc44c8e98869c1791c695b, type: 3}
-  backgroundOnePartB: {fileID: 21300000, guid: e9e644f3e70da42c8935b7dfbbf66d21, type: 3}
-  backgroundTwoPartA: {fileID: 21300000, guid: d3a45c2eb5e1f4af78b3e2e6c1cab643, type: 3}
-  backgroundTwoPartB: {fileID: 21300000, guid: 200dc4ee900c94ad8926308325f1e1ed, type: 3}
+  backgroundOnePartA: {fileID: 21300000, guid: e9e644f3e70da42c8935b7dfbbf66d21, type: 3}
+  backgroundOnePartB: {fileID: 21300000, guid: 49cc91a6c0bc44c8e98869c1791c695b, type: 3}
+  backgroundTwoPartA: {fileID: 21300000, guid: 200dc4ee900c94ad8926308325f1e1ed, type: 3}
+  backgroundTwoPartB: {fileID: 21300000, guid: d3a45c2eb5e1f4af78b3e2e6c1cab643, type: 3}
 --- !u!223 &2971328728000285138
 Canvas:
   m_ObjectHideFlags: 0

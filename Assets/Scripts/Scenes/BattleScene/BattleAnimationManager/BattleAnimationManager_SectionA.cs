@@ -151,8 +151,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 //己方是否"無視遠程方" ?
                 if (playerOne.HasCharacterIdentityType( CharacterIdentityType.IgnoreRangedSkill ))
                 {
-                    _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CFW, _playerOne_SubskillId, _playerOne_AnimationType );
-                    _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AV1, _playerOne_SubskillId, _playerOne_AnimationType );
+                    _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CFW, _playerOne_SubskillId, _playerOne_AnimationType );
+                    _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AV1, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
 
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
@@ -167,13 +167,13 @@ public partial class BattleAnimationManager: MonoBehaviour
                     //己方是否"近距離遠程方" ?
                     if (playerOne.HasCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer ))
                     {
-                        _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CFWVF, _playerOne_SubskillId, _playerOne_AnimationType );
-                        _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AV1, _playerOne_SubskillId, _playerOne_AnimationType );
+                        _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CFWVF, _playerOne_SubskillId, _playerOne_AnimationType );
+                        _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AV1, _playerOne_SubskillId, _playerOne_AnimationType );
                     }
                     else
                     {
-                        _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CFW, _playerOne_SubskillId, _playerOne_AnimationType );
-                        _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AV1, _playerOne_SubskillId, _playerOne_AnimationType );
+                        _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CFW, _playerOne_SubskillId, _playerOne_AnimationType );
+                        _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AV1, _playerOne_SubskillId, _playerOne_AnimationType );
                     }
                 }
                 //己方是否"近距離遠程方" ?
@@ -225,8 +225,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                     //己方是否"速度負方" ? or 雙方已按下技能是否都是"遠程" ?
                     if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || ( _playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged ))
                     {
-                        _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType );
-                        _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_D_L, _playerOne_SubskillId, _playerOne_AnimationType );
+                        _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType );
+                        _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_D_L, _playerOne_SubskillId, _playerOne_AnimationType );
                     }
                     else
                     {
@@ -236,8 +236,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 //己方是否"速度負方" ?  or 雙方已按下技能是否都是"遠程" ?
                 else if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || ( _playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged ))
                 {
-                    _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType );
-                    _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_D_H, _playerOne_SubskillId, _playerOne_AnimationType );
+                    _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType );
+                    _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_D_H, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
                 else
                 {
@@ -496,8 +496,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 // YES
                 if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.IgnoreRangedSkill ))
                 {
-                    _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CFW, _playerTwo_SubskillId, _playerTwo_AnimationType );
-                    _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_AV1, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                    _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CFW, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                    _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_AV1, _playerTwo_SubskillId, _playerTwo_AnimationType );
                 }
                 // NO
                 // 已按下技能是否與上1ATL 相同&上1ATL播放了"v1演出"&有"v2演出"?
@@ -516,14 +516,14 @@ public partial class BattleAnimationManager: MonoBehaviour
                     // YES
                     if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer ))
                     {
-                        _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CFWVF, _playerTwo_SubskillId, _playerTwo_AnimationType );
-                        _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_AV1, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                        _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CFWVF, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                        _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_AV1, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     }
                     // NO
                     else
                     {
-                        _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CFW, _playerTwo_SubskillId, _playerTwo_AnimationType );
-                        _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_AV1, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                        _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CFW, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                        _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_AV1, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     }
                 }
                 // NO
@@ -589,8 +589,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                     // YES
                     if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || ( _playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged ))
                     {
-                        _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType );
-                        _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_D_L, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                        _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                        _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_D_L, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     }
                     // NO
                     else
@@ -602,8 +602,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 // YES
                 else if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || ( _playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged ))
                 {
-                    _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType );
-                    _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_D_H, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                    _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                    _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_D_H, _playerTwo_SubskillId, _playerTwo_AnimationType );
                 }
                 // NO
                 else
