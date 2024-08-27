@@ -438,6 +438,8 @@ public partial class BattleAnimationManager : MonoBehaviour
             var ( _visualEffectParameterDataForPlayerOne, _visualEffectParameterDataForPlayerTwo ) = DetermineVisualEffectForPartB( _playerCharacter, _enemyCharacter );
 
             this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtRecipient();
+            _playerCharacter.HideCharacterObject();
+            _enemyCharacter.HideCharacterObject();
 
             bool _needToWaitForOneSecond = false;
 
@@ -450,10 +452,6 @@ public partial class BattleAnimationManager : MonoBehaviour
                 UpdateCameraView( _playerCharacter, _animationParameterDataForPlayerOne );
                 _playerCharacterAnimationHandler.LoadAndPlayAnimation( _extraAnimationParameterDataForPlayerOne );
             }
-            else
-            {
-                _playerCharacter.HideCharacterObject();
-            }
 
             // 判定後是否有[敵方1秒演出]?
             if (_extraAnimationParameterDataForPlayerTwo != null)
@@ -464,10 +462,8 @@ public partial class BattleAnimationManager : MonoBehaviour
                 UpdateCameraView( _enemyCharacter, _extraAnimationParameterDataForPlayerTwo );
                 _enemyCharacterAnimationHandler.LoadAndPlayAnimation( _extraAnimationParameterDataForPlayerTwo );
             }
-            else
-            {
-                _enemyCharacter.HideCharacterObject();
-            }
+
+            UpdateGameCharacterVisibility();
 
             if (_improviser.GetCurrentSkill() != null)
             {
@@ -498,10 +494,6 @@ public partial class BattleAnimationManager : MonoBehaviour
                 UpdateCameraView( _playerCharacter, _animationParameterDataForPlayerOne );
                 _playerCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerOne );
             }
-            else
-            {
-                _playerCharacter.HideCharacterObject();
-            }
 
             if (_visualEffectParameterDataForPlayerOne != null)
             {
@@ -513,15 +505,13 @@ public partial class BattleAnimationManager : MonoBehaviour
                 UpdateCameraView( _enemyCharacter, _animationParameterDataForPlayerTwo );
                 _enemyCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerTwo );
             }
-            else
-            {
-                _enemyCharacter.HideCharacterObject();
-            }
 
             if (_visualEffectParameterDataForPlayerTwo != null)
             {
                 _enemyCharacterAnimationHandler.LoadAndPlayVisualEffect( _visualEffectParameterDataForPlayerTwo );
             }
+
+            UpdateGameCharacterVisibility();
 
             // 首0.3秒後，指令牌出現。
             LeanTween.delayedCall( 0.3f, () =>
@@ -849,9 +839,6 @@ public partial class BattleAnimationManager : MonoBehaviour
                 yield return null;
             }
 
-            _playerCharacter.GetCharacterAnimationHandler().GoToResetState();
-            _enemyCharacter.GetCharacterAnimationHandler().GoToResetState();
-
             _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
             _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
 
@@ -1077,13 +1064,23 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         // ---------------------------- Reset ----------------------------
 
-        attacker.GetOwnContainer().SetActive( false );
-        attacker.ShowCharacterObject();
-        attacker.PlayIdleAnimation();
-        attacker.Reset();
+        if (this.isUsingGameCharacterV2)
+        {
+            attacker.HideCharacterObject();
+            attackTarget.HideCharacterObject();
+        }
+        else
+        {
+            attacker.GetOwnContainer().SetActive( false );
+            attacker.ShowCharacterObject();
+            attacker.PlayIdleAnimation();
 
-        attackTarget.PlayIdleAnimation();
+            attackTarget.PlayIdleAnimation();
+        }
+
+        attacker.Reset();
         attackTarget.Reset();
+        UpdateGameCharacterVisibility();
 
         // ---------------------------------------------------------------
 
@@ -1225,6 +1222,21 @@ public partial class BattleAnimationManager : MonoBehaviour
             gameCharacter.ShowCharacterObject();
             BringGameCharacterToBack( _playerCharacter );
             BringGameCharacterToFront( _enemyCharacter );
+        }
+    }
+
+    public void UpdateGameCharacterVisibility()
+    {
+        PlayerCharacter _playerCharacter = this.battleGameManager.GetPlayerCharacter();
+        EnemyCharacter _enemyCharacter = this.battleGameManager.GetEnemyCharacter();
+
+        if (this.backgroundIndex == 1)
+        {
+            _enemyCharacter.ShowCharacterObject();
+        }
+        else if (this.backgroundIndex == 2)
+        {
+            _playerCharacter.ShowCharacterObject();
         }
     }
 

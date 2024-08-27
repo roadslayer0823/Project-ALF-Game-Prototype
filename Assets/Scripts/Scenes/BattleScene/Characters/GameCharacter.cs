@@ -337,8 +337,10 @@ public partial class GameCharacter : MonoBehaviour
 
     public void ShowCharacterObject()
     {
+        Debug.Log( "Show Character Object" );
+
         this.characterAnimator.gameObject.SetActive( true );
-        this.characterAnimator.Play( "Idle" );
+        //this.characterAnimator.Play( "Idle" );
 
         if (this.gameCharacterInfoBox != null)
         {
@@ -925,17 +927,29 @@ public partial class GameCharacter : MonoBehaviour
 
     public void PlayIdleAnimation()
     {
-        PlayCharacterAnimation( "Idle" );
-
-        if (this.characterAnimationHandler != null)
+        if (this.characterAnimationHandler == null)
         {
+            PlayCharacterAnimation( "Idle" );
+        }
+        else
+        {
+            this.characterAnimationHandler.GetPlayerAnimator().SetBool( "idle", true );
+            this.characterAnimationHandler.GoToResetState();
             this.characterAnimationHandler.FlipContainer( !this.isPlayer );
         }
     }
 
     public void PlayPrepareAnimation()
     {
-        PlayCharacterAnimation( "Prepare" );
+        if (this.characterAnimationHandler == null)
+        {
+            PlayCharacterAnimation( "Prepare" );
+        }
+        else
+        {
+            this.characterAnimationHandler.GetPlayerAnimator().SetBool( "prepare", true );
+            this.characterAnimationHandler.GoToResetState();
+        }
     }
 
 #endregion

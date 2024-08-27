@@ -398,4 +398,18 @@ public class CharacterAnimationHandler : MonoBehaviour
         this.codeType = this.dropdown.options[dropdown.value].text;
         Debug.Log("Selected type: " + codeType);
     }
+
+    public Animator GetPlayerAnimator()
+    {
+        return this.playerAnimator;
+    }
+
+    public void TriggerCallback( string parameterValue )
+    {
+        if (parameterValue == "reset")
+        {
+            this.playerAnimator.SetBool( "idle", false );
+            this.playerAnimator.SetBool( "prepare", false );
+        }
+    }
 }

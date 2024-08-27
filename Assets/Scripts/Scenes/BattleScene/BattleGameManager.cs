@@ -148,7 +148,9 @@ public class BattleGameManager : MonoBehaviour
         this.battleAnimationManager.ChangeToBackgroundPartA( false );
         this.playerContainer.SetActive( true );
         this.opponentContainer.SetActive( true );
+        this.playerCharacter.ShowCharacterObject();
         this.playerCharacter.PlayPrepareAnimation();
+        this.enemyCharacter.ShowCharacterObject();
         this.enemyCharacter.PlayIdleAnimation();
     }
 

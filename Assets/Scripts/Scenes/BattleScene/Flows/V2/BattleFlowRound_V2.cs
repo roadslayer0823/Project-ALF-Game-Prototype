@@ -64,8 +64,12 @@ public class BattleFlowRound_V2
 
             yield return battleFlowManager.StartCoroutine( this.battleFlowManager.RunBattleAnimation( this, _currentATL ) );
 
-            if (this.battleFlowManager.GetBattleGameManager().HasBattleEnded())
+            BattleGameManager _battleGameManager = this.battleFlowManager.GetBattleGameManager();
+            if (_battleGameManager.HasBattleEnded())
             {
+                _battleGameManager.GetPlayerCharacter().HideCharacterObject();
+                _battleGameManager.GetEnemyCharacter().HideCharacterObject();
+                _battleGameManager.GetBattleAnimationManager().UpdateGameCharacterVisibility();
                 yield break;
             }
 
@@ -93,7 +97,12 @@ public class BattleFlowRound_V2
     private IEnumerator RunRoundEnding()
     {
         //this.battleFlowManager.GetBattleGameManager().GetBattleUiManager().GetATLSlotListPanelV2().GoToFinish( 0.2f );
-        this.battleFlowManager.GetBattleGameManager().GetBattleUiManager().GetATLSlotListPanelV3().GoToFinish( 0.2f );
+
+        BattleGameManager _battleGameManager = this.battleFlowManager.GetBattleGameManager();
+        _battleGameManager.GetBattleUiManager().GetATLSlotListPanelV3().GoToFinish( 0.2f );
+        _battleGameManager.GetPlayerCharacter().PlayIdleAnimation();
+        _battleGameManager.GetEnemyCharacter().PlayIdleAnimation();
+
         yield return new WaitForSeconds( 0.3f );
 
         SetCurrentPhase( PhaseType.ExecutionDone );
