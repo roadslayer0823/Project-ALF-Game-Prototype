@@ -303,12 +303,14 @@ public class CharacterAnimationHandler : MonoBehaviour
     public class VisualEffectParameterData
     {
         private bool isFlipped = false;
+        private bool isSkillEffectFront = false;
         private string visualEffectName = "";
         private string visualEffectAudioId = "";
 
-        public VisualEffectParameterData (bool isFlipped, string visualEffectName, string visualEffectAudioId)
+        public VisualEffectParameterData (bool isFlipped, bool isSkillEffectFront, string visualEffectName, string visualEffectAudioId)
         {
             this.isFlipped = isFlipped;
+            this.isSkillEffectFront = isSkillEffectFront;
             this.visualEffectName = visualEffectName;
             this.visualEffectAudioId = visualEffectAudioId;
         }
@@ -316,6 +318,11 @@ public class CharacterAnimationHandler : MonoBehaviour
         public bool GetIsFlipped()
         {
             return this.isFlipped;
+        }
+
+        public bool GetIsSkillEffectFront()
+        {
+            return this.isSkillEffectFront;
         }
 
         public string GetVisualEffectName()
@@ -331,18 +338,25 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void LoadAndPlayVisualEffect(VisualEffectParameterData visualEffectParameterData)
     {
-        LoadAndPlayVisualEffect(visualEffectParameterData.GetIsFlipped(), visualEffectParameterData.GetVisualEffectName(), visualEffectParameterData.GetVisualEffectAudioId());
+        LoadAndPlayVisualEffect(visualEffectParameterData.GetIsFlipped(),visualEffectParameterData.GetIsSkillEffectFront(), visualEffectParameterData.GetVisualEffectName(), visualEffectParameterData.GetVisualEffectAudioId());
     }
 
-    public void LoadAndPlayVisualEffect(bool isFlipped, string visualEffectName, string visualEffectAudioId)
+    public void LoadAndPlayVisualEffect(bool isFlipped,bool isSkillEffectFront, string visualEffectName, string visualEffectAudioId)
     {
-        //ResetAnimation();
+        Debug.Log("visualEffectName: " + visualEffectName);
+        Debug.Log("visualEffectAudioId: " + visualEffectAudioId);
+
+        Animator _visualEffectAnimator = isSkillEffectFront ? this.visualEffectFrontAnimator : this.visualEffectBackAnimator;
 
         // visual effect
         FlipVisualEffectContainer(isFlipped);
         AnimationClip _animationClip = Resources.Load<AnimationClip>("Animations/Battle/VisualEffects/" + visualEffectName);
-        this.visualEffectBackAnimatorOverrideController["Animation_0"] = _animationClip;
 
+        ((isSkillEffectFront) ? this.visualEffectFrontAnimatorOverrideController
+                                        : this.visualEffectBackAnimatorOverrideController)
+                                        ["Animation_0"] = _animationClip;
+
+        _visualEffectAnimator.SetTrigger("trigger");
         AudioManager.Instance.PlaySoundEffect(visualEffectAudioId);
     }
 

@@ -1,4 +1,5 @@
 using UnityEngine;
+using static GameCharacter;
 using AnimationParameterData = CharacterAnimationHandler.AnimationParameterData;
 using VisualEffectParameterData = CharacterAnimationHandler.VisualEffectParameterData;
 
@@ -94,45 +95,44 @@ public partial class BattleAnimationManager : MonoBehaviour
         {
             // PART B場景是否 camA_bg
             // yes -> 水平反轉
-            _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(GetBackgroundIndex() == 1, "camB_drawef", "draw");
+            Debug.Log("camB_drawef");
+            _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(GetBackgroundIndex() == 1, true, "camB_drawef", "draw");
         }
 
         if (playerTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Deuce))
         {
-            _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(GetBackgroundIndex() == 1, "camB_drawef", "draw");
+            _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(GetBackgroundIndex() == 1, true, "camB_drawef", "draw");
         }
 
         /*
          * "強度負方"&"受擊方
             (同時有這2個身份)
          */
-        if (playerOne.HasCharacterIdentityTypes(new GameCharacter.CharacterIdentityType[]
-        {GameCharacter.CharacterIdentityType.StrengthLoser,GameCharacter.CharacterIdentityType.Recipient}))
+        if (playerOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StrengthLoser) && playerOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Recipient))
         {
             // PART B場景是否 camA_bg
             if (GetBackgroundIndex() == 1)
             {
-                _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(true, "camB_typeB_crashef", "crash");
+                _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(true, true, "camB_typeB_crashef", "crash");
             }
             // PART B場景為camB_bg
             else if (GetBackgroundIndex() == 2)
             {
-                _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, "camB_typeC_crashef", "crash");
+                _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, true, "camB_typeC_crashef", "crash");
             }
         }
 
-        if (playerTwo.HasCharacterIdentityTypes(new GameCharacter.CharacterIdentityType[]
-        { GameCharacter.CharacterIdentityType.StrengthLoser, GameCharacter.CharacterIdentityType.Recipient }))
+        if (playerTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StrengthLoser) && playerTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Recipient))
         {
             // PART B場景是否 camA_bg
             if (GetBackgroundIndex() == 1)
             {
-                _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, "camB_typeC_crashef", "crash");
+                _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, true, "camB_typeC_crashef", "crash");
             }
             // PART B場景為camB_bg
             else if (GetBackgroundIndex() == 2)
             {
-                _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(false, "camB_typeB_crashef", "crash");
+                _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(false, true, "camB_typeB_crashef", "crash");
             }
         }
 
@@ -141,8 +141,8 @@ public partial class BattleAnimationManager : MonoBehaviour
             或
             "負荷崩潰方"
          */
-        if (playerOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StressBreakStatusHolder) ||
-            playerOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StateBreakStatusHolder))
+        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { GameCharacter.CharacterIdentityType.StressBreakStatusHolder,
+            GameCharacter.CharacterIdentityType.StateBreakStatusHolder}))
         {
             /*
              * "己方"是否
@@ -152,47 +152,48 @@ public partial class BattleAnimationManager : MonoBehaviour
                 或
                 "速度強度負方"?
              */
-            if (playerOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NonResister) ||
-                playerOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser) ||
-                playerOne.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedStrengthLoser))
+            if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { GameCharacter.CharacterIdentityType.NonResister,
+                GameCharacter.CharacterIdentityType.SpeedLoser, GameCharacter.CharacterIdentityType.SpeedStrengthLoser }))
             {
-                _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, "camB_typeD_crashef", "crash");
+                _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, true, "camB_typeD_crashef", "crash");
+                Debug.Log("camB_typeD_crashef");
             }
             else
             {
                 // PART B場景是否 camA_bg
                 if (GetBackgroundIndex() == 1)
                 {
-                    _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(true, "camB_typeB_crashef", "crash");
+                    _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(true, true, "camB_typeB_crashef", "crash");
+                    Debug.Log("camB_typeB_crashef");
                 }
                 // PART B場景為camB_bg
                 else if (GetBackgroundIndex() == 2)
                 {
-                    _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, "camB_typeC_crashef", "crash");
+                    _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, true, "camB_typeC_crashef", "crash");
+                    Debug.Log("camB_typeC_crashef");
                 }
             }
         }
 
-        if (playerTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StressBreakStatusHolder) ||
-            playerTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StateBreakStatusHolder))
+        if (playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { GameCharacter.CharacterIdentityType.StressBreakStatusHolder,
+        GameCharacter.CharacterIdentityType.StateBreakStatusHolder }))
         {
-            if (playerTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.NonResister) ||
-                playerTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedLoser)  ||
-                playerTwo.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedStrengthLoser))
+            if (playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { GameCharacter.CharacterIdentityType.NonResister,
+            GameCharacter.CharacterIdentityType.SpeedLoser, GameCharacter.CharacterIdentityType.SpeedStrengthLoser }))
             {
-                _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, "camB_typeD_crashef", "crash");
+                _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, true, "camB_typeD_crashef", "crash");
             }
             else
             {
                 // PART B場景是否 camA_bg
                 if (GetBackgroundIndex() == 1)
                 {
-                    _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, "camB_typeC_crashef", "crash");
+                    _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, true, "camB_typeC_crashef", "crash");
                 }
                 // PART B場景為camB_bg
                 else if (GetBackgroundIndex() == 2)
                 {
-                    _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(false, "camB_typeB_crashef", "crash");
+                    _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(false, true, "camB_typeB_crashef", "crash");
                 }
             }
         }
