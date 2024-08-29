@@ -274,7 +274,23 @@ public class EnemyCharacter : GameCharacter
 
             case AnimationEvent.OnCategorizedPassiveTypeUpdated:
 
-                this.SetSelectedPassiveSkillCategoryType( new List<CategorizedPassiveSkillManager.CategoryType> { CategorizedPassiveSkillManager.CategoryType.Life, CategorizedPassiveSkillManager.CategoryType.State, CategorizedPassiveSkillManager.CategoryType.Stress }.GetRandomElement() );
+                List<CategorizedPassiveSkillManager.CategoryType> _categorizedPassiveTypeList = new List<CategorizedPassiveSkillManager.CategoryType> { CategorizedPassiveSkillManager.CategoryType.Life, CategorizedPassiveSkillManager.CategoryType.State, CategorizedPassiveSkillManager.CategoryType.Stress, CategorizedPassiveSkillManager.CategoryType.None };
+                EnemyDebugMenuPanel _enemyDebugMenuPanel = battleGameManager.GetBattleUiManager().GetEnemyDebugMenuPanel();
+
+                if (_enemyDebugMenuPanel.IsHealthPassiveSkillToggleOn())
+                {
+                    _categorizedPassiveTypeList.Remove(CategorizedPassiveSkillManager.CategoryType.Life);
+                }
+                if (_enemyDebugMenuPanel.IsStressPassiveSkillToggleOn())
+                {
+                    _categorizedPassiveTypeList.Remove(CategorizedPassiveSkillManager.CategoryType.Stress);
+                }
+                if (_enemyDebugMenuPanel.IsStatePassiveSkillToggleOn())
+                {
+                    _categorizedPassiveTypeList.Remove(CategorizedPassiveSkillManager.CategoryType.State);
+                }
+
+                this.SetSelectedPassiveSkillCategoryType(_categorizedPassiveTypeList.GetRandomElement());
 
                 break;
 
