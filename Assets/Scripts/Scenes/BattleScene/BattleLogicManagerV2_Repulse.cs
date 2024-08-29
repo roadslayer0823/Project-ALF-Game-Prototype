@@ -31,7 +31,7 @@ public partial class BattleLogicManagerV2
 
         // ----------------------------------------------------------------------------------------------------
 
-        _battleResultData = new();
+        _battleResultData = new BattleResultData( _battleResultData );
 
         // 進行"雙方"因[生命值對比]/[以太值對比]/[負荷值對比]造成已按下的技能的[強度]&[速度]的加算,
         // 參考"雙方"的：
@@ -59,7 +59,7 @@ public partial class BattleLogicManagerV2
         // 2.追風 / 9.行雲流水 / 10.負荷壓制
 
         // 角力追風發動&以太值負荷值結算
-        BattleResultData _battleResultDataOld = battleResultDataList[0];
+        BattleResultData _battleResultDataOld = battleResultDataList[ 0 ];
         CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref _battleResultDataOld, lead, improviser, false );
         CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref _battleResultDataOld, improviser, lead, false );
 

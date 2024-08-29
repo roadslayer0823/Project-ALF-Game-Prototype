@@ -330,7 +330,7 @@ public class EnemyCharacter : GameCharacter
         {
             Skill _skillData = this.nextAtlSkill.GetSkillData();
 
-            if (_skillData.skillType is SkillType.active)
+            if (_skillData.skillType is SkillType.active or SkillType.repulse)
             {
                 if (_skillTypeList.Contains( BattleSkillManager.SkillType.Active ))
                 {

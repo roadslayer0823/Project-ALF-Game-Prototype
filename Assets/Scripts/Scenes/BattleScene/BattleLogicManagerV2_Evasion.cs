@@ -28,7 +28,7 @@ public partial class BattleLogicManagerV2
 
         // ----------------------------------------------------------------------------------------------------
 
-        _battleResultData = new BattleResultData();
+        _battleResultData = new BattleResultData( _battleResultData );
 
         // 進行"雙方"因[生命值對比]/[以太值對比]/[負荷值對比]造成已按下的技能的[強度]&[速度]的加算,
         // 參考：

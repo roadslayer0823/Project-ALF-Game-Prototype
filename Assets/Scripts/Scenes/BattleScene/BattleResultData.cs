@@ -32,6 +32,14 @@ public class BattleResultData
 
 #endif
 
+    public BattleResultData( BattleResultData source = null )
+    {
+        if (source != null)
+        {
+            this.gameCharacterResultDataList = new List<BattleResultData_GameCharacter>( source.gameCharacterResultDataList );
+        }
+    }
+
     public class BattleResultData_GameCharacter
     {
         [NonSerialized] public GameCharacter gameCharacter = null;
