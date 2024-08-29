@@ -100,7 +100,7 @@ public class BattleFlowRound_V2
 
         BattleGameManager _battleGameManager = this.battleFlowManager.GetBattleGameManager();
         _battleGameManager.GetBattleUiManager().GetATLSlotListPanelV3().GoToFinish( 0.2f );
-        _battleGameManager.GetPlayerCharacter().PlayIdleAnimation();
+        _battleGameManager.GetPlayerCharacter().PlayPrepareAnimation();
         _battleGameManager.GetEnemyCharacter().PlayIdleAnimation();
 
         yield return new WaitForSeconds( 0.3f );

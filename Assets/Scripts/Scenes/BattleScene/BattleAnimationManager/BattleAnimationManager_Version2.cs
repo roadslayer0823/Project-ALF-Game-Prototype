@@ -32,6 +32,9 @@ public partial class BattleAnimationManager : MonoBehaviour
         _playerCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _playerCharacter ), this.battleGameManager );
         _enemyCharacter.ApplyBattleResultData( _battleResultData.GetGameCharacterResultData( _enemyCharacter ), this.battleGameManager );
 
+        _playerCharacter.PlayPrepareAnimation();
+        _enemyCharacter.PlayIdleAnimation();
+
         bool _isPlayingCombatCommandAnimation = true;
 
         // 是否有一方在[臨戰指令時間 (後)]/[反擊指令時間]/[近戰指令時間]/[近戰反擊指令時間]輸入主動/反擊/派生技能？
@@ -101,6 +104,8 @@ public partial class BattleAnimationManager : MonoBehaviour
             _playerCharacter.ResetAssignedSkill();
             _enemyCharacter.ResetAssignedSkill();
 
+            this.battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutOut();
+            yield return new WaitWhile( () => this.battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen() );
             BattleLogicManagerV2.OnTheEndOfATL( _gameCharacters );
 
             yield break;
@@ -116,9 +121,6 @@ public partial class BattleAnimationManager : MonoBehaviour
         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.SPECIAL_COLOR_CODE }>判定結果</color>為"
                                                  + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _lead.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“先手方”</color>，"
                                                  + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviser.GetCharacterName() }</color>成为<color={ BattleLog.SPECIAL_COLOR_CODE }>“后手方”</color>。" );
-
-        _lead.PlayIdleAnimation();
-        _improviser.PlayIdleAnimation();
 
         float _animationDuration = 0.0f;
         float _animationStartTime = 0.0f;
