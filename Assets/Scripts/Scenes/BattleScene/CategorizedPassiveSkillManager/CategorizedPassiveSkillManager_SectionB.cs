@@ -111,10 +111,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         battleResultData.AddResultLog("判定輕重受擊方");
         BattleResultData.BattleResultData_GameCharacter _recipient_BattleResultData = battleResultData.GetGameCharacterResultData(recipient);
         CategoryType _recipientCategoryType = recipient.GetSelectedPassiveSkillCategoryType();
-        bool _isAssaulter_IgnoreZhuiFengJiaoLi = assaulter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.IgnoreZhuiFengJiaoLi);
-        bool _isAssaulter_IgnoreZhuiFengJiaoLiJiAng = assaulter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.IgnoreZhuiFengJiaoLiJiAng);
-        bool _isRecipient_StrengthLoser = assaulter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.StrengthLoser);
-        bool _isRecipient_SpeedStrengthLoser = assaulter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SpeedStrengthLoser);
+        bool _isAssaulter_IgnoreZhuiFengJiaoLiOrIgnoreZhuiFengJiaoLiJiAng = assaulter.HasCharacterIdentityTypes(new GameCharacter.CharacterIdentityType[] { GameCharacter.CharacterIdentityType.IgnoreZhuiFengJiaoLi, GameCharacter.CharacterIdentityType.IgnoreZhuiFengJiaoLiJiAng });
+        bool _isRecipient_StrengthLoserOrSpeedStrengthLoser = recipient.HasCharacterIdentityTypes(new GameCharacter.CharacterIdentityType[] { GameCharacter.CharacterIdentityType.StrengthLoser, GameCharacter.CharacterIdentityType.SpeedStrengthLoser });
 
         // CASE A:"受擊方"當前流向為"生命流"
         if (_recipientCategoryType == CategoryType.Life)
@@ -134,7 +132,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     "無視追風角力方"/
                     "無視追風角力激昂方"?
                  */
-                if (_isAssaulter_IgnoreZhuiFengJiaoLi || _isAssaulter_IgnoreZhuiFengJiaoLiJiAng)
+                if (_isAssaulter_IgnoreZhuiFengJiaoLiOrIgnoreZhuiFengJiaoLiJiAng)
                 {
                     battleResultData.AddResultLog("\"直擊方\" 是 \"無視追風角力方\"/ \"無視追風角力激昂方\"");
                     /*
@@ -180,8 +178,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                  * "受擊方"是否
                     "強度負方"/"速度強度負方"?
                  */
-                if (_isAssaulter_IgnoreZhuiFengJiaoLi || _isAssaulter_IgnoreZhuiFengJiaoLiJiAng
-                    || _isRecipient_StrengthLoser || _isRecipient_SpeedStrengthLoser)
+                if (_isAssaulter_IgnoreZhuiFengJiaoLiOrIgnoreZhuiFengJiaoLiJiAng
+                    || _isRecipient_StrengthLoserOrSpeedStrengthLoser)
                 {
                     battleResultData.AddResultLog("\"直擊方\" 是 \"無視追風角力方\"/ \"無視追風角力激昂方\"");
                     battleResultData.AddResultLog("\"受擊方\" 是 \"強度負方\"/ \"速度強度負方\"");
@@ -229,7 +227,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     "無視追風角力方"/
                     "無視追風角力激昂方"?
                  */
-                if (_isAssaulter_IgnoreZhuiFengJiaoLi || _isAssaulter_IgnoreZhuiFengJiaoLiJiAng)
+                if (_isAssaulter_IgnoreZhuiFengJiaoLiOrIgnoreZhuiFengJiaoLiJiAng)
                 {
                     battleResultData.AddResultLog("\"直擊方\" 是 \"無視追風角力方\"/ \"無視追風角力激昂方\"");
                     /*"受擊方"是否
@@ -238,8 +236,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                         "受擊方"負荷等級
                         是否>=2?
                     */
-                    if ((_isRecipient_StrengthLoser || _isRecipient_SpeedStrengthLoser)
-                    &&_recipient_BattleResultData.gameCharacter.GetStressLevel() >= 2)
+                    if (_isRecipient_StrengthLoserOrSpeedStrengthLoser
+                    && recipient.GetStressLevel() >= 2)
                     {
                         battleResultData.AddResultLog("\"受擊方\" 是 \"速度負方\"/ \"速度強度負方\" 以及\n\"受擊方\"負荷等級 >=2");
                         /*
@@ -621,11 +619,11 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         else if (gameCharacterOne.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress)
         {
             int _stressLevel = _gameCharacterOne_BattleResultData.gameCharacter.GetStressLevel();
-            float _characterOneStressValueDamage = _gameCharacterOne_BattleResultData.gameCharacter.GetCurrentSkill() == null ? 0 :
-                                                   _gameCharacterOne_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().StressValueDamage;
-            float _characterTwoActualHealthDamage = _gameCharacterTwo_BattleResultData.gameCharacter.GetCurrentSkill() == null ? 0 :
-                                                    _gameCharacterTwo_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().AttackDamage;
-            float _maximumHealthPoint = _gameCharacterOne_BattleResultData.gameCharacter.GetMaximumHealthPoint();
+            float _characterOneStressValueDamage = gameCharacterOne.GetCurrentSkill() == null ? 0 :
+                                                   gameCharacterOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().StressValueDamage;
+            float _characterTwoActualHealthDamage = gameCharacterTwo.GetCurrentSkill() == null ? 0 :
+                                                    gameCharacterTwo.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().AttackDamage;
+            float _maximumHealthPoint = gameCharacterOne.GetMaximumHealthPoint();
 
             battleResultData.AddResultLog(characterOneName + " 發動流向效果B");
             battleResultData.AddResultLog("\"" + characterOneName + "\" 當前流向 \"負荷流\""+
@@ -777,7 +775,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
              
         float _pSL9_ShengMingYaZhi_value = 0.0f;
         float _psE8_JieLiu_PSE9_YouRen_value = 0.0f;
-        float _statePointCost = _improviser_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().StatePointCost;
+        float _statePointCost = improviser.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().StatePointCost;
        
         string _psE8_JieLiu_PSE9_YouRen_text = "後手方 沒能觸發 8.節流/9.游刃：";
 
@@ -962,7 +960,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         int _gameCharacterTwo_SkillStrength = _gameCharacterTwo_BattleResultData.currentSkillStrength;
         int _gameCharacterOne_SkillSpeed = _gameCharacterOne_BattleResultData.currentSkillSpeed;
         int _gameCharacterTwo_SkillSpeed = _gameCharacterTwo_BattleResultData.currentSkillSpeed;
-        int _gameCharacterOne_StressLevel = _gameCharacterOne_BattleResultData.gameCharacter.GetStressLevel();
+        int _gameCharacterOne_StressLevel = gameCharacterOne.GetStressLevel();
 
         bool _isTriggerOnce = false;
 
