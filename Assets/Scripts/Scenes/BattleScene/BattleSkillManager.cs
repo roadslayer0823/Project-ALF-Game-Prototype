@@ -83,9 +83,7 @@ public class BattleSkillManager : MonoBehaviour
                 {
                     if (gameCharacter.HasCharacterIdentityTypes( new CharacterIdentityType[]
                                                                  {
-                                                                     CharacterIdentityType.Lead,
                                                                      CharacterIdentityType.LightAssaulter,
-                                                                     CharacterIdentityType.Improviser,
                                                                      CharacterIdentityType.LightRecipient,
                                                                      CharacterIdentityType.HeavyAssaulter,
                                                                      CharacterIdentityType.Deuce
@@ -103,9 +101,7 @@ public class BattleSkillManager : MonoBehaviour
                 {
                     if (gameCharacter.HasCharacterIdentityTypes( new CharacterIdentityType[]
                                                                  {
-                                                                     CharacterIdentityType.Lead,
                                                                      CharacterIdentityType.LightAssaulter,
-                                                                     CharacterIdentityType.Improviser,
                                                                      CharacterIdentityType.LightRecipient,
                                                                      CharacterIdentityType.HeavyAssaulter
                                                                  }

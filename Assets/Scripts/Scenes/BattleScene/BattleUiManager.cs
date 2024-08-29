@@ -649,6 +649,8 @@ public class BattleUiManager : MonoBehaviour
         bool _hasActiveSkillType = _skillTypeList.Contains( SkillType.Active );
         bool _isAbleToRepulse = false;
 
+        Debug.Log( "Skill Type List = " + string.Join( " | ", _skillTypeList ) );
+
         Debug.Log( "UpdateSkillButtons" );
         if (_skillTypeList.Contains( SkillType.Repulse ))
         {
