@@ -777,7 +777,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
              
         float _pSL9_ShengMingYaZhi_value = 0.0f;
         float _psE8_JieLiu_PSE9_YouRen_value = 0.0f;
-        float _statePointCost = _lead_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().StatePointCost;
+        float _statePointCost = _improviser_BattleResultData.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().StatePointCost;
+       
         string _psE8_JieLiu_PSE9_YouRen_text = "後手方 沒能觸發 8.節流/9.游刃：";
 
         if (improviser.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL9, out PassiveSkill _passiveSkill) && _improviser_BattleResultData.lifeScore >= 100 && _isImproviserHealthMoreThanLead)
@@ -845,7 +846,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         _improviser_BattleResultData.temp_FinalTotalStatePointCost = Mathf.Round(_improviser_BattleResultData.temp_FinalTotalStatePointCost);
 
         battleResultData.AddResultLog("最終以太消耗：" + _improviser_BattleResultData.temp_FinalTotalStatePointCost);
-        battleResultData.AddGameCharacterResultData_StatePointCost(lead, _improviser_BattleResultData.temp_FinalTotalStatePointCost, out _);
+        battleResultData.AddGameCharacterResultData_StatePointCost(improviser, _improviser_BattleResultData.temp_FinalTotalStatePointCost, out _);
     }
 
     // 先手方使用技能時最大以太值結算
