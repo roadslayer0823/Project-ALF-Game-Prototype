@@ -20,6 +20,7 @@ public class GameObjectPositionHandler : MonoBehaviour
         float _aspectRatio = (float)Screen.width / (float)Screen.height;
         float _targetAspectRatio = AspectRatioX / AspectRatioY;
         float _18_divede_9 = 18 / 9;
+        float _22_divide_9 = 22 / 9;
 
         if(_aspectRatio > _targetAspectRatio + 0.001f)
         {
@@ -36,6 +37,16 @@ public class GameObjectPositionHandler : MonoBehaviour
             if (_aspectRatio == _18_divede_9)
             {
                 this.BattleLog.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2300);
+            }
+            else if (_aspectRatio >= _22_divide_9)
+            {
+                this.DebugContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2300);
+                this.BattleLog.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 3000);
+                this.PreparationSection.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2650);
+                this.ActiveSkillSlotList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2350);
+                this.SkillSelectionPanelList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2400);
+                this.UiMiddleFrame.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2450);
+                this.PassiveSkillSelectionList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2450);
             }
             else
             {
