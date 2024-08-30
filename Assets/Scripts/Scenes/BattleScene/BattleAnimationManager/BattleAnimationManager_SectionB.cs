@@ -199,6 +199,162 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
         return (_visualEffectParameterDataForPlayerOne, _visualEffectParameterDataForPlayerTwo);
     }
+
+    public (VisualEffectParameterData visualEffectParameterDataForPlayerOne, VisualEffectParameterData visualEffectParameterDataForPlayerTwo) DetermineVisualEffectForPartB_V2(GameCharacter playerOne, GameCharacter playerTwo)
+    {
+        VisualEffectParameterData _visualEffectParameterDataForPlayerOne = null;
+        VisualEffectParameterData _visualEffectParameterDataForPlayerTwo = null;
+
+        //"己方"&"平手方"&"先手方"
+        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Deuce, CharacterIdentityType.Lead }))
+        {
+            //"後手方"是否"抵抗成功方" ?
+            //YES -> Part B, NO -> 播放共同特效
+            if (!playerTwo.HasCharacterIdentityType(CharacterIdentityType.SuccessfulResister))
+            {
+                _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, true, "camB_drawef", "draw");
+            }
+        }
+
+        //"己方"&"平手方"&"後手方"
+        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Deuce, CharacterIdentityType.Improviser }))
+        {
+            _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(false, true, "camB_drawef", "draw");
+        }
+
+        //"己方"&"強度負方"&"受擊方"&"先手方"
+        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StrengthLoser, CharacterIdentityType.Recipient, CharacterIdentityType.Lead }))
+        {
+            //"己方"是否"速度強度負方" ?
+            //YES -> Part B, NO -> 播放共同特效
+            if (!playerOne.HasCharacterIdentityType(CharacterIdentityType.SpeedStrengthLoser))
+            {
+                //"己方"已按下技能是否"近戰" ?
+                if (playerOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
+                {
+                    _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, true, "camB_typeB_crashef", "crash");
+                }
+            }
+        }
+
+        //"己方"&"強度負方"&"受擊方"&"後手方"
+        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StrengthLoser, CharacterIdentityType.Recipient, CharacterIdentityType.Improviser }))
+        {
+            //"己方"是否"速度強度負方" ?
+            //YES -> Part B, NO -> 播放共同特效
+            if (!playerOne.HasCharacterIdentityType(CharacterIdentityType.SpeedStrengthLoser))
+            {
+                //"己方"已按下技能是否"近戰" ?
+                if (playerOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
+                {
+                    _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, true, "camB_typeC_crashef", "crash");
+                }
+            }
+        }
+
+        //"敵方"&"強度負方"&"受擊方"&"先手方"
+        if (playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StrengthLoser, CharacterIdentityType.Recipient, CharacterIdentityType.Lead }))
+        {
+            //"敵方"是否"速度強度負方" ?
+            //YES -> Part B, NO -> 播放共同特效
+            if (!playerTwo.HasCharacterIdentityType(CharacterIdentityType.SpeedStrengthLoser))
+            {
+                //"敵方"已按下技能是否"近戰" ?
+                if (playerTwo.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
+                {
+                    _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, true, "camB_typeB_crashef", "crash");
+                }
+            }
+        }
+
+        //"敵方"&"強度負方"&"受擊方"&"後手方"
+        if (playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StrengthLoser, CharacterIdentityType.Recipient, CharacterIdentityType.Improviser }))
+        {
+            //"敵方"是否"速度強度負方" ?
+            //YES -> Part B, NO -> 播放共同特效
+            if (!playerTwo.HasCharacterIdentityType(CharacterIdentityType.SpeedStrengthLoser))
+            {
+                //"敵方"已按下技能是否"近戰" ?
+                if (playerTwo.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
+                {
+                    _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, true, "camB_typeC_crashef", "crash");
+                }
+            }
+        }
+
+        //"己方"&"以太崩潰方"&"先手方"
+        //"己方"&"負荷崩潰方"&"先手方"
+        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StateBreakStatusHolder, CharacterIdentityType.Lead}) ||
+            playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StressBreakStatusHolder, CharacterIdentityType.Lead }))
+        {
+            //"己方"是否"未能抵抗方"或"速度負方"或"速度強度負方" ?
+            if (playerOne.HasCharacterIdentityType(CharacterIdentityType.NonResister) ||
+                playerOne.HasCharacterIdentityType(CharacterIdentityType.SpeedLoser) ||
+                playerOne.HasCharacterIdentityType(CharacterIdentityType.SpeedStrengthLoser))
+            {
+                _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, true, "camB_typeD_crashef", "crash");
+            }
+            else
+            {
+                _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, true, "camB_typeB_crashef", "crash");
+            }
+        }
+
+        //"己方"&"以太崩潰方"&"後手方"
+        //"己方"&"負荷崩潰方"&"後手方"
+        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StateBreakStatusHolder, CharacterIdentityType.Improviser }) ||
+            playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StressBreakStatusHolder, CharacterIdentityType.Improviser }))
+        {
+            //"己方"是否"未能抵抗方"或"速度負方"或"速度強度負方" ?
+            if (playerOne.HasCharacterIdentityType(CharacterIdentityType.NonResister) ||
+                playerOne.HasCharacterIdentityType(CharacterIdentityType.SpeedLoser) ||
+                playerOne.HasCharacterIdentityType(CharacterIdentityType.SpeedStrengthLoser))
+            {
+                _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, true, "camB_typeD_crashef", "crash");
+            }
+            else
+            {
+                _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, true, "camB_typeC_crashef", "crash");
+            }
+        }
+
+        //"敵方"&"以太崩潰方"&"先手方"
+        //"敵方"&"負荷崩潰方"&"先手方"
+        if (playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StateBreakStatusHolder, CharacterIdentityType.Lead }) ||
+            playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StressBreakStatusHolder, CharacterIdentityType.Lead }))
+        {
+            //"敵方"是否"未能抵抗方"或"速度負方"或"速度強度負方" ?
+            if (playerTwo.HasCharacterIdentityType(CharacterIdentityType.NonResister) ||
+                playerTwo.HasCharacterIdentityType(CharacterIdentityType.SpeedLoser) ||
+                playerTwo.HasCharacterIdentityType(CharacterIdentityType.SpeedStrengthLoser))
+            {
+                _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, true, "camB_typeD_crashef", "crash");
+            }
+            else
+            {
+                _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData(false, true, "camB_typeB_crashef", "crash");
+            }
+        }
+
+        //"敵方"&"以太崩潰方"&"後手方"
+        //"敵方"&"負荷崩潰方"&"後手方"
+        if (playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StateBreakStatusHolder, CharacterIdentityType.Improviser }) ||
+            playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StressBreakStatusHolder, CharacterIdentityType.Improviser }))
+        {
+            //"敵方"是否"未能抵抗方"或"速度負方"或"速度強度負方" ?
+            if (playerTwo.HasCharacterIdentityType(CharacterIdentityType.NonResister) ||
+                playerTwo.HasCharacterIdentityType(CharacterIdentityType.SpeedLoser) ||
+                playerTwo.HasCharacterIdentityType(CharacterIdentityType.SpeedStrengthLoser))
+            {
+                _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, true, "camB_typeD_crashef", "crash");
+            }
+            else
+            {
+                _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(true, true, "camB_typeC_crashef", "crash");
+            }
+        }
+        return (_visualEffectParameterDataForPlayerOne, _visualEffectParameterDataForPlayerTwo);
+    }
 }
 
  
