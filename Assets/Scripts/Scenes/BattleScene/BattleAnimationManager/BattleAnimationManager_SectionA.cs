@@ -152,7 +152,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 if (playerOne.HasCharacterIdentityType( CharacterIdentityType.IgnoreRangedSkill ))
                 {
                     _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CFW, _playerOne_SubskillId, _playerOne_AnimationType );
-                    _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AV1, _playerOne_SubskillId, _playerOne_AnimationType );
+                    _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AVC, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
 
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
