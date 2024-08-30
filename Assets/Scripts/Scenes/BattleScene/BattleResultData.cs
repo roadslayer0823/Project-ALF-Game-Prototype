@@ -36,7 +36,14 @@ public class BattleResultData
     {
         if (source != null)
         {
-            this.gameCharacterResultDataList = new List<BattleResultData_GameCharacter>( source.gameCharacterResultDataList );
+            this.gameCharacterResultDataList = new List<BattleResultData_GameCharacter>();
+
+            for (int i = 0; i < source.gameCharacterResultDataList.Count; i++)
+            {
+                BattleResultData_GameCharacter _gameCharacterBattleResultData = new( source.gameCharacterResultDataList[ i ] );
+                _gameCharacterBattleResultData.gameCharacter.SetTemporaryBattleResultData( _gameCharacterBattleResultData );
+                this.gameCharacterResultDataList.Add( _gameCharacterBattleResultData );
+            }
         }
     }
 
@@ -124,6 +131,46 @@ public class BattleResultData
         [NonSerialized] public string lastJsonString = "";
 
 #endif
+
+        public BattleResultData_GameCharacter( BattleResultData_GameCharacter source = null )
+        {
+            if (source != null)
+            {
+                this.gameCharacter = source.gameCharacter;
+
+                this.gameCharacterName = source.gameCharacterName;
+                this.maximumHealthPoint = source.maximumHealthPoint;
+                this.currentHealthPoint = source.currentHealthPoint;
+                this.virtualHealthPoint = source.virtualHealthPoint;
+                this.originalStatePoint = source.originalStatePoint;
+                this.maximumStatePoint = source.maximumStatePoint;
+                this.minimumStatePoint = source.minimumStatePoint;
+                this.currentStatePoint = source.currentStatePoint;
+                this.maximumStressValue = source.maximumStressValue;
+                this.currentStressValue = source.currentStressValue;
+
+                this.currentSkillStrength = source.currentSkillStrength;
+                this.currentSkillSpeed = source.currentSkillSpeed;
+
+                this.stateBreakStatusRemainingATLs = source.stateBreakStatusRemainingATLs;
+                this.stressBreakStatusRemainingATLs = source.stressBreakStatusRemainingATLs;
+                this.numberOfEnteringIntoBreakStatus = source.numberOfEnteringIntoBreakStatus;
+
+                this.energyMarkerRemainingATLs = source.energyMarkerRemainingATLs;
+
+                this.lifeScore = source.lifeScore;
+                this.lifeScoreTarget = source.lifeScoreTarget;
+                this.lifeCyclePoint = source.lifeCyclePoint;
+                this.stressScore = source.stressScore;
+                this.stressLevel = source.stressLevel;
+
+#if ALF_DEBUG
+
+                this.lastJsonString = JsonConvert.SerializeObject( this );
+
+#endif
+            }
+        }
 
         public bool IsInBreakStatus()
         {
