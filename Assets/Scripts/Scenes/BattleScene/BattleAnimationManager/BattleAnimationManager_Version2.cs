@@ -439,7 +439,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             // 判定PART B共用特效
             var ( _visualEffectParameterDataForPlayerOne, _visualEffectParameterDataForPlayerTwo ) = DetermineVisualEffectForPartB( _playerCharacter, _enemyCharacter );
 
-            this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtRecipient();
+            this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtRecipient(_playerCharacter.HasCharacterIdentityType(CharacterIdentityType.Recipient));
             _playerCharacter.HideCharacterObject();
             _enemyCharacter.HideCharacterObject();
 
@@ -511,6 +511,13 @@ public partial class BattleAnimationManager : MonoBehaviour
             if (_visualEffectParameterDataForPlayerTwo != null)
             {
                 _enemyCharacterAnimationHandler.LoadAndPlayVisualEffect( _visualEffectParameterDataForPlayerTwo );
+            }
+
+            CharacterSkill _improviserCurrentSkill = _improviser.GetCurrentSkill();
+            if ((_leadCurrentSkill != null && _leadCurrentSkill.GetSkillData().skillType == Skill.SkillType.repulse)
+                || (_improviserCurrentSkill != null && _improviserCurrentSkill.GetSkillData().skillType == Skill.SkillType.repulse))
+            {
+                this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAnimationAtRepulse();
             }
 
             UpdateGameCharacterVisibility();
