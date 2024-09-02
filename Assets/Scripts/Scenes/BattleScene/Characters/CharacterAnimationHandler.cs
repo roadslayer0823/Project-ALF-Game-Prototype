@@ -363,6 +363,11 @@ public class CharacterAnimationHandler : MonoBehaviour
     public void ResetAnimation()
     {
         Debug.Log( "Reset Animation" );
+        this.playerAnimator.StopPlayback();
+        this.skillEffectBackAnimator.StopPlayback();
+        this.skillEffectFrontAnimator.StopPlayback();
+        this.visualEffectBackAnimator.StopPlayback();
+        this.visualEffectFrontAnimator.StopPlayback();
 
         Transform[] _transforms = this.GetComponentsInChildren<Transform>();
         for (int i = 0; i < _transforms.Length; i++)
