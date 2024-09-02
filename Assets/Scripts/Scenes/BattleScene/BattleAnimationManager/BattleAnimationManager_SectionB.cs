@@ -206,7 +206,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         VisualEffectParameterData _visualEffectParameterDataForPlayerTwo = null;
 
         //"己方"&"平手方"&"先手方"
-        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Deuce, CharacterIdentityType.Lead }))
+        if (playerOne.HasCharacterIdentityType(CharacterIdentityType.Deuce) && playerOne.HasCharacterIdentityType(CharacterIdentityType.Lead))
         {
             //"後手方"是否"抵抗成功方" ?
             //YES -> Part B, NO -> 播放共同特效
@@ -217,13 +217,14 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
 
         //"己方"&"平手方"&"後手方"
-        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Deuce, CharacterIdentityType.Improviser }))
+        if (playerOne.HasCharacterIdentityType(CharacterIdentityType.Deuce) && playerOne.HasCharacterIdentityType(CharacterIdentityType.Improviser))
         {
             _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData(false, true, "camB_drawef", "draw");
         }
 
         //"己方"&"強度負方"&"受擊方"&"先手方"
-        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StrengthLoser, CharacterIdentityType.Recipient, CharacterIdentityType.Lead }))
+        if (playerOne.HasCharacterIdentityType(CharacterIdentityType.SpeedLoser) && playerOne.HasCharacterIdentityType(CharacterIdentityType.Recipient) &&
+            playerOne.HasCharacterIdentityType(CharacterIdentityType.Lead))
         {
             //"己方"是否"速度強度負方" ?
             //YES -> Part B, NO -> 播放共同特效
@@ -238,7 +239,8 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
 
         //"己方"&"強度負方"&"受擊方"&"後手方"
-        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StrengthLoser, CharacterIdentityType.Recipient, CharacterIdentityType.Improviser }))
+        if (playerOne.HasCharacterIdentityType(CharacterIdentityType.SpeedLoser) && playerOne.HasCharacterIdentityType(CharacterIdentityType.Recipient) &&
+            playerOne.HasCharacterIdentityType(CharacterIdentityType.Improviser))
         {
             //"己方"是否"速度強度負方" ?
             //YES -> Part B, NO -> 播放共同特效
@@ -253,7 +255,8 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
 
         //"敵方"&"強度負方"&"受擊方"&"先手方"
-        if (playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StrengthLoser, CharacterIdentityType.Recipient, CharacterIdentityType.Lead }))
+        if (playerTwo.HasCharacterIdentityType(CharacterIdentityType.SpeedLoser) && playerTwo.HasCharacterIdentityType(CharacterIdentityType.Recipient) &&
+            playerTwo.HasCharacterIdentityType(CharacterIdentityType.Lead))
         {
             //"敵方"是否"速度強度負方" ?
             //YES -> Part B, NO -> 播放共同特效
@@ -268,7 +271,8 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
 
         //"敵方"&"強度負方"&"受擊方"&"後手方"
-        if (playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StrengthLoser, CharacterIdentityType.Recipient, CharacterIdentityType.Improviser }))
+        if (playerTwo.HasCharacterIdentityType(CharacterIdentityType.SpeedLoser) && playerTwo.HasCharacterIdentityType(CharacterIdentityType.Recipient) &&
+            playerTwo.HasCharacterIdentityType(CharacterIdentityType.Improviser))
         {
             //"敵方"是否"速度強度負方" ?
             //YES -> Part B, NO -> 播放共同特效
@@ -284,8 +288,8 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         //"己方"&"以太崩潰方"&"先手方"
         //"己方"&"負荷崩潰方"&"先手方"
-        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StateBreakStatusHolder, CharacterIdentityType.Lead}) ||
-            playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StressBreakStatusHolder, CharacterIdentityType.Lead }))
+        if ((playerOne.HasCharacterIdentityType(CharacterIdentityType.StateBreakStatusHolder) && playerOne.HasCharacterIdentityType(CharacterIdentityType.Lead)) ||
+            (playerOne.HasCharacterIdentityType(CharacterIdentityType.StressBreakStatusHolder) && playerOne.HasCharacterIdentityType(CharacterIdentityType.Lead)))
         {
             //"己方"是否"未能抵抗方"或"速度負方"或"速度強度負方" ?
             if (playerOne.HasCharacterIdentityType(CharacterIdentityType.NonResister) ||
@@ -302,8 +306,8 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         //"己方"&"以太崩潰方"&"後手方"
         //"己方"&"負荷崩潰方"&"後手方"
-        if (playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StateBreakStatusHolder, CharacterIdentityType.Improviser }) ||
-            playerOne.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StressBreakStatusHolder, CharacterIdentityType.Improviser }))
+        if ((playerOne.HasCharacterIdentityType(CharacterIdentityType.StateBreakStatusHolder) && playerOne.HasCharacterIdentityType(CharacterIdentityType.Improviser)) ||
+            (playerOne.HasCharacterIdentityType(CharacterIdentityType.StressBreakStatusHolder) && playerOne.HasCharacterIdentityType(CharacterIdentityType.Improviser)))
         {
             //"己方"是否"未能抵抗方"或"速度負方"或"速度強度負方" ?
             if (playerOne.HasCharacterIdentityType(CharacterIdentityType.NonResister) ||
@@ -320,8 +324,8 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         //"敵方"&"以太崩潰方"&"先手方"
         //"敵方"&"負荷崩潰方"&"先手方"
-        if (playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StateBreakStatusHolder, CharacterIdentityType.Lead }) ||
-            playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StressBreakStatusHolder, CharacterIdentityType.Lead }))
+        if ((playerTwo.HasCharacterIdentityType(CharacterIdentityType.StateBreakStatusHolder) && playerTwo.HasCharacterIdentityType(CharacterIdentityType.Lead)) ||
+            (playerTwo.HasCharacterIdentityType(CharacterIdentityType.StressBreakStatusHolder) && playerTwo.HasCharacterIdentityType(CharacterIdentityType.Lead)))
         {
             //"敵方"是否"未能抵抗方"或"速度負方"或"速度強度負方" ?
             if (playerTwo.HasCharacterIdentityType(CharacterIdentityType.NonResister) ||
@@ -338,8 +342,8 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         //"敵方"&"以太崩潰方"&"後手方"
         //"敵方"&"負荷崩潰方"&"後手方"
-        if (playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StateBreakStatusHolder, CharacterIdentityType.Improviser }) ||
-            playerTwo.HasCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.StressBreakStatusHolder, CharacterIdentityType.Improviser }))
+        if ((playerTwo.HasCharacterIdentityType(CharacterIdentityType.StateBreakStatusHolder) && playerTwo.HasCharacterIdentityType(CharacterIdentityType.Improviser)) ||
+            (playerTwo.HasCharacterIdentityType(CharacterIdentityType.StressBreakStatusHolder) && playerTwo.HasCharacterIdentityType(CharacterIdentityType.Improviser)))
         {
             //"敵方"是否"未能抵抗方"或"速度負方"或"速度強度負方" ?
             if (playerTwo.HasCharacterIdentityType(CharacterIdentityType.NonResister) ||

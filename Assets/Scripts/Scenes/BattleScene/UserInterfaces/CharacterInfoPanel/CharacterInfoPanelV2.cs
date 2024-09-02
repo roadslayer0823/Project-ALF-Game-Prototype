@@ -382,7 +382,6 @@ public class CharacterInfoPanelV2 : MonoBehaviour
             targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOffset, this.defaultTextOffset);
             targetText.fontMaterial.SetFloat(ShaderUtilities.ID_GlowOuter, this.defaultTextOuter);
             yield return StartCoroutine(MaxStatePointAnimation(targetText, newScale, currentScale, this.defaultTextOffset, this.targetTextOffset, this.defaultTextOuter, this.targetTextOuter, this.maxStatePointDuration));
-            yield return new WaitForEndOfFrame();
         }
     }
 
