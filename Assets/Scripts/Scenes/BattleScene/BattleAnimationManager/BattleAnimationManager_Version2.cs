@@ -136,9 +136,15 @@ public partial class BattleAnimationManager : MonoBehaviour
             _improviser
         };
 
+        // 先手方的技能
         CharacterSkill _leadCurrentSkill = _lead.GetCurrentSkill();
         Subskill _leadSubskillData = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData();
         RangeType _leadRangeType = _lead.GetCurrentSkillRangeType();
+
+        // 後手方的技能
+        CharacterSkill _improviserCurrentSkill = null;
+        Skill.SkillType _improviserSkillType = Skill.SkillType.none;
+        Subskill _improviserSubskillData = null;
 
         string _leadCharacterPartB = "";
         string _leadSkillEffectPartB = "";
@@ -307,7 +313,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             // “後手方”發動技能。
             _improviser.ApplyAssignedSkillAsCurrentSkill();
 
-            CharacterSkill _improviserCurrentSkill = _improviser.GetCurrentSkill();
+            _improviserCurrentSkill = _improviser.GetCurrentSkill();
             if (_improviserCurrentSkill != null)
             {
                 RangeType _improviserCurrentSkillRange = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
@@ -377,26 +383,29 @@ public partial class BattleAnimationManager : MonoBehaviour
             _improviser.Reset();
         }
 
-        Skill.SkillType _attackTargetSkillType = Skill.SkillType.none;
-        Subskill _attackTargetSubskillData = null;
-
         // “後手方”有已按下的技能。
-        if (_improviser.GetCurrentSkill() != null)
+        if (_improviserCurrentSkill != null)
         {
-            _attackTargetSkillType = _improviser.GetCurrentSkill().GetSkillData().skillType;
-            _attackTargetSubskillData = _improviser.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+            _improviserSkillType = _improviserCurrentSkill.GetSkillData().skillType;
+            _improviserSubskillData = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData();
 
-            if (_attackTargetSkillType == Skill.SkillType.repulse)
+            if (_improviserSkillType == Skill.SkillType.repulse)
             {
                 _lead.SetCurrentAttacker( _improviser );
             }
-            else if (_attackTargetSkillType == Skill.SkillType.backend)
+            else if (_improviserSkillType == Skill.SkillType.backend)
             {
-                if (!_attackTargetSubskillData.IsDefendingSkill && !_attackTargetSubskillData.IsEvadingSkill)
+                if (!_improviserSubskillData.IsDefendingSkill && !_improviserSubskillData.IsEvadingSkill)
                 {
-                    _attackTargetSkillType = Skill.SkillType.none;
+                    _improviserSkillType = Skill.SkillType.none;
                 }
             }
+
+            BattleLog.Instance.AddOnScreenBattleLog(
+                $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviser.GetCharacterName() }</color>使出了"
+                + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviserSubskillData.DisplayName }</color>"
+                + $" （{ TerminologyManager.GetSkillInformationText( _improviserCurrentSkill ) }）。"
+                );
         }
 
         // 進入 Part B 階段。
@@ -404,12 +413,9 @@ public partial class BattleAnimationManager : MonoBehaviour
         _skillCountdownTimeStartTime = Time.time;
         _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
-        StartPartB( out List<BattleResultData> _battleResultDataList, _lead, _improviser, out GameCharacter _winner, out GameCharacter _loser );
-
-        for (int i = 0; i < _battleResultDataList.Count; i++)
-        {
-            ShowBattleLog( _battleResultDataList[ i ].GetResultLogList() );
-        }
+        StartPartB( out BattleResultData _battleResultDataOne, out BattleResultData _battleResultDataTwo, _lead, _improviser, out GameCharacter _winner, out GameCharacter _loser );
+        ShowBattleLog( _battleResultDataOne.GetResultLogList() );
+        ShowBattleLog( _battleResultDataTwo.GetResultLogList() );
 
         if (_winner != null)
         {
@@ -467,9 +473,9 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             UpdateGameCharacterVisibility();
 
-            if (_improviser.GetCurrentSkill() != null)
+            if (_improviserCurrentSkill != null)
             {
-                _improviserBattleResultData = _battleResultDataList[ 0 ].GetGameCharacterResultData( _improviser );
+                _improviserBattleResultData = _battleResultDataOne.GetGameCharacterResultData( _improviser );
 
                 // 結算演出時機 A - 在 Part B 的第 0.1 秒起播放。
                 // 參數：以太值消耗、以太值提升
@@ -513,7 +519,6 @@ public partial class BattleAnimationManager : MonoBehaviour
                 _enemyCharacterAnimationHandler.LoadAndPlayVisualEffect( _visualEffectParameterDataForPlayerTwo );
             }
 
-            CharacterSkill _improviserCurrentSkill = _improviser.GetCurrentSkill();
             if ((_leadCurrentSkill != null && _leadCurrentSkill.GetSkillData().skillType == Skill.SkillType.repulse)
                 || (_improviserCurrentSkill != null && _improviserCurrentSkill.GetSkillData().skillType == Skill.SkillType.repulse))
             {
@@ -564,7 +569,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                 ShowCommandPhaseCountdownTimer( true, _playerCharacter, 1.3f );
             } );
 
-            _battleResultData = _battleResultDataList[ 1 ];
+            _battleResultData = _battleResultDataTwo;
             _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
             _improviserBattleResultData = _battleResultData.GetGameCharacterResultData( _improviser );
 
@@ -640,7 +645,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             }
             else
             {
-                switch ( _attackTargetSkillType )
+                switch ( _improviserSkillType )
                 {
                     case Skill.SkillType.none:
 
@@ -778,12 +783,12 @@ public partial class BattleAnimationManager : MonoBehaviour
                         string _attackTargetBackendSkillAnimationCharacterPartA = "";
                         string _attackTargetBackendSkillAnimationSkillEffectPartA = "";
 
-                        if (_attackTargetSubskillData.IsDefendingSkill)
+                        if (_improviserSubskillData.IsDefendingSkill)
                         {
                             _attackTargetBackendSkillAnimationCharacterPartA = "Defend";
                             _attackTargetBackendSkillAnimationSkillEffectPartA = "Defend";
                         }
-                        else if (_attackTargetSubskillData.IsEvadingSkill)
+                        else if (_improviserSubskillData.IsEvadingSkill)
                         {
                             _attackTargetBackendSkillAnimationCharacterPartA = "Evade";
                             _attackTargetBackendSkillAnimationSkillEffectPartA = NO_ANIMATION;
@@ -815,11 +820,11 @@ public partial class BattleAnimationManager : MonoBehaviour
                             //_attackTarget.SetSkillCountdownTime( _skillCountdownTime );
                             //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefenseWin_Cutoff ) );
 
-                            if (_attackTargetSubskillData.IsDefendingSkill)
+                            if (_improviserSubskillData.IsDefendingSkill)
                             {
                                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DEFEND );
                             }
-                            else if (_attackTargetSubskillData.IsEvadingSkill)
+                            else if (_improviserSubskillData.IsEvadingSkill)
                             {
                                 AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DODGE );
                             }
@@ -1017,15 +1022,14 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
     }
 
-    private void StartPartB( out List<BattleResultData> battleResultDataList,
+    private void StartPartB( out BattleResultData battleResultDataOne, out BattleResultData battleResultDataTwo,
                              GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser )
     {
         // ------------------------------ 判定 Part B 結果及結算 ------------------------------
 
         //battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser );
 
-        battleResultDataList = new List<BattleResultData>();
-        BattleLogicManagerV2.DetermineResultForPartB( ref battleResultDataList, lead, improviser, true );
+        BattleLogicManagerV2.DetermineResultForPartB( out battleResultDataOne, out battleResultDataTwo, lead, improviser, true );
 
         GameCharacter[] _gameCharacters = new GameCharacter[] { lead, improviser };
 
@@ -1130,10 +1134,10 @@ public partial class BattleAnimationManager : MonoBehaviour
     //private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber,
     private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV3 atlSlotListPanel, int atlNumber )
     {
-        StartPartB( out List<BattleResultData> _battleResultDataList,
+        StartPartB( out BattleResultData _battleResultDataOne, out BattleResultData _battleResultDataTwo,
                     attacker, attackTarget, out GameCharacter _, out GameCharacter _ );
 
-        BattleResultData _battleResultData = _battleResultDataList[ 1 ];
+        BattleResultData _battleResultData = _battleResultDataTwo;
         BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( attacker );
         BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( attackTarget );
         ShowBattleLog( _battleResultData.GetResultLogList() );

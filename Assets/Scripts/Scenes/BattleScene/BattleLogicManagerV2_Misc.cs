@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
+using RangeType = DatabaseManager.Subskill.RangeType;
 
 public partial class BattleLogicManagerV2
 {
@@ -69,7 +70,7 @@ public partial class BattleLogicManagerV2
             {
                 // "己方"是否"後手方"&"對方"已按下技能為"遠程"?
                 if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.Improviser )
-                    && opponent.GetCurrentSkillRangeType() == DatabaseManager.Subskill.RangeType.ranged)
+                    && opponent.GetCurrentSkillRangeType() == RangeType.ranged)
                 {
                     // "己方"得到"直擊方"&"速度勝方"&"勝利機制優惠方"&"無視遠程方"
                     gameCharacter.AddCharacterIdentityTypes( new CharacterIdentityType[]

@@ -1,13 +1,10 @@
-using System.Collections.Generic;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
 
 public partial class BattleLogicManagerV2
 {
     // 頁面：判定回避成敗及結算
-    private static void DetermineResultForEvasion( ref List<BattleResultData> battleResultDataList, GameCharacter lead, GameCharacter improviser )
+    private static void DetermineResultForEvasion( ref BattleResultData battleResultDataOne, out BattleResultData battleResultDataTwo, GameCharacter lead, GameCharacter improviser )
     {
-        BattleResultData _battleResultData = new();
-
         // ----------------------------------------------------------------------------------------------------
 
         // 進行"後手方"[當前以太值]的結算,
@@ -20,15 +17,13 @@ public partial class BattleLogicManagerV2
         // 以太流
         // 8.節流 / 9.游刃
         // 後手方使用技能時當前以太值結算
-        CategorizedPassiveSkillManager.CalculateImproviserCurrentStatePoint( ref _battleResultData, lead, improviser );
-
-        battleResultDataList.Add( _battleResultData );
+        CategorizedPassiveSkillManager.CalculateImproviserCurrentStatePoint( ref battleResultDataOne, lead, improviser );
 
         // ----------------------------------------------------------------------------------------------------
 
         // ----------------------------------------------------------------------------------------------------
 
-        _battleResultData = new BattleResultData( _battleResultData );
+        battleResultDataTwo = new BattleResultData( battleResultDataOne );
 
         // 進行"雙方"因[生命值對比]/[以太值對比]/[負荷值對比]造成已按下的技能的[強度]&[速度]的加算,
         // 參考：
@@ -38,19 +33,19 @@ public partial class BattleLogicManagerV2
         // 負荷流
         // 7.借風
         // 對比條件的技能強度/速度結算
-        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref _battleResultData, lead, improviser );
-        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref _battleResultData, improviser, lead );
+        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref battleResultDataTwo, lead, improviser );
+        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref battleResultDataTwo, improviser, lead );
 
         // 進行"雙方"因[看破技能]造成已按下的技能的[強度]&[速度]的加算,
         // 參考：
         // "雙方"的[看破技能]中,鎖定的"看破ID"與對方的已按下技能的"看破ID"是否相同&[看破技能]的儲蓄值
         // 看破技能影響的技能強度/速度增加
-        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref _battleResultData, lead, improviser );
-        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref _battleResultData, improviser, lead );
+        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref battleResultDataTwo, lead, improviser );
+        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref battleResultDataTwo, improviser, lead );
 
         GameCharacter[] _gameCharacters = new GameCharacter[] { lead, improviser };
-        BattleResultData.BattleResultData_GameCharacter _lead_BattleResultData = _battleResultData.GetGameCharacterResultData( lead );
-        BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = _battleResultData.GetGameCharacterResultData( improviser );
+        BattleResultData.BattleResultData_GameCharacter _lead_BattleResultData = battleResultDataTwo.GetGameCharacterResultData( lead );
+        BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = battleResultDataTwo.GetGameCharacterResultData( improviser );
 
         // --------------- Case A: 先手方的攻擊速度 > 後手方的回避速度。 ---------------
         // 後手方回避失敗
@@ -70,14 +65,14 @@ public partial class BattleLogicManagerV2
             // 5.破流;
             // "受擊方"的[能量殘響]
             // 重受擊方當前以太值結算
-            CategorizedPassiveSkillManager.CalculateHeavyRecipientStatePoint(ref _battleResultData, assaulter: lead, recipient: improviser, false);
+            CategorizedPassiveSkillManager.CalculateHeavyRecipientStatePoint( ref battleResultDataTwo, assaulter: lead, recipient: improviser, false );
 
             // "重受擊方"有沒有因"重直擊方"的以太傷害導致當前以太值<0?
             // YES
             if (_improviser_BattleResultData.currentStatePoint < 0.0f)
             {
-                _battleResultData.AddGameCharacterResultData_StateBreakStatus(improviser, 1, out _);
-                improviser.AddCharacterIdentityType(CharacterIdentityType.StateBreakStatusHolder);
+                battleResultDataTwo.AddGameCharacterResultData_StateBreakStatus( improviser, 1, out _ );
+                improviser.AddCharacterIdentityType( CharacterIdentityType.StateBreakStatusHolder );
             }
 
             // 進行"重受擊方"[生命值]的結算,
@@ -91,7 +86,7 @@ public partial class BattleLogicManagerV2
             // 以太流
             // 12.逆風
             // 重受擊方生命值結算
-            CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult(ref _battleResultData, assaulter: lead, recipient: improviser);
+            CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult( ref battleResultDataTwo, assaulter: lead, recipient: improviser );
         }
 
         // ------------------------------------------------------------------------
@@ -122,7 +117,7 @@ public partial class BattleLogicManagerV2
             // 負荷流
             // 11.負荷壓制2
             // 抵抗成功方回避當前以太值結算
-            CategorizedPassiveSkillManager.SuccessfulResisterEvadeCurrentStatePointFirstCalculation(ref _battleResultData, successfulResister: improviser, deuce: lead);
+            CategorizedPassiveSkillManager.SuccessfulResisterEvadeCurrentStatePointFirstCalculation( ref battleResultDataTwo, successfulResister: improviser, deuce: lead );
 
             // "抵抗成功方"的當前流向是否"以太流"&"回避壓力消耗">=20?
             // YES
@@ -135,7 +130,7 @@ public partial class BattleLogicManagerV2
                 // 以太流
                 // 4.擴流 / 12.逆風
                 // 抵抗成功方回避最大以太值結算
-                CategorizedPassiveSkillManager.SuccessfulResisterEvadeMaximumStatePointCalculation(ref _battleResultData, improviser);
+                CategorizedPassiveSkillManager.SuccessfulResisterEvadeMaximumStatePointCalculation( ref battleResultDataTwo, improviser );
 
                 // 進行"抵抗成功方"[當前以太值]的結算,
                 // 參考：
@@ -143,14 +138,14 @@ public partial class BattleLogicManagerV2
                 // 以太流
                 // 3.回流 / 12.逆風
                 // 抵抗成功方回避當前以太值2次結算
-                CategorizedPassiveSkillManager.SuccessfulResisterEvadeCurrentStatePointSecondCalculation(ref _battleResultData, improviser);
+                CategorizedPassiveSkillManager.SuccessfulResisterEvadeCurrentStatePointSecondCalculation( ref battleResultDataTwo, improviser );
             }
         }
         // -------------------------------------------------------------------------
 
         // "雙方"的技能持續效果更新(例如:能量殘響)
-        BattleLogicManagerV2.UpdateSkillContinuousEffects( ref _battleResultData, lead );
-        BattleLogicManagerV2.UpdateSkillContinuousEffects( ref _battleResultData, improviser );
+        BattleLogicManagerV2.UpdateSkillContinuousEffects( ref battleResultDataTwo, lead );
+        BattleLogicManagerV2.UpdateSkillContinuousEffects( ref battleResultDataTwo, improviser );
 
         // 玩家1：lead
         // 玩家2：improviser
@@ -165,7 +160,7 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref _battleResultData, lead, improviser, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultDataTwo, lead, improviser, false );
 
         // ------------------------------------------------------------------
 
@@ -179,11 +174,9 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref _battleResultData, improviser, lead, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultDataTwo, improviser, lead, false );
 
         // ------------------------------------------------------------------
-
-        battleResultDataList.Add( _battleResultData );
 
         // ----------------------------------------------------------------------------------------------------
     }

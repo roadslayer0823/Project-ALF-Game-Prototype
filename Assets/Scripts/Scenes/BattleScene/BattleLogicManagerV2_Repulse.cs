@@ -1,37 +1,32 @@
-using System.Collections.Generic;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
 using RangeType = DatabaseManager.Subskill.RangeType;
 
 public partial class BattleLogicManagerV2
 {
     // 頁面：判定迎擊結果及結算
-    private static void DetermineResultForRepulse( ref List<BattleResultData> battleResultDataList, GameCharacter lead, GameCharacter improviser )
+    private static void DetermineResultForRepulse( ref BattleResultData battleResultDataOne, out BattleResultData battleResultDataTwo, GameCharacter lead, GameCharacter improviser )
     {
-        BattleResultData _battleResultData = new();
-
         // ----------------------------------------------------------------------------------------------------
 
         // 後手方使用技能時當前以太值結算
-        CategorizedPassiveSkillManager.CalculateImproviserCurrentStatePoint( ref _battleResultData, lead, improviser );
+        CategorizedPassiveSkillManager.CalculateImproviserCurrentStatePoint( ref battleResultDataOne, lead, improviser );
 
         // 後手方使用技能時最大以太值結算
-        CategorizedPassiveSkillManager.CalculateMaximumStatePoint( ref _battleResultData, improviser );
+        CategorizedPassiveSkillManager.CalculateMaximumStatePoint( ref battleResultDataOne, improviser );
 
         // "後手方"的當前流向是否"以太流"?
         // YES
         if (improviser.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.State)
         {
             // 後手方使用技能時當前以太值第2次結算
-            CategorizedPassiveSkillManager.RunCurrentStatePointSecondTimeCalculation( ref _battleResultData, improviser );
+            CategorizedPassiveSkillManager.RunCurrentStatePointSecondTimeCalculation( ref battleResultDataOne, improviser );
         }
 
-        battleResultDataList.Add( _battleResultData );
-
         // ----------------------------------------------------------------------------------------------------
 
         // ----------------------------------------------------------------------------------------------------
 
-        _battleResultData = new BattleResultData( _battleResultData );
+        battleResultDataTwo = new BattleResultData( battleResultDataOne );
 
         // 進行"雙方"因[生命值對比]/[以太值對比]/[負荷值對比]造成已按下的技能的[強度]&[速度]的加算,
         // 參考"雙方"的：
@@ -40,14 +35,14 @@ public partial class BattleLogicManagerV2
         // 負荷流
         // 7.借風
         // 對比條件的技能強度/速度結算
-        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref _battleResultData, lead, improviser );
-        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref _battleResultData, improviser, lead );
+        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref battleResultDataTwo, lead, improviser );
+        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref battleResultDataTwo, improviser, lead );
 
         // 進行"雙方"因[看破技能]造成已按下的技能的[強度]&[速度]的加算,
         // 參考"雙方"的[看破技能]中,鎖定的"看破ID"與對方的已按下技能的"看破ID"是否相同&[看破技能]的儲蓄值
         // 看破技能影響的技能強度/速度增加
-        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref _battleResultData, lead, improviser );
-        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref _battleResultData, improviser, lead );
+        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref battleResultDataTwo, lead, improviser );
+        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref battleResultDataTwo, improviser, lead );
 
         // 進行"雙方"因[強度對比]/[速度對比]造成已按下的技能的[強度]&[速度]的加算/[當前以太值]的結算/[負荷值]的結算,
         // 參考"雙方"的：
@@ -59,118 +54,165 @@ public partial class BattleLogicManagerV2
         // 2.追風 / 9.行雲流水 / 10.負荷壓制
 
         // 角力追風發動&以太值負荷值結算
-        BattleResultData _battleResultDataOld = battleResultDataList[ 0 ];
+        BattleResultData _battleResultDataOld = battleResultDataOne;
         CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref _battleResultDataOld, lead, improviser, false );
         CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref _battleResultDataOld, improviser, lead, false );
 
         // 雙方技能強度速度最終結算
         CategorizedPassiveSkillManager.CalculateBothCharacterStrengthSpeed( ref _battleResultDataOld, lead, improviser );
 
+        /*
         // 對比條件的技能效果
-        BattleLogicManagerV2.CompareConditionallyForSkillEffects( ref _battleResultData, lead, improviser );
-        BattleLogicManagerV2.CompareConditionallyForSkillEffects( ref _battleResultData, improviser, lead );
+        BattleLogicManagerV2.CompareConditionallyForSkillEffects( ref battleResultDataTwo, lead, improviser );
+        BattleLogicManagerV2.CompareConditionallyForSkillEffects( ref battleResultDataTwo, improviser, lead );
+        */
 
         GameCharacter[] _gameCharacters = new GameCharacter[] { lead, improviser };
-        BattleResultData.BattleResultData_GameCharacter _lead_BattleResultData = _battleResultData.GetGameCharacterResultData( lead );
-        BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = _battleResultData.GetGameCharacterResultData( improviser );
+        BattleResultData.BattleResultData_GameCharacter _lead_BattleResultData = battleResultDataTwo.GetGameCharacterResultData( lead );
+        BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = battleResultDataTwo.GetGameCharacterResultData( improviser );
 
-        // Case A: 先手方的攻擊速度 <= 後手方的迎擊速度。
-        if (_lead_BattleResultData.currentSkillSpeed <= _improviser_BattleResultData.currentSkillSpeed)
+        bool _hasResult = false;
+
+        // ------------------------------ 頁面：雷光突襲效果 ------------------------------
+
+        CharacterSkill _improviserCurrentSkill = improviser.GetCurrentSkill();
+
+        // "後手方"已按下技能是否有"雷光突襲"?
+        // YES
+        if (_improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().Id == "S18_1")
         {
-            // 雙方的強度是否相同?
+            // "後手方"當前以太值是否>"先手方"當前以太值?
             // YES
-            if (_lead_BattleResultData.currentSkillStrength == _improviser_BattleResultData.currentSkillStrength)
+            if (_improviser_BattleResultData.currentStatePoint > _lead_BattleResultData.currentStatePoint)
             {
-                // 雙方得到"平手方"
-                lead.AddCharacterIdentityType( CharacterIdentityType.Deuce );
-                improviser.AddCharacterIdentityType( CharacterIdentityType.Deuce );
-
-                // 進入“迎擊平手方結算”頁面。
-                BattleLogicManagerV2.SettleRepulseResultForDraw( ref _battleResultData, lead, improviser );
-            }
-            // NO
-            else
-            {
-                // 強度較高一方得到"強度勝方"&"勝利優惠機制方"
-                // 強度較低一方得到"強度負方"
-                if (_lead_BattleResultData.currentSkillStrength > _improviser_BattleResultData.currentSkillStrength)
-                {
-                    lead.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.StrengthWinner, CharacterIdentityType.WinningBenefitHolder } );
-                    improviser.AddCharacterIdentityType( CharacterIdentityType.StrengthLoser );
-                }
-                else
-                {
-                    improviser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.StrengthWinner, CharacterIdentityType.WinningBenefitHolder } );
-                    lead.AddCharacterIdentityType( CharacterIdentityType.StrengthLoser );
-                }
-
-                GameCharacter _strengthWinner = BattleLogicManagerV2.GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.StrengthWinner, _gameCharacters );
-                GameCharacter _strengthLoser = BattleLogicManagerV2.GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.StrengthLoser, _gameCharacters );
-
-                // "強度勝方"的已按下技能是否"遠程"?
+                // "先手方"已按下技能為"遠程"?
                 // YES
-                if (_strengthWinner.GetCurrentSkillRangeType() == RangeType.ranged)
+                if (lead.GetCurrentSkillRangeType() == RangeType.ranged)
                 {
-                    // "強度勝方"得到"直擊方"
-                    _strengthWinner.AddCharacterIdentityType( CharacterIdentityType.Assaulter );
+                    // "後手方"得到"直擊方"&"速度勝方"&"勝利機制優惠方"&"無視遠程方"
+                    improviser.AddCharacterIdentityTypes( new CharacterIdentityType[]
+                    {
+                        CharacterIdentityType.Assaulter,
+                        CharacterIdentityType.SpeedWinner,
+                        CharacterIdentityType.WinningBenefitHolder,
+                        CharacterIdentityType.IgnoreRangedSkill
+                    } );
 
-                    // "強度負方"得到"受擊方"
-                    _strengthLoser.AddCharacterIdentityType( CharacterIdentityType.Recipient );
+                    // "先手方"得到"受擊方"&"速度負方"
+                    lead.AddCharacterIdentityTypes( new CharacterIdentityType[]
+                    {
+                        CharacterIdentityType.Recipient,
+                        CharacterIdentityType.SpeedLoser
+                    } );
 
                     // 進入“迎擊直擊方受擊方結算”頁面。
-                    BattleLogicManagerV2.SettleRepulseResultForAssaulterAndRecipient( ref _battleResultData, assaulter: _strengthWinner, recipient: _strengthLoser );
+                    BattleLogicManagerV2.SettleRepulseResultForAssaulterAndRecipient( ref battleResultDataTwo, assaulter: improviser, recipient: lead );
+
+                    _hasResult = true;
+                }
+            }
+        }
+
+        // -----------------------------------------------------------------------------
+
+        if (!_hasResult)
+        {
+            // Case A: 先手方的攻擊速度 <= 後手方的迎擊速度。
+            if (_lead_BattleResultData.currentSkillSpeed <= _improviser_BattleResultData.currentSkillSpeed)
+            {
+                // 雙方的強度是否相同?
+                // YES
+                if (_lead_BattleResultData.currentSkillStrength == _improviser_BattleResultData.currentSkillStrength)
+                {
+                    // 雙方得到"平手方"
+                    lead.AddCharacterIdentityType( CharacterIdentityType.Deuce );
+                    improviser.AddCharacterIdentityType( CharacterIdentityType.Deuce );
+
+                    // 進入“迎擊平手方結算”頁面。
+                    BattleLogicManagerV2.SettleRepulseResultForDraw( ref battleResultDataTwo, lead, improviser );
                 }
                 // NO
                 else
                 {
-                    // "強度負方"的已按下技能是否"遠程"?
-                    // YES
-                    if (_strengthLoser.GetCurrentSkillRangeType() == RangeType.ranged)
+                    // 強度較高一方得到"強度勝方"&"勝利優惠機制方"
+                    // 強度較低一方得到"強度負方"
+                    if (_lead_BattleResultData.currentSkillStrength > _improviser_BattleResultData.currentSkillStrength)
                     {
-                        // 雙方得到"平手方"
-                        lead.AddCharacterIdentityType( CharacterIdentityType.Deuce );
-                        improviser.AddCharacterIdentityType( CharacterIdentityType.Deuce );
+                        lead.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.StrengthWinner, CharacterIdentityType.WinningBenefitHolder } );
+                        improviser.AddCharacterIdentityType( CharacterIdentityType.StrengthLoser );
+                    }
+                    else
+                    {
+                        improviser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.StrengthWinner, CharacterIdentityType.WinningBenefitHolder } );
+                        lead.AddCharacterIdentityType( CharacterIdentityType.StrengthLoser );
+                    }
 
-                        // 進入“迎擊平手方結算”頁面。
-                        BattleLogicManagerV2.SettleRepulseResultForDraw( ref _battleResultData, lead, improviser );
+                    GameCharacter _strengthWinner = BattleLogicManagerV2.GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.StrengthWinner, _gameCharacters );
+                    GameCharacter _strengthLoser = BattleLogicManagerV2.GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.StrengthLoser, _gameCharacters );
+
+                    // "強度勝方"的已按下技能是否"遠程"?
+                    // YES
+                    if (_strengthWinner.GetCurrentSkillRangeType() == RangeType.ranged)
+                    {
+                        // "強度勝方"得到"直擊方"
+                        _strengthWinner.AddCharacterIdentityType( CharacterIdentityType.Assaulter );
+
+                        // "強度負方"得到"受擊方"
+                        _strengthLoser.AddCharacterIdentityType( CharacterIdentityType.Recipient );
+
+                        // 進入“迎擊直擊方受擊方結算”頁面。
+                        BattleLogicManagerV2.SettleRepulseResultForAssaulterAndRecipient( ref battleResultDataTwo, assaulter: _strengthWinner, recipient: _strengthLoser );
+                    }
+                    // NO
+                    else
+                    {
+                        // "強度負方"的已按下技能是否"遠程"?
+                        // YES
+                        if (_strengthLoser.GetCurrentSkillRangeType() == RangeType.ranged)
+                        {
+                            // 雙方得到"平手方"
+                            lead.AddCharacterIdentityType( CharacterIdentityType.Deuce );
+                            improviser.AddCharacterIdentityType( CharacterIdentityType.Deuce );
+
+                            // 進入“迎擊平手方結算”頁面。
+                            BattleLogicManagerV2.SettleRepulseResultForDraw( ref battleResultDataTwo, lead, improviser );
+                        }
                     }
                 }
             }
-        }
-        // Case B: 先手方的攻擊速度 > 後手方的迎擊速度。
-        else if (_lead_BattleResultData.currentSkillSpeed > _improviser_BattleResultData.currentSkillSpeed)
-        {
-            // 速度較高一方得到"速度勝方"&"勝利優惠機制方"&"直擊方"
-            lead.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedWinner, CharacterIdentityType.WinningBenefitHolder, CharacterIdentityType.Assaulter } );
-
-            // 速度較低一方得到"速度負方"
-            improviser.AddCharacterIdentityType( CharacterIdentityType.SpeedLoser );
-
-            GameCharacter _speedWinner = BattleLogicManagerV2.GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.SpeedWinner, _gameCharacters );
-            GameCharacter _speedLoser = BattleLogicManagerV2.GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.SpeedLoser, _gameCharacters );
-
-            BattleResultData.BattleResultData_GameCharacter _speedWinner_BattleResultData = _battleResultData.GetGameCharacterResultData( _speedWinner );
-            BattleResultData.BattleResultData_GameCharacter _speedLoser_BattleResultData = _battleResultData.GetGameCharacterResultData( _speedLoser );
-
-            // "速度勝方"的強度是否大於"速度負方"?
-            // YES
-            if (_speedWinner_BattleResultData.currentSkillStrength > _speedLoser_BattleResultData.currentSkillStrength)
+            // Case B: 先手方的攻擊速度 > 後手方的迎擊速度。
+            else if (_lead_BattleResultData.currentSkillSpeed > _improviser_BattleResultData.currentSkillSpeed)
             {
-                // "速度負方"得到"速度強度負方"&"受擊方"
-                _speedLoser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedStrengthLoser, CharacterIdentityType.Recipient } );
-            }
-            // NO
-            else
-            {
-                // "速度負方"得到"受擊方"
-                _speedLoser.AddCharacterIdentityType( CharacterIdentityType.Recipient );
-            }
+                // 速度較高一方得到"速度勝方"&"勝利優惠機制方"&"直擊方"
+                lead.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedWinner, CharacterIdentityType.WinningBenefitHolder, CharacterIdentityType.Assaulter } );
 
-            // 進入“迎擊直擊方受擊方結算”頁面。
-            BattleLogicManagerV2.SettleRepulseResultForAssaulterAndRecipient( ref _battleResultData, assaulter: lead, recipient: improviser );
+                // 速度較低一方得到"速度負方"
+                improviser.AddCharacterIdentityType( CharacterIdentityType.SpeedLoser );
+
+                GameCharacter _speedWinner = BattleLogicManagerV2.GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.SpeedWinner, _gameCharacters );
+                GameCharacter _speedLoser = BattleLogicManagerV2.GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.SpeedLoser, _gameCharacters );
+
+                BattleResultData.BattleResultData_GameCharacter _speedWinner_BattleResultData = battleResultDataTwo.GetGameCharacterResultData( _speedWinner );
+                BattleResultData.BattleResultData_GameCharacter _speedLoser_BattleResultData = battleResultDataTwo.GetGameCharacterResultData( _speedLoser );
+
+                // "速度勝方"的強度是否大於"速度負方"?
+                // YES
+                if (_speedWinner_BattleResultData.currentSkillStrength > _speedLoser_BattleResultData.currentSkillStrength)
+                {
+                    // "速度負方"得到"速度強度負方"&"受擊方"
+                    _speedLoser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedStrengthLoser, CharacterIdentityType.Recipient } );
+                }
+                // NO
+                else
+                {
+                    // "速度負方"得到"受擊方"
+                    _speedLoser.AddCharacterIdentityType( CharacterIdentityType.Recipient );
+                }
+
+                // 進入“迎擊直擊方受擊方結算”頁面。
+                BattleLogicManagerV2.SettleRepulseResultForAssaulterAndRecipient( ref battleResultDataTwo, assaulter: lead, recipient: improviser );
+            }
         }
-
-        battleResultDataList.Add( _battleResultData );
 
         // ----------------------------------------------------------------------------------------------------
     }

@@ -1,14 +1,10 @@
-using UnityEngine;
-using System.Collections.Generic;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
 
 public partial class BattleLogicManagerV2
 {
     // 頁面：判定防禦成敗及結算
-    private static void DetermineResultForDefense( ref List<BattleResultData> battleResultDataList, GameCharacter lead, GameCharacter improviser )
+    private static void DetermineResultForDefense( ref BattleResultData battleResultDataOne, out BattleResultData battleResultDataTwo, GameCharacter lead, GameCharacter improviser )
     {
-        BattleResultData _battleResultData = new();
-
         // ----------------------------------------------------------------------------------------------------
 
         // 進行"後手方"[當前以太值]的結算,
@@ -21,15 +17,13 @@ public partial class BattleLogicManagerV2
         // 以太流
         // 8.節流 / 9.游刃
         // 後手方使用技能時當前以太值結算
-        CategorizedPassiveSkillManager.CalculateImproviserCurrentStatePoint( ref _battleResultData, lead, improviser );
-
-        battleResultDataList.Add( _battleResultData );
+        CategorizedPassiveSkillManager.CalculateImproviserCurrentStatePoint( ref battleResultDataOne, lead, improviser );
 
         // ----------------------------------------------------------------------------------------------------
 
         // ----------------------------------------------------------------------------------------------------
 
-        _battleResultData = new BattleResultData( _battleResultData );
+        battleResultDataTwo = new BattleResultData( battleResultDataOne );
 
         // 進行"雙方"因[生命值對比]/[以太值對比]/[負荷值對比]造成已按下的技能的[強度]&[速度]的加算,
         // 參考：
@@ -39,18 +33,18 @@ public partial class BattleLogicManagerV2
         // 負荷流
         // 7.借風
         // 對比條件的技能強度/速度結算
-        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref _battleResultData, lead, improviser );
-        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref _battleResultData, improviser, lead );
+        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref battleResultDataTwo, lead, improviser );
+        CategorizedPassiveSkillManager.IncreaseStrengthOrSpeedWithCondition( ref battleResultDataTwo, improviser, lead );
 
         // 進行"雙方"因[看破技能]造成已按下的技能的[強度]&[速度]的加算,
         // 參考"雙方"的[看破技能]中,鎖定的"看破ID"與對方的已按下技能的"看破ID"是否相同&[看破技能]的儲蓄值
         // 看破技能影響的技能強度/速度增加
-        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref _battleResultData, lead, improviser );
-        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref _battleResultData, improviser, lead );
+        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref battleResultDataTwo, lead, improviser );
+        BattleLogicManagerV2.ProcessObservingSkillsForIncreasingSkillStrengthAndSpeed( ref battleResultDataTwo, improviser, lead );
 
         GameCharacter[] _gameCharacters = new GameCharacter[] { lead, improviser };
-        BattleResultData.BattleResultData_GameCharacter _lead_BattleResultData = _battleResultData.GetGameCharacterResultData( lead );
-        BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = _battleResultData.GetGameCharacterResultData( improviser );
+        BattleResultData.BattleResultData_GameCharacter _lead_BattleResultData = battleResultDataTwo.GetGameCharacterResultData( lead );
+        BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = battleResultDataTwo.GetGameCharacterResultData( improviser );
 
         bool _hasImproviserDefendedSuccessfully = false;
 
@@ -120,7 +114,7 @@ public partial class BattleLogicManagerV2
             // 5.破流;
             // "受擊方"的[能量殘響]
             // 受擊方當前以太值結算
-            CategorizedPassiveSkillManager.RunRecipientCurrentStatePointCalculation( ref _battleResultData, recipient: improviser, assaulter: lead );
+            CategorizedPassiveSkillManager.RunRecipientCurrentStatePointCalculation( ref battleResultDataTwo, recipient: improviser, assaulter: lead );
 
             // "直擊方"是否"速度勝方"?
             // NO
@@ -139,7 +133,7 @@ public partial class BattleLogicManagerV2
                 // 負荷流
                 // 3.化勁 / 9.行雲流水
                 // 受擊方負荷值結算
-                CategorizedPassiveSkillManager.RunRecipientCurrentStressValueCalculation( ref _battleResultData, assaulter: lead, recipient: improviser );
+                CategorizedPassiveSkillManager.RunRecipientCurrentStressValueCalculation( ref battleResultDataTwo, assaulter: lead, recipient: improviser );
             }
 
             // "受擊方"有沒有因"直擊方"的負荷傷害導致負荷值>=100%?
@@ -147,7 +141,7 @@ public partial class BattleLogicManagerV2
             if (_improviser_BattleResultData.currentStressValue >= 100.0f)
             {
                 // "受擊方"成為負荷崩潰狀態,該維持值為1,"受擊方"得到"重受擊方"&"負荷崩潰方"
-                _battleResultData.AddGameCharacterResultData_StressBreakStatus( improviser, 1, out _ );
+                battleResultDataTwo.AddGameCharacterResultData_StressBreakStatus( improviser, 1, out _ );
                 improviser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.HeavyRecipient, CharacterIdentityType.StressBreakStatusHolder } );
 
                 // "直擊方得到"重直擊方"
@@ -159,7 +153,7 @@ public partial class BattleLogicManagerV2
             if (_improviser_BattleResultData.currentStatePoint < 0.0f)
             {
                 // "受擊方"成為以太崩潰狀態,該維持值為1,"受擊方"得到"重受擊方"&"以太崩潰方"
-                _battleResultData.AddGameCharacterResultData_StateBreakStatus( improviser, 1, out _ );
+                battleResultDataTwo.AddGameCharacterResultData_StateBreakStatus( improviser, 1, out _ );
                 improviser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.HeavyRecipient, CharacterIdentityType.StateBreakStatusHolder } );
 
                 // "直擊方得到"重直擊方"
@@ -171,7 +165,7 @@ public partial class BattleLogicManagerV2
             if (!GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.HeavyRecipient, _gameCharacters ))
             {
                 // 調用“判定輕重受擊方”頁面。
-                CategorizedPassiveSkillManager.RunDeterminingLightOrHeavyRecipient( ref _battleResultData, assaulter: lead, recipient: improviser );
+                CategorizedPassiveSkillManager.RunDeterminingLightOrHeavyRecipient( ref battleResultDataTwo, assaulter: lead, recipient: improviser );
             }
 
             // 是否有"重受擊方"?
@@ -189,7 +183,7 @@ public partial class BattleLogicManagerV2
                 // 以太流
                 // 12.逆風
                 // 輕受擊方生命值結算
-                CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult( ref _battleResultData, assaulter: lead, recipient: improviser );
+                CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult( ref battleResultDataTwo, assaulter: lead, recipient: improviser );
             }
             // YES
             else
@@ -209,7 +203,7 @@ public partial class BattleLogicManagerV2
             // 5.破流;
             // "抵抗成功方"的[能量殘響]
             // 抵抗成功方防禦當前以太值結算
-            CategorizedPassiveSkillManager.SuccessfulResisterDefenseCurrentStatePointCalculation( ref _battleResultData, successfulResister: improviser, deuce: lead );
+            CategorizedPassiveSkillManager.SuccessfulResisterDefenseCurrentStatePointCalculation( ref battleResultDataTwo, successfulResister: improviser, deuce: lead );
 
             // 進行"抵抗成功方"[負荷值]的結算
             // 參考：
@@ -224,16 +218,16 @@ public partial class BattleLogicManagerV2
             // 負荷流
             // 3.化勁 / 9.行雲流水
             // 抵抗成功方防禦負荷值結算
-            CategorizedPassiveSkillManager.RunSuccessfulResisterDefenseStressValueCalculation( ref _battleResultData, successfulResister: improviser, deuce: lead );
+            CategorizedPassiveSkillManager.RunSuccessfulResisterDefenseStressValueCalculation( ref battleResultDataTwo, successfulResister: improviser, deuce: lead );
 
-            BattleResultData.BattleResultData_GameCharacter _successfulResister_BattleResultData = _battleResultData.GetGameCharacterResultData( improviser );
+            BattleResultData.BattleResultData_GameCharacter _successfulResister_BattleResultData = battleResultDataTwo.GetGameCharacterResultData( improviser );
 
             // "抵抗成功方"有沒有因"平手方"的負荷傷害導致負荷值>=100%?
             // YES
             if (_successfulResister_BattleResultData.currentStressValue >= 100.0f)
             {
                 // "抵抗成功方"成為負荷崩潰狀態,該維持值為1,取消"抵抗成功方",並得到"受擊方"&"重受擊方"&"以太崩潰方"
-                _battleResultData.AddGameCharacterResultData_StressBreakStatus( improviser, 1, out _ );
+                battleResultDataTwo.AddGameCharacterResultData_StressBreakStatus( improviser, 1, out _ );
                 improviser.RemoveCharacterIdentityType( CharacterIdentityType.SuccessfulResister );
                 improviser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.HeavyRecipient, CharacterIdentityType.StateBreakStatusHolder } );
 
@@ -250,7 +244,7 @@ public partial class BattleLogicManagerV2
             if (_successfulResister_BattleResultData.currentStatePoint < 0.0f)
             {
                 // "抵抗成功方"/"重受擊方"成為以太崩潰狀態,該維持值為1,取消"抵抗成功方"並得到"受擊方"&"重受擊方"&"以太崩潰方"
-                _battleResultData.AddGameCharacterResultData_StateBreakStatus( improviser, 1, out _ );
+                battleResultDataTwo.AddGameCharacterResultData_StateBreakStatus( improviser, 1, out _ );
                 improviser.RemoveCharacterIdentityType( CharacterIdentityType.SuccessfulResister );
                 improviser.AddCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.HeavyRecipient, CharacterIdentityType.StateBreakStatusHolder } );
 
@@ -280,12 +274,12 @@ public partial class BattleLogicManagerV2
             // 以太流
             // 12.逆風
             // 重受擊方生命值結算
-            CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult( ref _battleResultData, assaulter: lead, recipient: improviser );
+            CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult( ref battleResultDataTwo, assaulter: lead, recipient: improviser );
         }
 
         // "雙方"的技能持續效果更新(例如:能量殘響)
-        BattleLogicManagerV2.UpdateSkillContinuousEffects( ref _battleResultData, lead );
-        BattleLogicManagerV2.UpdateSkillContinuousEffects( ref _battleResultData, improviser );
+        BattleLogicManagerV2.UpdateSkillContinuousEffects( ref battleResultDataTwo, lead );
+        BattleLogicManagerV2.UpdateSkillContinuousEffects( ref battleResultDataTwo, improviser );
 
         // 玩家1：lead
         // 玩家2：improviser
@@ -293,7 +287,7 @@ public partial class BattleLogicManagerV2
         // ------------------------------ 玩家1 ------------------------------
 
         // "玩家1"進入“負荷積分等級結算”頁面。
-        CategorizedPassiveSkillManager.StressScoreAndLevelCalculation( ref _battleResultData, lead );
+        CategorizedPassiveSkillManager.StressScoreAndLevelCalculation( ref battleResultDataTwo, lead );
 
         // "玩家1"發動流向效果並結算相關數值
         // 參考：
@@ -303,14 +297,14 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref _battleResultData, lead, improviser, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultDataTwo, lead, improviser, false );
 
         // ------------------------------------------------------------------
 
         // ------------------------------ 玩家2 ------------------------------
 
         // "玩家2"進入“負荷積分等級結算”頁面。
-        CategorizedPassiveSkillManager.StressScoreAndLevelCalculation( ref _battleResultData, improviser );
+        CategorizedPassiveSkillManager.StressScoreAndLevelCalculation( ref battleResultDataTwo, improviser );
 
         // "玩家2"發動流向效果並結算相關數值
         // 參考：
@@ -320,11 +314,9 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref _battleResultData, improviser, lead, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultDataTwo, improviser, lead, false );
 
         // ------------------------------------------------------------------
-
-        battleResultDataList.Add( _battleResultData );
 
         // ----------------------------------------------------------------------------------------------------
     }

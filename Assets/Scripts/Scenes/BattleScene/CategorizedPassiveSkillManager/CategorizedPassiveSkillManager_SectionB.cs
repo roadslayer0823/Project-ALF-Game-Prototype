@@ -518,7 +518,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, _cyclePointConvert,out _);
 
                 // [當前以太值] +[6.能量循環]
-                battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacter, _cyclePointConvert, out _);
+                battleResultData.AddGameCharacterResultData_IncreaseCurrentStatePoint(gameCharacter, _cyclePointConvert, out _);
                 battleResultData.AddResultLog("生命流能量循環負荷循環相關數值結算");
                 battleResultData.AddResultLog("Case A: 生命流 -> 以太流\n循環點: "+gameCharacter.GetLifeCyclePoint()+ "\n以太提升: " + _cyclePointConvert);
             }
