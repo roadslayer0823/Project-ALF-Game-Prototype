@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
+using CommandTimeType = GameCharacter.CommandTimeType;
 using RangeType = DatabaseManager.Subskill.RangeType;
+using DistanceType = BattleDistanceManager.DistanceType;
 
 public partial class BattleLogicManagerV2
 {
@@ -88,6 +90,50 @@ public partial class BattleLogicManagerV2
                         CharacterIdentityType.SpeedLoser
                     } );
                 }
+            }
+        }
+    }
+
+    // 在“Part B”頁面裡：判定"己方"的指令時間
+    public static void DetermineCommandTimeInPartB( BattleGameManager battleGameManager, GameCharacter gameCharacter )
+    {
+        BattleDistanceManager.DistanceType _currentDistanceType = battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType();
+
+        // 當前距離是否為“中/遠距離”？
+        // YES
+        if (_currentDistanceType is DistanceType.Normal or DistanceType.Far)
+        {
+            // "己方"是否“抵抗成功方”？
+            // YES
+            if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister))
+            {
+                // "己方"為"反擊指令時間"
+                gameCharacter.SetCurrentCommandTimeType( CommandTimeType.CounterAttack );
+            }
+            // NO
+            else
+            {
+                // "己方"為"臨戰指令時間後"
+                gameCharacter.SetCurrentCommandTimeType( CommandTimeType.CombatAfter );
+            }
+        }
+        // NO
+        else
+        {
+            // 當前距離為“近距離”。
+
+            // "己方"是否“抵抗成功方”？
+            // YES
+            if (gameCharacter.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
+            {
+                // "己方"為"近戰反擊指令時間"
+                gameCharacter.SetCurrentCommandTimeType( CommandTimeType.MeleeCounterAttack );
+            }
+            // NO
+            else
+            {
+                // "己方"為"近戰指令時間"
+                gameCharacter.SetCurrentCommandTimeType( CommandTimeType.MeleeCombat );
             }
         }
     }

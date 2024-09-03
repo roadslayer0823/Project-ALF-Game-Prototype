@@ -79,6 +79,7 @@ public partial class GameCharacter : MonoBehaviour
     private BattleResultData_GameCharacter temporaryBattleResultData = null;
     private List<CharacterIdentityType> characterIdentityTypeList = null; // 暫時性身份列表
     private List<CharacterIdentityType> permanentCharacterIdentityTypeList = null; // 永久性身份列表
+    private CommandTimeType currentCommandTimeType = CommandTimeType.None; // 目前的指令時間
     private List<CharacterSkill> allSkills = null;
     private CharacterSkill lastAtlSkill = null;
 
@@ -167,6 +168,23 @@ public partial class GameCharacter : MonoBehaviour
 
         // 無視遠程方
         IgnoreRangedSkill
+    }
+
+    public enum CommandTimeType
+    {
+        None,
+
+        // 反擊指令時間
+        CounterAttack,
+
+        // 臨戰指令時間後
+        CombatAfter,
+
+        // 近戰反擊指令時間
+        MeleeCounterAttack,
+
+        // 近戰指令時間
+        MeleeCombat
     }
 
     public enum CharacterActionType
@@ -793,6 +811,16 @@ public partial class GameCharacter : MonoBehaviour
     public List<CharacterIdentityType> GetAllCharacterIdentityTypes()
     {
         return this.permanentCharacterIdentityTypeList.Concat( this.characterIdentityTypeList ).ToList();
+    }
+
+    public void SetCurrentCommandTimeType( CommandTimeType currentCommandTimeType )
+    {
+        this.currentCommandTimeType = currentCommandTimeType;
+    }
+
+    public CommandTimeType GetCurrentCommandTimeType()
+    {
+        return this.currentCommandTimeType;
     }
 
     public void SetAssignedSkill( CharacterSkill assignedSkill )

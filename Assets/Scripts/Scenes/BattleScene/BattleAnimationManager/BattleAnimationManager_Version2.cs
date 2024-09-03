@@ -5,6 +5,7 @@ using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
+using DistanceType = BattleDistanceManager.DistanceType;
 using AnimationParameterData = CharacterAnimationHandler.AnimationParameterData;
 
 public partial class BattleAnimationManager : MonoBehaviour
@@ -47,7 +48,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         else
         {
             // 當前距離重置為“中距離”
-            this.battleGameManager.GetBattleDistanceManager().SetCurrentDistanceType( BattleDistanceManager.DistanceType.Normal );
+            this.battleGameManager.GetBattleDistanceManager().SetCurrentDistanceType( DistanceType.Normal );
 
             // 進入“臨戰指令時間（前）”頁面。
             // ------------------------------ 臨戰指令時間 (前) ------------------------------
@@ -215,7 +216,9 @@ public partial class BattleAnimationManager : MonoBehaviour
         // “先手方”使用派生技能。
         if (_leadSkillType == Skill.SkillType.derived)
         {
-            // TODO: 取消對方的任何技能指令並進入“判定 Part B 結果及結算”。
+            // 取消對方的任何技能指令並進入“判定 Part B 結果及結算”。
+            _improviser.ResetAssignedSkill();
+            _improviser.Reset();
 
             yield return StartCoroutine( RunDerivedSkill( _lead, _improviser, _atlSlotListPanel, battleFlowRound.GetCurrentATL().GetATLNumber() ) );
 
@@ -230,11 +233,36 @@ public partial class BattleAnimationManager : MonoBehaviour
             yield break;
         }
         // NO
-        // TODO: 先手方是否在“近戰指令時間”或“近戰反擊指令時間”按下主動或反擊技能？
+        // 先手方是否在“近戰指令時間”或“近戰反擊指令時間”按下主動或反擊技能？
         // YES
-        // “先手方”使用反擊技能。
-        else if (_isAttackerCounterAttacking)
+        // 当前的距离是否为“近距离”？
+        // YES
+        else if (_isAttackerCounterAttacking
+                && this.battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType() == DistanceType.Near)
         {
+            // “後手方”發動技能。
+            _improviser.ApplyAssignedSkillAsCurrentSkill();
+
+            _improviserCurrentSkill = _improviser.GetCurrentSkill();
+            if (_improviserCurrentSkill != null)
+            {
+                _improviserSkillType = _improviserCurrentSkill.GetSkillData().skillType;
+                _improviserSubskillData = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData();
+
+                // 後手方的已按下技能的接觸判定"遠/近"變為"近戰"
+                if (_improviserSubskillData.Range == RangeType.melee_or_ranged)
+                {
+                    _improviser.SetCurrentSkillRangeType( RangeType.melee );
+                }
+                // 後手方是否按下了遠程技能?
+                // YES
+                else if (_improviserSubskillData.Range == RangeType.ranged)
+                {
+                    // "後手方"得到"近距離遠程方"
+                    _improviser.AddCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer );
+                }
+            }
+
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
             yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, ( _lead.GetIsPlayer() ) ? "Player_Ariku_Counterattack" : ( this.isUsingGameCharacterV2 ) ? "Player_Ariku_Counterattack-enemy" : "Enemy_Enemy_Counterattack" ) );
         }
@@ -320,7 +348,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
                 // 當前距離是否近距離?
                 // YES
-                if (this.battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType() == BattleDistanceManager.DistanceType.Near)
+                if (this.battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType() == DistanceType.Near)
                 {
                     // 後手方的已按下技能的接觸判定"遠/近"變為"近戰"
                     if (_improviserCurrentSkillRange == RangeType.melee_or_ranged)
@@ -424,14 +452,16 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         // "先手方"已按下技能是否"派生技能"?
         // YES
-        if (_lead.GetCurrentSkill().GetSkillData().skillType == Skill.SkillType.derived)
+        if (_leadSkillType == Skill.SkillType.derived)
         {
             // TODO: 派生技能演出
         }
         // NO
         else
         {
-            // TODO: 判定"己方"的指令時間
+            // 判定"己方"的指令時間
+            BattleLogicManagerV2.DetermineCommandTimeInPartB( this.battleGameManager, _playerCharacter );
+            BattleLogicManagerV2.DetermineCommandTimeInPartB( this.battleGameManager, _enemyCharacter );
 
             CharacterAnimationHandler _playerCharacterAnimationHandler = _playerCharacter.GetCharacterAnimationHandler();
             CharacterAnimationHandler _enemyCharacterAnimationHandler = _enemyCharacter.GetCharacterAnimationHandler();
@@ -539,7 +569,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
                 if (_improviser.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
                 {
-                    _improviser.SetIsCounterAttacking( true );
+                    //_improviser.SetIsCounterAttacking( true );
 
                     if (_improviser.GetIsPlayer())
                     {
