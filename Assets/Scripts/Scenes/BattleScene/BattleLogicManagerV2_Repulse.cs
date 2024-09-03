@@ -149,19 +149,13 @@ public partial class BattleLogicManagerV2
 
                     GameCharacter _strengthWinner = BattleLogicManagerV2.GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.StrengthWinner, _gameCharacters );
                     GameCharacter _strengthLoser = BattleLogicManagerV2.GetGameCharacterThatMatchesCharacterIdentityType( CharacterIdentityType.StrengthLoser, _gameCharacters );
+                    bool hasAssaulterAndRecipient = false;
 
                     // "強度勝方"的已按下技能是否"遠程"?
                     // YES
                     if (_strengthWinner.GetCurrentSkillRangeType() == RangeType.ranged)
                     {
-                        // "強度勝方"得到"直擊方"
-                        _strengthWinner.AddCharacterIdentityType( CharacterIdentityType.Assaulter );
-
-                        // "強度負方"得到"受擊方"
-                        _strengthLoser.AddCharacterIdentityType( CharacterIdentityType.Recipient );
-
-                        // 進入“迎擊直擊方受擊方結算”頁面。
-                        BattleLogicManagerV2.SettleRepulseResultForAssaulterAndRecipient( ref battleResultDataTwo, assaulter: _strengthWinner, recipient: _strengthLoser );
+                        hasAssaulterAndRecipient = true;
                     }
                     // NO
                     else
@@ -177,6 +171,22 @@ public partial class BattleLogicManagerV2
                             // 進入“迎擊平手方結算”頁面。
                             BattleLogicManagerV2.SettleRepulseResultForDraw( ref battleResultDataTwo, lead, improviser );
                         }
+                        else
+                        {
+                            hasAssaulterAndRecipient = true;
+                        }
+                    }
+
+                    if(hasAssaulterAndRecipient)
+                    {
+                        // "強度勝方"得到"直擊方"
+                        _strengthWinner.AddCharacterIdentityType(CharacterIdentityType.Assaulter);
+
+                        // "強度負方"得到"受擊方"
+                        _strengthLoser.AddCharacterIdentityType(CharacterIdentityType.Recipient);
+
+                        // 進入“迎擊直擊方受擊方結算”頁面。
+                        BattleLogicManagerV2.SettleRepulseResultForAssaulterAndRecipient(ref battleResultDataTwo, assaulter: _strengthWinner, recipient: _strengthLoser);
                     }
                 }
             }
