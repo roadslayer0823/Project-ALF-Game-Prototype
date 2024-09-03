@@ -400,8 +400,8 @@ public partial class BattleAnimationManager : MonoBehaviour
         this.targetCamera.transform.position = cameraPosition;
         this.targetCamera.orthographicSize = cameraOrthographicSize;
 
-        _playerCharacter.GetCharacterAnimationHandler().GoToResetState();
-        _enemyCharacter.GetCharacterAnimationHandler().GoToResetState();
+        _playerCharacter.GetCharacterAnimationHandler().ResetAnimation();
+        _enemyCharacter.GetCharacterAnimationHandler().ResetAnimation();
 
         _lead.GetOpponentContainer().SetActive( true );
         _improviser.ShowCharacterObject();

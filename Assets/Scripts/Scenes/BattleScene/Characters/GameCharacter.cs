@@ -961,9 +961,9 @@ public partial class GameCharacter : MonoBehaviour
         }
         else
         {
-            this.characterAnimationHandler.GetPlayerAnimator().SetBool( "idle", true );
-            this.characterAnimationHandler.GoToResetState();
+            this.characterAnimationHandler.ResetAnimation();
             this.characterAnimationHandler.FlipContainer( !this.isPlayer );
+            this.characterAnimationHandler.GetPlayerAnimator().Play( "Idle" );
         }
     }
 
@@ -975,8 +975,8 @@ public partial class GameCharacter : MonoBehaviour
         }
         else
         {
-            this.characterAnimationHandler.GetPlayerAnimator().SetBool( "prepare", true );
-            this.characterAnimationHandler.GoToResetState();
+            this.characterAnimationHandler.ResetAnimation();
+            this.characterAnimationHandler.GetPlayerAnimator().Play( "Prepare" );
         }
     }
 

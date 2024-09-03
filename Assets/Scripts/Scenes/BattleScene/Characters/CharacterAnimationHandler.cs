@@ -268,6 +268,7 @@ public class CharacterAnimationHandler : MonoBehaviour
                 _skillEffectAnimator.SetBool("animation_" + i, i == _effectClipArray.Length - 1);
             }
 
+            _skillEffectAnimator.SetBool( "reset", true );
             _skillEffectAnimator.SetTrigger("trigger");
         }
         else
@@ -356,6 +357,7 @@ public class CharacterAnimationHandler : MonoBehaviour
                                         : this.visualEffectBackAnimatorOverrideController)
                                         ["Animation_0"] = _animationClip;
 
+        _visualEffectAnimator.SetBool( "reset", true );
         _visualEffectAnimator.SetTrigger("trigger");
         AudioManager.Instance.PlaySoundEffect(visualEffectAudioId);
     }
