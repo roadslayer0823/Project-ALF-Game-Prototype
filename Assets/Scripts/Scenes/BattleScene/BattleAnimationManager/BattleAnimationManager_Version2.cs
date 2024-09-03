@@ -229,6 +229,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             battleFlowRound.EndCurrentRound();
             yield return StartCoroutine( RunTransitioningToNextATL() );
+            this.derivedSkillLastFrameObject.SetActive( false );
 
             yield break;
         }
@@ -1100,6 +1101,8 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         if (CheckHasBattleEndedV2())
         {
+            this.deriveSkillAnimationHandler.gameObject.SetActive( false );
+            this.derivedSkillLastFrameObject.SetActive( false );
             return true;
         }
 
@@ -1197,6 +1200,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             yield return new WaitForSeconds( 1.0f );
         }
 
+        this.derivedSkillLastFrameObject.SetActive( true );
         this.deriveSkillAnimationHandler.gameObject.SetActive( false );
     }
 

@@ -33,6 +33,7 @@ public partial class BattleAnimationManager : MonoBehaviour
     [Space]
     [SerializeField] private Transform canvasTransform = null;
     [SerializeField] private PopUpDisplayInfoV2Canvas popUpDisplayInfoPrefabV2 = null;
+    [SerializeField] private GameObject derivedSkillLastFrameObject = null;
 
     private BattleGameManager battleGameManager = null;
     private SkillPromptPanelV2 skillPromptPanel = null;
