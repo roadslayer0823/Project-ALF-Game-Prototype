@@ -3,7 +3,6 @@ using UnityEngine.Networking;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
 
 public class DatabaseManager : Singleton<DatabaseManager>
@@ -63,13 +62,15 @@ public class DatabaseManager : Singleton<DatabaseManager>
         }
         else
         {
+            Coroutine _coroutine = null;
+
             string _versionJsonData = PlayerPrefsManager.LoadVersionDatabase();
             if (!string.IsNullOrEmpty(_versionJsonData))
             {
-                ProcessJsonData<Version>( _versionJsonData, this.versionSheetName );
+                ProcessJsonData<Version>( _versionJsonData, this.versionSheetName, false );
                 this.onAllVersionsLoadedCallback?.Invoke();
 
-                StartCoroutine(CheckDatabaseVersion(_versionJsonData));
+                _coroutine = StartCoroutine( CheckDatabaseVersion( _versionJsonData ) );
             }
 
             string _configurationJsonData = PlayerPrefsManager.LoadConfigurationDatabase();
@@ -90,16 +91,21 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 && !string.IsNullOrEmpty( _animationJsonData )
                 )
             {
-                ProcessJsonData<Configuration>(_configurationJsonData, this.configurationSheetName);
-                ProcessJsonData<Character>( _characterJsonData, this.characterSheetName );
-                ProcessJsonData<Skill>( _skillJsonData, this.skillSheetName );
-                ProcessJsonData<Subskill>( _subskillJsonData, this.subskillSheetName );
-                ProcessJsonData<SkillAnimation>(_skillAnimationJsonData, this.skillAnimationSheetName);
-                ProcessJsonData<PassiveSkill>( _passiveSkillJsonData, this.passiveSkillSheetName );
-                ProcessJsonData<AnimationData>(_animationJsonData, this.animationSheetName);
+                ProcessJsonData<Configuration>( _configurationJsonData, this.configurationSheetName, false );
+                ProcessJsonData<Character>( _characterJsonData, this.characterSheetName, false );
+                ProcessJsonData<Skill>( _skillJsonData, this.skillSheetName, false );
+                ProcessJsonData<Subskill>( _subskillJsonData, this.subskillSheetName, false );
+                ProcessJsonData<SkillAnimation>( _skillAnimationJsonData, this.skillAnimationSheetName, false );
+                ProcessJsonData<PassiveSkill>( _passiveSkillJsonData, this.passiveSkillSheetName, false );
+                ProcessJsonData<AnimationData>( _animationJsonData, this.animationSheetName, false );
             }
             else
             {
+                if (_coroutine != null)
+                {
+                    StopCoroutine( _coroutine );
+                }
+
                 LoadAllData();
             }
         }
@@ -114,7 +120,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
         Debug.Log("Previous version json data: " + versionJsonData);
 
-        if (this.versionList.Count != 0)
+        if (this.versionList.Count > 0)
         {
             Debug.Log("Check Database Version.");
 
@@ -225,7 +231,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         //Check to make sure no error, then pass the loaded data to other function for using
         if (string.IsNullOrEmpty( _webRequest.error ))
         {
-            ProcessJsonData<T>( _webRequest.downloadHandler.text, sheetName );
+            ProcessJsonData<T>( _webRequest.downloadHandler.text, sheetName, true );
 
             UpdateTableStatus( sheetName, TableStatus.UpToDate );
             this.onVersionUpdatedCallback.Invoke( sheetName, versionNumber );
@@ -252,7 +258,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         }
     }
 
-    public void ProcessJsonData<T>(string jsonData, string sheetName) where T : class
+    public void ProcessJsonData<T>( string jsonData, string sheetName, bool needToSave ) where T : class
     {
         List<T> dataList = JsonConvert.DeserializeObject<List<T>>( jsonData );
 
@@ -263,7 +269,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
             this.versionList = dataList as List<Version>;
 
-            PlayerPrefsManager.SaveVersionDatabase(jsonData);
+            if (needToSave)
+            {
+                PlayerPrefsManager.SaveVersionDatabase( jsonData );
+            }
         }
         else if (sheetName == this.configurationSheetName)
         {
@@ -278,7 +287,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
             GameConfiguration.Instance.SetBattleConfiguration( new GameConfiguration.Battle( this.configurationList ) );
 
-            PlayerPrefsManager.SaveConfigurationDatabase(jsonData);
+            if (needToSave)
+            {
+                PlayerPrefsManager.SaveConfigurationDatabase( jsonData );
+            }
         }
         else if (sheetName == this.characterSheetName)
         {
@@ -289,7 +301,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 character.SkillIdArray = ConvertStringToStringArray(character.SkillIdArrayString);
             }
 
-            PlayerPrefsManager.SaveCharacterDatabase( jsonData );
+            if (needToSave)
+            {
+                PlayerPrefsManager.SaveCharacterDatabase( jsonData );
+            }
         }
         else if (sheetName == this.skillSheetName)
         {
@@ -300,7 +315,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 skill.skillType = (Skill.SkillType)Enum.Parse(typeof(Skill.SkillType), skill.SkillTypeString);
             }
 
-            PlayerPrefsManager.SaveSkillDatabase( jsonData );
+            if (needToSave)
+            {
+                PlayerPrefsManager.SaveSkillDatabase( jsonData );
+            }
         }
         else if (sheetName == this.subskillSheetName)
         {
@@ -325,13 +343,19 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 //subskill.Effects = ConvertStringToIntArray(subskill.EffectsString);
             }
 
-            PlayerPrefsManager.SaveSubskillDatabase( jsonData );
+            if (needToSave)
+            {
+                PlayerPrefsManager.SaveSubskillDatabase( jsonData );
+            }
         }
         else if (sheetName == this.skillAnimationSheetName)
         {
             this.skillAnimationList = dataList as List<SkillAnimation>;
 
-            PlayerPrefsManager.SaveSkillAnimationDatabase(jsonData);
+            if (needToSave)
+            {
+                PlayerPrefsManager.SaveSkillAnimationDatabase( jsonData );
+            }
         }
         else if (sheetName == this.passiveSkillSheetName)
         {
@@ -342,7 +366,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 passiveSkill.Category = ( PassiveSkill.CategoryType )Enum.Parse( typeof( PassiveSkill.CategoryType ), passiveSkill.CategoryString );
             }
 
-            PlayerPrefsManager.SavePassiveSkillDatabase( jsonData );
+            if (needToSave)
+            {
+                PlayerPrefsManager.SavePassiveSkillDatabase( jsonData );
+            }
         }
         else if (sheetName == this.animationSheetName)
         {
@@ -356,7 +383,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 animation.EffectsArray = ConvertStringToStringArray(animation.EffectsArrayString);
                 animation.AudiosArray = ConvertStringToStringArray(animation.AudiosArrayString);
             }
-            PlayerPrefsManager.SaveAnimationDatabase(jsonData);
+
+            if (needToSave)
+            {
+                PlayerPrefsManager.SaveAnimationDatabase( jsonData );
+            }
         }
 
         UpdateTableStatus( sheetName, TableStatus.UpToDate );

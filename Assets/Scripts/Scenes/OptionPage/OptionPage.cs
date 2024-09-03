@@ -23,13 +23,13 @@ public class OptionPage : MonoBehaviour
         string _animationJsonString = Resources.Load<TextAsset>( "Data/GoogleSpreadsheet/Animations" ).text;
         string _passiveSkillsJsonString = Resources.Load<TextAsset>( "Data/GoogleSpreadsheet/Passive_Skills" ).text;
 
-        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Version>( _versionsJsonString, this.versionString );
-        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Configuration>( _configurationsJsonString, this.configurationString );
-        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Character>( _charactersJsonString, this.characterString );
-        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Skill>( _skillsJsonString, this.skillString );
-        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Subskill>( _subskillsJsonString, this.subskillString );
-        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.AnimationData>( _animationJsonString, this.animationString );
-        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.PassiveSkill>( _passiveSkillsJsonString, this.passiveSkillString );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Version>( _versionsJsonString, this.versionString, false );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Configuration>( _configurationsJsonString, this.configurationString, false );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Character>( _charactersJsonString, this.characterString, false );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Skill>( _skillsJsonString, this.skillString, false );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.Subskill>( _subskillsJsonString, this.subskillString, false );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.AnimationData>( _animationJsonString, this.animationString, false );
+        DatabaseManager.Instance.ProcessJsonData<DatabaseManager.PassiveSkill>( _passiveSkillsJsonString, this.passiveSkillString, false );
 
         SceneControlManager.GoToBattleScene();
     }
