@@ -36,8 +36,6 @@ public partial class BattleAnimationManager : MonoBehaviour
         _playerCharacter.PlayPrepareAnimation();
         _enemyCharacter.PlayIdleAnimation();
 
-        bool _isPlayingCombatCommandAnimation = true;
-
         // 是否有一方在[臨戰指令時間 (後)]/[反擊指令時間]/[近戰指令時間]/[近戰反擊指令時間]輸入主動/反擊/派生技能？
         // YES
         if (BattleLogicManagerV2.ShouldCombatCommandTimeBeSkipped( _playerCharacter, _enemyCharacter ))
@@ -62,6 +60,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             if (!battleGameManager.GetBattleVisualEffectManager().IsShowingCombatCommandCutScreen())
             {
+                bool _isPlayingCombatCommandAnimation = true;
                 battleGameManager.GetBattleVisualEffectManager().TriggerCombatCommandCutIn( () => { _isPlayingCombatCommandAnimation = false; } );
                 yield return new WaitUntil( () => !_isPlayingCombatCommandAnimation );
             }
@@ -73,8 +72,10 @@ public partial class BattleAnimationManager : MonoBehaviour
             battleFlowATL.StartAttackOpportunityCountdownTimer( this.skillPromptPanel );
             _atlSlotListPanel.GoToATL( battleFlowATL.GetATLNumber(), battleFlowATL.GetAttackOpportunityDuration() );
 
-            StartCoroutine( RunCheckingIfSkillIsSelectedInCommandCombatTime( _playerCharacter ) );
+            Coroutine _coroutineForCombatCommandTime = StartCoroutine( RunCheckingIfSkillIsSelectedInCommandCombatTime( _playerCharacter ) );
             yield return new WaitUntil( () => ( !battleFlowATL.GetIsDuringAttackOpportunityPeriod() || ( _playerCharacter.GetAssignedSkill() != null && _enemyCharacter.GetAssignedSkill() != null ) ) );
+            StopCoroutine( _coroutineForCombatCommandTime );
+            _coroutineForCombatCommandTime = null;
             battleFlowATL.StopAttackOpportunityCountdownTimer();
             yield return new WaitWhile( () => this.battleGameManager.GetBattleVisualEffectManager().IsPlayingCharacterTurningAnimation() );
 
@@ -307,14 +308,19 @@ public partial class BattleAnimationManager : MonoBehaviour
             LeanTween.delayedCall( RESULT_ANIMATION_TIMING_A, () =>
             {
                 // 播放演出同時，UI反映各項參數。
-                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
-                _lead.ShowPopUpDisplayInfoV2( maxStatePointUp: _leadBattleResultData.maximumStatePointIncrease/*, statePointDamage: _attackerBattleResultData.statePointCost*/ );
+                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager, true );
+
+                _lead.ShowPopUpDisplayInfoV2(
+                    maxStatePointUp: _leadBattleResultData.maximumStatePointIncreaseForBase
+                    //,
+                    //statePointDamage: _leadBattleResultData.statePointCost
+                    );
             } );
 
             BattleLog.Instance.AddOnScreenBattleLog(
                 $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _lead.GetCharacterName() }</color>"
                 + $"消耗了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _leadBattleResultData.statePointCost }{ TerminologyManager.STATE_POINT }</color>"
-                + $"和提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _leadBattleResultData.maximumStatePointIncrease }最大{ TerminologyManager.STATE_POINT }</color>。"
+                + $"和提升了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _leadBattleResultData.maximumStatePointIncreaseForBase }最大{ TerminologyManager.STATE_POINT }</color>。"
             );
 
             // -----------------------------------------------
@@ -442,13 +448,17 @@ public partial class BattleAnimationManager : MonoBehaviour
         _skillCountdownTimeStartTime = Time.time;
         _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
-        StartPartB( out BattleResultData _battleResultDataOne, out BattleResultData _battleResultDataTwo, _lead, _improviser, out GameCharacter _winner, out GameCharacter _loser );
-        ShowBattleLog( _battleResultDataOne.GetResultLogList() );
-        ShowBattleLog( _battleResultDataTwo.GetResultLogList() );
+        StartPartB( out _battleResultData, _lead, _improviser, true, out GameCharacter _winner, out GameCharacter _loser );
+        ShowBattleLog( _battleResultData.GetResultLogList() );
+
+        _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
+        _improviserBattleResultData = _battleResultData.GetGameCharacterResultData( _improviser );
+
+        Coroutine _coroutineForDerivedSkill = null;
 
         if (_winner != null)
         {
-            StartCoroutine( RunCheckingIfDerivedSkillIsSelected( _winner, _skillCountdownTime, _skillCountdownTimeStartTime ) );
+            _coroutineForDerivedSkill = StartCoroutine( RunCheckingIfDerivedSkillIsSelected( _winner, _skillCountdownTime, _skillCountdownTimeStartTime ) );
         }
 
         // "先手方"已按下技能是否"派生技能"?
@@ -506,8 +516,6 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             if (_improviserCurrentSkill != null)
             {
-                _improviserBattleResultData = _battleResultDataOne.GetGameCharacterResultData( _improviser );
-
                 // 結算演出時機 A - 在 Part B 的第 0.1 秒起播放。
                 // 參數：以太值消耗、以太值提升
                 LeanTween.delayedCall( RESULT_ANIMATION_TIMING_A, () =>
@@ -515,9 +523,13 @@ public partial class BattleAnimationManager : MonoBehaviour
                     _improviser.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
 
                     // 播放演出同時，UI反映各項參數。
-                    _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
+                    _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager, true );
                     //StartCoroutine( ShowPopUpDisplayInfo( improviser, statePointReduced: improviserBattleResultData.statePointCost, maximumStatePointIncreased: improviserBattleResultData.maximumStatePointIncrease ) );
-                    _improviser.ShowPopUpDisplayInfoV2( maxStatePointUp: _improviserBattleResultData.maximumStatePointIncrease/*, statePointDamage: improviserBattleResultData.statePointCost*/ );
+                    _improviser.ShowPopUpDisplayInfoV2(
+                        maxStatePointUp: _improviserBattleResultData.maximumStatePointIncreaseForBase
+                        //,
+                        //statePointDamage: _improviserBattleResultData.statePointCost
+                        );
                 } );
             }
 
@@ -600,10 +612,6 @@ public partial class BattleAnimationManager : MonoBehaviour
                 ShowCommandPhaseCountdownTimer( true, _playerCharacter, 1.3f );
             } );
 
-            _battleResultData = _battleResultDataTwo;
-            _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
-            _improviserBattleResultData = _battleResultData.GetGameCharacterResultData( _improviser );
-
             if (this.isUsingGameCharacterV2)
             {
                 string _crashef = "crashef";
@@ -652,11 +660,15 @@ public partial class BattleAnimationManager : MonoBehaviour
 
                     _lead.ShowPopUpDisplayInfoV2( healthPointDamage: ( _hasCrashEffectForLead ) ? 0.0f : _leadBattleResultData.GetHealthPointDamageTaken(),
                                                   stressValueDamage: _leadBattleResultData.stressValueDamageTaken,
-                                                  statePointDamage: _leadBattleResultData.statePointDamageTaken );
+                                                  statePointDamage: _leadBattleResultData.statePointDamageTaken,
+                                                  maxStatePointUp: _leadBattleResultData.maximumStatePointIncreaseForBonus
+                                                  );
 
                     _improviser.ShowPopUpDisplayInfoV2( healthPointDamage: ( _hasCrashEffectForImproviser ) ? 0.0f : _improviserBattleResultData.GetHealthPointDamageTaken(),
                                                         stressValueDamage: _improviserBattleResultData.stressValueDamageTaken,
-                                                        statePointDamage: _improviserBattleResultData.statePointDamageTaken );
+                                                        statePointDamage: _improviserBattleResultData.statePointDamageTaken,
+                                                        maxStatePointUp: _improviserBattleResultData.maximumStatePointIncreaseForBonus
+                                                        );
                 } );
 
                 // 結算演出時機 C - 在partB的第1.2秒起播放。
@@ -884,6 +896,12 @@ public partial class BattleAnimationManager : MonoBehaviour
                 yield return null;
             }
 
+            if (_coroutineForDerivedSkill != null)
+            {
+                StopCoroutine( _coroutineForDerivedSkill );
+                _coroutineForDerivedSkill = null;
+            }
+
             _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
             _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
 
@@ -941,9 +959,11 @@ public partial class BattleAnimationManager : MonoBehaviour
 
     private IEnumerator RunCheckingIfDerivedSkillIsSelected( GameCharacter gameCharacter, float countdownTime, float countdownStartTime )
     {
-        yield return new WaitUntil( () => gameCharacter.GetAssignedSkill() != null );
+        yield return new WaitUntil( () => ( gameCharacter.GetAssignedSkill() != null || Time.time - countdownStartTime > countdownTime ) );
 
-        if (gameCharacter.GetAssignedSkill().GetSkillData().skillType == Skill.SkillType.derived)
+        CharacterSkill _assignedSkill = gameCharacter.GetAssignedSkill();
+        if (_assignedSkill != null
+            && _assignedSkill.GetSkillData().skillType == Skill.SkillType.derived)
         {
             this.deriveSkillAnimationHandler.gameObject.SetActive( true );
             this.deriveSkillAnimationHandler.PlayDeriveAnimationPart1( countdownTime - ( Time.time - countdownStartTime ) );
@@ -1053,14 +1073,15 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
     }
 
-    private void StartPartB( out BattleResultData battleResultDataOne, out BattleResultData battleResultDataTwo,
-                             GameCharacter lead, GameCharacter improviser, out GameCharacter winner, out GameCharacter loser )
+    private void StartPartB( out BattleResultData battleResultData,
+                             GameCharacter lead, GameCharacter improviser, bool hasPartA,
+                             out GameCharacter winner, out GameCharacter loser )
     {
         // ------------------------------ 判定 Part B 結果及結算 ------------------------------
 
         //battleResultData = BattleLogicManagerV2.DetermineResultForPartB( attacker, attackTarget, out winner, out loser );
 
-        BattleLogicManagerV2.DetermineResultForPartB( out battleResultDataOne, out battleResultDataTwo, lead, improviser, true );
+        BattleLogicManagerV2.DetermineResultForPartB( out battleResultData, lead, improviser, hasPartA );
 
         GameCharacter[] _gameCharacters = new GameCharacter[] { lead, improviser };
 
@@ -1165,27 +1186,50 @@ public partial class BattleAnimationManager : MonoBehaviour
     }
 
     //private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV2 atlSlotListPanel, int atlNumber,
-    private IEnumerator RunDerivedSkill( GameCharacter attacker, GameCharacter attackTarget, ATLSlotListPanelV3 atlSlotListPanel, int atlNumber )
+    private IEnumerator RunDerivedSkill( GameCharacter lead, GameCharacter improviser, ATLSlotListPanelV3 atlSlotListPanel, int atlNumber )
     {
-        StartPartB( out BattleResultData _battleResultDataOne, out BattleResultData _battleResultDataTwo,
-                    attacker, attackTarget, out GameCharacter _, out GameCharacter _ );
+        StartPartB( out BattleResultData _battleResultData, lead, improviser, false, out GameCharacter _, out GameCharacter _ );
 
-        BattleResultData _battleResultData = _battleResultDataTwo;
-        BattleResultData.BattleResultData_GameCharacter _attackerBattleResultData = _battleResultData.GetGameCharacterResultData( attacker );
-        BattleResultData.BattleResultData_GameCharacter _attackTargetBattleResultData = _battleResultData.GetGameCharacterResultData( attackTarget );
+        BattleResultData.BattleResultData_GameCharacter _leadBattleResultData = _battleResultData.GetGameCharacterResultData( lead );
+        BattleResultData.BattleResultData_GameCharacter _improviserBattleResultData = _battleResultData.GetGameCharacterResultData( improviser );
         ShowBattleLog( _battleResultData.GetResultLogList() );
 
         this.isAnimationEventTriggered = false;
         this.deriveSkillAnimationHandler.PlayDeriveAnimationPart2();
+
+        // 結算演出時機 A - 在 Part B 的第 0.1 秒起播放。
+        // 參數：以太值消耗、以太值提升
+        LeanTween.delayedCall( RESULT_ANIMATION_TIMING_A, () =>
+        {
+            // 播放演出同時，UI反映各項參數。
+            lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager, true );
+
+            PopUpDisplayInfoV2Canvas.SpawnPopUpDisplayInfoV2( this.popUpDisplayInfoPrefabV2, this.canvasTransform,
+                                                              this.deriveSkillAnimationHandler.GetPivot().position, !lead.GetIsPlayer(),
+                                                              maxStatePointUp: _leadBattleResultData.maximumStatePointIncreaseForBase
+                                                              //,
+                                                              //statePointDamage: _leadBattleResultData.statePointCost
+                                                              );
+        } );
+
         yield return new WaitUntil( () => this.isAnimationEventTriggered );
-        attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
-        attackTarget.ApplyBattleResultData( _attackTargetBattleResultData, this.battleGameManager );
+
+        lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
+        improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
 
         PopUpDisplayInfoV2Canvas.SpawnPopUpDisplayInfoV2( this.popUpDisplayInfoPrefabV2, this.canvasTransform,
-                                                          this.deriveSkillAnimationHandler.GetPivot().position, !attackTarget.GetIsPlayer(),
-                                                          healthPointDamage: _attackTargetBattleResultData.actualHealthPointDamageTaken,
-                                                          stressValueDamage: _attackTargetBattleResultData.stressValueDamageTaken,
-                                                          statePointDamage: _attackTargetBattleResultData.statePointDamageTaken );
+                                                          this.deriveSkillAnimationHandler.GetPivot().position, !lead.GetIsPlayer(),
+                                                          healthPointDamage: _leadBattleResultData.actualHealthPointDamageTaken,
+                                                          stressValueDamage: _leadBattleResultData.stressValueDamageTaken,
+                                                          statePointDamage: _leadBattleResultData.statePointDamageTaken,
+                                                          maxStatePointUp: _leadBattleResultData.maximumStatePointIncreaseForBonus );
+
+        PopUpDisplayInfoV2Canvas.SpawnPopUpDisplayInfoV2( this.popUpDisplayInfoPrefabV2, this.canvasTransform,
+                                                          this.deriveSkillAnimationHandler.GetPivot().position, !improviser.GetIsPlayer(),
+                                                          healthPointDamage: _improviserBattleResultData.actualHealthPointDamageTaken,
+                                                          stressValueDamage: _improviserBattleResultData.stressValueDamageTaken,
+                                                          statePointDamage: _improviserBattleResultData.statePointDamageTaken,
+                                                          maxStatePointUp: _improviserBattleResultData.maximumStatePointIncreaseForBonus );
 
         this.isAnimationEventTriggered = false;
         yield return new WaitUntil( () => this.isAnimationEventTriggered );
@@ -1196,7 +1240,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
         else
         {
-            OnCasterBeingUnableToUseSkill( attacker );
+            OnCasterBeingUnableToUseSkill( lead );
             yield return new WaitForSeconds( 1.0f );
         }
 

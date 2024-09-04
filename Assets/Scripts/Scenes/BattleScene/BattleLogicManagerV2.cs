@@ -496,25 +496,24 @@ public partial class BattleLogicManagerV2
     }
 
     // 頁面：判定 Part B 結果及結算
-    public static void DetermineResultForPartB( out BattleResultData battleResultDataOne, out BattleResultData battleResultDataTwo, GameCharacter lead, GameCharacter improviser, bool hasPartA )
+    public static void DetermineResultForPartB( out BattleResultData battleResultData, GameCharacter lead, GameCharacter improviser, bool hasPartA )
     {
-        battleResultDataOne = new BattleResultData();
-        battleResultDataTwo = null;
+        battleResultData = new BattleResultData();
 
         // 更新"先手方"當前流向
         // 頁面：發動流向效果A
         lead.TriggerEvent( BattleAnimationManager.AnimationEvent.OnCategorizedPassiveTypeUpdated );
-        BattleLogicManagerV2.TriggerCategorizedPassiveSkillEffectA( ref battleResultDataOne, lead );
+        BattleLogicManagerV2.TriggerCategorizedPassiveSkillEffectA( ref battleResultData, lead );
 
         // 更新"後手方"當前流向
         // 頁面：發動流向效果A
         improviser.TriggerEvent( BattleAnimationManager.AnimationEvent.OnCategorizedPassiveTypeUpdated );
-        BattleLogicManagerV2.TriggerCategorizedPassiveSkillEffectA( ref battleResultDataOne, improviser );
+        BattleLogicManagerV2.TriggerCategorizedPassiveSkillEffectA( ref battleResultData, improviser );
 
         // 從“判定先後手方”頁面來到這裡。
         if (!hasPartA)
         {
-            DetermineResultForPartA( ref battleResultDataOne, lead, improviser );
+            DetermineResultForPartA( ref battleResultData, lead, improviser );
         }
 
         CharacterSkill _leadCurrentSkill = lead.GetCurrentSkill();
@@ -528,7 +527,7 @@ public partial class BattleLogicManagerV2
             case SkillType.repulse:
 
                 // 進入“判定迎擊結果及結算”頁面。
-                BattleLogicManagerV2.DetermineResultForRepulse( ref battleResultDataOne, out battleResultDataTwo, lead, improviser );
+                BattleLogicManagerV2.DetermineResultForRepulse( ref battleResultData, lead, improviser );
 
                 break;
 
@@ -543,22 +542,20 @@ public partial class BattleLogicManagerV2
                     if (_improviserSubskillData.IsDefendingSkill)
                     {
                         // 進入“判定防禦成敗及結算”頁面。
-                        BattleLogicManagerV2.DetermineResultForDefense( ref battleResultDataOne, out battleResultDataTwo, lead, improviser );
+                        BattleLogicManagerV2.DetermineResultForDefense( ref battleResultData, lead, improviser );
                     }
                     // 後手方已按下的技能是否回避技能？
                     // YES
                     else if (_improviserSubskillData.IsEvadingSkill)
                     {
                         // 進入“判定回避成敗及結算”頁面。
-                        BattleLogicManagerV2.DetermineResultForEvasion( ref battleResultDataOne, out battleResultDataTwo, lead, improviser );
+                        BattleLogicManagerV2.DetermineResultForEvasion( ref battleResultData, lead, improviser );
                     }
                 }
 
                 break;
 
             default:
-
-                battleResultDataTwo = new BattleResultData( battleResultDataOne );
 
                 // 後手方得到"受擊方"&“重受擊方”&"未能抵抗方"
                 // 先手方得到"直擊方"&“重直擊方”。
@@ -569,9 +566,9 @@ public partial class BattleLogicManagerV2
                 // 重直擊方：lead
 
                 // 重受擊方當前以太值結算
-                CategorizedPassiveSkillManager.CalculateHeavyRecipientStatePoint( ref battleResultDataTwo, lead, improviser, false );
+                CategorizedPassiveSkillManager.CalculateHeavyRecipientStatePoint( ref battleResultData, lead, improviser, false );
 
-                BattleResultData.BattleResultData_GameCharacter _recipient_BattleResultData = battleResultDataTwo.GetGameCharacterResultData( improviser );
+                BattleResultData.BattleResultData_GameCharacter _recipient_BattleResultData = battleResultData.GetGameCharacterResultData( improviser );
 
                 // "重受擊方"有沒有因"重直擊方"的以太傷害導致當前以太值<0?
                 // YES
@@ -579,20 +576,20 @@ public partial class BattleLogicManagerV2
                 {
                     // "重受擊方"成為以太崩潰狀態,該維持值為1
                     // "重受擊方"得到"以太崩潰方"
-                    battleResultDataTwo.AddGameCharacterResultData_StateBreakStatus( improviser, 1, out _ );
+                    battleResultData.AddGameCharacterResultData_StateBreakStatus( improviser, 1, out _ );
                     improviser.AddCharacterIdentityType( CharacterIdentityType.StateBreakStatusHolder );
                 }
 
                 // 重受擊方生命值結算
-                CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult( ref battleResultDataTwo, lead, improviser );
+                CategorizedPassiveSkillManager.CalculateLightAndHeavyRecipientHealthResult( ref battleResultData, lead, improviser );
 
                 // "雙方"的技能持續效果更新(例如:能量殘響-對方"能量殘響"維持值更新為5)
-                BattleLogicManagerV2.UpdateSkillContinuousEffects( ref battleResultDataTwo, lead );
-                BattleLogicManagerV2.UpdateSkillContinuousEffects( ref battleResultDataTwo, improviser );
+                BattleLogicManagerV2.UpdateSkillContinuousEffects( ref battleResultData, lead );
+                BattleLogicManagerV2.UpdateSkillContinuousEffects( ref battleResultData, improviser );
 
                 // 頁面：發動流向效果B
-                CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultDataTwo, lead, improviser, false );
-                CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultDataTwo, improviser, lead, false );
+                CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, lead, improviser, false );
+                CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, improviser, lead, false );
 
                 break;
         }
@@ -882,7 +879,7 @@ public partial class BattleLogicManagerV2
         battleResultData.AddGameCharacterResultData_StatePointCost( caster, _statePointCost, out _ );
 
         float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
-        battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease( caster, _maxStatePointUp, out _ );
+        battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBase( caster, _maxStatePointUp, out _ );
 
         string _log = $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ caster.GetCharacterName() }</color>使出了"
                     + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _casterSubskillData.DisplayName }</color>"
@@ -962,7 +959,7 @@ public partial class BattleLogicManagerV2
                     && _targetSubskillData?.Range == Subskill.RangeType.ranged)
                 {
                     float _maxStatePointUp = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetMaxStatePointUp( _casterSubskillData ) );
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease( caster, _maxStatePointUp, out _casterBattleResultData );
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBonus( caster, _maxStatePointUp, out _casterBattleResultData );
 
                     _resultLog += $"在發生迎擊時，<color={ BattleLog.KEYWORD_COLOR_CODE }>{ caster.GetCharacterName() }</color>得到額外的<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maxStatePointUp }最大{ TerminologyManager.STATE_POINT }</color>。";
                 }

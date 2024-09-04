@@ -761,7 +761,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         attacker.ApplyBattleResultData( _attackerBattleResultData, this.battleGameManager );
 
         //StartCoroutine( ShowPopUpDisplayInfo( attacker, statePointReduced: _attackerBattleResultData.statePointCost, maximumStatePointIncreased: _attackerBattleResultData.maximumStatePointIncrease ) );
-        attacker.ShowPopUpDisplayInfoV2(/* statePointDamage: _attackerBattleResultData.statePointCost,*/ maxStatePointUp: _attackerBattleResultData.maximumStatePointIncrease );
+        attacker.ShowPopUpDisplayInfoV2(/* statePointDamage: _attackerBattleResultData.statePointCost,*/ maxStatePointUp: _attackerBattleResultData.maximumStatePointIncreaseForBase + _attackerBattleResultData.maximumStatePointIncreaseForBonus );
 
         ShowSkillInfo( attacker, attackTarget );
         this.currentCaster = attacker;

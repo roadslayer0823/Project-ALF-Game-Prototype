@@ -515,7 +515,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, gameCharacter.GetPassiveSkill(PASSIVE_SKILL_ID_PSL5),out _);
 
                 // [最大以太值]+[6.能量循環]
-                battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, _cyclePointConvert,out _);
+                battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBase(gameCharacter, _cyclePointConvert,out _);
 
                 // [當前以太值] +[6.能量循環]
                 battleResultData.AddGameCharacterResultData_IncreaseCurrentStatePoint(gameCharacter, _cyclePointConvert, out _);
@@ -903,7 +903,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         }
         _gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease = Mathf.Round(_gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease);
         battleResultData.AddResultLog("最終最大以太提升: " + _gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease);
-        battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, _gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease, out _);
+        battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBase(gameCharacter, _gameCharacter_BattleResultData.temp_FinalMaximumStatePointIncrease, out _);
     }
 
     // 先手方使用技能時當前以太值第2次結算
@@ -1441,7 +1441,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                         "\n\n以太流 4.擴流：" + _pSE4_KuoLiu_value +
                                         "\n己方 以太流 12.逆風：" + _pSE12_NiFeng_value);
             battleResultData.AddResultLog("角力最大以太提升: " + _gameCharacterOne_BattleResultData.temp_JiaoLiMaxStatePointIncrease);
-            battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacterOne, _gameCharacterOne_BattleResultData.temp_JiaoLiMaxStatePointIncrease, out _gameCharacterOne_BattleResultData);
+            battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBonus(gameCharacterOne, _gameCharacterOne_BattleResultData.temp_JiaoLiMaxStatePointIncrease, out _gameCharacterOne_BattleResultData);
 
             /*
              * "己方"發動

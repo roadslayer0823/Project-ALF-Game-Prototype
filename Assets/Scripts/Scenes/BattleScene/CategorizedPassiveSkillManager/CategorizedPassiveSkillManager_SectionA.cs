@@ -155,7 +155,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 if (gameCharacterData.currentStatePoint < 0) //"己方"當前以太值是負數
                 {
                     //["己方"最大以太值]+["己方"當前以太值]
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData);
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBase(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData);
                     _formula = "[己方最大以太值]+[己方當前以太值]";
                     string _MaximumStatePointIncrease = _maxStatePointString + "\n" +
                                                         _currentStatePointString;
@@ -167,7 +167,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 if(gameCharacterData.currentStatePoint > 0) //"己方"當前以太值不是負數
                 {
                     //["己方"最大以太值]+10
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, 10, out gameCharacterData);
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBase(gameCharacter, 10, out gameCharacterData);
                     _formula = "[己方最大以太值]+"+ _basicRecover;
                     string _MaximumStatePointIncrease = _maxStatePointString + "\n" +
                                                         _basicRecoverString_Ten;
@@ -222,7 +222,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 if (gameCharacterData.currentStatePoint < 0) //"己方"當前以太值是否負數?
                 {
                     //["己方"最大以太值]+["己方"當前以太值]
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData);
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBase(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData);
                     _formula = "[己方最大以太值] + [己方當前以太值]";
                     string _MaximumStatePointIncrease = _maxStatePointString + "\n" +
                                                         _currentStatePointString;
@@ -233,7 +233,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 if(gameCharacterData.currentStatePoint > 0)
                 {
                     //["己方"最大以太值]+10 + skill_PSE1_GaoYang_Value
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, 10 + _skill_PSE1_GaoYang_Value, out gameCharacterData);
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBase(gameCharacter, 10 + _skill_PSE1_GaoYang_Value, out gameCharacterData);
                     _formula = "[己方最大以太值] +" + _basicRecover + "+" + _PSE1_GaoYang;
                     string _MaximumStatePointIncrease = _maxStatePointString + "\n" +
                                                         _basicRecoverString_Ten + "\n" +
@@ -280,7 +280,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 if (gameCharacterData.currentStatePoint < 0) //"己方"當前以太值是否負數?
                 {
                     //["己方"最大以太值]+["己方"當前以太值]
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData); 
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBase(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData); 
                     _formula = "[己方最大以太值]+[己方當前以太值]";
                     string _MaximumStatePointIncrease = _maxStatePointString + "\n" +
                                                         _currentStatePointString;
@@ -291,7 +291,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 if (gameCharacterData.currentStatePoint > 0)
                 {
                     //["己方"最大以太值] + 10
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, 10, out gameCharacterData);
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBase(gameCharacter, 10, out gameCharacterData);
                     _formula = "[己方最大以太值] +" + _basicRecover;
                     string _MaximumStatePointIncrease = _maxStatePointString + "\n" +
                                                         _basicRecoverString_Ten;
@@ -342,7 +342,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 if (gameCharacterData.currentStatePoint < 0) //"己方"當前以太值是否負數?
                 {
                     //["己方"最大以太值]+["己方"當前以太值]
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData);
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBase(gameCharacter, gameCharacterData.currentStatePoint, out gameCharacterData);
                     _formula = "[己方最大以太值]+[己方當前以太值]";
                     string _MaximumStatePointIncrease = _maxStatePointString + "\n" +
                                                        _currentStatePointString;
@@ -353,7 +353,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 if (gameCharacterData.currentStatePoint > 0)
                 {
                     //["己方"最大以太值]+10
-                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, 10, out gameCharacterData);
+                    battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBase(gameCharacter, 10, out gameCharacterData);
                     _formula = "[己方最大以太值] +" + _basicRecover;
                     string _MaximumStatePointIncrease = _maxStatePointString + "\n" +
                                                         _basicRecoverString_Ten;
@@ -673,7 +673,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         if(stressEvasionCost != 0)
         {
             _stressEvasionMaxStatePointIncrease = stressEvasionCost * skill_PSE4_KuoLiu * skill_PSE12_NiFeng;
-            battleResultData.AddGameCharacterResultData_MaximumStatePointIncrease(gameCharacter, _stressEvasionMaxStatePointIncrease, out _);
+            battleResultData.AddGameCharacterResultData_MaximumStatePointIncreaseForBonus(gameCharacter, _stressEvasionMaxStatePointIncrease, out _);
             gameCharacterData.temp_StressEvasionMaxStatePointIncrease = _stressEvasionMaxStatePointIncrease;
         }
         string _formula = "[最大以太值]+<[回避壓力消耗*4.擴流*12.逆風]";

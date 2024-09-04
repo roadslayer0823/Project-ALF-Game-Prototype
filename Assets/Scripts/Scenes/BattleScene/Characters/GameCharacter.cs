@@ -714,7 +714,7 @@ public partial class GameCharacter : MonoBehaviour
         }
     }
 
-    public void ApplyBattleResultData( BattleResultData_GameCharacter battleResultData, BattleGameManager battleGameManager = null )
+    public void ApplyBattleResultData( BattleResultData_GameCharacter battleResultData, BattleGameManager battleGameManager = null, bool useMaximumStatePointWithoutBonus = false )
     {
         if (battleResultData != null)
         {
@@ -724,7 +724,7 @@ public partial class GameCharacter : MonoBehaviour
             this.currentHealthPoint = battleResultData.currentHealthPoint;
             this.virtualHealthPoint = battleResultData.virtualHealthPoint;
             this.originalStatePoint = battleResultData.originalStatePoint;
-            this.maximumStatePoint = battleResultData.maximumStatePoint;
+            this.maximumStatePoint = ( useMaximumStatePointWithoutBonus ) ? battleResultData.maximumStatePointWithoutBonus : battleResultData.maximumStatePoint;
             this.minimumStatePoint = battleResultData.minimumStatePoint;
             this.currentStatePoint = battleResultData.currentStatePoint;
             this.maximumStressValue = battleResultData.maximumStressValue;

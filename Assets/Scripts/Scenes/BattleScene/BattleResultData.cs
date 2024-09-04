@@ -32,20 +32,20 @@ public class BattleResultData
 
 #endif
 
-    public BattleResultData( BattleResultData source = null )
-    {
-        if (source != null)
-        {
-            this.gameCharacterResultDataList = new List<BattleResultData_GameCharacter>();
+    //public BattleResultData( BattleResultData source = null )
+    //{
+    //    if (source != null)
+    //    {
+    //        this.gameCharacterResultDataList = new List<BattleResultData_GameCharacter>();
 
-            for (int i = 0; i < source.gameCharacterResultDataList.Count; i++)
-            {
-                BattleResultData_GameCharacter _gameCharacterBattleResultData = new( source.gameCharacterResultDataList[ i ] );
-                _gameCharacterBattleResultData.gameCharacter.SetTemporaryBattleResultData( _gameCharacterBattleResultData );
-                this.gameCharacterResultDataList.Add( _gameCharacterBattleResultData );
-            }
-        }
-    }
+    //        for (int i = 0; i < source.gameCharacterResultDataList.Count; i++)
+    //        {
+    //            BattleResultData_GameCharacter _gameCharacterBattleResultData = new( source.gameCharacterResultDataList[ i ] );
+    //            _gameCharacterBattleResultData.gameCharacter.SetTemporaryBattleResultData( _gameCharacterBattleResultData );
+    //            this.gameCharacterResultDataList.Add( _gameCharacterBattleResultData );
+    //        }
+    //    }
+    //}
 
     public class BattleResultData_GameCharacter
     {
@@ -72,6 +72,7 @@ public class BattleResultData
 
         public float originalStatePoint = 0.0f;
         public float maximumStatePoint = 0.0f;
+        public float maximumStatePointWithoutBonus = 0.0f;
         public float minimumStatePoint = 0.0f;
         public float currentStatePoint = 0.0f;
         public float maximumStressValue = 0.0f;
@@ -100,8 +101,9 @@ public class BattleResultData
         public bool isDead = false;
 
         // 改變參數（技能發動時）
-        public float statePointCost = 0.0f;             // 以太值消耗
-        public float maximumStatePointIncrease = 0.0f;  // 最大以太值提升
+        public float statePointCost = 0.0f; // 以太值消耗
+        public float maximumStatePointIncreaseForBase = 0.0f;   // 最大以太值提升（基礎版）
+        public float maximumStatePointIncreaseForBonus = 0.0f;  // 最大以太值提升（獎勵版）
 
         // 改變參數（命中目標時）
         public float actualHealthPointDamageDealt = 0.0f;   // 給予的HP值傷害點數(實傷)
@@ -229,6 +231,13 @@ public class BattleResultData
                 GameConfiguration.Instance.GetBattleConfiguration().GetHighestMaximumStatePoint() );
         }
 
+        public void SetMaximumStatePointWithoutBonus( float value )
+        {
+            this.maximumStatePointWithoutBonus = Mathf.Clamp( value,
+                GameConfiguration.Instance.GetBattleConfiguration().GetLowestMaximumStatePoint(),
+                GameConfiguration.Instance.GetBattleConfiguration().GetHighestMaximumStatePoint() );
+        }
+
         public void SetCurrentStatePoint( float value )
         {
             this.currentStatePoint = Mathf.Clamp( value, this.minimumStatePoint, this.maximumStatePoint );
@@ -315,6 +324,7 @@ public class BattleResultData
                                                 CharacterIdentityType.UpdatedSelectedSkill => "已更新按下技能方",
                                                 CharacterIdentityType.IgnoreZhuiFengJiaoLi => "無視追風角力方",
                                                 CharacterIdentityType.IgnoreZhuiFengJiaoLiJiAng => "無視追風角力激昂方",
+                                                CharacterIdentityType.IgnoreRangedSkill => "無視遠程方",
                                                 _ => ""
                                             };
         }
@@ -415,6 +425,7 @@ public class BattleResultData
                         .ReplaceFirst( "currentHealthPoint", "當前生命值" )
                         .ReplaceFirst( "virtualHealthDamage", "虛傷" )
                         .ReplaceFirst( "maximumStatePoint", "最大以太值" )
+                        .ReplaceFirst( "maximumStatePointWithoutBonus", "最大以太值(不包括獎勵版)" )
                         .ReplaceFirst( "currentStatePoint", "當前以太值" )
                         .ReplaceFirst( "maximumStressValue", "最大負荷值" )
                         .ReplaceFirst( "currentStressValue", "當前負荷值" )
@@ -431,7 +442,8 @@ public class BattleResultData
                         .ReplaceFirst( "stressLevel", "負荷等級" )
                         .ReplaceFirst( "isDead", "是否死亡" )
                         .ReplaceFirst( "statePointCost", "以太值消耗" )
-                        .ReplaceFirst( "maximumStatePointIncrease", "最大以太值提升" )
+                        .ReplaceFirst( "maximumStatePointIncreaseForBase", "最大以太值提升(基礎版)" )
+                        .ReplaceFirst( "maximumStatePointIncreaseForBonus", "最大以太值提升(獎勵版)" )
                         .ReplaceFirst( "actualHealthPointDamageDealt", "給予實傷" )
                         .ReplaceFirst( "virtualHealthPointDamageDealt", "給予虛傷" )
                         .ReplaceFirst( "statePointDamageDealt", "給予以太傷害" )
@@ -500,17 +512,36 @@ public class BattleResultData
         return this;
     }
 
-    // 提升最大以太值。
-    public BattleResultData AddGameCharacterResultData_MaximumStatePointIncrease( GameCharacter gameCharacter, float maximumStatePointIncrease, out BattleResultData_GameCharacter gameCharacterResultData )
+    // 提升最大以太值（基礎版）。
+    public BattleResultData AddGameCharacterResultData_MaximumStatePointIncreaseForBase( GameCharacter gameCharacter, float maximumStatePointIncrease, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         maximumStatePointIncrease = Mathf.Round(maximumStatePointIncrease);
         gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
-        gameCharacterResultData.maximumStatePointIncrease += maximumStatePointIncrease;
+        gameCharacterResultData.maximumStatePointIncreaseForBase += maximumStatePointIncrease;
+        gameCharacterResultData.SetMaximumStatePoint( gameCharacterResultData.maximumStatePoint + maximumStatePointIncrease );
+        gameCharacterResultData.SetMaximumStatePointWithoutBonus( gameCharacterResultData.maximumStatePointWithoutBonus + maximumStatePointIncrease );
+
+#if ALF_DEBUG
+
+        gameCharacterResultData.eventName = "提升最大以太值（基礎版）";
+
+#endif
+
+        AddNewElementIntoGameCharacterResultDataList( gameCharacterResultData, _isNewElement );
+        return this;
+    }
+
+    // 提升最大以太值（獎勵版）。
+    public BattleResultData AddGameCharacterResultData_MaximumStatePointIncreaseForBonus( GameCharacter gameCharacter, float maximumStatePointIncrease, out BattleResultData_GameCharacter gameCharacterResultData )
+    {
+        maximumStatePointIncrease = Mathf.Round( maximumStatePointIncrease );
+        gameCharacterResultData = GetGameCharacterResultData( gameCharacter, out bool _isNewElement );
+        gameCharacterResultData.maximumStatePointIncreaseForBonus += maximumStatePointIncrease;
         gameCharacterResultData.SetMaximumStatePoint( gameCharacterResultData.maximumStatePoint + maximumStatePointIncrease );
 
 #if ALF_DEBUG
 
-        gameCharacterResultData.eventName = "提升最大以太值";
+        gameCharacterResultData.eventName = "提升最大以太值（獎勵版）";
 
 #endif
 
@@ -1010,6 +1041,7 @@ public class BattleResultData
                 virtualHealthPoint = gameCharacter.GetVirtualHealthPoint(),
                 originalStatePoint = gameCharacter.GetOriginalStatePoint(),
                 maximumStatePoint = gameCharacter.GetMaximumStatePoint(),
+                maximumStatePointWithoutBonus = gameCharacter.GetMaximumStatePoint(),
                 minimumStatePoint = gameCharacter.GetMinimumStatePoint(),
                 currentStatePoint = gameCharacter.GetCurrentStatePoint(),
                 maximumStressValue = gameCharacter.GetMaximumStressValue(),
