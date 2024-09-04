@@ -785,7 +785,7 @@ public partial class GameCharacter : MonoBehaviour
         return this.GetAllCharacterIdentityTypes().Contains( characterIdentityType );
     }
 
-    public bool HasCharacterIdentityTypes( CharacterIdentityType[] characterIdentityTypes )
+    public bool HasOneOfCharacterIdentityTypes( CharacterIdentityType[] characterIdentityTypes )
     {
         for (int i = 0; i < characterIdentityTypes.Length; i++)
         {

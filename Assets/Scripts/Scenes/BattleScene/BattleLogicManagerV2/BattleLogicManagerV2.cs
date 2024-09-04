@@ -1429,13 +1429,13 @@ public partial class BattleLogicManagerV2
 
     public static void OnGameCharacterBeingInBreakStatus( GameCharacter gameCharacter )
     {
-        if (gameCharacter.HasCharacterIdentityTypes( new CharacterIdentityType[]
-                                                     {
-                                                         CharacterIdentityType.Recipient,
-                                                         CharacterIdentityType.LightRecipient,
-                                                         CharacterIdentityType.SuccessfulResister
-                                                     }
-                                                     ))
+        if (gameCharacter.HasOneOfCharacterIdentityTypes( new CharacterIdentityType[]
+                                                          {
+                                                              CharacterIdentityType.Recipient,
+                                                              CharacterIdentityType.LightRecipient,
+                                                              CharacterIdentityType.SuccessfulResister
+                                                          }
+                                                          ))
         {
             gameCharacter.AddCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
             gameCharacter.GetCurrentAttacker().AddCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );

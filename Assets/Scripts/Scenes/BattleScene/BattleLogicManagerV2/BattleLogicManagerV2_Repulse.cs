@@ -419,7 +419,7 @@ public partial class BattleLogicManagerV2
     {
         // "己方"是否"速度負方"/"速度強度負方?
         // NO
-        if (!gameCharacter.HasCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedLoser, CharacterIdentityType.SpeedStrengthLoser } ))
+        if (!gameCharacter.HasOneOfCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedLoser, CharacterIdentityType.SpeedStrengthLoser } ))
         {
             // "己方"已按下技能是否"近戰"?
             // YES
@@ -483,7 +483,7 @@ public partial class BattleLogicManagerV2
 
         // "受擊方"是否"速度負方"/"速度強度負方"?
         // NO
-        if (!recipient.HasCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedLoser, CharacterIdentityType.SpeedStrengthLoser } ))
+        if (!recipient.HasOneOfCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedLoser, CharacterIdentityType.SpeedStrengthLoser } ))
         {
             // "受擊方"的已按下技能是否"遠程"?
             // NO

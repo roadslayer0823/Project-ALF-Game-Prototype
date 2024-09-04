@@ -81,14 +81,14 @@ public class BattleSkillManager : MonoBehaviour
 
                 if (atlNumber <= 4)
                 {
-                    if (gameCharacter.HasCharacterIdentityTypes( new CharacterIdentityType[]
-                                                                 {
-                                                                     CharacterIdentityType.LightAssaulter,
-                                                                     CharacterIdentityType.LightRecipient,
-                                                                     CharacterIdentityType.HeavyAssaulter,
-                                                                     CharacterIdentityType.Deuce
-                                                                 }
-                                                                 ))
+                    if (gameCharacter.HasOneOfCharacterIdentityTypes( new CharacterIdentityType[]
+                                                                      {
+                                                                          CharacterIdentityType.LightAssaulter,
+                                                                          CharacterIdentityType.LightRecipient,
+                                                                          CharacterIdentityType.HeavyAssaulter,
+                                                                          CharacterIdentityType.Deuce
+                                                                      }
+                                                                      ))
                     {
                         _skillTypeList = new List<SkillType> { SkillType.Active, SkillType.Defend, SkillType.Evade };
                     }
@@ -99,13 +99,13 @@ public class BattleSkillManager : MonoBehaviour
                 }
                 else
                 {
-                    if (gameCharacter.HasCharacterIdentityTypes( new CharacterIdentityType[]
-                                                                 {
-                                                                     CharacterIdentityType.LightAssaulter,
-                                                                     CharacterIdentityType.LightRecipient,
-                                                                     CharacterIdentityType.HeavyAssaulter
-                                                                 }
-                                                                 ))
+                    if (gameCharacter.HasOneOfCharacterIdentityTypes( new CharacterIdentityType[]
+                                                                      {
+                                                                          CharacterIdentityType.LightAssaulter,
+                                                                          CharacterIdentityType.LightRecipient,
+                                                                          CharacterIdentityType.HeavyAssaulter
+                                                                      }
+                                                                      ))
                     {
                         _skillTypeList = new List<SkillType>();
                     }

@@ -754,12 +754,12 @@ public partial class BattleAnimationManager : MonoBehaviour
                         bool _hasAssault = false;
                         if (_winner != null)
                         {
-                            if (_winner.HasCharacterIdentityTypes( new CharacterIdentityType[]
-                                                                   {
-                                                                   CharacterIdentityType.LightAssaulter,
-                                                                   CharacterIdentityType.HeavyAssaulter
-                                                                   }
-                                                                   ))
+                            if (_winner.HasOneOfCharacterIdentityTypes( new CharacterIdentityType[]
+                                                                        {
+                                                                            CharacterIdentityType.LightAssaulter,
+                                                                            CharacterIdentityType.HeavyAssaulter
+                                                                        }
+                                                                        ))
                             {
                                 _hasAssault = true;
 

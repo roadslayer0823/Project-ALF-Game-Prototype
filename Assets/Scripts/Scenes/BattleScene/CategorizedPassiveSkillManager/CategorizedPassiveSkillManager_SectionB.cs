@@ -111,8 +111,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         battleResultData.AddResultLog("判定輕重受擊方");
         BattleResultData.BattleResultData_GameCharacter _recipient_BattleResultData = battleResultData.GetGameCharacterResultData(recipient);
         CategoryType _recipientCategoryType = recipient.GetSelectedPassiveSkillCategoryType();
-        bool _isAssaulter_IgnoreZhuiFengJiaoLiOrIgnoreZhuiFengJiaoLiJiAng = assaulter.HasCharacterIdentityTypes(new GameCharacter.CharacterIdentityType[] { GameCharacter.CharacterIdentityType.IgnoreZhuiFengJiaoLi, GameCharacter.CharacterIdentityType.IgnoreZhuiFengJiaoLiJiAng });
-        bool _isRecipient_StrengthLoserOrSpeedStrengthLoser = recipient.HasCharacterIdentityTypes(new GameCharacter.CharacterIdentityType[] { GameCharacter.CharacterIdentityType.StrengthLoser, GameCharacter.CharacterIdentityType.SpeedStrengthLoser });
+        bool _isAssaulter_IgnoreZhuiFengJiaoLiOrIgnoreZhuiFengJiaoLiJiAng = assaulter.HasOneOfCharacterIdentityTypes(new GameCharacter.CharacterIdentityType[] { GameCharacter.CharacterIdentityType.IgnoreZhuiFengJiaoLi, GameCharacter.CharacterIdentityType.IgnoreZhuiFengJiaoLiJiAng });
+        bool _isRecipient_StrengthLoserOrSpeedStrengthLoser = recipient.HasOneOfCharacterIdentityTypes(new GameCharacter.CharacterIdentityType[] { GameCharacter.CharacterIdentityType.StrengthLoser, GameCharacter.CharacterIdentityType.SpeedStrengthLoser });
 
         // CASE A:"受擊方"當前流向為"生命流"
         if (_recipientCategoryType == CategoryType.Life)
