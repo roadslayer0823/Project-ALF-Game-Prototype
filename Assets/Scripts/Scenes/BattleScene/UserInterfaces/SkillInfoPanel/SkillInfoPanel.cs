@@ -406,7 +406,7 @@ public class SkillInfoPanel : MonoBehaviour
     public void ShowDerivedSkillPanelUI()
     {
         ShowActiveSubSkillInfoPanelUI(this.selectedSkill.GetCharacterSubskillData().GetSelectedDerivedSkill(), SubSkillType.derived, false, derivedSkillInfoBackground, derivedSkillLevelBackground, derivedSkillNameBackground);
-        if (this.skillSelectionBox.GetIsSelected())
+        if (this.skillSelectionBox.GetIsSelected() && this.selectedSkill.GetCharacterSubskillData().GetSelectedDerivedSkill() != null)
         {
             this.skillSelectionBox.SetSkillBoxFrame(this.skillSelectionBox.GetSkillSelectionPanel().GetDerivedSkillBoxFrameImage());
         }
