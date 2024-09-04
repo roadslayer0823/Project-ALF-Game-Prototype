@@ -39,6 +39,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         string _PSE1_GaoYang = "1.高陽";
         string _PSE7_FuHeLiuZhuan2 = "7.負荷流轉2";
         string _PSS1_JieYa = "1.解壓";
+        string _gameCharacterCurrentPassiveSkill;
 
         if (gameCharacter.HasCategorizedPassiveSkill( PASSIVE_SKILL_ID_PSL1, out PassiveSkill _passiveSkill ))
         {
@@ -89,7 +90,12 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             _skill_PSS1_JieYa_MaxStatePoint = 0.8f;
         }
 
-        string _currentPassiveSkillTypeString = _currentPassiveSkillType + "=" + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacter.GetSelectedPassiveSkillCategoryType());
+        _gameCharacterCurrentPassiveSkill = gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.Life ? "生命流" :
+            gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.State ? "以太流" :
+            gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress ? "負荷流" :
+            gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.None ? "無流向" : "";
+
+        string _currentPassiveSkillTypeString = _currentPassiveSkillType + "=" + _gameCharacterCurrentPassiveSkill;
         string _currentIdentityString = _currentCharacterName + "=" + gameCharacter.GetCharacterName();
         string _basicRecoverString_ZeroPointFive = _basicRecover + "=" + 0.5f;
         string _basicRecoverString_Ten = _basicRecover + "=" + 10f;
@@ -504,6 +510,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         string _deuceString;
         string _currentFirstSkillString = "";
         string _currentActivatingSkill = "";
+        string _deuceCurrentPassiveSkill;
+        string _successfulResisterCurrentPassiveSkill;
         string _finalString;
         string _JieLiu_YouRen = "";
         string _currentIdentity = successfulResister.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.SuccessfulResister) ? "抵抗成功方" : "平手方";
@@ -518,6 +526,16 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         float _stressEvasionCost = 0.0f;
 
         bool isPSE8;
+
+        _deuceCurrentPassiveSkill = deuce.GetSelectedPassiveSkillCategoryType() == CategoryType.Life ? "生命流" :
+         deuce.GetSelectedPassiveSkillCategoryType() == CategoryType.State ? "以太流" :
+         deuce.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress ? "負荷流" :
+         deuce.GetSelectedPassiveSkillCategoryType() == CategoryType.None ? "無流向" : "";
+
+        _successfulResisterCurrentPassiveSkill = successfulResister.GetSelectedPassiveSkillCategoryType() == CategoryType.Life ? "生命流" :
+         successfulResister.GetSelectedPassiveSkillCategoryType() == CategoryType.State ? "以太流" :
+         successfulResister.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress ? "負荷流" :
+         successfulResister.GetSelectedPassiveSkillCategoryType() == CategoryType.None ? "無流向" : "";
         /*
         "平手方"當前流向是否生命流&
         "平手方"生命積分>=100&
@@ -611,12 +629,12 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         successfulResisterData.temp_StressEvasionCost = _stressEvasionCost;
 
         _successfulResisterString = "當前身份:" + _currentIdentity + "\n" +
-                                    "當前流向:" + successfulResisterPassiveSkillType + "\n" +
+                                    "當前流向:" + _successfulResisterCurrentPassiveSkill + "\n" +
                                     "當前以太值=" + successfulResisterData.currentStatePoint + "\n" +
                                     _currentActivatingSkill;
 
         _deuceString              = "當前身份:" + _currentIdentity + "\n" +
-                                    "當前流向:" + deucePassiveSkillType + "\n" +
+                                    "當前流向:" + _deuceCurrentPassiveSkill + "\n" +
                                     "回避壓力=" + _deuceEvasionStress + "\n";
 
         _finalString              = "算式:" + _formula + "\n" + "\n" +
@@ -824,6 +842,12 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         string _activatingSkill = "";
         string _finalString;
+        string _gameCharacterCurrentPassiveSkill;
+
+        _gameCharacterCurrentPassiveSkill = gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.Life ? "生命流" :
+           gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.State ? "以太流" :
+           gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress ? "負荷流" :
+           gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.None ? "無流向" : "";
 
         if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSE11, out PassiveSkill _passiveSkill))
         {
@@ -866,7 +890,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         }
         _finalString =  "己方:" + gameCharacter.GetCharacterName() + "\n" +
                         "對方:" + opponent.GetCharacterName() + "\n" +
-                        "玩家1當前流向:" + gameCharacter.GetSelectedPassiveSkillCategoryType() + "\n" +
+                        "玩家1當前流向:" + _gameCharacterCurrentPassiveSkill + "\n" +
                         "已使用技能:" + _activatingSkill;
         battleResultData.AddResultLog(_finalString);
     }
@@ -957,6 +981,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         string _activatingPassiveSkillString = "";
         string _gameCharacterCurrentIdentity;
         string _opponentCurrentIdentity;
+        string _opponentCurrentPassiveSkill;
         string _isMultipleWithZeroPointFive = isMultipleZeroPointFive ? "*0.5" : "";
 
         _gameCharacterCurrentIdentity = gameCharacter.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Deuce) ? "平手方" :
@@ -966,6 +991,11 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         _opponentCurrentIdentity = opponent.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Deuce) ? "平手方" :
           opponent.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Lead) ? "直擊方" :
           opponent.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Recipient) ? "受擊方" : "對方";
+
+        _opponentCurrentPassiveSkill = opponent.GetSelectedPassiveSkillCategoryType() == CategoryType.Life ? "生命流" :
+          opponent.GetSelectedPassiveSkillCategoryType() == CategoryType.State ? "以太流" :
+          opponent.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress ? "負荷流" :
+          opponent.GetSelectedPassiveSkillCategoryType() == CategoryType.None ? "無流向" : "";
 
         /*
        "對方"當前流向是否生命流&
@@ -1071,7 +1101,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                            "12.逆風=" + skill_PSE12_NiFeng;
 
             _opponentFinalString = _opponentCurrentIdentity + ":" + opponent.GetCharacterName() + "\n" +
-                                           "當前流向:" + opponent.GetSelectedPassiveSkillCategoryType() + "\n" +
+                                           "當前流向:" + _opponentCurrentPassiveSkill + "\n" +
                                            "負荷傷害=" + opponentStressValueDamage;
                       
         }
@@ -1095,7 +1125,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                            "9.行雲流水=" + skill_PSS9_XingYunLiuShui;
 
             _opponentFinalString = _opponentCurrentIdentity + ":" + opponent.GetCharacterName() + "\n" +
-                                           "當前流向:" + opponent.GetSelectedPassiveSkillCategoryType() + "\n" +
+                                           "當前流向:" + _opponentCurrentPassiveSkill + "\n" +
                                            "負荷傷害=" + opponentStressValueDamage;
         }
         else if (gameCharacterPassiveSkillCategory == CategoryType.Life || gameCharacterPassiveSkillCategory == CategoryType.None)
@@ -1115,7 +1145,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                           _activatingPassiveSkillString + "\n";
 
             _opponentFinalString = _opponentCurrentIdentity + ":" + opponent.GetCharacterName() + "\n" +
-                                         "當前流向:" + opponent.GetSelectedPassiveSkillCategoryType() + "\n" +
+                                         "當前流向:" + _opponentCurrentPassiveSkill + "\n" +
                                          "負荷傷害=" + opponentStressValueDamage;
         }
         battleResultData.AddResultLog(_formula + "\n" + "\n" +
