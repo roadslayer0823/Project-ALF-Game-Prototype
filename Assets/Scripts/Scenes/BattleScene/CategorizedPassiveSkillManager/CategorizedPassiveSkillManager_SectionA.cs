@@ -90,10 +90,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             _skill_PSS1_JieYa_MaxStatePoint = 0.8f;
         }
 
-        _gameCharacterCurrentPassiveSkill = gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.Life ? "生命流" :
-            gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.State ? "以太流" :
-            gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress ? "負荷流" :
-            gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.None ? "無流向" : "";
+        _gameCharacterCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedType(gameCharacter.GetSelectedPassiveSkillCategoryType());
 
         string _currentPassiveSkillTypeString = _currentPassiveSkillType + "=" + _gameCharacterCurrentPassiveSkill;
         string _currentIdentityString = _currentCharacterName + "=" + gameCharacter.GetCharacterName();
@@ -527,15 +524,10 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         bool isPSE8;
 
-        _deuceCurrentPassiveSkill = deuce.GetSelectedPassiveSkillCategoryType() == CategoryType.Life ? "生命流" :
-         deuce.GetSelectedPassiveSkillCategoryType() == CategoryType.State ? "以太流" :
-         deuce.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress ? "負荷流" :
-         deuce.GetSelectedPassiveSkillCategoryType() == CategoryType.None ? "無流向" : "";
+        _deuceCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedType(deuce.GetSelectedPassiveSkillCategoryType());
 
-        _successfulResisterCurrentPassiveSkill = successfulResister.GetSelectedPassiveSkillCategoryType() == CategoryType.Life ? "生命流" :
-         successfulResister.GetSelectedPassiveSkillCategoryType() == CategoryType.State ? "以太流" :
-         successfulResister.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress ? "負荷流" :
-         successfulResister.GetSelectedPassiveSkillCategoryType() == CategoryType.None ? "無流向" : "";
+        _successfulResisterCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedType(successfulResister.GetSelectedPassiveSkillCategoryType());
+      
         /*
         "平手方"當前流向是否生命流&
         "平手方"生命積分>=100&
@@ -992,10 +984,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
           opponent.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Lead) ? "直擊方" :
           opponent.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Recipient) ? "受擊方" : "對方";
 
-        _opponentCurrentPassiveSkill = opponent.GetSelectedPassiveSkillCategoryType() == CategoryType.Life ? "生命流" :
-          opponent.GetSelectedPassiveSkillCategoryType() == CategoryType.State ? "以太流" :
-          opponent.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress ? "負荷流" :
-          opponent.GetSelectedPassiveSkillCategoryType() == CategoryType.None ? "無流向" : "";
+        _opponentCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedType(opponent.GetSelectedPassiveSkillCategoryType());
 
         /*
        "對方"當前流向是否生命流&
