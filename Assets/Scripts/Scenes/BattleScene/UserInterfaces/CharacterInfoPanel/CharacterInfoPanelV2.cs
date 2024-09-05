@@ -470,10 +470,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     public void CurrentLifeScoreUI()
     {
         float lifeScore = this.selectedCharacter.GetLifeScore();
-
-        // Calculate the index, ensuring proper slot selection
-
-        int _index = Mathf.FloorToInt(lifeScore / 50);
+        int _index = Mathf.FloorToInt(lifeScore / 50); // Calculate the index, ensuring proper slot selection
         float fillAmount = (lifeScore % 50) / 50.0f;
 
         if (_index < this.lifeScoreProgressBar.Length && _index < this.lifeScoreGlowBar.Length)
@@ -482,7 +479,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         }
         else
         {
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < this.lifeScoreProgressBar.Length; i++)
             {
                 this.lifeScoreProgressBar[i].fillAmount = 1.0f;
                 this.lifeScoreGlowBar[i].gameObject.SetActive(true);
