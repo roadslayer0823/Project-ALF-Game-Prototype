@@ -108,4 +108,16 @@ public class TerminologyManager
             _ => ""
         };
     }
+
+    public static string GetCommandTimeTypeText( GameCharacter.CommandTimeType commandTimeType )
+    {
+        return commandTimeType switch
+        {
+            GameCharacter.CommandTimeType.CounterAttack => "反擊指令",
+            GameCharacter.CommandTimeType.CombatAfter => "臨戰指令",
+            GameCharacter.CommandTimeType.MeleeCounterAttack => "近戰反擊指令",
+            GameCharacter.CommandTimeType.MeleeCombat => "近戰指令",
+            _ => ""
+        };
+    }
 }

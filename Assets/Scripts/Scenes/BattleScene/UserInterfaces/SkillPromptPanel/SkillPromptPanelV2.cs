@@ -223,7 +223,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
             this.playerCommandPhaseText.SetText(phaseName);
 
             LeanTween.cancel( this.playerCommandPhaseGO );
-            LeanTween.moveLocalX(this.playerCommandPhaseGO, 0.0f, this.skillInfoPopSpeed);
+            LeanTween.moveLocalX(this.playerCommandPhaseGO, -20.0f, this.skillInfoPopSpeed);
             if(phaseName == TerminologyManager.REPULSE_COMMAND_TIME)
             {
                 StartCoroutine(WaitBeforeRepulse());
@@ -240,7 +240,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
             this.enemyCommandPhaseText.SetText(phaseName);
 
             LeanTween.cancel( this.enemyCommandPhaseGO );
-            LeanTween.moveLocalX(this.enemyCommandPhaseGO, 0.0f, this.skillInfoPopSpeed);
+            LeanTween.moveLocalX(this.enemyCommandPhaseGO, 20.0f, this.skillInfoPopSpeed);
 
             if (duration > 0)
             {

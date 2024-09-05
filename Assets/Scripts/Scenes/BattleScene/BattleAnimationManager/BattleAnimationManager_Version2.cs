@@ -204,7 +204,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             + $" （{ TerminologyManager.GetSkillInformationText( _leadCurrentSkill ) }）。"
             );
 
-        yield return StartCoroutine( PlayShowingSkillInformation( _lead ) );
+        ShowCasterCurrentSkillInfo( _lead );
 
         bool _isAttackerCounterAttacking = _lead.GetIsCounterAttacking();
         _lead.SetIsCounterAttacking( false );
@@ -441,6 +441,8 @@ public partial class BattleAnimationManager : MonoBehaviour
                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviserSubskillData.DisplayName }</color>"
                 + $" （{ TerminologyManager.GetSkillInformationText( _improviserCurrentSkill ) }）。"
                 );
+
+            ShowCasterCurrentSkillInfo( _improviser );
         }
 
         // 進入 Part B 階段。
@@ -514,6 +516,9 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             UpdateGameCharacterVisibility();
 
+            // 播放演出同時，根據"當前距離"，更新畫面中ATL的距離圖標。
+            this.battleGameManager.GetBattleDistanceManager().UpdateBattleDistancePanel();
+
             if (_improviserCurrentSkill != null)
             {
                 // 結算演出時機 A - 在 Part B 的第 0.1 秒起播放。
@@ -573,33 +578,9 @@ public partial class BattleAnimationManager : MonoBehaviour
             // 首0.3秒後，指令牌出現。
             LeanTween.delayedCall( 0.3f, () =>
             {
-                if (_lead.GetIsPlayer())
-                {
-                    this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true );
-                }
-
-                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _lead.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
-
-                if (_improviser.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
-                {
-                    //_improviser.SetIsCounterAttacking( true );
-
-                    if (_improviser.GetIsPlayer())
-                    {
-                        this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COUNTER_COMMAND_TIME, true );
-                    }
-
-                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviser.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COUNTER_COMMAND_TIME } 】</color>。" );
-                }
-                else
-                {
-                    if (_improviser.GetIsPlayer())
-                    {
-                        this.skillPromptPanel.ShowCommandPhase( TerminologyManager.COMBAT_COMMAND_TIME, true );
-                    }
-
-                    BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviser.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { TerminologyManager.COMBAT_COMMAND_TIME } 】</color>。" );
-                }
+                string _commandTimeTypeText = TerminologyManager.GetCommandTimeTypeText( _playerCharacter.GetCurrentCommandTimeType() );
+                this.skillPromptPanel.ShowCommandPhase( _commandTimeTypeText, true );
+                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _playerCharacter.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { _commandTimeTypeText } 】</color>。" );
             } );
 
             // 0.5秒後參考【技能按鈕可用性】開啟"己方"可用的指令
@@ -1339,5 +1320,11 @@ public partial class BattleAnimationManager : MonoBehaviour
     private void BringGameCharacterToBack( GameCharacter gameCharacter )
     {
         gameCharacter.GetSortingGroup().sortingOrder = 1;
+    }
+
+    private void ShowCasterCurrentSkillInfo( GameCharacter caster )
+    {
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
+        this.skillPromptPanel.ShowCasterCurrentSkillInfo( caster );
     }
 }
