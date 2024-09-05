@@ -82,19 +82,32 @@ public class ATLSlotV2 : MonoBehaviour
             bool _isPlayer = ( _atlNumber % 2 == this.atlNumberForPlayer );
             float atlSlotAlphaValue = this.atlSlotAnimation.color.a;
 
-            if (aTLCurrentStatus == ATLCurrentStatus.Unused)
+            switch ( aTLCurrentStatus )
             {
-                this.atlSlot.sprite = ( _isPlayer ) ? this.playerUnuseAtlSlot : this.enemyUnuseAtlSlot;
-            }
-            else if (aTLCurrentStatus == ATLCurrentStatus.Using)
-            {
-                this.atlSlotAnimation.sprite = ( _isPlayer ) ? this.playerUsingAtlSlot : this.enemyUsingAtlSlot;
-                LeanTween.alpha(this.atlSlotAnimation.rectTransform, 1f, 0.5f)
-                    .setOnComplete(() =>
-                    {
-                        LeanTween.alpha(this.atlSlotAnimation.rectTransform, 0, 0.5f);
-                        this.atlSlot.sprite = (_isPlayer) ? this.playerUsedAtlSlot : this.enemyUsedAtlSlot;
-                    });
+                case ATLCurrentStatus.Unused:
+
+                    this.atlSlot.sprite = ( _isPlayer ) ? this.playerUnuseAtlSlot : this.enemyUnuseAtlSlot;
+
+                    break;
+
+                case ATLCurrentStatus.Using:
+
+                    this.atlSlotAnimation.sprite = ( _isPlayer ) ? this.playerUsingAtlSlot : this.enemyUsingAtlSlot;
+
+                    LeanTween.alpha( this.atlSlotAnimation.rectTransform, 1f, 0.5f )
+                        .setOnComplete( () =>
+                        {
+                            LeanTween.alpha( this.atlSlotAnimation.rectTransform, 0, 0.5f );
+                            this.atlSlot.sprite = ( _isPlayer ) ? this.playerUsedAtlSlot : this.enemyUsedAtlSlot;
+                        } );
+
+                    break;
+
+                case ATLCurrentStatus.Used:
+
+                    this.atlSlot.sprite = ( _isPlayer ) ? this.playerUsedAtlSlot : this.enemyUsedAtlSlot;
+
+                    break;
             }
 
             this.startingPointX = this.PlayerStartPoint.position.x;

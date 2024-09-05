@@ -56,7 +56,7 @@ public class ATLSlotListPanelV3 : MonoBehaviour
         {
             if (i < flowATLs.Length)
             {
-                this.theATLSlots[i].DefaultATLSetup(flowATLs[i], 1);
+                this.theATLSlots[ i ].DefaultATLSetup( flowATLs[ i ], 0 );
             }
         }
 
@@ -257,5 +257,10 @@ public class ATLSlotListPanelV3 : MonoBehaviour
         this.activeSkillProgressBar.fillAmount = 0;
         this.lastAtlNumber = 0;
         this.currentAtlSlot = null;
+
+        for (int i = 0; i < this.theATLSlots.Length; i++)
+        {
+            this.theATLSlots[ i ].Show( ATLSlotV2.ATLCurrentStatus.Unused );
+        }
     }
 }
