@@ -87,7 +87,7 @@ public class TerminologyManager
         return _skillInformationText;
     }
 
-    public static string GetPassiveSkillCategorizedType(CategorizedPassiveSkillManager.CategoryType categoryType)
+    public static string GetPassiveSkillCategorizedTypeText( CategorizedPassiveSkillManager.CategoryType categoryType )
     {
         return categoryType switch
         {

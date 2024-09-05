@@ -68,8 +68,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                       "\n======================" +
                                       "\n[\"玩家2\"生命值]-[\"玩家1\"直擊傷害*0.3]*[1+\"玩家1\"猛烈+\"玩家1\"生生不息+\"玩家2\"能量殘響]*[1-\"玩家2\"堅韌-\"玩家2\"生生不息-\"玩家2\"逆風]");
 
-            battleResultData.AddResultLog("玩家1 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacterOne.GetSelectedPassiveSkillCategoryType()) +
-                                        "\n玩家2 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacterTwo.GetSelectedPassiveSkillCategoryType()) +
+            battleResultData.AddResultLog("玩家1 流向: " + TerminologyManager.GetPassiveSkillCategorizedTypeText(gameCharacterOne.GetSelectedPassiveSkillCategoryType()) +
+                                        "\n玩家2 流向: " + TerminologyManager.GetPassiveSkillCategorizedTypeText(gameCharacterTwo.GetSelectedPassiveSkillCategoryType()) +
                                         "\n玩家1 技能傷害: " + _gameCharacterOneSkillDamage + "\n玩家2 技能傷害: " + _gameCharacterTwoSkillDamage +
                                         "\n玩家2 能量殘響: " + _energyMarker_value + "\n玩家1 生命流 3.猛烈: " + _pSL3_MengLie_value +
                                         "\n玩家1 生命流 12.生生不息: " + _characterOne_PSL12_ShengShengBuXi_value +
@@ -88,8 +88,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                           "\n======================" +
                                           "\n[\"玩家2\"生命值]-[\"玩家1\"直擊傷害*0.3]*[1+\"玩家2\"猛烈+\"玩家2\"生生不息]*[1-\"玩家2\"堅韌-\"玩家2\"生生不息]");
 
-            battleResultData.AddResultLog("玩家1 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacterTwo.GetSelectedPassiveSkillCategoryType()) +
-                                        "\n玩家2 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacterOne.GetSelectedPassiveSkillCategoryType()) +
+            battleResultData.AddResultLog("玩家1 流向: " + TerminologyManager.GetPassiveSkillCategorizedTypeText(gameCharacterTwo.GetSelectedPassiveSkillCategoryType()) +
+                                        "\n玩家2 流向: " + TerminologyManager.GetPassiveSkillCategorizedTypeText(gameCharacterOne.GetSelectedPassiveSkillCategoryType()) +
                                         "\n玩家1 技能傷害: " + _gameCharacterTwoSkillDamage + "\n玩家2 技能傷害: " + _gameCharacterOneSkillDamage +
                                         "\n玩家1 能量殘響: " + _energyMarker_value + "\n玩家2 生命流 3.猛烈: " + _pSL3_MengLie_value +
                                         "\n玩家1 生命流 12.生生不息: " + _characterTwo_PSL12_ShengShengBuXi_value +
@@ -439,7 +439,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         if(isHittingEachOther)
         {
-            battleResultData.AddResultLog(recipientPlayer + " 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(recipient.GetSelectedPassiveSkillCategoryType()));
+            battleResultData.AddResultLog(recipientPlayer + " 流向: " + TerminologyManager.GetPassiveSkillCategorizedTypeText(recipient.GetSelectedPassiveSkillCategoryType()));
 
             battleResultData.AddResultLog(recipientPlayer + "的生命值結算: " + recipient.GetCharacterName());
             battleResultData.AddResultLog(assaulterPlayer + " 直擊傷害: " + _assaulterSkillDamage + "\n" + recipientPlayer + " 能量殘響: " + _energyMarker_value +
@@ -453,8 +453,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         else if (_isHeavyRecipient)
         {
             battleResultData.AddResultLog("重直擊方: " + assaulter.GetCharacterName() + "\n重受擊方: " + recipient.GetCharacterName());
-            battleResultData.AddResultLog("重直擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(assaulter.GetSelectedPassiveSkillCategoryType()) +
-                                        "\n重受擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(recipient.GetSelectedPassiveSkillCategoryType()) +
+            battleResultData.AddResultLog("重直擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedTypeText(assaulter.GetSelectedPassiveSkillCategoryType()) +
+                                        "\n重受擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedTypeText(recipient.GetSelectedPassiveSkillCategoryType()) +
                                         "\n重直擊方 直擊傷害: " + _assaulterSkillDamage + "\n重受擊方 能量殘響: " + _energyMarker_value +
                                         "\n重受擊方 已按下技能的減傷率: " + _damageReduction + "\n重直擊方 生命流 3.猛烈: " + _pSL3_MengLie_value +
                                         "\n重受擊方 生命流 4.堅韌: " + _pSL4_JianRen_value + "\n重受擊方 以太流 12.逆風: " + _pSE12_NiFeng_value +
@@ -465,8 +465,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         else
         {
             battleResultData.AddResultLog("輕直擊方: " + assaulter.GetCharacterName() + "\n輕受擊方: " + recipient.GetCharacterName());
-            battleResultData.AddResultLog("輕直擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(assaulter.GetSelectedPassiveSkillCategoryType()) +
-                                        "\n輕受擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedType(recipient.GetSelectedPassiveSkillCategoryType()) +
+            battleResultData.AddResultLog("輕直擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedTypeText(assaulter.GetSelectedPassiveSkillCategoryType()) +
+                                        "\n輕受擊方 流向: " + TerminologyManager.GetPassiveSkillCategorizedTypeText(recipient.GetSelectedPassiveSkillCategoryType()) +
                                         "\n輕直擊方 直擊傷害: " + _assaulterSkillDamage + "\n輕受擊方 能量殘響: " + _energyMarker_value +
                                         "\n輕受擊方 已按下技能的減傷率: " + _damageReduction + "\n輕直擊方 生命流 3.猛烈: " + _pSL3_MengLie_value +
                                         "\n輕受擊方 生命流 4.堅韌: " + _pSL4_JianRen_value + "\n輕受擊方 以太流 12.逆風: " + _pSE12_NiFeng_value +
@@ -679,7 +679,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     public static void CalculateLeadCurrentStatePoint(ref BattleResultData battleResultData, GameCharacter lead, GameCharacter improviser)
     {
         battleResultData.AddResultLog("先手方使用技能時當前以太值結算");
-        battleResultData.AddResultLog("先手方 流向：" + TerminologyManager.GetPassiveSkillCategorizedType(lead.GetSelectedPassiveSkillCategoryType()));
+        battleResultData.AddResultLog("先手方 流向：" + TerminologyManager.GetPassiveSkillCategorizedTypeText(lead.GetSelectedPassiveSkillCategoryType()));
         BattleResultData.BattleResultData_GameCharacter _lead_BattleResultData = battleResultData.GetGameCharacterResultData(lead);
         BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = battleResultData.GetGameCharacterResultData(improviser);
 
@@ -762,7 +762,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
     public static void CalculateImproviserCurrentStatePoint(ref BattleResultData battleResultData, GameCharacter lead, GameCharacter improviser)
     {
         battleResultData.AddResultLog("後手方使用技能時當前以太值結算");
-        battleResultData.AddResultLog("後手方 流向：" + TerminologyManager.GetPassiveSkillCategorizedType(improviser.GetSelectedPassiveSkillCategoryType()));
+        battleResultData.AddResultLog("後手方 流向：" + TerminologyManager.GetPassiveSkillCategorizedTypeText(improviser.GetSelectedPassiveSkillCategoryType()));
         BattleResultData.BattleResultData_GameCharacter _lead_BattleResultData = battleResultData.GetGameCharacterResultData(lead);
         BattleResultData.BattleResultData_GameCharacter _improviser_BattleResultData = battleResultData.GetGameCharacterResultData(improviser);
 
@@ -874,7 +874,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             _pSE12_NiFeng_value = 2.0f;
         }
 
-        battleResultData.AddResultLog(_gameCharacterText + " 流向：" + TerminologyManager.GetPassiveSkillCategorizedType(gameCharacter.GetSelectedPassiveSkillCategoryType()));
+        battleResultData.AddResultLog(_gameCharacterText + " 流向：" + TerminologyManager.GetPassiveSkillCategorizedTypeText(gameCharacter.GetSelectedPassiveSkillCategoryType()));
         // CASE A:當前流向為"生命流"/"負荷流"/無流向
         /*
          * [最大以太值]+<[最大以太提升]>

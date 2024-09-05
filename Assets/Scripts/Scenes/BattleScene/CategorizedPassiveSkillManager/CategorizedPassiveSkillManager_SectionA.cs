@@ -90,7 +90,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             _skill_PSS1_JieYa_MaxStatePoint = 0.8f;
         }
 
-        _gameCharacterCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedType(gameCharacter.GetSelectedPassiveSkillCategoryType());
+        _gameCharacterCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedTypeText(gameCharacter.GetSelectedPassiveSkillCategoryType());
 
         string _currentPassiveSkillTypeString = _currentPassiveSkillType + "=" + _gameCharacterCurrentPassiveSkill;
         string _currentIdentityString = _currentCharacterName + "=" + gameCharacter.GetCharacterName();
@@ -524,9 +524,9 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
         bool isPSE8;
 
-        _deuceCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedType(deuce.GetSelectedPassiveSkillCategoryType());
+        _deuceCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedTypeText(deuce.GetSelectedPassiveSkillCategoryType());
 
-        _successfulResisterCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedType(successfulResister.GetSelectedPassiveSkillCategoryType());
+        _successfulResisterCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedTypeText(successfulResister.GetSelectedPassiveSkillCategoryType());
       
         /*
         "平手方"當前流向是否生命流&
@@ -984,7 +984,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
           opponent.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Lead) ? "直擊方" :
           opponent.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.Recipient) ? "受擊方" : "對方";
 
-        _opponentCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedType(opponent.GetSelectedPassiveSkillCategoryType());
+        _opponentCurrentPassiveSkill = TerminologyManager.GetPassiveSkillCategorizedTypeText(opponent.GetSelectedPassiveSkillCategoryType());
 
         /*
        "對方"當前流向是否生命流&
