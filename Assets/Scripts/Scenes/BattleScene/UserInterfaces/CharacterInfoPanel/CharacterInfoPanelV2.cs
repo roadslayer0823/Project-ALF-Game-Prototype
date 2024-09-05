@@ -89,6 +89,7 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     //max state point text scale
     private Vector2 currentScale;
     private Vector2 newScale;
+    private int index;
 
     public void Initialize()
     {
@@ -471,29 +472,35 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         float lifeScore = this.selectedCharacter.GetLifeScore();
 
         // Calculate the index, ensuring proper slot selection
-        int index = Mathf.FloorToInt(lifeScore / 50);
+
+        int _index = Mathf.FloorToInt(lifeScore / 50);
         float fillAmount = (lifeScore % 50) / 50.0f;
 
-        if(index < this.lifeScoreProgressBar.Length && index < this.lifeScoreGlowBar.Length)
+        if (_index < this.lifeScoreProgressBar.Length && _index < this.lifeScoreGlowBar.Length)
         {
-            // Update all previous progress bars to full
-            for (int i = 0; i < index; i++)
+            this.index = _index;
+        }
+        else
+        {
+            for (int i = 0; i < 6; i++)
             {
                 this.lifeScoreProgressBar[i].fillAmount = 1.0f;
                 this.lifeScoreGlowBar[i].gameObject.SetActive(true);
             }
-
-            // Update the current progress bar
-            this.lifeScoreProgressBar[index].fillAmount = fillAmount;
-            if (this.lifeScoreProgressBar[index].fillAmount >= 1.0f)
-            {
-                this.lifeScoreGlowBar[index].gameObject.SetActive(true);
-            }
         }
-        else
+
+        // Update all previous progress bars to full
+        for (int i = 0; i < this.index; i++)
         {
-            this.lifeScoreProgressBar[5].fillAmount = 1.0f;
-            this.lifeScoreGlowBar[5].gameObject.SetActive(true);
+            this.lifeScoreProgressBar[i].fillAmount = 1.0f;
+            this.lifeScoreGlowBar[i].gameObject.SetActive(true);
+        }
+
+        // Update the current progress bar
+        this.lifeScoreProgressBar[this.index].fillAmount = fillAmount;
+        if (this.lifeScoreProgressBar[this.index].fillAmount >= 1.0f)
+        {
+            this.lifeScoreGlowBar[this.index].gameObject.SetActive(true);
         }
     }
 }
