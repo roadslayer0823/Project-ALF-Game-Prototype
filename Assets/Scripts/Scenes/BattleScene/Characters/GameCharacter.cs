@@ -825,12 +825,21 @@ public partial class GameCharacter : MonoBehaviour
 
     public void SetAssignedSkill( CharacterSkill assignedSkill )
     {
-        this.assignedSkill = assignedSkill;
-
         if (this.isInRepulseCommandTime)
         {
-            this.assignedSkill?.SetHasSkillUpdateIndicator( true );
+            if(this.assignedSkill == null)
+            {
+                this.assignedSkill = assignedSkill;
+            }
+            this.assignedSkill?.SetHasSkillUpdateIndicator(true);
         }
+        else
+        {
+            this.assignedSkill = assignedSkill;
+        }
+
+        //Debug.Log("Character: " + characterName);
+        //Debug.Log("SetAssignedSkill: " + this.assignedSkill.GetSkillData().Id);
     }
 
     public CharacterSkill ResetAssignedSkill()

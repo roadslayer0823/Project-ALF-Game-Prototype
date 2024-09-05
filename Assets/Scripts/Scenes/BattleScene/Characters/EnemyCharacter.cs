@@ -9,6 +9,7 @@ using Random = UnityEngine.Random;
 public class EnemyCharacter : GameCharacter
 {
     private CharacterSkill nextAtlSkill = null;
+    private CharacterSkill nextAtlDeriveSkill = null;
     private bool isUsingNextAtlSkill = false;
     private int lastAtlNumber = 0;
 
@@ -334,25 +335,21 @@ public class EnemyCharacter : GameCharacter
         {
             Skill _skillData = this.nextAtlSkill.GetSkillData();
 
-            if (_skillData.skillType is SkillType.active or SkillType.repulse)
+            if (_skillData.skillType is SkillType.repulse && _skillTypeList.Contains(BattleSkillManager.SkillType.Repulse))
             {
-                if (_skillTypeList.Contains( BattleSkillManager.SkillType.Active ))
-                {
-                    base.SetAssignedSkill( this.nextAtlSkill );
-                    this.isUsingNextAtlSkill = true;
-                }
-                else if (_skillTypeList.Contains( BattleSkillManager.SkillType.Repulse ))
-                {
-                    base.SetAssignedSkill( this.nextAtlSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() );
-                    this.isUsingNextAtlSkill = true;
-                }
-            }
-            else if (_skillData.skillType is SkillType.backend or SkillType.derived or SkillType.counter)
-            {
-                base.SetAssignedSkill( this.nextAtlSkill );
+                _skillTypeList.Remove(BattleSkillManager.SkillType.Active);
+                base.SetAssignedSkill(this.nextAtlSkill);
                 this.isUsingNextAtlSkill = true;
             }
-
+            else if (_skillData.skillType is SkillType.derived)
+            {
+                this.nextAtlDeriveSkill = this.nextAtlSkill;
+            }
+            else
+            {
+                base.SetAssignedSkill(this.nextAtlSkill);
+                this.isUsingNextAtlSkill = true;
+            }
             this.nextAtlSkill = null;
             return;
         }
@@ -406,19 +403,26 @@ public class EnemyCharacter : GameCharacter
 
         if (_skillTypeList.Contains( BattleSkillManager.SkillType.Derive ))
         {
-            for (int i = 0; i < _selectedActiveSkillList.Count; i++)
+            if (this.nextAtlDeriveSkill != null)
             {
-                CharacterSkill _activeSkill = _selectedActiveSkillList[ i ];
-
-                if (_activeSkill.GetSkillData().Id == base.GetCurrentSkill().GetSkillData().Id)
-                {
-                    _derivedSkill = GetSkillAtRandomLevel( _activeSkill.GetCharacterSubskillData().GetSelectedDerivedSkill(), _enemyDebugMenuPanel );
-                }
-                else
-                {
-                    _availableActiveSkillList.Add( GetSkillAtRandomLevel( _activeSkill, _enemyDebugMenuPanel ) );
-                }
+                _derivedSkill = this.nextAtlDeriveSkill;
             }
+            else
+            {
+                for (int i = 0; i < _selectedActiveSkillList.Count; i++)
+                {
+                    CharacterSkill _activeSkill = _selectedActiveSkillList[i];
+
+                    if (_activeSkill.GetSkillData().Id == base.GetCurrentSkill().GetSkillData().Id)
+                    {
+                        _derivedSkill = GetSkillAtRandomLevel(_activeSkill.GetCharacterSubskillData().GetSelectedDerivedSkill(), _enemyDebugMenuPanel);
+                    }
+                    else
+                    {
+                        _availableActiveSkillList.Add(GetSkillAtRandomLevel(_activeSkill, _enemyDebugMenuPanel));
+                    }
+                }
+            }     
         }
 
         if (_skillTypeList.Contains( BattleSkillManager.SkillType.Counter ))
