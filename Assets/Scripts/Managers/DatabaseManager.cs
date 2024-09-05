@@ -79,7 +79,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
             string _characterJsonData = PlayerPrefsManager.LoadCharacterDatabase();
             string _skillJsonData = PlayerPrefsManager.LoadSkillDatabase();
             string _subskillJsonData = PlayerPrefsManager.LoadSubskillDatabase();
-            string _skillAnimationJsonData = PlayerPrefsManager.LoadSkillAnimationDatabase();
+            //string _skillAnimationJsonData = PlayerPrefsManager.LoadSkillAnimationDatabase();
             string _passiveSkillJsonData = PlayerPrefsManager.LoadPassiveSkillDatabase();
             string _animationJsonData = PlayerPrefsManager.LoadAnimationDatabase();
 
@@ -88,7 +88,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 && !string.IsNullOrEmpty( _characterJsonData )
                 && !string.IsNullOrEmpty( _skillJsonData )
                 && !string.IsNullOrEmpty( _subskillJsonData )
-                && !string.IsNullOrEmpty( _skillAnimationJsonData )
+                //&& !string.IsNullOrEmpty( _skillAnimationJsonData )
                 && !string.IsNullOrEmpty( _passiveSkillJsonData )
                 && !string.IsNullOrEmpty( _animationJsonData )
                 )

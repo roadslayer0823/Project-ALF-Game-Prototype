@@ -7,7 +7,7 @@ public class PlayerPrefsManager
     private const string CHARACTER_DATABASE = "character_database";
     private const string SKILL_DATABASE = "skill_database";
     private const string SUBSKILL_DATABASE = "subskill_database";
-    private const string SKILL_ANIMATION_DATABASE = "skill_animation_database";
+    //private const string SKILL_ANIMATION_DATABASE = "skill_animation_database";
     private const string PASSIVE_SKILL_DATABASE = "passive_skill_database";
     private const string ANIMATION_DATABASE = "animations_database";
 
@@ -61,15 +61,15 @@ public class PlayerPrefsManager
         return PlayerPrefs.GetString( SUBSKILL_DATABASE, "" );
     }
 
-    public static void SaveSkillAnimationDatabase(string jsonData)
-    {
-        PlayerPrefs.SetString(SKILL_ANIMATION_DATABASE, jsonData);
-    }
+    //public static void SaveSkillAnimationDatabase(string jsonData)
+    //{
+    //    PlayerPrefs.SetString(SKILL_ANIMATION_DATABASE, jsonData);
+    //}
 
-    public static string LoadSkillAnimationDatabase()
-    {
-        return PlayerPrefs.GetString(SKILL_ANIMATION_DATABASE, "");
-    }
+    //public static string LoadSkillAnimationDatabase()
+    //{
+    //    return PlayerPrefs.GetString(SKILL_ANIMATION_DATABASE, "");
+    //}
 
     public static void SavePassiveSkillDatabase( string jsonData )
     {
