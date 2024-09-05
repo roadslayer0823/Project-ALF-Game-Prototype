@@ -12,6 +12,10 @@ public class EnemyCharacter : GameCharacter
     private bool isUsingNextAtlSkill = false;
     private int lastAtlNumber = 0;
 
+    private const float CHANCE_TO_USE_ACTIVE_SKILL = 0.8f;
+    private const float CHANCE_TO_USE_DERIVED_SKILL = 0.65f;
+    private const float CHANCE_TO_USE_OBSERVED_SKILL = 0.5f;
+
     public void InitializeSelectedSkills()
     {
         List<CharacterSkill> _activeSkillList = new();
@@ -405,7 +409,8 @@ public class EnemyCharacter : GameCharacter
             for (int i = 0; i < _selectedActiveSkillList.Count; i++)
             {
                 CharacterSkill _activeSkill = _selectedActiveSkillList[ i ];
-                if (_activeSkill == base.GetCurrentSkill())
+
+                if (_activeSkill.GetSkillData().Id == base.GetCurrentSkill().GetSkillData().Id)
                 {
                     _derivedSkill = GetSkillAtRandomLevel( _activeSkill.GetCharacterSubskillData().GetSelectedDerivedSkill(), _enemyDebugMenuPanel );
                 }
@@ -478,7 +483,7 @@ public class EnemyCharacter : GameCharacter
 
             if (base.IsCharacterIdentityTypeListEmpty())
             {
-                if (_activeSkillList.Count > 0 && ( _backendSkillList.Count <= 0 || Random.value < 0.8f ))
+                if (_activeSkillList.Count > 0 && ( _backendSkillList.Count <= 0 || Random.value < CHANCE_TO_USE_ACTIVE_SKILL ))
                 {
                     _availableSkillList = _activeSkillList;
                 }
@@ -494,9 +499,12 @@ public class EnemyCharacter : GameCharacter
                 _availableSkillList.AddRange( _backendSkillList );
             }
 
-            if (_derivedSkill != null && Random.value < 0.5f)
+            if (_derivedSkill != null && Random.value < CHANCE_TO_USE_DERIVED_SKILL)
             {
-                base.SetAssignedSkill( _derivedSkill );
+                LeanTween.delayedCall( Random.Range( 1.0f, 1.2f ), () =>
+                {
+                    base.SetAssignedSkill( _derivedSkill );
+                } );
             }
             else if (_availableSkillList?.Count > 0)
             {
@@ -511,7 +519,7 @@ public class EnemyCharacter : GameCharacter
             {
                 base.SetCurrentObservingSkill( _randomSkill, false );
             }
-            else if (Random.value < 0.5f)
+            else if (Random.value < CHANCE_TO_USE_OBSERVED_SKILL)
             {
                 base.SetCurrentObservingSkill( _randomSkill, true );
             }

@@ -14,6 +14,17 @@ public class DeriveSkillAnimationHandler : MonoBehaviour
 
     private const string AUDIO_ID_DERIVE_SKILL_PART_A = "derive_skill_partA";
 
+    public void Show( GameCharacter gameCharacter )
+    {
+        this.transform.localScale = new Vector3( gameCharacter.GetIsPlayer() ? 1.0f : -1.0f, 1.0f, 1.0f );
+        this.gameObject.SetActive( true );
+    }
+
+    public void Hide()
+    {
+        this.gameObject.SetActive( false );
+    }
+
     public void PlayDeriveAnimationPart1(float duration)
     {
         ResetAnimation();

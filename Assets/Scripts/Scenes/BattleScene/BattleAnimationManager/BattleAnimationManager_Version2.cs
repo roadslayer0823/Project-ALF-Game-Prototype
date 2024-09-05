@@ -965,7 +965,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         if (_assignedSkill != null
             && _assignedSkill.GetSkillData().skillType == Skill.SkillType.derived)
         {
-            this.deriveSkillAnimationHandler.gameObject.SetActive( true );
+            this.deriveSkillAnimationHandler.Show( gameCharacter );
             this.deriveSkillAnimationHandler.PlayDeriveAnimationPart1( countdownTime - ( Time.time - countdownStartTime ) );
         }
     }
@@ -1122,7 +1122,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         if (CheckHasBattleEndedV2())
         {
-            this.deriveSkillAnimationHandler.gameObject.SetActive( false );
+            this.deriveSkillAnimationHandler.Hide();
             this.derivedSkillLastFrameObject.SetActive( false );
             return true;
         }
@@ -1245,7 +1245,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
 
         this.derivedSkillLastFrameObject.SetActive( true );
-        this.deriveSkillAnimationHandler.gameObject.SetActive( false );
+        this.deriveSkillAnimationHandler.Hide();
     }
 
     private IEnumerator PlayCharacterAnimation( GameCharacter gameCharacter, string animationName, BattleResultData.BattleResultData_GameCharacter battleResultData )
