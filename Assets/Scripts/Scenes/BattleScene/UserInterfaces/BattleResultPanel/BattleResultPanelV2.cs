@@ -49,6 +49,6 @@ public class BattleResultPanelV2: MonoBehaviour
     public void ClickToExitScene()
     {
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
-        SceneControlManager.GoToAdminPage();
+        SceneControlManager.GoToOptionPage();
     }
 }
