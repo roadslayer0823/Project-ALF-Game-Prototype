@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using Newtonsoft.Json;
 
 public class DatabaseManager : Singleton<DatabaseManager>
@@ -231,12 +233,26 @@ public class DatabaseManager : Singleton<DatabaseManager>
         //Check to make sure no error, then pass the loaded data to other function for using
         if (string.IsNullOrEmpty( _webRequest.error ))
         {
-            ProcessJsonData<T>( _webRequest.downloadHandler.text, sheetName, true );
+            string _jsonData = _webRequest.downloadHandler.text;
+
+            ProcessJsonData<T>( _jsonData, sheetName, true );
 
             UpdateTableStatus( sheetName, TableStatus.UpToDate );
             this.onVersionUpdatedCallback.Invoke( sheetName, versionNumber );
 
             Debug.Log( "Done." );
+
+#if UNITY_EDITOR
+
+            string _jsonFilePath = $"Assets/Resources/Data/GoogleSpreadsheet/{ sheetName }.json";
+
+            StreamWriter _streamWriter = new( _jsonFilePath );
+            _streamWriter.Write( _jsonData );
+            _streamWriter.Close();
+
+            AssetDatabase.ImportAsset( _jsonFilePath );
+
+#endif
         }
         else
         {
