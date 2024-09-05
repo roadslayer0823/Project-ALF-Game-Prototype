@@ -29,6 +29,16 @@ public class SkillSelectionBoxV2 : MonoBehaviour
     [SerializeField] private Transform plusLevelOriginalPosition = null;
     [SerializeField] private Transform minusLevelTargetPosition = null;
     [SerializeField] private Transform minusLevelOriginalPosition = null;
+    [SerializeField] private Image skillNameBackground = null;
+    [SerializeField] private Image skillPrefixBackground = null;
+    [SerializeField] private Sprite blankSkillNameBackground;
+    [SerializeField] private Sprite blankSkillPrefixBackground;
+    [SerializeField] private Sprite yellowSkillNameBackground;
+    [SerializeField] private Sprite yellowSkillPrefixBackground;
+    [SerializeField] private Sprite blueSkillNameBackground;
+    [SerializeField] private Sprite blueSkillPrefixBackground;
+    [SerializeField] private Sprite derivedSkillNameBackground;
+    [SerializeField] private Sprite derivedSkillPrefixBackground;
 
     [Header("BackendSkillSelectionBox")]
     [SerializeField] private Image skillSelectedImage = null;
@@ -45,7 +55,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour
     [SerializeField] private DoubleTapDetector doubleTapDetector = null;
 
     private SkillSelectionPanelV2 skillSelectionPanel = null;
-    private PreparationSection preparationSectionAnimation = null;
     private CharacterSkill characterSkill = null;
     private bool isSelected = false;
     private int skillLevel = 0;
@@ -54,7 +63,6 @@ public class SkillSelectionBoxV2 : MonoBehaviour
     private const string AUDIO_ID_BOOST_LEVEL_UP = "boost_level_up";
     private const string AUDIO_ID_BOOST_LEVEL_DOWN = "boost_level_down";
     private const string AUDIO_ID_HIGHLIGHT = "highlight";
-    private const string AUDIO_ID_CLICK = "click";
 
     public void Initialize(SkillSelectionPanelV2 skillSelectionPanel, CharacterSkill characterSkill)
     {
@@ -77,10 +85,12 @@ public class SkillSelectionBoxV2 : MonoBehaviour
                 if (_prefix != "-")
                 {
                     this.skillTypeText.SetText( "[" + _prefix + "]" );
+                    this.skillPrefixBackground.gameObject.SetActive(true);
                 }
                 else
                 {
                     this.skillTypeText.SetText( "" );
+                    this.skillPrefixBackground.gameObject.SetActive(false);
                 }
             }
             
@@ -178,7 +188,9 @@ public class SkillSelectionBoxV2 : MonoBehaviour
                 else
                 {
                     Debug.Log("Unable to add skill");
+                    //this.skillPrefixBackground.sprite = blankSkillPrefixBackground;
                 }
+                ShowSkillDisplayTextBackground(this.characterSkill);
             }
 
             ShowSelectionHighlight();
@@ -237,6 +249,8 @@ public class SkillSelectionBoxV2 : MonoBehaviour
             {
                 this.skillSelectionPanel.RemoveSelectedSkillBox(this);
                 this.doubleTapDetector.ResetDoubleTapValue();
+                this.skillNameBackground.sprite = blankSkillNameBackground;
+                this.skillPrefixBackground.sprite = blankSkillPrefixBackground;
             }
             else if(this.skillType == Skill.SkillType.backend)
             {
@@ -408,6 +422,22 @@ public class SkillSelectionBoxV2 : MonoBehaviour
                 this.skillLevelAnimationText.transform.localScale = skillTextScale;
             });
             });
+    }
+
+    public void ShowSkillDisplayTextBackground(CharacterSkill characterSkill)
+    {
+        this.characterSkill = characterSkill;
+        Skill.SkillType _skillType = this.characterSkill.GetSkillData().skillType;
+
+        var DisplayTextBackground = _skillType switch
+        {
+            Skill.SkillType.active or Skill.SkillType.counter => (yellowSkillNameBackground, yellowSkillPrefixBackground),
+            Skill.SkillType.backend or Skill.SkillType.repulse => (blueSkillNameBackground, blueSkillPrefixBackground),
+            Skill.SkillType.derived => (derivedSkillNameBackground, derivedSkillPrefixBackground),
+            _ => (null, null)
+        };
+        this.skillNameBackground.sprite = DisplayTextBackground.Item1;
+        this.skillPrefixBackground.sprite = DisplayTextBackground.Item2;
     }
 
     // get the character skill

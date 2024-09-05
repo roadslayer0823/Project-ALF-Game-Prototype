@@ -474,18 +474,26 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         int index = Mathf.FloorToInt(lifeScore / 50);
         float fillAmount = (lifeScore % 50) / 50.0f;
 
-        // Update all previous progress bars to full
-        for (int i = 0; i < index; i++)
+        if(index < this.lifeScoreProgressBar.Length && index < this.lifeScoreGlowBar.Length)
         {
-            this.lifeScoreProgressBar[i].fillAmount = 1.0f;
-            this.lifeScoreGlowBar[i].gameObject.SetActive(true);
-        }
+            // Update all previous progress bars to full
+            for (int i = 0; i < index; i++)
+            {
+                this.lifeScoreProgressBar[i].fillAmount = 1.0f;
+                this.lifeScoreGlowBar[i].gameObject.SetActive(true);
+            }
 
-        // Update the current progress bar
-        this.lifeScoreProgressBar[index].fillAmount = fillAmount;
-        if(this.lifeScoreProgressBar[index].fillAmount >= 1.0f)
+            // Update the current progress bar
+            this.lifeScoreProgressBar[index].fillAmount = fillAmount;
+            if (this.lifeScoreProgressBar[index].fillAmount >= 1.0f)
+            {
+                this.lifeScoreGlowBar[index].gameObject.SetActive(true);
+            }
+        }
+        else
         {
-            this.lifeScoreGlowBar[index].gameObject.SetActive(true);
+            this.lifeScoreProgressBar[5].fillAmount = 1.0f;
+            this.lifeScoreGlowBar[5].gameObject.SetActive(true);
         }
     }
 }
