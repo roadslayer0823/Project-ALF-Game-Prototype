@@ -19,7 +19,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
     [SerializeField] private string characterSheetName = "";
     [SerializeField] private string skillSheetName = "";
     [SerializeField] private string subskillSheetName = "";
-    [SerializeField] private string skillAnimationSheetName = "";
+    //[SerializeField] private string skillAnimationSheetName = "";
     [SerializeField] private string passiveSkillSheetName = "";
     [SerializeField] private string animationSheetName = "";
 
@@ -37,7 +37,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
     private TableStatus characterTableStatus = TableStatus.None;
     private TableStatus skillTableStatus = TableStatus.None;
     private TableStatus subskillTableStatus = TableStatus.None;
-    private TableStatus skillAnimationTableStatus = TableStatus.None;
+    //private TableStatus skillAnimationTableStatus = TableStatus.None;
     private TableStatus passiveSkillTableStatus = TableStatus.None;
     private TableStatus animationTableStatus = TableStatus.None;
 
@@ -97,7 +97,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 ProcessJsonData<Character>( _characterJsonData, this.characterSheetName, false );
                 ProcessJsonData<Skill>( _skillJsonData, this.skillSheetName, false );
                 ProcessJsonData<Subskill>( _subskillJsonData, this.subskillSheetName, false );
-                ProcessJsonData<SkillAnimation>( _skillAnimationJsonData, this.skillAnimationSheetName, false );
+                //ProcessJsonData<SkillAnimation>( _skillAnimationJsonData, this.skillAnimationSheetName, false );
                 ProcessJsonData<PassiveSkill>( _passiveSkillJsonData, this.passiveSkillSheetName, false );
                 ProcessJsonData<AnimationData>( _animationJsonData, this.animationSheetName, false );
             }
@@ -164,11 +164,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
                                 StartCoroutine( GetJsonData<Subskill>( this.subskillSheetName, _latestVersionNumber ) );
                                 Debug.Log( "Update: " + this.subskillSheetName );
                             }
-                            else if (_latestDatabaseVersion.SheetName == this.skillAnimationSheetName)
-                            {
-                                StartCoroutine( GetJsonData<SkillAnimation>( this.skillAnimationSheetName, _latestVersionNumber ) );
-                                Debug.Log( "Update: " + this.skillAnimationSheetName );
-                            }
+                            //else if (_latestDatabaseVersion.SheetName == this.skillAnimationSheetName)
+                            //{
+                            //    StartCoroutine( GetJsonData<SkillAnimation>( this.skillAnimationSheetName, _latestVersionNumber ) );
+                            //    Debug.Log( "Update: " + this.skillAnimationSheetName );
+                            //}
                             else if (_latestDatabaseVersion.SheetName == this.passiveSkillSheetName)
                             {
                                 StartCoroutine( GetJsonData<PassiveSkill>( this.passiveSkillSheetName, _latestVersionNumber ) );
@@ -211,7 +211,7 @@ public class DatabaseManager : Singleton<DatabaseManager>
         StartCoroutine( GetJsonData<Character>( this.characterSheetName ) );
         StartCoroutine( GetJsonData<Skill>( this.skillSheetName ) );
         StartCoroutine( GetJsonData<Subskill>( this.subskillSheetName ) );
-        StartCoroutine( GetJsonData<SkillAnimation>( this.skillAnimationSheetName ) );
+        //StartCoroutine( GetJsonData<SkillAnimation>( this.skillAnimationSheetName ) );
         StartCoroutine( GetJsonData<PassiveSkill>( this.passiveSkillSheetName ) );
         StartCoroutine( GetJsonData<AnimationData>(this.animationSheetName));
     }
@@ -364,15 +364,15 @@ public class DatabaseManager : Singleton<DatabaseManager>
                 PlayerPrefsManager.SaveSubskillDatabase( jsonData );
             }
         }
-        else if (sheetName == this.skillAnimationSheetName)
-        {
-            this.skillAnimationList = dataList as List<SkillAnimation>;
+        //else if (sheetName == this.skillAnimationSheetName)
+        //{
+        //    this.skillAnimationList = dataList as List<SkillAnimation>;
 
-            if (needToSave)
-            {
-                PlayerPrefsManager.SaveSkillAnimationDatabase( jsonData );
-            }
-        }
+        //    if (needToSave)
+        //    {
+        //        PlayerPrefsManager.SaveSkillAnimationDatabase( jsonData );
+        //    }
+        //}
         else if (sheetName == this.passiveSkillSheetName)
         {
             this.passiveSkillList = dataList as List<PassiveSkill>;
@@ -431,10 +431,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
         {
             this.subskillTableStatus = tableStatus;
         }
-        else if (sheetName == this.skillAnimationSheetName)
-        {
-            this.skillAnimationTableStatus = tableStatus;
-        }
+        //else if (sheetName == this.skillAnimationSheetName)
+        //{
+        //    this.skillAnimationTableStatus = tableStatus;
+        //}
         else if (sheetName == this.passiveSkillSheetName)
         {
             this.passiveSkillTableStatus = tableStatus;
@@ -651,10 +651,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.subskillSheetName;
     }
 
-    public string GetSkillAnimationSheetName()
-    {
-        return this.skillAnimationSheetName;
-    }
+    //public string GetSkillAnimationSheetName()
+    //{
+    //    return this.skillAnimationSheetName;
+    //}
 
     public string GetPassiveSkillSheetName()
     {
@@ -691,10 +691,10 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.subskillTableStatus;
     }
 
-    public TableStatus GetSkillAnimationTableStatus()
-    {
-        return this.skillAnimationTableStatus;
-    }
+    //public TableStatus GetSkillAnimationTableStatus()
+    //{
+    //    return this.skillAnimationTableStatus;
+    //}
 
     public TableStatus GetPassiveSkillTableStatus()
     {
