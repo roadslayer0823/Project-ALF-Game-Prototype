@@ -1,6 +1,6 @@
-using UnityEngine;
 using System;
 using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
@@ -57,6 +57,8 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     private const string ANIMATION_ID_STRESS_POINT_INCREASE = "StressPointIncrease";
     private const string ANIMATION_ID_MAX_STATE_POINT_INCREASE = "MaxStatePointIncrease";
 
+    private const float LIFE_SCORE_PER_BAR = 50.0f;
+
     private GameCharacter selectedCharacter = null;
     private bool resetFirstFillAmount = false;
     private bool resetSecondFillAmount = false;
@@ -89,7 +91,6 @@ public class CharacterInfoPanelV2 : MonoBehaviour
     //max state point text scale
     private Vector2 currentScale;
     private Vector2 newScale;
-    private int index;
 
     public void Initialize()
     {
@@ -469,35 +470,34 @@ public class CharacterInfoPanelV2 : MonoBehaviour
 
     public void CurrentLifeScoreUI()
     {
-        float lifeScore = this.selectedCharacter.GetLifeScore();
-        int _index = Mathf.FloorToInt(lifeScore / 50); // Calculate the index, ensuring proper slot selection
-        float fillAmount = (lifeScore % 50) / 50.0f;
+        float _lifeScore = this.selectedCharacter.GetLifeScore();
+        int _index = Mathf.FloorToInt( _lifeScore / LIFE_SCORE_PER_BAR );
+        float _fillAmount = ( _lifeScore % LIFE_SCORE_PER_BAR ) / LIFE_SCORE_PER_BAR;
 
-        if (_index < this.lifeScoreProgressBar.Length && _index < this.lifeScoreGlowBar.Length)
+        int _lifeScoreProgressBarLength = this.lifeScoreProgressBar.Length;
+        int _lifeScoreGlowBarLength = this.lifeScoreGlowBar.Length;
+
+        for (int i = 0; i <= _index && ( i < _lifeScoreProgressBarLength || i < _lifeScoreGlowBarLength ); i++)
         {
-            this.index = _index;
-        }
-        else
-        {
-            for (int i = 0; i < this.lifeScoreProgressBar.Length; i++)
+            if (i == _index)
             {
-                this.lifeScoreProgressBar[i].fillAmount = 1.0f;
-                this.lifeScoreGlowBar[i].gameObject.SetActive(true);
+                if (_index < _lifeScoreProgressBarLength)
+                {
+                    this.lifeScoreProgressBar[ _index ].fillAmount = _fillAmount;
+                }
             }
-        }
+            else
+            {
+                if (i < _lifeScoreProgressBarLength)
+                {
+                    this.lifeScoreProgressBar[ i ].fillAmount = 1.0f;
+                }
 
-        // Update all previous progress bars to full
-        for (int i = 0; i < this.index; i++)
-        {
-            this.lifeScoreProgressBar[i].fillAmount = 1.0f;
-            this.lifeScoreGlowBar[i].gameObject.SetActive(true);
-        }
-
-        // Update the current progress bar
-        this.lifeScoreProgressBar[this.index].fillAmount = fillAmount;
-        if (this.lifeScoreProgressBar[this.index].fillAmount >= 1.0f)
-        {
-            this.lifeScoreGlowBar[this.index].gameObject.SetActive(true);
+                if (i < _lifeScoreGlowBarLength)
+                {
+                    this.lifeScoreGlowBar[ i ].gameObject.SetActive( true );
+                }
+            }
         }
     }
 }
