@@ -58,8 +58,6 @@ public partial class BattleLogicManagerV2
     // 頁面：對比條件的技能其他效果
     public static void CompareConditionallyForSkillEffects( ref BattleResultData battleResultData, GameCharacter gameCharacter, GameCharacter opponent )
     {
-        // TODO: "己方"已按下技能是否有"對比條件"?
-
         // "己方"已按下技能是否為"雷光突襲"（迎擊技能）？
         if (gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Id == "S18_1")
         {

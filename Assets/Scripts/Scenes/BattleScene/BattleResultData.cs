@@ -580,6 +580,9 @@ public class BattleResultData
         gameCharacterResultData.stateBreakStatusRemainingATLs = numberOfATLs;
         gameCharacterResultData.numberOfEnteringIntoBreakStatus++;
 
+        // 記錄崩潰前一刻的以太值數值。
+        gameCharacter.SetStatePointBeforeBreakStatus( gameCharacter.GetCurrentStatePoint() );
+
 #if ALF_DEBUG
 
         gameCharacterResultData.eventName = "以太崩潰狀態";

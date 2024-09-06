@@ -80,6 +80,7 @@ public partial class GameCharacter : MonoBehaviour
     private List<CharacterIdentityType> characterIdentityTypeList = null; // 暫時性身份列表
     private List<CharacterIdentityType> permanentCharacterIdentityTypeList = null; // 永久性身份列表
     private CommandTimeType currentCommandTimeType = CommandTimeType.None; // 目前的指令時間
+    private float statePointBeforeBreakStatus = 0.0f; // 崩潰前一刻的以太值數值
     private List<CharacterSkill> allSkills = null;
     private CharacterSkill lastAtlSkill = null;
 
@@ -925,6 +926,16 @@ public partial class GameCharacter : MonoBehaviour
     public bool GetHasJustDied()
     {
         return this.hasJustDied;
+    }
+
+    public void SetStatePointBeforeBreakStatus( float statePointBeforeBreakStatus )
+    {
+        this.statePointBeforeBreakStatus = statePointBeforeBreakStatus;
+    }
+
+    public float GetStatePointBeforeBreakStatus()
+    {
+        return this.statePointBeforeBreakStatus;
     }
 
     public void SetTemporaryBattleResultData( BattleResultData_GameCharacter temporaryBattleResultData )

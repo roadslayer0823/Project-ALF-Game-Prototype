@@ -197,12 +197,14 @@ public partial class BattleLogicManagerV2
                     // NO
                     else
                     {
-                        // TODO: 當前以太值回復至崩潰前一刻的數值
+                        // 當前以太值回復至崩潰前一刻的數值
                         // 正常情況下，以太崩潰前提一定是低於0的。
                         // 所以正常情況下一定是回復至50%的。
                         // 但為了今後可能會創作有一些技能的特殊效果是可以在以太在正常值下，強制進入崩潰。
                         // 例如尚擁有120的情況下，被特殊效果進入以太崩潰。
                         // 當崩潰回復時，以太值會返回崩潰前的120。
+
+                        _currentStatePoint = gameCharacter.GetStatePointBeforeBreakStatus();
                     }
                 }
             }
@@ -472,7 +474,7 @@ public partial class BattleLogicManagerV2
 
     public static void DetermineLightOrHeavyRecipient( GameCharacter recipient, GameCharacter assaulter )
     {
-        // TODO: Temporarily determine that the recipient is a heavy recipient.
+        // Temporarily determine that the recipient is a heavy recipient.
         recipient.AddCharacterIdentityType( CharacterIdentityType.HeavyRecipient );
         assaulter.AddCharacterIdentityType( CharacterIdentityType.HeavyAssaulter );
     }
@@ -1005,7 +1007,7 @@ public partial class BattleLogicManagerV2
             float _healthPointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetCurrentAttackDamage( _casterSkill, caster, target, _isTargetHavingEnergyMarker, _isTargetInBreakStatus ) );
             if (_healthPointDamage > 0)
             {
-                // TODO: 參考 Flowchart 裡的“虛傷實傷解說”。
+                // 參考 Flowchart 裡的“虛傷實傷解說”。
                 // 當角色受到直擊傷害時：
                 // 如果該角色是“輕受擊方”，該直擊傷害為“虛傷”。
                 // 如果該角色是“重受擊方”，該直擊傷害為“實傷”。

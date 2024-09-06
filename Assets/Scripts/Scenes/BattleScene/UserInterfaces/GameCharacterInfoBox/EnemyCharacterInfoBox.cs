@@ -59,7 +59,7 @@ public class EnemyCharacterInfoBox : MonoBehaviour
 
     void Update()
     {
-        // TODO: Temporarily update this game object's position according to the selected character's pivot's position on every frame.
+        // Temporarily update this game object's position according to the selected character's pivot's position on every frame.
         this.transform.position = this.selectedCharacter.GetPivot().position + new Vector3( 0.0f, 2.0f, 0.0f );
     }
 
