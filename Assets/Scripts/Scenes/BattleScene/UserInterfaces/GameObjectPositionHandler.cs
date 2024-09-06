@@ -20,7 +20,6 @@ public class GameObjectPositionHandler : MonoBehaviour
         float _aspectRatio = (float)Screen.width / (float)Screen.height;
         float _targetAspectRatio = AspectRatioX / AspectRatioY;
         float _18_divede_9 = 18 / 9;
-        float _19_divide_9 = 19 / 9;
         float _22_divide_9 = 22 / 9;
 
         if(_aspectRatio > _targetAspectRatio + 0.001f)
