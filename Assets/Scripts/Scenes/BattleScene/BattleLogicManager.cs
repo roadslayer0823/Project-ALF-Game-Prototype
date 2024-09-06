@@ -157,7 +157,7 @@ public class BattleLogicManager
             bool _hasEnergyMarker = target.HasEnergyMarker();
 
             target.SetEnergyMarkerRemainingATLs( _energyMarkerAtl );
-
+            
             if (_hasEnergyMarker)
             {
                 log += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ target.GetCharacterName() }</color>原本帶有的"

@@ -19,8 +19,8 @@ public class GameObjectPositionHandler : MonoBehaviour
     {
         float _aspectRatio = (float)Screen.width / (float)Screen.height;
         float _targetAspectRatio = AspectRatioX / AspectRatioY;
-        float _18_divede_9 = 18 / 9;
-        float _22_divide_9 = 22 / 9;
+        float _18_divede_9 = 18.0f / 9.0f;
+        float _22_divide_9 = 22.0f / 9.0f;
 
         if(_aspectRatio > _targetAspectRatio + 0.001f)
         {
@@ -38,7 +38,7 @@ public class GameObjectPositionHandler : MonoBehaviour
             {
                 this.BattleLog.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2300);
             }
-            else if (_aspectRatio >= _22_divide_9 + 0.4)
+            else if (_aspectRatio > _22_divide_9)
             {
                 this.DebugContainer.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2300);
                 this.BattleLog.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 3000);
@@ -48,6 +48,8 @@ public class GameObjectPositionHandler : MonoBehaviour
                 this.UiMiddleFrame.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2450);
                 this.PassiveSkillSelectionList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2450);
             }
+            Debug.Log("aspect ratio:" +_aspectRatio);
+            Debug.Log("22/9:" + _22_divide_9);
             //position
             Vector3 _battleFieldPosition = BattleFieldPosition.position;
             _battleFieldPosition.y = -0.5f;
