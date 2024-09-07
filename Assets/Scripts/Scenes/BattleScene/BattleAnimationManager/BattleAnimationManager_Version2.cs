@@ -151,40 +151,15 @@ public partial class BattleAnimationManager : MonoBehaviour
         SkillType _improviserSkillType = SkillType.none;
         Subskill _improviserSubskillData = null;
 
-        string _leadCharacterPartB = "";
-        string _leadSkillEffectPartB = "";
-
         BringGameCharacterToFront( _lead );
         BringGameCharacterToBack( _improviser );
 
         if (_lead.GetIsPlayer())
         {
-            if (_leadRangeType == RangeType.melee)
-            {
-                _leadCharacterPartB = "MeleeAttack_Part_B";
-                _leadSkillEffectPartB = "MeleeAttack_Part_B";
-            }
-            else if (_leadRangeType == RangeType.ranged)
-            {
-                _leadCharacterPartB = "-";
-                _leadSkillEffectPartB = "Fireball_Part_B";
-            }
-
             ChangeToBackgroundPartB();
         }
         else
         {
-            if (_leadRangeType == RangeType.melee)
-            {
-                _leadCharacterPartB = "Attack_Part_B";
-                _leadSkillEffectPartB = "HittingEffect";
-            }
-            else if (_leadRangeType == RangeType.ranged)
-            {
-                _leadCharacterPartB = "-";
-                _leadSkillEffectPartB = "Fireball_Part_B";
-            }
-
             ChangeToBackgroundPartA();
         }
 
@@ -685,6 +660,36 @@ public partial class BattleAnimationManager : MonoBehaviour
             }
             else
             {
+                string _leadCharacterPartB = "";
+                string _leadSkillEffectPartB = "";
+
+                if (_lead.GetIsPlayer())
+                {
+                    if (_leadRangeType == RangeType.melee)
+                    {
+                        _leadCharacterPartB = "MeleeAttack_Part_B";
+                        _leadSkillEffectPartB = "MeleeAttack_Part_B";
+                    }
+                    else if (_leadRangeType == RangeType.ranged)
+                    {
+                        _leadCharacterPartB = "-";
+                        _leadSkillEffectPartB = "Fireball_Part_B";
+                    }
+                }
+                else
+                {
+                    if (_leadRangeType == RangeType.melee)
+                    {
+                        _leadCharacterPartB = "Attack_Part_B";
+                        _leadSkillEffectPartB = "HittingEffect";
+                    }
+                    else if (_leadRangeType == RangeType.ranged)
+                    {
+                        _leadCharacterPartB = "-";
+                        _leadSkillEffectPartB = "Fireball_Part_B";
+                    }
+                }
+
                 switch ( _improviserSkillType )
                 {
                     case SkillType.none:
