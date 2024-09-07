@@ -101,7 +101,7 @@ public class EnemyCharacter : GameCharacter
 
         for (int i = 0; i < _selectedActiveSkillList.Count; i++)
         {
-            if (_selectedActiveSkillList[ i ].GetCharacterSubskillData().GetSubskillData().Range is RangeType.melee or RangeType.melee_or_ranged)
+            if (_selectedActiveSkillList[ i ].GetCharacterSubskillData().GetSubskillData().Range is RangeType.melee)
             {
                 _hasMeleeActiveSkill = true;
                 break;

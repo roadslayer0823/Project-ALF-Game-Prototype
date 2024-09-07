@@ -283,7 +283,6 @@ public class BattleGameManager : MonoBehaviour
                 GameCharacter _gameCharacter = _gameCharacters[ i ];
                 _gameCharacter.ResetAssignedSkill();
                 _gameCharacter.Reset();
-                _gameCharacter.SetIsCounterAttacking( false );
 
                 BattleResultData.BattleResultData_GameCharacter _gameCharacterResultData = _battleResultData.GetGameCharacterResultData( _gameCharacter, out bool _isNewElement );
                 if (!_isNewElement)

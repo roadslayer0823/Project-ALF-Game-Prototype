@@ -24,7 +24,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
     private GameCharacter selectedGameCharacter = null;
     private List<CharacterSkill> selectedSkills = new List<CharacterSkill>();
     private SkillSlotV2 middleSkillSlot = null;
-    public bool isAnimationRunning = true;
+    private bool isAnimationRunning = false;
 
     private Action<SkillSlotV2,bool> onSkillSlotSelectedCallback = null;
     private const string AUDIO_ID_WHEEL = "wheel";
@@ -299,21 +299,21 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 
     public void ClickBottom()
     {
-        if(isAnimationRunning == true)
+        if (!isAnimationRunning)
         {
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_WHEEL);
+            this.isAnimationRunning = true;
             MoveSlot(-1);
-            this.isAnimationRunning = false;
         }
     }
 
     public void ClickTop()
     {
-        if(isAnimationRunning == true)
+        if (!isAnimationRunning)
         {
             AudioManager.Instance.PlaySoundEffect(AUDIO_ID_WHEEL);
+            this.isAnimationRunning = true;
             MoveSlot(1);
-            this.isAnimationRunning = false;
         }
     }
 
@@ -343,7 +343,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
             OnSkillSlotSelected( GetSelectedSkillSlot(), false );
         }
 
-        if(this.isAnimationRunning == true)
+        if (this.isAnimationRunning)
         {
             for (int i = 0; i < this.skillSlotList.Count; i++)
             {
@@ -373,12 +373,12 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 }
 
                 // Use LeanTween to move the slot to the new position
-                LeanTween.move(slotToMove, targetPosition, 0.1f).setOnComplete(() =>
-                {
-                    this.isAnimationRunning = true;
-                }).setEase(LeanTweenType.easeInOutQuad);
+                LeanTween.move( slotToMove, targetPosition, 0.1f ).setEase( LeanTweenType.easeInOutQuad );
             }
+
+            LeanTween.delayedCall( 0.1f, () => { this.isAnimationRunning = false; } );
         }
+
         ArrangeSkillSlot(direction);
     }
 

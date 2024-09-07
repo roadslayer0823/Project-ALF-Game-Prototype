@@ -70,6 +70,7 @@ public partial class GameCharacter : MonoBehaviour
     // Version 2
     private CharacterSkill assignedSkill = null;     // 已按下的技能，該技能等待被發動。
     private bool isInRepulseCommandTime = false;     // 是否在“迎戰指令時間”裡？
+    private bool isMeleeAttacking = false;           // 是否正在進行近戰？
     private bool isCounterAttacking = false;         // 是否正在進行反擊？
     private int stateBreakStatusRemainingATLs = 0;   // 以太崩潰維持值 (ATL)
     private int stressBreakStatusRemainingATLs = 0;  // 負荷崩潰維持值 (ATL)
@@ -876,6 +877,16 @@ public partial class GameCharacter : MonoBehaviour
     public bool GetIsInRepulseCommandTime()
     {
         return this.isInRepulseCommandTime;
+    }
+
+    public void SetIsMeleeAttacking( bool isMeleeAttacking )
+    {
+        this.isMeleeAttacking = isMeleeAttacking;
+    }
+
+    public bool GetIsMeleeAttacking()
+    {
+        return this.isMeleeAttacking;
     }
 
     public void SetIsCounterAttacking( bool isCounterAttacking )

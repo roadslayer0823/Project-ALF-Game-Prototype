@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
-using CommandTimeType = GameCharacter.CommandTimeType;
 using Skill = DatabaseManager.Skill;
 using SkillType = DatabaseManager.Skill.SkillType;
 using Subskill = DatabaseManager.Subskill;
@@ -316,15 +315,8 @@ public partial class BattleLogicManagerV2
             {
                 resultLogList.Add( "雙方按下了的技能速度相同。" );
 
-                //bool _isGameCharacterOneCounterAttacking = gameCharacterOne.GetIsCounterAttacking();
-                //bool _isGameCharacterTwoCounterAttacking = gameCharacterTwo.GetIsCounterAttacking();
-
-                // 如果有一方在“反擊指令”或“近戰反擊指令”階段按下反擊或主動技能？
-                bool _isGameCharacterOneCounterAttacking = ( gameCharacterOne.GetCurrentCommandTimeType() is CommandTimeType.CounterAttack or CommandTimeType.MeleeCounterAttack );
-                bool _isGameCharacterTwoCounterAttacking = ( gameCharacterTwo.GetCurrentCommandTimeType() is CommandTimeType.CounterAttack or CommandTimeType.MeleeCounterAttack );
-
-                gameCharacterOne.SetIsCounterAttacking( false );
-                gameCharacterTwo.SetIsCounterAttacking( false );
+                bool _isGameCharacterOneCounterAttacking = gameCharacterOne.GetIsCounterAttacking();
+                bool _isGameCharacterTwoCounterAttacking = gameCharacterTwo.GetIsCounterAttacking();
 
                 // 如果有一方在【 反擊指令時間 】或【 近戰反擊指令時間 】階段按下主動技能或反擊技能：
                 // 按下的一方得到先手方而另一方得到後手方。
@@ -334,8 +326,6 @@ public partial class BattleLogicManagerV2
                     {
                         resultLogList.Add( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>在【 反擊指令時間 】或【 近戰反擊指令時間 】階段按下主動技能或反擊技能。" );
 
-                        gameCharacterOne.SetIsCounterAttacking( true );
-
                         gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Lead );
                         gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Improviser );
                     }
@@ -343,8 +333,6 @@ public partial class BattleLogicManagerV2
                     if (_isGameCharacterTwoCounterAttacking)
                     {
                         resultLogList.Add( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>在【 反擊指令時間 】或【 近戰反擊指令時間 】階段按下主動技能或反擊技能。" );
-
-                        gameCharacterTwo.SetIsCounterAttacking( true );
 
                         gameCharacterOne.AddCharacterIdentityType( CharacterIdentityType.Improviser );
                         gameCharacterTwo.AddCharacterIdentityType( CharacterIdentityType.Lead );

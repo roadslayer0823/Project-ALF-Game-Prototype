@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Skill = DatabaseManager.Skill;
+using SkillType = DatabaseManager.Skill.SkillType;
 using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
+using CommandTimeType = GameCharacter.CommandTimeType;
 using DistanceType = BattleDistanceManager.DistanceType;
 using AnimationParameterData = CharacterAnimationHandler.AnimationParameterData;
 
@@ -15,6 +16,8 @@ public partial class BattleAnimationManager : MonoBehaviour
     private const float RESULT_ANIMATION_TIMING_A = 0.1f;       // 結算演出時機A：在 Part-A 或 Part-B 的第 0.1 秒起播放
     private const float RESULT_ANIMATION_TIMING_B = 0.6f;       // 結算演出時機B：在 Part-B 的第 0.6 秒起播放
     private const float RESULT_ANIMATION_TIMING_C = 1.2f;       // 結算演出時機C：在 Part-B 的第 1.2 秒起播放
+
+    private bool isRunningInPartB = false;
 
     public IEnumerator RunBattleAnimationV2( BattleFlowRound_V2 battleFlowRound, BattleFlowATL_V2 battleFlowATL )
     {
@@ -145,7 +148,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         // 後手方的技能
         CharacterSkill _improviserCurrentSkill = null;
-        Skill.SkillType _improviserSkillType = Skill.SkillType.none;
+        SkillType _improviserSkillType = SkillType.none;
         Subskill _improviserSubskillData = null;
 
         string _leadCharacterPartB = "";
@@ -206,16 +209,22 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         ShowCasterCurrentSkillInfo( _lead );
 
-        bool _isAttackerCounterAttacking = _lead.GetIsCounterAttacking();
-        _lead.SetIsCounterAttacking( false );
-        _improviser.SetIsCounterAttacking( false );
+        bool _isLeadMeleeAttacking = _lead.GetIsMeleeAttacking();
+        bool _isLeadCounterAttacking = _lead.GetIsCounterAttacking();
 
-        Skill.SkillType _leadSkillType = _lead.GetCurrentSkill().GetSkillData().skillType;
+        for (int i = 0; i < _gameCharacters.Length; i++)
+        {
+            GameCharacter _gameCharacter = _gameCharacters[ i ];
+            _gameCharacter.SetIsMeleeAttacking( false );
+            _gameCharacter.SetIsCounterAttacking( false );
+        }
+
+        SkillType _leadSkillType = _lead.GetCurrentSkill().GetSkillData().skillType;
 
         // 是否有一方按下“派生技能”？
         // YES
         // “先手方”使用派生技能。
-        if (_leadSkillType == Skill.SkillType.derived)
+        if (_leadSkillType == SkillType.derived)
         {
             // 取消對方的任何技能指令並進入“判定 Part B 結果及結算”。
             _improviser.ResetAssignedSkill();
@@ -235,11 +244,18 @@ public partial class BattleAnimationManager : MonoBehaviour
             yield break;
         }
         // NO
+
+        if (_isLeadCounterAttacking)
+        {
+            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
+            yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, ( _lead.GetIsPlayer() ) ? "Player_Ariku_Counterattack" : ( this.isUsingGameCharacterV2 ) ? "Player_Ariku_Counterattack-enemy" : "Enemy_Enemy_Counterattack" ) );
+        }
+
         // 先手方是否在“近戰指令時間”或“近戰反擊指令時間”按下主動或反擊技能？
         // YES
         // 当前的距离是否为“近距离”？
         // YES
-        else if (_isAttackerCounterAttacking
+        if (_isLeadMeleeAttacking
                 && this.battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType() == DistanceType.Near)
         {
             // “後手方”發動技能。
@@ -264,9 +280,6 @@ public partial class BattleAnimationManager : MonoBehaviour
                     _improviser.AddCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer );
                 }
             }
-
-            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
-            yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, ( _lead.GetIsPlayer() ) ? "Player_Ariku_Counterattack" : ( this.isUsingGameCharacterV2 ) ? "Player_Ariku_Counterattack-enemy" : "Enemy_Enemy_Counterattack" ) );
         }
         // NO
         // 进入“Part A前”。
@@ -424,15 +437,15 @@ public partial class BattleAnimationManager : MonoBehaviour
             _improviserSkillType = _improviserCurrentSkill.GetSkillData().skillType;
             _improviserSubskillData = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData();
 
-            if (_improviserSkillType == Skill.SkillType.repulse)
+            if (_improviserSkillType == SkillType.repulse)
             {
                 _lead.SetCurrentAttacker( _improviser );
             }
-            else if (_improviserSkillType == Skill.SkillType.backend)
+            else if (_improviserSkillType == SkillType.backend)
             {
                 if (!_improviserSubskillData.IsDefendingSkill && !_improviserSubskillData.IsEvadingSkill)
                 {
-                    _improviserSkillType = Skill.SkillType.none;
+                    _improviserSkillType = SkillType.none;
                 }
             }
 
@@ -456,16 +469,9 @@ public partial class BattleAnimationManager : MonoBehaviour
         _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
         _improviserBattleResultData = _battleResultData.GetGameCharacterResultData( _improviser );
 
-        Coroutine _coroutineForDerivedSkill = null;
-
-        if (_winner != null)
-        {
-            _coroutineForDerivedSkill = StartCoroutine( RunCheckingIfDerivedSkillIsSelected( _winner, _skillCountdownTime, _skillCountdownTimeStartTime ) );
-        }
-
         // "先手方"已按下技能是否"派生技能"?
         // YES
-        if (_leadSkillType == Skill.SkillType.derived)
+        if (_leadSkillType == SkillType.derived)
         {
             // TODO: 派生技能演出
         }
@@ -475,6 +481,16 @@ public partial class BattleAnimationManager : MonoBehaviour
             // 判定"己方"的指令時間
             BattleLogicManagerV2.DetermineCommandTimeInPartB( this.battleGameManager, _playerCharacter );
             BattleLogicManagerV2.DetermineCommandTimeInPartB( this.battleGameManager, _enemyCharacter );
+
+            this.isRunningInPartB = true;
+
+            StartCoroutine( RunCheckingIfSkillIsSelectedInPartB( _playerCharacter ) );
+            StartCoroutine( RunCheckingIfSkillIsSelectedInPartB( _enemyCharacter ) );
+
+            if (_winner != null)
+            {
+                StartCoroutine( RunCheckingIfDerivedSkillIsSelectedInPartB( _winner, _skillCountdownTime, _skillCountdownTimeStartTime ) );
+            }
 
             CharacterAnimationHandler _playerCharacterAnimationHandler = _playerCharacter.GetCharacterAnimationHandler();
             CharacterAnimationHandler _enemyCharacterAnimationHandler = _enemyCharacter.GetCharacterAnimationHandler();
@@ -567,8 +583,8 @@ public partial class BattleAnimationManager : MonoBehaviour
                 _enemyCharacterAnimationHandler.LoadAndPlayVisualEffect( _visualEffectParameterDataForPlayerTwo );
             }
 
-            if ((_leadCurrentSkill != null && _leadCurrentSkill.GetSkillData().skillType == Skill.SkillType.repulse)
-                || (_improviserCurrentSkill != null && _improviserCurrentSkill.GetSkillData().skillType == Skill.SkillType.repulse))
+            if ((_leadCurrentSkill != null && _leadCurrentSkill.GetSkillData().skillType == SkillType.repulse)
+                || (_improviserCurrentSkill != null && _improviserCurrentSkill.GetSkillData().skillType == SkillType.repulse))
             {
                 this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAnimationAtRepulse();
             }
@@ -671,7 +687,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             {
                 switch ( _improviserSkillType )
                 {
-                    case Skill.SkillType.none:
+                    case SkillType.none:
 
                         //_skillCountdownTime = GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
 
@@ -704,7 +720,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
                         break;
 
-                    case Skill.SkillType.repulse:
+                    case SkillType.repulse:
 
                         yield return StartCoroutine( PlayShowingSkillInformation( _improviser ) );
 
@@ -777,7 +793,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
                         break;
 
-                    case Skill.SkillType.backend:
+                    case SkillType.backend:
 
                         yield return StartCoroutine( PlayShowingSkillInformation( _improviser ) );
 
@@ -877,10 +893,11 @@ public partial class BattleAnimationManager : MonoBehaviour
                 yield return null;
             }
 
-            if (_coroutineForDerivedSkill != null)
+            this.isRunningInPartB = false;
+
+            for (int i = 0; i < _gameCharacters.Length; i++)
             {
-                StopCoroutine( _coroutineForDerivedSkill );
-                _coroutineForDerivedSkill = null;
+                _gameCharacters[ i ].SetCurrentCommandTimeType( CommandTimeType.None );
             }
 
             _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
@@ -898,7 +915,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             {
                 if (_attackerAssignedSkill != null)
                 {
-                    if (_attackerAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived)
+                    if (_attackerAssignedSkill.GetSkillData().skillType == SkillType.derived)
                     {
                         battleFlowRound.AddExtraATL();
                     }
@@ -906,7 +923,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
                 if (_attackTargetAssignedSkill != null)
                 {
-                    if (_attackTargetAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived)
+                    if (_attackTargetAssignedSkill.GetSkillData().skillType == SkillType.derived)
                     {
                         battleFlowRound.AddExtraATL();
                     }
@@ -915,8 +932,8 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             bool _isDerivedSkill = false;
 
-            if (( _attackerAssignedSkill != null && _attackerAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived )
-                || ( _attackTargetAssignedSkill != null && _attackTargetAssignedSkill.GetSkillData().skillType == Skill.SkillType.derived ))
+            if (( _attackerAssignedSkill != null && _attackerAssignedSkill.GetSkillData().skillType == SkillType.derived )
+                || ( _attackTargetAssignedSkill != null && _attackTargetAssignedSkill.GetSkillData().skillType == SkillType.derived ))
             {
                 _isDerivedSkill = true;
             }
@@ -938,13 +955,45 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
     }
 
-    private IEnumerator RunCheckingIfDerivedSkillIsSelected( GameCharacter gameCharacter, float countdownTime, float countdownStartTime )
+    private IEnumerator RunCheckingIfSkillIsSelectedInPartB( GameCharacter gameCharacter )
     {
-        yield return new WaitUntil( () => ( gameCharacter.GetAssignedSkill() != null || Time.time - countdownStartTime > countdownTime ) );
+        gameCharacter.SetIsMeleeAttacking( false );
+        gameCharacter.SetIsCounterAttacking( false );
+
+        yield return new WaitWhile( () => ( isRunningInPartB && gameCharacter.GetAssignedSkill() == null ) );
+
+        CharacterSkill _assignedSkill = gameCharacter.GetAssignedSkill();
+        if (_assignedSkill != null)
+        {
+            CommandTimeType _commandTimeType = gameCharacter.GetCurrentCommandTimeType();
+
+            // 是否在“反擊指令”或“近戰反擊指令”階段按下反擊或主動技能？
+            if (_commandTimeType is CommandTimeType.CounterAttack or CommandTimeType.MeleeCounterAttack)
+            {
+                if (_assignedSkill.GetSkillData().skillType is SkillType.counter or SkillType.active)
+                {
+                    gameCharacter.SetIsCounterAttacking( true );
+                }
+            }
+
+            // 是否在“近戰指令時間”或“近戰反擊指令時間”按下主動或反擊技能？
+            if (_commandTimeType is CommandTimeType.MeleeCombat or CommandTimeType.MeleeCounterAttack)
+            {
+                if (_assignedSkill.GetSkillData().skillType is SkillType.active or SkillType.counter)
+                {
+                    gameCharacter.SetIsMeleeAttacking( true );
+                }
+            }
+        }
+    }
+
+    private IEnumerator RunCheckingIfDerivedSkillIsSelectedInPartB( GameCharacter gameCharacter, float countdownTime, float countdownStartTime )
+    {
+        yield return new WaitWhile( () => ( isRunningInPartB && gameCharacter.GetAssignedSkill() == null ) );
 
         CharacterSkill _assignedSkill = gameCharacter.GetAssignedSkill();
         if (_assignedSkill != null
-            && _assignedSkill.GetSkillData().skillType == Skill.SkillType.derived)
+            && _assignedSkill.GetSkillData().skillType == SkillType.derived)
         {
             this.deriveSkillAnimationHandler.Show( gameCharacter );
             this.deriveSkillAnimationHandler.PlayDeriveAnimationPart1( countdownTime - ( Time.time - countdownStartTime ) );
