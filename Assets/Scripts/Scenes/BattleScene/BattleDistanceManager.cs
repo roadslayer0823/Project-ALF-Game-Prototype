@@ -184,7 +184,7 @@ public class BattleDistanceManager : MonoBehaviour
 
                 // "後手方"已按下技能是否"回避技能"?
                 // NO
-                if (_isImproviserUsingEvadingSkill)
+                if (!_isImproviserUsingEvadingSkill)
                 {
                     SetCurrentDistanceType( DistanceType.Normal );
                 }
@@ -221,7 +221,7 @@ public class BattleDistanceManager : MonoBehaviour
 
                 // "後手方"已按下技能是否"回避技能"?
                 // NO
-                if (_isImproviserUsingEvadingSkill)
+                if (!_isImproviserUsingEvadingSkill)
                 {
                     // "後手方"已按下技能是否"迎擊技能"?
                     // YES
@@ -250,7 +250,7 @@ public class BattleDistanceManager : MonoBehaviour
                 {
                     // "後手方"當前流向是否"負荷流"?
                     // NO
-                    if (_improviserSelectedPassiveSkillCategoryType == CategorizedPassiveSkillManager.CategoryType.Stress)
+                    if (_improviserSelectedPassiveSkillCategoryType != CategorizedPassiveSkillManager.CategoryType.Stress)
                     {
                         SetCurrentDistanceType( DistanceType.Far );
                     }

@@ -116,7 +116,6 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         switch (gameCharacter.GetSelectedPassiveSkillCategoryType())
         {
             case CategoryType.Life:
-
                 if(gameCharacterData.GetVirtualHealthDamage() != 0)
                 {
                     //["己方"虛傷]-["己方"最大生命值] *[0.05 + 0.05] *[1 + n]
@@ -190,7 +189,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
 
                 if (!gameCharacterData.IsInStateBreakStatus()) //"己方"是否"以太崩潰狀態" ?
                 {
-                    if (gameCharacterData.currentStatePoint < (gameCharacterData.currentStatePoint * 0.8f)) //["己方"當前以太值]是否 <["己方"當前以太值]的80 %?
+                    if (gameCharacterData.currentStatePoint < (gameCharacterData.maximumStatePoint * 0.8f)) //["己方"當前以太值]是否 <["己方"最大以太值]的80 %?
                     {
                         //["己方"當前以太值]=["己方"最大以太值 * 0.8(skill_L1_HuoXin_MaximumStatePoint)]
                         battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacter, _skill_PSL1_HuoXin_MaxStatePoint, out _);
@@ -263,6 +262,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                     battleResultData.AddResultLog(_currentIdentityString + "\n" + "\n" +
                                      "算式:  " + "\n" + _formula + "\n" + "\n" +
                                      _RestoreCurrentStatePoint);
+                    Debug.Log("life restore state point");
                 }
                 break;
 
@@ -314,7 +314,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 if (!gameCharacterData.IsInStateBreakStatus()) //"己方"是否"以太崩潰狀態" ?
                 {
                     Debug.Log("did not break by state point");
-                    if (gameCharacterData.currentStatePoint < gameCharacterData.currentStatePoint * 0.8f) //["己方"當前以太值]是否<["己方"當前以太值]的80 %?
+                    if (gameCharacterData.currentStatePoint < gameCharacterData.maximumStatePoint * 0.8f) //["己方"當前以太值]是否<["己方"最大以太值]的80 %?
                     {
                         //["己方"當前以太值]=["己方"最大以太值*skill_PSS1_JieYa_MaxStatePoint]
                         battleResultData.AddGameCharacterResultData_RestoreCurrentStatePointByPercentage(gameCharacter, _skill_PSS1_JieYa_MaxStatePoint, out _);
@@ -1073,7 +1073,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         if (gameCharacterPassiveSkillCategory == CategoryType.State)
         {
             //["己方"負荷值]+["對方"負荷傷害] *[1 + n + n] *[1 - (己方負荷抗性) - n - n]
-            battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacter, gameCharacterData.currentStressValue + opponentStressValueDamage *
+            battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacter, opponentStressValueDamage *
                 (1 + activatingPassiveSkill + gameCharacterOneEnergyMarker) *
                 (1 - (gameCharacterStressResistance - skill_PSE6_FuHeLiuZhuan - skill_PSE12_NiFeng)) * multiplyZeroPointFive, false, out _);
 
@@ -1097,7 +1097,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         else if (gameCharacterPassiveSkillCategory == CategoryType.Stress)
         {
             //["己方"負荷值]+["對方"負荷傷害]*[1+n+n]*[1-(己方負荷抗性)-0.2-n)
-            battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacter, gameCharacterData.currentStressValue + opponentStressValueDamage *
+            battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacter, opponentStressValueDamage *
                 (1 + activatingPassiveSkill + gameCharacterOneEnergyMarker) *
                 (1 - (gameCharacterStressResistance - skill_PSS3_HuaJing - skill_PSS9_XingYunLiuShui)) * multiplyZeroPointFive, false, out _);
 
@@ -1120,7 +1120,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         else if (gameCharacterPassiveSkillCategory == CategoryType.Life || gameCharacterPassiveSkillCategory == CategoryType.None)
         {
             //["己方"負荷值]+["對方"負荷傷害]*[1+n+n]*[1-(己方負荷抗性)]
-            battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacter, gameCharacterData.currentStressValue + opponentStressValueDamage *
+            battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacter, opponentStressValueDamage *
                 (1 + activatingPassiveSkill + gameCharacterOneEnergyMarker) *
                 (1 - gameCharacterStressResistance) * multiplyZeroPointFive, false, out _);
             _formula = "[" + _gameCharacterCurrentIdentity + "負荷值] +[" + _opponentCurrentIdentity + "負荷傷害] *[1 + 9.生命壓制 或者 11.負荷壓制2 + 能量殘響] " +

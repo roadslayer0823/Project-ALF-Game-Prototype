@@ -224,10 +224,15 @@ public partial class BattleAnimationManager: MonoBehaviour
                 else if (playerOne.HasCharacterIdentityType( CharacterIdentityType.LightRecipient ))
                 {
                     //己方是否"速度負方" ? or 雙方已按下技能是否都是"遠程" ?
-                    if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || ( _playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged ))
+                    if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ))
                     {
                         _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType );
                         _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_D_L, _playerOne_SubskillId, _playerOne_AnimationType );
+                    }
+                    else if(_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged)
+                    {
+                        _extraAnimationParameterData = new AnimationParameterData(false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType);
+                        _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_D_L, _playerOne_SubskillId, _playerOne_AnimationType);
                     }
                     else
                     {
@@ -235,10 +240,15 @@ public partial class BattleAnimationManager: MonoBehaviour
                     }
                 }
                 //己方是否"速度負方" ?  or 雙方已按下技能是否都是"遠程" ?
-                else if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || ( _playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged ))
+                else if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ))
                 {
                     _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType );
                     _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_D_H, _playerOne_SubskillId, _playerOne_AnimationType );
+                }
+                else if (_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged)
+                {
+                    _extraAnimationParameterData = new AnimationParameterData(false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType);
+                    _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_D_H, _playerOne_SubskillId, _playerOne_AnimationType);
                 }
                 else
                 {
@@ -588,10 +598,15 @@ public partial class BattleAnimationManager: MonoBehaviour
                 {
                     // 敵方是否"速度負方"? or 雙方已按下技能是否都是"遠程"?
                     // YES
-                    if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || ( _playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged ))
+                    if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ))
                     {
                         _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType );
                         _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_D_L, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                    }
+                    else if((_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged))
+                    {
+                        _extraAnimationParameterData = new AnimationParameterData(false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                        _animationParameterData = new AnimationParameterData(true, true, CodeType.camA_type_D_L, _playerTwo_SubskillId, _playerTwo_AnimationType);
                     }
                     // NO
                     else
@@ -601,10 +616,15 @@ public partial class BattleAnimationManager: MonoBehaviour
                 }
                 // 敵方是否"速度負方"? or 雙方已按下技能是否都是"遠程"?
                 // YES
-                else if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || ( _playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged ))
+                else if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ))
                 {
                     _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_D_H, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                }
+                else if (_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged)
+                {
+                    _extraAnimationParameterData = new AnimationParameterData(false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                    _animationParameterData = new AnimationParameterData(true, true, CodeType.camA_type_D_H, _playerTwo_SubskillId, _playerTwo_AnimationType);
                 }
                 // NO
                 else
@@ -854,6 +874,7 @@ public partial class BattleAnimationManager: MonoBehaviour
             if (!playerTwo.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
             {
                 _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( true, true, "camB_drawef", "draw" );
+                Debug.Log("後手方是否抵抗成功方");
             }
         }
 
@@ -861,6 +882,7 @@ public partial class BattleAnimationManager: MonoBehaviour
         if (playerOne.HasCharacterIdentityType( CharacterIdentityType.Deuce ) && playerOne.HasCharacterIdentityType( CharacterIdentityType.Improviser ))
         {
             _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( false, true, "camB_drawef", "draw" );
+            Debug.Log("己方&平手方&後手方");
         }
 
         //"己方"&"強度負方"&"受擊方"&"先手方"
@@ -875,6 +897,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 if (playerOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
                 {
                     _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( true, true, "camB_typeB_crashef", "crash" );
+                    Debug.Log("先手方：己方已按下技能是否近戰");
                 }
             }
         }
@@ -891,6 +914,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 if (playerOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
                 {
                     _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( false, true, "camB_typeC_crashef", "crash" );
+                    Debug.Log("後手方：己方已按下技能是否近戰");
                 }
             }
         }
@@ -907,6 +931,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 if (playerTwo.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
                 {
                     _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( false, true, "camB_typeB_crashef", "crash" );
+                    Debug.Log("先手方：敵方已按下技能是否近戰");
                 }
             }
         }
@@ -923,6 +948,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 if (playerTwo.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
                 {
                     _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( true, true, "camB_typeC_crashef", "crash" );
+                    Debug.Log("後手方：敵方已按下技能是否近戰");
                 }
             }
         }
@@ -938,10 +964,12 @@ public partial class BattleAnimationManager: MonoBehaviour
                 playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedStrengthLoser ))
             {
                 _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( false, true, "camB_typeD_crashef", "crash" );
+                Debug.Log("YES, 先手方，己方是未能抵抗方或速度負方或速度強度負方");
             }
             else
             {
                 _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( true, true, "camB_typeB_crashef", "crash" );
+                Debug.Log("NO, 先手方，己方是未能抵抗方或速度負方或速度強度負方");
             }
         }
 
@@ -956,10 +984,12 @@ public partial class BattleAnimationManager: MonoBehaviour
                 playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedStrengthLoser ))
             {
                 _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( false, true, "camB_typeD_crashef", "crash" );
+                Debug.Log("YES, 後手方，己方是未能抵抗方或速度負方或速度強度負方");
             }
             else
             {
                 _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( false, true, "camB_typeC_crashef", "crash" );
+                Debug.Log("NO, 後手方，己方是未能抵抗方或速度負方或速度強度負方");
             }
         }
 
@@ -974,10 +1004,12 @@ public partial class BattleAnimationManager: MonoBehaviour
                 playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedStrengthLoser ))
             {
                 _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( true, true, "camB_typeD_crashef", "crash" );
+                Debug.Log("YES, 先手方，敵方是未能抵抗方或速度負方或速度強度負方");
             }
             else
             {
                 _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( false, true, "camB_typeB_crashef", "crash" );
+                Debug.Log("NO, 先手方，敵方是未能抵抗方或速度負方或速度強度負方");
             }
         }
 
@@ -992,10 +1024,12 @@ public partial class BattleAnimationManager: MonoBehaviour
                 playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedStrengthLoser ))
             {
                 _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( true, true, "camB_typeD_crashef", "crash" );
+                Debug.Log("YES, 後手方，敵方是未能抵抗方或速度負方或速度強度負方");
             }
             else
             {
                 _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( true, true, "camB_typeC_crashef", "crash" );
+                Debug.Log("NO, 後手方，敵方是未能抵抗方或速度負方或速度強度負方");
             }
         }
 
