@@ -17,7 +17,7 @@ public partial class BattleAnimationManager : MonoBehaviour
     private const float RESULT_ANIMATION_TIMING_B = 0.6f;       // 結算演出時機B：在 Part-B 的第 0.6 秒起播放
     private const float RESULT_ANIMATION_TIMING_C = 1.2f;       // 結算演出時機C：在 Part-B 的第 1.2 秒起播放
 
-    private bool isRunningInPartB = false;
+    private bool isAbleToAssignSkillInPartB = false;
 
     public IEnumerator RunBattleAnimationV2( BattleFlowRound_V2 battleFlowRound, BattleFlowATL_V2 battleFlowATL )
     {
@@ -434,10 +434,6 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
 
         // 進入 Part B 階段。
-        _skillCountdownTime = ANIMATION_DURATION_FOR_PART_B;
-        _skillCountdownTimeStartTime = Time.time;
-        _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
-
         StartPartB( out _battleResultData, _lead, _improviser, true, out GameCharacter _winner, out GameCharacter _loser );
         ShowBattleLog( _battleResultData.GetResultLogList() );
 
@@ -456,16 +452,6 @@ public partial class BattleAnimationManager : MonoBehaviour
             // 判定"己方"的指令時間
             BattleLogicManagerV2.DetermineCommandTimeInPartB( this.battleGameManager, _playerCharacter );
             BattleLogicManagerV2.DetermineCommandTimeInPartB( this.battleGameManager, _enemyCharacter );
-
-            this.isRunningInPartB = true;
-
-            StartCoroutine( RunCheckingIfSkillIsSelectedInPartB( _playerCharacter ) );
-            StartCoroutine( RunCheckingIfSkillIsSelectedInPartB( _enemyCharacter ) );
-
-            if (_winner != null)
-            {
-                StartCoroutine( RunCheckingIfDerivedSkillIsSelectedInPartB( _winner, _skillCountdownTime, _skillCountdownTimeStartTime ) );
-            }
 
             CharacterAnimationHandler _playerCharacterAnimationHandler = _playerCharacter.GetCharacterAnimationHandler();
             CharacterAnimationHandler _enemyCharacterAnimationHandler = _enemyCharacter.GetCharacterAnimationHandler();
@@ -506,6 +492,11 @@ public partial class BattleAnimationManager : MonoBehaviour
             }
 
             UpdateGameCharacterVisibility();
+
+            // 開始 Part-B 階段的倒數計時。
+            _skillCountdownTime = ANIMATION_DURATION_FOR_PART_B + ( ( _needToWaitForOneSecond ) ? 1.0f : 0.0f );
+            _skillCountdownTimeStartTime = Time.time;
+            _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
             // 播放演出同時，根據"當前距離"，更新畫面中ATL的距離圖標。
             this.battleGameManager.GetBattleDistanceManager().UpdateBattleDistancePanel();
@@ -572,6 +563,20 @@ public partial class BattleAnimationManager : MonoBehaviour
                 string _commandTimeTypeText = TerminologyManager.GetCommandTimeTypeText( _playerCharacter.GetCurrentCommandTimeType() );
                 this.skillPromptPanel.ShowCommandPhase( _commandTimeTypeText, true );
                 BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _playerCharacter.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { _commandTimeTypeText } 】</color>。" );
+
+                // -------------------- 開始檢查“己方”和“敵方”是否有在 Part-B 階段裡輸入指令。 --------------------
+
+                this.isAbleToAssignSkillInPartB = true;
+
+                StartCoroutine( RunCheckingIfSkillIsSelectedInPartB( _playerCharacter ) );
+                StartCoroutine( RunCheckingIfSkillIsSelectedInPartB( _enemyCharacter ) );
+
+                if (_winner != null)
+                {
+                    StartCoroutine( RunCheckingIfDerivedSkillIsSelectedInPartB( _winner, _skillCountdownTime, _skillCountdownTimeStartTime ) );
+                }
+
+                // ------------------------------------------------------------------------------------------
             } );
 
             // 0.5秒後參考【技能按鈕可用性】開啟"己方"可用的指令
@@ -898,7 +903,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                 yield return null;
             }
 
-            this.isRunningInPartB = false;
+            this.isAbleToAssignSkillInPartB = false;
 
             for (int i = 0; i < _gameCharacters.Length; i++)
             {
@@ -965,7 +970,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         gameCharacter.SetIsMeleeAttacking( false );
         gameCharacter.SetIsCounterAttacking( false );
 
-        yield return new WaitWhile( () => ( isRunningInPartB && gameCharacter.GetAssignedSkill() == null ) );
+        yield return new WaitWhile( () => ( this.isAbleToAssignSkillInPartB && gameCharacter.GetAssignedSkill() == null ) );
 
         CharacterSkill _assignedSkill = gameCharacter.GetAssignedSkill();
         if (_assignedSkill != null)
@@ -994,7 +999,7 @@ public partial class BattleAnimationManager : MonoBehaviour
 
     private IEnumerator RunCheckingIfDerivedSkillIsSelectedInPartB( GameCharacter gameCharacter, float countdownTime, float countdownStartTime )
     {
-        yield return new WaitWhile( () => ( isRunningInPartB && gameCharacter.GetAssignedSkill() == null ) );
+        yield return new WaitWhile( () => ( this.isAbleToAssignSkillInPartB && gameCharacter.GetAssignedSkill() == null ) );
 
         CharacterSkill _assignedSkill = gameCharacter.GetAssignedSkill();
         if (_assignedSkill != null
