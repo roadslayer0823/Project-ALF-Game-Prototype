@@ -477,7 +477,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             var ( _animationParameterDataForPlayerTwo, _extraAnimationParameterDataForPlayerTwo ) = DetermineAnimationOfPlayerTwoForPartB( _playerCharacter, _enemyCharacter );
 
             // 判定PART B共用特效
-            var ( _visualEffectParameterDataForPlayerOne, _visualEffectParameterDataForPlayerTwo ) = DetermineVisualEffectForPartB( _playerCharacter, _enemyCharacter );
+            var ( _visualEffectParameterDataForPlayerOne, _visualEffectParameterDataForPlayerTwo ) = DetermineVisualEffectForPartB_V2( _playerCharacter, _enemyCharacter );
 
             this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtRecipient(_playerCharacter.HasCharacterIdentityType(CharacterIdentityType.Recipient));
             _playerCharacter.HideCharacterObject();
