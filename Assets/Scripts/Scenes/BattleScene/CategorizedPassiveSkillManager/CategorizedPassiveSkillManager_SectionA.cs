@@ -617,7 +617,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             _formula = "[抵抗成功方當前以太值]-<[平手方回避壓力]*[1 + （9.生命壓制（平手方） 或者 11.負荷壓制2）] * [1 - " + _JieLiu_YouRen + "（抵抗成功方）]";
             _currentActivatingSkill = "已使用的流向技能:" + _currentFirstSkillString + "\n" +_JieLiu_YouRen;
         }
-        battleResultData.AddGameCharacterResultData_StatePointDamage(successfulResister, _stressEvasionCost, out _);
+        battleResultData.AddGameCharacterResultData_StatePointCost(successfulResister, _stressEvasionCost, out _);
         successfulResisterData.temp_StressEvasionCost = _stressEvasionCost;
 
         _successfulResisterString = "當前身份:" + _currentIdentity + "\n" +

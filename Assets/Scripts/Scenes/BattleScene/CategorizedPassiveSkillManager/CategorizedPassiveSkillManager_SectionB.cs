@@ -1190,7 +1190,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                         battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, gameCharacterOne.GetPassiveSkill(PASSIVE_SKILL_ID_PSE2), out _);
 
                         // [當前以太值]-[最終以太消耗*0.2]
-                        battleResultData.AddGameCharacterResultData_StatePointDamage(gameCharacterOne, _totalStatePointCost, out _);
+                        battleResultData.AddGameCharacterResultData_StatePointCost(gameCharacterOne, _totalStatePointCost, out _);
                     }
                 }
             }

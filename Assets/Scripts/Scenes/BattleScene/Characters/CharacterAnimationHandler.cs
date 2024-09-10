@@ -123,16 +123,17 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public bool CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword(string keyword)
     {
-        List<AnimationData> _animationDataList = DatabaseManager.Instance.GetAnimationDataList();
-        List<string> _codeTypeList = null; 
+        List<string> _codeTypeList = new();
         bool _isPlayer = this.gameCharacter.GetIsPlayer();
         string _currentSubskillId = this.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Id;
-        int _currentSkillType = AnimationParameterData.ConvertToAnimationType(this.gameCharacter);
+        int _animationType = AnimationParameterData.ConvertToAnimationType(this.gameCharacter);
 
+        List<AnimationData> _animationDataList = DatabaseManager.Instance.GetAnimationDataList();
         for (int i =0; i < _animationDataList.Count; i ++)
         {
             AnimationData _animationData = _animationDataList[i];
-            if(_animationData.SubskillIdsArray.Contains(_currentSubskillId) && _animationData.Type == _currentSkillType
+            if(_animationData.SubskillIdsArray.Contains(_currentSubskillId)
+                && _animationData.Type == _animationType
                 && _animationData.IsPlayer == _isPlayer)
             {
                 _codeTypeList.Add(_animationData.CodeString);
@@ -140,15 +141,17 @@ public class CharacterAnimationHandler : MonoBehaviour
             }
         }
 
-        for(int i = 0; i < _codeTypeList.Count; i ++)
+        for (int i = 0; i < _codeTypeList.Count; i++)
         {
             if (_codeTypeList[i].Contains(keyword))
             {
                 return true;
             }
         }
+
         return false;
     }
+
     public class AnimationParameterData
     {
         private bool isSkillEffectFront = false;
