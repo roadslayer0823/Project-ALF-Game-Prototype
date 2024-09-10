@@ -11,23 +11,36 @@ public class AudioManager : Singleton<AudioManager>
     private float backgroundMusicVolumeRate = 1.0f;
     private float soundEffectVolumeRate = 1.0f;
 
+    private Coroutine backgroundMusicCoroutine = null;
+
     public void PlayBackgroundMusic( AudioClip clip, float volumeScale = 1.0f, bool isLoop = true, float loopStartTime = 0.0f )
     {
-        backgroundMusicAudioSource.clip = clip;
-        backgroundMusicAudioSource.volume = volumeScale * backgroundMusicVolumeRate;
-        backgroundMusicAudioSource.Play();
+        this.backgroundMusicAudioSource.clip = clip;
+        this.backgroundMusicAudioSource.volume = volumeScale * backgroundMusicVolumeRate;
+        this.backgroundMusicAudioSource.Play();
 
         if (isLoop)
         {
-            StartCoroutine( RunPlayingBackgroundMusicInLoop( backgroundMusicAudioSource, loopStartTime ) );
+            this.backgroundMusicCoroutine = StartCoroutine( RunPlayingBackgroundMusicInLoop( this.backgroundMusicAudioSource, loopStartTime ) );
         }
+    }
+
+    public void StopBackgroundMusic()
+    {
+        if (this.backgroundMusicCoroutine != null)
+        {
+            StopCoroutine( this.backgroundMusicCoroutine );
+            this.backgroundMusicCoroutine = null;
+        }
+
+        this.backgroundMusicAudioSource.Stop();
     }
 
     public void PlaySoundEffect( AudioClip clip, float volumeScale = 1.0f )
     {
         if (clip != null)
         {
-            soundEffectAudioSource.PlayOneShot( clip, volumeScale * soundEffectVolumeRate );
+            this.soundEffectAudioSource.PlayOneShot( clip, volumeScale * this.soundEffectVolumeRate );
         }
     }
 

@@ -42,13 +42,15 @@ public class BattleResultPanelV2: MonoBehaviour
 
     public void ClickToRestartBattle()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+        AudioManager.Instance.StopBackgroundMusic();
         SceneManager.LoadScene( SceneManager.GetActiveScene().name );
     }
 
     public void ClickToExitScene()
     {
-        AudioManager.Instance.PlaySoundEffect(AUDIO_ID_CLICK);
+        AudioManager.Instance.PlaySoundEffect( AUDIO_ID_CLICK );
+        AudioManager.Instance.StopBackgroundMusic();
         SceneControlManager.GoToOptionPage();
     }
 }
