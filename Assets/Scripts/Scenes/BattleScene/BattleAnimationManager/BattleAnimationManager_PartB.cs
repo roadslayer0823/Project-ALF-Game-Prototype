@@ -16,8 +16,15 @@ public partial class BattleAnimationManager: MonoBehaviour
         AnimationParameterData _extraAnimationParameterData = null;
 
         BattleDistanceManager _battleDistanceManager = this.battleGameManager.GetBattleDistanceManager();
+        CharacterSkill _getLastATLSkill = null;
         Subskill _playerOne_SubskillData = null;
         Subskill _playerTwo_SubskillData = null;
+
+        CharacterSkill _playerOne_LastALTSkill = playerOne.GetLastAtlSkill();
+        if (_playerOne_LastALTSkill != null)
+        {
+            _getLastATLSkill = playerOne.GetLastAtlSkill();
+        }
 
         CharacterSkill _playerOne_CurrentSkill = playerOne.GetCurrentSkill();
         if (_playerOne_CurrentSkill != null)
@@ -74,7 +81,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BDVC, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerOne.GetLastAtlSkill() == _playerOne_CurrentSkill)
+                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerOne_CurrentSkill)
                 {
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BDV2, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
@@ -87,7 +94,7 @@ public partial class BattleAnimationManager: MonoBehaviour
             else if (playerOne.HasCharacterIdentityType( CharacterIdentityType.Improviser ))
             {
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerOne.GetLastAtlSkill() == _playerOne_CurrentSkill)
+                if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerOne_CurrentSkill)
                 {
                     _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CDV2, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
@@ -122,9 +129,9 @@ public partial class BattleAnimationManager: MonoBehaviour
                         _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AVC, _playerOne_SubskillId, _playerOne_AnimationType );
                     }
                     //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                    else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerOne.GetLastAtlSkill() == _playerOne_CurrentSkill)
+                    else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerOne_CurrentSkill)
                     {
-                        _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AV2, _playerOne_SubskillId, _playerOne_AnimationType );
+                        _animationParameterData = new AnimationParameterData(false, true, CodeType.camA_type_AV2, _playerOne_SubskillId, _playerOne_AnimationType);
                     }
                     else
                     {
@@ -137,7 +144,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BDVC, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
                 //已按下技能是否與上1ATL 相同&有"v2演出" ?
-                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V2" ) && playerOne.GetLastAtlSkill() == _playerOne_CurrentSkill)
+                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V2" ) && _getLastATLSkill == _playerOne_CurrentSkill)
                 {
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BDV2, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
@@ -157,7 +164,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 }
 
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerOne.GetLastAtlSkill() == _playerOne_CurrentSkill)
+                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerOne_CurrentSkill)
                 {
                     _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CDV2, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
@@ -208,7 +215,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     }
                 }
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerOne.GetLastAtlSkill() == _playerOne_CurrentSkill)
+                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerOne_CurrentSkill)
                 {
                     //己方是否"輕受擊方" ?
                     if (playerOne.HasCharacterIdentityType( CharacterIdentityType.LightRecipient ))
@@ -302,16 +309,18 @@ public partial class BattleAnimationManager: MonoBehaviour
                     }
                 }
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerOne.GetLastAtlSkill() == _playerOne_CurrentSkill)
+                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerOne_CurrentSkill)
                 {
                     //己方是否"輕受擊方" ?
                     if (playerOne.HasCharacterIdentityType( CharacterIdentityType.LightRecipient ))
                     {
                         _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CLSV2_L, _playerOne_SubskillId, _playerOne_AnimationType );
+                        Debug.Log("working");
                     }
                     else
                     {
                         _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CLSV2_H, _playerOne_SubskillId, _playerOne_AnimationType );
+                        Debug.Log("working");
                     }
                 }
                 //己方是否"輕受擊方" ?
@@ -338,7 +347,6 @@ public partial class BattleAnimationManager: MonoBehaviour
                 }
             }
         }
-
         return ( animationParameterData: _animationParameterData, extraAnimationParameterData: _extraAnimationParameterData );
     }
 
@@ -348,8 +356,15 @@ public partial class BattleAnimationManager: MonoBehaviour
         AnimationParameterData _extraAnimationParameterData = null;
 
         BattleDistanceManager _battleDistanceManager = this.battleGameManager.GetBattleDistanceManager();
+        CharacterSkill _getLastATLSkill = null;
         Subskill _playerOne_SubskillData = null;
         Subskill _playerTwo_SubskillData = null;
+
+        CharacterSkill _playerTwo_LastATLSkill = playerTwo.GetLastAtlSkill();
+        if(_playerTwo_LastATLSkill != null)
+        {
+            _getLastATLSkill = playerTwo.GetLastAtlSkill();
+        }
 
         CharacterSkill _playerOne_CurrentSkill = playerOne.GetCurrentSkill();
         if (_playerOne_CurrentSkill != null)
@@ -414,7 +429,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 }
                 // 已按下技能是否與上1ATL相同&上1ATL播放了"v1演出"&有"v2演出"?
                 // YES
-                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerTwo.GetLastAtlSkill() == _playerTwo_CurrentSkill)
+                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerTwo_CurrentSkill)
                 {
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BDV2, _playerTwo_SubskillId, _playerTwo_AnimationType );
                 }
@@ -429,7 +444,7 @@ public partial class BattleAnimationManager: MonoBehaviour
             {
                 // 已按下技能是否與上1ATL相同&上1ATL播放了"v1演出"&有"v2演出"?
                 // YES
-                if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerTwo.GetLastAtlSkill() == _playerTwo_CurrentSkill)
+                if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerTwo_CurrentSkill)
                 {
                     _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CDV2, _playerTwo_SubskillId, _playerTwo_AnimationType );
                 }
@@ -470,7 +485,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     // NO
                     // 已按下技能是否與上1ATL相同&有"v2演出"?
                     // YES
-                    else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerTwo.GetLastAtlSkill() == _playerTwo_CurrentSkill)
+                    else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerTwo_CurrentSkill)
                     {
                         _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_AV2, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     }
@@ -490,7 +505,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 // NO
                 // 已按下技能是否與上1ATL相同&上1ATL播放了"v1演出"&有"v2演出"?
                 // YES
-                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V2" ) && playerTwo.GetLastAtlSkill() == _playerTwo_CurrentSkill)
+                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V2" ) && _getLastATLSkill == _playerTwo_CurrentSkill)
                 {
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BDV2, _playerTwo_SubskillId, _playerTwo_AnimationType );
                 }
@@ -513,7 +528,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 // NO
                 // 已按下技能是否與上1ATL 相同&上1ATL播放了"v1演出"&有"v2演出"?
                 // YES
-                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerTwo.GetLastAtlSkill() == _playerTwo_CurrentSkill)
+                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerTwo_CurrentSkill)
                 {
                     _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CDV2, _playerTwo_SubskillId, _playerTwo_AnimationType );
                 }
@@ -577,7 +592,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 // NO
                 // 已按下技能是否與上1ATL相同&上1ATL播放了"v1演出"&有"v2演出"?
                 // YES
-                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerTwo.GetLastAtlSkill() == _playerTwo_CurrentSkill)
+                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerTwo_CurrentSkill)
                 {
                     // 敵方是否"輕受擊方"?
                     // YES
@@ -648,7 +663,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 {
                     // 已按下技能是否與上1ATL相同&上1ATL播放了"v1演出"&有"v2演出"?
                     // YES
-                    if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerTwo.GetLastAtlSkill() == _playerTwo_CurrentSkill)
+                    if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerTwo_CurrentSkill)
                     {
                         // 敵方是否"輕受擊方"?
                         // YES
@@ -694,7 +709,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 // NO
                 // 已按下技能是否與上1ATL相同&上1ATL播放了"v1演出"&有"v2演出"?
                 // YES
-                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && playerTwo.GetLastAtlSkill() == _playerTwo_CurrentSkill)
+                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( lastCodeV1andV2 ) && _getLastATLSkill == _playerTwo_CurrentSkill)
                 {
                     // 敵方是否"輕受擊方"?
                     // YES
@@ -815,7 +830,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 GameCharacter.CharacterIdentityType.SpeedLoser, GameCharacter.CharacterIdentityType.SpeedStrengthLoser } ))
             {
                 _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( false, true, "camB_typeD_crashef", "crash" );
-                Debug.Log( "camB_typeD_crashef" );
+               
             }
             else
             {
@@ -823,13 +838,13 @@ public partial class BattleAnimationManager: MonoBehaviour
                 if (GetBackgroundIndex() == 1)
                 {
                     _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( true, true, "camB_typeB_crashef", "crash" );
-                    Debug.Log( "camB_typeB_crashef" );
+                    
                 }
                 // PART B場景為camB_bg
                 else if (GetBackgroundIndex() == 2)
                 {
                     _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( false, true, "camB_typeC_crashef", "crash" );
-                    Debug.Log( "camB_typeC_crashef" );
+
                 }
             }
         }
@@ -874,7 +889,7 @@ public partial class BattleAnimationManager: MonoBehaviour
             if (!playerTwo.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
             {
                 _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( true, true, "camB_drawef", "draw" );
-                Debug.Log("後手方是否抵抗成功方");
+               
             }
         }
 
@@ -882,7 +897,7 @@ public partial class BattleAnimationManager: MonoBehaviour
         if (playerOne.HasCharacterIdentityType( CharacterIdentityType.Deuce ) && playerOne.HasCharacterIdentityType( CharacterIdentityType.Improviser ))
         {
             _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( false, true, "camB_drawef", "draw" );
-            Debug.Log("己方&平手方&後手方");
+            
         }
 
         //"己方"&"強度負方"&"受擊方"&"先手方"
@@ -897,7 +912,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 if (playerOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
                 {
                     _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( true, true, "camB_typeB_crashef", "crash" );
-                    Debug.Log("先手方：己方已按下技能是否近戰");
+                    
                 }
             }
         }
@@ -914,7 +929,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 if (playerOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
                 {
                     _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( false, true, "camB_typeC_crashef", "crash" );
-                    Debug.Log("後手方：己方已按下技能是否近戰");
+                   
                 }
             }
         }
@@ -931,7 +946,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 if (playerTwo.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
                 {
                     _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( false, true, "camB_typeB_crashef", "crash" );
-                    Debug.Log("先手方：敵方已按下技能是否近戰");
+                   
                 }
             }
         }
@@ -948,7 +963,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 if (playerTwo.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Range == DatabaseManager.Subskill.RangeType.melee)
                 {
                     _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( true, true, "camB_typeC_crashef", "crash" );
-                    Debug.Log("後手方：敵方已按下技能是否近戰");
+                   
                 }
             }
         }
@@ -964,12 +979,12 @@ public partial class BattleAnimationManager: MonoBehaviour
                 playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedStrengthLoser ))
             {
                 _visualEffectParameterDataForPlayerOne = new VisualEffectParameterData( false, true, "camB_typeD_crashef", "crash" );
-                Debug.Log("YES, 先手方，己方是未能抵抗方或速度負方或速度強度負方");
+                
             }
             else
             {
                 _visualEffectParameterDataForPlayerTwo = new VisualEffectParameterData( true, true, "camB_typeB_crashef", "crash" );
-                Debug.Log("NO, 先手方，己方是未能抵抗方或速度負方或速度強度負方");
+               
             }
         }
 
