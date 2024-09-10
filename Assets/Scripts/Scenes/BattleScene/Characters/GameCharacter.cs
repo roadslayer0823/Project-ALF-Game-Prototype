@@ -224,6 +224,8 @@ public partial class GameCharacter : MonoBehaviour
         this.permanentCharacterIdentityTypeList = new List<CharacterIdentityType>();
         this.allSkills = new List<CharacterSkill>();
 
+        this.characterAnimationHandler.Initialize(this);
+
         List<CharacterSkill> _skillList = new();
         string[] _skillIdArray = characterData.SkillIdArray;
         for (int i = 0; i < _skillIdArray.Length; i++)

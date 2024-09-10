@@ -27,6 +27,7 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     [SerializeField] private AudioDatabase audioDatabase;
 
+    private GameCharacter gameCharacter;
     private AnimatorOverrideController playerAnimatorOverrideController;
     private AnimatorOverrideController skillEffectBackAnimatorOverrideController;
     private AnimatorOverrideController skillEffectFrontAnimatorOverrideController;
@@ -38,8 +39,10 @@ public class CharacterAnimationHandler : MonoBehaviour
     private float effectAnimationLength = 0;
     private float audioLength = 0;
 
-    void Awake()
+    public void Initialize(GameCharacter gameCharacter)
     {
+        this.gameCharacter = gameCharacter;
+
         this.playerAnimatorOverrideController = new AnimatorOverrideController(playerAnimator.runtimeAnimatorController)
         {
             name = "PlayerOverrideAnimator"
@@ -73,7 +76,7 @@ public class CharacterAnimationHandler : MonoBehaviour
         {
             List<string> values = Enum.GetValues( typeof( AnimationData.CodeType ) ).Cast<AnimationData.CodeType>().Select( v => v.ToString() ).ToList();
             this.dropdown.AddOptions( values );
-        }
+        }    
     }
 
     public void FlipContainer(bool isFlipped)
@@ -118,6 +121,34 @@ public class CharacterAnimationHandler : MonoBehaviour
         return CheckIfSameAsLastATLCodeType(new string[] { lastCode });
     }
 
+    public bool CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword(string keyword)
+    {
+        List<AnimationData> _animationDataList = DatabaseManager.Instance.GetAnimationDataList();
+        List<string> _codeTypeList = null; 
+        bool _isPlayer = this.gameCharacter.GetIsPlayer();
+        string _currentSubskillId = this.gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().Id;
+        int _currentSkillType = AnimationParameterData.ConvertToAnimationType(this.gameCharacter);
+
+        for (int i =0; i < _animationDataList.Count; i ++)
+        {
+            AnimationData _animationData = _animationDataList[i];
+            if(_animationData.SubskillIdsArray.Contains(_currentSubskillId) && _animationData.Type == _currentSkillType
+                && _animationData.IsPlayer == _isPlayer)
+            {
+                _codeTypeList.Add(_animationData.CodeString);
+                Debug.Log("_animationDataList[i].Code: " + _animationData.Code);
+            }
+        }
+
+        for(int i = 0; i < _codeTypeList.Count; i ++)
+        {
+            if (_codeTypeList[i].Contains(keyword))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     public class AnimationParameterData
     {
         private bool isSkillEffectFront = false;
@@ -187,9 +218,9 @@ public class CharacterAnimationHandler : MonoBehaviour
     {
         ResetAnimation();
 
-        Debug.Log("codeType: " + codeType);
-        Debug.Log("subskillId: " + subskillId);
-        Debug.Log("type: " + type);
+        //Debug.Log("codeType: " + codeType);
+        //Debug.Log("subskillId: " + subskillId);
+        //Debug.Log("type: " + type);
         AnimationClip _animationClip = null;
         AudioClip _audioClip = null;
         AnimationData _animationData = DatabaseManager.Instance.GetAnimationData(codeType,subskillId,type);
@@ -203,9 +234,9 @@ public class CharacterAnimationHandler : MonoBehaviour
             if (type == 1) type = 2;
             else if (type == 2) type = 1;
             _animationData = DatabaseManager.Instance.GetAnimationData(codeType, subskillId, type);
-            Debug.Log("codeType: " + codeType);
-            Debug.Log("subskillId: " + subskillId);
-            Debug.Log("type: " + type);
+            //Debug.Log("codeType: " + codeType);
+            //Debug.Log("subskillId: " + subskillId);
+            //Debug.Log("type: " + type);
             if (_animationData == null)
             {
                 Debug.LogError("Even changed type still cannot found animation data from database");
@@ -233,7 +264,7 @@ public class CharacterAnimationHandler : MonoBehaviour
             string[] _actionClipArray = _animationData.ActionsArray;
             for (int i = 0; i < _actionClipArray.Length; i++)
             {
-                Debug.Log("_actionClipArray["+i+"]: " + _actionClipArray[i]);
+                //Debug.Log("_actionClipArray["+i+"]: " + _actionClipArray[i]);
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/Actions/" + _actionClipArray[i]);
                 this.playerAnimatorOverrideController["Animation_" + i] = _animationClip;
                 actionAnimationLength += _animationClip.length;
@@ -256,7 +287,7 @@ public class CharacterAnimationHandler : MonoBehaviour
             Animator _skillEffectAnimator = isSkillEffectFront ? this.skillEffectFrontAnimator : this.skillEffectBackAnimator;
             for (int i = 0; i < _effectClipArray.Length; i++)
             {
-                Debug.Log("_effectClipArray[" + i + "]: " + _effectClipArray[i]);
+                //Debug.Log("_effectClipArray[" + i + "]: " + _effectClipArray[i]);
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/SkillEffects/" + _effectClipArray[i]);
 
                 ( ( isSkillEffectFront ) ? this.skillEffectFrontAnimatorOverrideController
@@ -344,8 +375,8 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void LoadAndPlayVisualEffect(bool isFlipped,bool isSkillEffectFront, string visualEffectName, string visualEffectAudioId)
     {
-        Debug.Log("visualEffectName: " + visualEffectName);
-        Debug.Log("visualEffectAudioId: " + visualEffectAudioId);
+        //Debug.Log("visualEffectName: " + visualEffectName);
+        //Debug.Log("visualEffectAudioId: " + visualEffectAudioId);
 
         Animator _visualEffectAnimator = isSkillEffectFront ? this.visualEffectFrontAnimator : this.visualEffectBackAnimator;
 
@@ -364,7 +395,7 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void ResetAnimation()
     {
-        Debug.Log( "Reset Animation" );
+        //Debug.Log( "Reset Animation" );
         this.playerAnimator.StopPlayback();
         this.skillEffectBackAnimator.StopPlayback();
         this.skillEffectFrontAnimator.StopPlayback();
@@ -390,7 +421,7 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void GoToResetState()
     {
-        Debug.Log( "Go To Reset State" );
+        //Debug.Log( "Go To Reset State" );
 
         this.playerAnimator.Play( "Reset" );
         this.skillEffectBackAnimator.Play( "Reset" );
@@ -404,8 +435,8 @@ public class CharacterAnimationHandler : MonoBehaviour
         this.selectedCodeType = (AnimationData.CodeType)Enum.Parse(typeof(AnimationData.CodeType), codeType);
         LoadAndPlayAnimation(this.isFront.isOn,this.needToRecord, this.selectedCodeType, this.subSkillId.text, int.Parse(this.type.text));
 
-        Debug.Log("actionAnimationLength: " + actionAnimationLength + "\neffectAnimationLength: " + effectAnimationLength + "\naudioLength: " + audioLength); ;
-        Debug.Log("GetAnimationClipTotalLength(): " + GetAnimationClipTotalLength());
+        //Debug.Log("actionAnimationLength: " + actionAnimationLength + "\neffectAnimationLength: " + effectAnimationLength + "\naudioLength: " + audioLength); ;
+        //Debug.Log("GetAnimationClipTotalLength(): " + GetAnimationClipTotalLength());
     }
 
     // compare action, effect and audio length

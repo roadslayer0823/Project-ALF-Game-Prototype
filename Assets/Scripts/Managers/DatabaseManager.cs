@@ -577,6 +577,11 @@ public class DatabaseManager : Singleton<DatabaseManager>
         return this.passiveSkillList;
     }
 
+    public List<AnimationData> GetAnimationDataList()
+    {
+        return this.animationList;
+    }
+
     public AnimationData GetAnimationData( AnimationData.CodeType codeType, string subskillId = "", int type = 0 )
     {
         for (int i = 0; i < this.animationList.Count; i++)
@@ -1104,6 +1109,9 @@ public class DatabaseManager : Singleton<DatabaseManager>
 
         [JsonProperty("type")]
         public int Type { get; private set; }
+
+        [JsonProperty("is_player")]
+        public bool IsPlayer { get; private set; }
 
         [JsonProperty("is_flipped")]
         public bool IsFlipped { get; private set; }
