@@ -57,7 +57,7 @@ public partial class BattleLogicManagerV2
             // 5.破流;
             // "受擊方"的[能量殘響]
             // 重受擊方當前以太值結算
-            CategorizedPassiveSkillManager.CalculateHeavyRecipientStatePoint( ref battleResultData, assaulter: lead, recipient: improviser, false );
+            CategorizedPassiveSkillManager.CalculateHeavyRecipientStatePoint( ref battleResultData, assaulter: lead, recipient: improviser);
 
             // "重受擊方"有沒有因"重直擊方"的以太傷害導致當前以太值<0?
             // YES
@@ -152,7 +152,7 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, lead, improviser, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, lead, improviser);
 
         // ------------------------------------------------------------------
 
@@ -166,7 +166,7 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, improviser, lead, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, improviser, lead);
 
         // ------------------------------------------------------------------
     }

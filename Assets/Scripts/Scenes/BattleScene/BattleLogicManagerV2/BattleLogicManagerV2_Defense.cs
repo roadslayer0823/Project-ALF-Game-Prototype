@@ -289,7 +289,7 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, lead, improviser, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, lead, improviser);
 
         // ------------------------------------------------------------------
 
@@ -306,7 +306,7 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, improviser, lead, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, improviser, lead);
 
         // ------------------------------------------------------------------
     }

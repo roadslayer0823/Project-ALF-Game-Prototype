@@ -46,8 +46,8 @@ public partial class BattleLogicManagerV2
         // 2.追風 / 9.行雲流水 / 10.負荷壓制
 
         // 角力追風發動&以太值負荷值結算
-        CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref battleResultData, lead, improviser, false );
-        CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref battleResultData, improviser, lead, false );
+        CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref battleResultData, lead, improviser);
+        CategorizedPassiveSkillManager.RunJiaoLiZhuiFengEffectAndStateStressCalculation( ref battleResultData, improviser, lead);
 
         // 雙方技能強度速度最終結算
         CategorizedPassiveSkillManager.CalculateBothCharacterStrengthSpeed( ref battleResultData, lead, improviser );
@@ -335,7 +335,7 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, gameCharacterOne, gameCharacterTwo, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, gameCharacterOne, gameCharacterTwo);
 
         // ------------------------------------------------------------------
 
@@ -352,7 +352,7 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, gameCharacterTwo, gameCharacterOne, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, gameCharacterTwo, gameCharacterOne);
 
         // ------------------------------------------------------------------
     }
@@ -640,7 +640,7 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, assaulter, recipient, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, assaulter, recipient);
 
         // ------------------------------------------------------------------
 
@@ -657,7 +657,7 @@ public partial class BattleLogicManagerV2
         // 4.積壓 / 5.積效 / 6.變頻 / 12.逆轉
 
         // 頁面：發動流向效果B
-        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, recipient, assaulter, false );
+        CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, recipient, assaulter);
 
         // ------------------------------------------------------------------
     }

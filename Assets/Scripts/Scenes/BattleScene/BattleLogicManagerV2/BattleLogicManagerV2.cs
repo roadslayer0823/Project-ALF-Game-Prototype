@@ -556,7 +556,7 @@ public partial class BattleLogicManagerV2
                 // 重直擊方：lead
 
                 // 重受擊方當前以太值結算
-                CategorizedPassiveSkillManager.CalculateHeavyRecipientStatePoint( ref battleResultData, lead, improviser, false );
+                CategorizedPassiveSkillManager.CalculateHeavyRecipientStatePoint( ref battleResultData, lead, improviser);
 
                 BattleResultData.BattleResultData_GameCharacter _recipient_BattleResultData = battleResultData.GetGameCharacterResultData( improviser );
 
@@ -578,8 +578,8 @@ public partial class BattleLogicManagerV2
                 BattleLogicManagerV2.UpdateSkillContinuousEffects( ref battleResultData, improviser );
 
                 // 頁面：發動流向效果B
-                CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, lead, improviser, false );
-                CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, improviser, lead, false );
+                CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, lead, improviser);
+                CategorizedPassiveSkillManager.RunPassiveSkillEffectB( ref battleResultData, improviser, lead);
 
                 break;
         }
@@ -652,14 +652,14 @@ public partial class BattleLogicManagerV2
                             // 先手近戰攻擊，後手近戰迎擊，先手攻擊勝利。
                             DeclareAssaulterAndRecipient( assaulter: lead, recipient: improviser );
                             ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true);
                         }
                         else if (winner == improviser)
                         {
                             // 先手近戰攻擊，後手近戰迎擊，後手迎擊勝利。
                             DeclareAssaulterAndRecipient( assaulter: improviser, recipient: lead );
                             ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasHealthPointDamage: true, hasStatePointDamage: true, hasStressValueDamage: true, stressValueDamageMultiplier: _stressValueDamageMultiplierOnRepulseForLoser );
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true);
                         }
                         else
                         {
@@ -673,7 +673,7 @@ public partial class BattleLogicManagerV2
                         if (winner == lead)
                         {
                             // 先手近戰攻擊，後手遠程迎擊，先手攻擊勝利。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: improviser, target: lead, hasStatePointDamage: true, hasStressValueDamage: true);
                         }
                         else if (winner == improviser)
                         {
@@ -701,7 +701,7 @@ public partial class BattleLogicManagerV2
                         else if (winner == improviser)
                         {
                             // 先手遠程攻擊，後手近戰迎擊，後手迎擊勝利。
-                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true, isBreakStatusAvailable: false );
+                            ExecuteCasterSkillOnHit( ref _battleResultData, caster: lead, target: improviser, hasStatePointDamage: true, hasStressValueDamage: true);
                         }
                         else
                         {
@@ -916,7 +916,7 @@ public partial class BattleLogicManagerV2
 
     private static void ExecuteCasterSkillOnHit( ref BattleResultData battleResultData, GameCharacter caster, GameCharacter target,
                                                  bool hasHealthPointDamage = false, bool hasStatePointDamage = false, bool hasStressValueDamage = false,
-                                                 bool isBreakStatusAvailable = true, float stressValueDamageMultiplier = 1.0f )
+                                                 float stressValueDamageMultiplier = 1.0f )
     {
         string _resultLog = "";
 
@@ -968,7 +968,7 @@ public partial class BattleLogicManagerV2
             float _statePointDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStatePointDamage( _casterSubskillData ) * ( ( _isTargetHavingEnergyMarker ) ? _casterSubskillData.EnergyMarkerStateDamageRate : 1.0f ) );
             if (_statePointDamage > 0)
             {
-                battleResultData.AddGameCharacterResultData_StatePointDamage( target, _statePointDamage, isBreakStatusAvailable, out _targetBattleResultData );
+                battleResultData.AddGameCharacterResultData_StatePointDamage( target, _statePointDamage, out _targetBattleResultData );
                 _extraLog += $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _statePointDamage }{ TerminologyManager.STATE_POINT }傷害</color>{ ( ( _isTargetHavingEnergyMarker ) ? "（帶有能量殘響）" : "" ) }";
             }
         }
@@ -981,7 +981,7 @@ public partial class BattleLogicManagerV2
             float _stressValueDamage = BattleCalculationManager.AdjustAmount( BattleCalculationManager.GetStressValueDamage( _casterSubskillData ) * ( ( _isTargetHavingEnergyMarker ) ? _casterSubskillData.EnergyMarkerStressDamageRate : 1.0f ) * stressValueDamageMultiplier );
             if (_stressValueDamage > 0)
             {
-                battleResultData.AddGameCharacterResultData_StressValueDamage( target, _stressValueDamage, isBreakStatusAvailable, out _targetBattleResultData );
+                battleResultData.AddGameCharacterResultData_StressValueDamage( target, _stressValueDamage, out _targetBattleResultData );
                 _extraLog += $"{ ( ( _extraLog != "" ) ? "、" : "" ) }<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _stressValueDamage }%負荷值傷害</color>{ ( ( _isTargetHavingEnergyMarker ) ? "（帶有能量殘響）" : "" ) }";
             }
         }

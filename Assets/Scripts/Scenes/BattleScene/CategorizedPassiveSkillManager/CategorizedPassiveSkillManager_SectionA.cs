@@ -617,7 +617,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             _formula = "[抵抗成功方當前以太值]-<[平手方回避壓力]*[1 + （9.生命壓制（平手方） 或者 11.負荷壓制2）] * [1 - " + _JieLiu_YouRen + "（抵抗成功方）]";
             _currentActivatingSkill = "已使用的流向技能:" + _currentFirstSkillString + "\n" +_JieLiu_YouRen;
         }
-        battleResultData.AddGameCharacterResultData_StatePointDamage(successfulResister, _stressEvasionCost, false, out _);
+        battleResultData.AddGameCharacterResultData_StatePointDamage(successfulResister, _stressEvasionCost, out _);
         successfulResisterData.temp_StressEvasionCost = _stressEvasionCost;
 
         _successfulResisterString = "當前身份:" + _currentIdentity + "\n" +
@@ -920,13 +920,13 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         if (gameCharacterTwo.GetSelectedPassiveSkillCategoryType() == CategoryType.State)
         {
             //["己方"當前以太值]-["對方"以太傷害]*[1+0.5+n]
-            battleResultData.AddGameCharacterResultData_StatePointDamage(gameCharacterOne, _opponentStateValueDamage * (1 + skill_PSE5_PoLiu + hasEnergyMarker), false, out _);
+            battleResultData.AddGameCharacterResultData_StatePointDamage(gameCharacterOne, _opponentStateValueDamage * (1 + skill_PSE5_PoLiu + hasEnergyMarker), out _);
             _formula = "[" + _characterOneCurrentIdentity +"當前以太值] -[" + _characterTwoCurrentIdentity + "以太傷害] *[1 + 5.破流 + 能量殘響]";
         }
         else
         {
             //["己方"當前以太值]-["對方"以太傷害]*[1+n]
-            battleResultData.AddGameCharacterResultData_StatePointDamage(gameCharacterOne, _opponentStateValueDamage * (1 + hasEnergyMarker), false, out _);
+            battleResultData.AddGameCharacterResultData_StatePointDamage(gameCharacterOne, _opponentStateValueDamage * (1 + hasEnergyMarker), out _);
             _formula = "[" +_characterOneCurrentIdentity +"當前以太值]-["+ _characterTwoCurrentIdentity +"以太傷害]*[1+能量殘響]";
         }
 
@@ -1075,7 +1075,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             //["己方"負荷值]+["對方"負荷傷害] *[1 + n + n] *[1 - (己方負荷抗性) - n - n]
             battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacter, opponentStressValueDamage *
                 (1 + activatingPassiveSkill + gameCharacterOneEnergyMarker) *
-                (1 - (gameCharacterStressResistance - skill_PSE6_FuHeLiuZhuan - skill_PSE12_NiFeng)) * multiplyZeroPointFive, false, out _);
+                (1 - (gameCharacterStressResistance - skill_PSE6_FuHeLiuZhuan - skill_PSE12_NiFeng)) * multiplyZeroPointFive, out _);
 
             _formula = "[" +_gameCharacterCurrentIdentity + "負荷值] +[" +_opponentCurrentIdentity + "負荷傷害] *[1 + 9.生命壓制 或者 11.負荷壓制2 + 能量殘響] * [1 -"
                            +_gameCharacterCurrentIdentity + "負荷抗性) -6.負荷流轉 - 12.逆風]]" + _isMultipleWithZeroPointFive;
@@ -1099,7 +1099,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             //["己方"負荷值]+["對方"負荷傷害]*[1+n+n]*[1-(己方負荷抗性)-0.2-n)
             battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacter, opponentStressValueDamage *
                 (1 + activatingPassiveSkill + gameCharacterOneEnergyMarker) *
-                (1 - (gameCharacterStressResistance - skill_PSS3_HuaJing - skill_PSS9_XingYunLiuShui)) * multiplyZeroPointFive, false, out _);
+                (1 - (gameCharacterStressResistance - skill_PSS3_HuaJing - skill_PSS9_XingYunLiuShui)) * multiplyZeroPointFive, out _);
 
             _formula = "["+_gameCharacterCurrentIdentity+"負荷值] +["+_opponentCurrentIdentity+"負荷傷害] *[1 + 9.生命壓制 或者 11.負荷壓制2 + 能量殘響] *[1 - ("
                           +_gameCharacterCurrentIdentity+"負荷抗性) - 3.化勁 - 9.行雲流水)" + _isMultipleWithZeroPointFive;
@@ -1122,7 +1122,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             //["己方"負荷值]+["對方"負荷傷害]*[1+n+n]*[1-(己方負荷抗性)]
             battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacter, opponentStressValueDamage *
                 (1 + activatingPassiveSkill + gameCharacterOneEnergyMarker) *
-                (1 - gameCharacterStressResistance) * multiplyZeroPointFive, false, out _);
+                (1 - gameCharacterStressResistance) * multiplyZeroPointFive, out _);
             _formula = "[" + _gameCharacterCurrentIdentity + "負荷值] +[" + _opponentCurrentIdentity + "負荷傷害] *[1 + 9.生命壓制 或者 11.負荷壓制2 + 能量殘響] " +
                 "*[1 - (" + _gameCharacterCurrentIdentity+"負荷抗性)]" + _isMultipleWithZeroPointFive;
 

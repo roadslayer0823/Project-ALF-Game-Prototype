@@ -537,7 +537,7 @@ public class BattleResultData
     }
 
     // 以太值傷害
-    public BattleResultData AddGameCharacterResultData_StatePointDamage( GameCharacter gameCharacter, float statePointDamage, bool isBreakStatusAvailable, out BattleResultData_GameCharacter gameCharacterResultData )
+    public BattleResultData AddGameCharacterResultData_StatePointDamage( GameCharacter gameCharacter, float statePointDamage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         statePointDamage = Mathf.Round(statePointDamage);
         GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
@@ -554,7 +554,14 @@ public class BattleResultData
             gameCharacterResultData.statePointDamageTaken += statePointDamage;
             gameCharacterResultData.SetCurrentStatePoint( gameCharacterResultData.currentStatePoint - statePointDamage );
 
-            if (isBreakStatusAvailable && gameCharacterResultData.currentStatePoint < 0)
+            if(gameCharacter.HasCharacterIdentityType(CharacterIdentityType.WinningBenefitHolder))
+            {
+                // 勝利優惠機制解說
+                // 當前以太值最低為1
+                Debug.Log("gameCharacter.HasCharacterIdentityType 勝利優惠機制 當前以太值最低為1");
+                gameCharacterResultData.SetCurrentStatePoint(1);
+            }
+            else if (gameCharacterResultData.currentStatePoint < 0)
             {
                 // 陷入以太崩潰狀態。
                 gameCharacterResultData.stateBreakStatusRemainingATLs = 1;
@@ -594,7 +601,7 @@ public class BattleResultData
     }
 
     // 負荷值傷害
-    public BattleResultData AddGameCharacterResultData_StressValueDamage( GameCharacter gameCharacter, float stressValueDamage, bool isBreakStatusAvailable, out BattleResultData_GameCharacter gameCharacterResultData )
+    public BattleResultData AddGameCharacterResultData_StressValueDamage( GameCharacter gameCharacter, float stressValueDamage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
         stressValueDamage = Mathf.Round(stressValueDamage);
         GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
@@ -613,19 +620,21 @@ public class BattleResultData
 
             if (gameCharacterResultData.currentStressValue >= gameCharacterResultData.maximumStressValue)
             {
-                if (isBreakStatusAvailable)
+                if (gameCharacter.HasCharacterIdentityType(CharacterIdentityType.WinningBenefitHolder))
                 {
+                    Debug.Log("gameCharacter.HasCharacterIdentityType 勝利優惠機制 只能達到最高 99%");
+                    // 勝利優惠機制解說
+                    // 由於不會陷入崩潰狀態，該角色的負荷值只能達到最高 99% 而已。
+                    float _stressValueReduction = gameCharacterResultData.currentStressValue - (gameCharacterResultData.maximumStressValue - 1);
+                    gameCharacterResultData.stressValueDamageTaken -= _stressValueReduction;
+                    gameCharacterResultData.currentStressValue -= _stressValueReduction;
+                }
+                else
+                {                  
                     // 陷入負荷崩潰狀態。
                     gameCharacterResultData.stressBreakStatusRemainingATLs = 1;
                     gameCharacterResultData.numberOfEnteringIntoBreakStatus++;
-                    BattleLogicManagerV2.OnGameCharacterBeingInBreakStatus( gameCharacter );
-                }
-                else
-                {
-                    // 由於不會陷入崩潰狀態，該角色的負荷值只能達到最高 99% 而已。
-                    float _stressValueReduction = gameCharacterResultData.currentStressValue - ( gameCharacterResultData.maximumStressValue - 1 );
-                    gameCharacterResultData.stressValueDamageTaken -= _stressValueReduction;
-                    gameCharacterResultData.currentStressValue -= _stressValueReduction;
+                    BattleLogicManagerV2.OnGameCharacterBeingInBreakStatus(gameCharacter);
                 }
             }
         }

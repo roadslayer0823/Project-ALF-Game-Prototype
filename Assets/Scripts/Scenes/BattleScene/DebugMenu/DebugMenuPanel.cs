@@ -204,7 +204,7 @@ public class DebugMenuPanel : MonoBehaviour
                 {
                     //characterObject.AddCurrentStressValue( _difference, true );
 
-                    new BattleResultData().AddGameCharacterResultData_StressValueDamage(characterObject, Mathf.Abs(_difference), true, out BattleResultData.BattleResultData_GameCharacter result);
+                    new BattleResultData().AddGameCharacterResultData_StressValueDamage(characterObject, Mathf.Abs(_difference), out BattleResultData.BattleResultData_GameCharacter result);
                     characterObject.ApplyBattleResultData(result);
                 }
                 else if (_difference < 0)
