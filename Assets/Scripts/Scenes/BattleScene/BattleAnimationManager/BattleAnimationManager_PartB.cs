@@ -616,7 +616,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 {
                     // 敵方是否"速度負方"? or 雙方已按下技能是否都是"遠程"?
                     // YES
-                    if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) && (_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged))
+                    if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || (_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged))
                     {
                         _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType );
                         _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_D_L, _playerTwo_SubskillId, _playerTwo_AnimationType );

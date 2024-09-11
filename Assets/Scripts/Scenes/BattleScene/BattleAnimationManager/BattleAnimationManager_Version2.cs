@@ -206,6 +206,9 @@ public partial class BattleAnimationManager : MonoBehaviour
             _improviser.ResetAssignedSkill();
             _improviser.Reset();
 
+            _lead.GetCharacterAnimationHandler().ResetAnimation();
+            _improviser.GetCharacterAnimationHandler().ResetAnimation();
+
             yield return StartCoroutine( RunDerivedSkill( _lead, _improviser, _atlSlotListPanel, battleFlowRound.GetCurrentATL().GetATLNumber() ) );
 
             if (EndPartB( _lead, _improviser ))
@@ -1228,6 +1231,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         // -------------------------------------------------- 頁面：派生技能演出 --------------------------------------------------
 
         this.isAnimationEventTriggered = false;
+        this.deriveSkillAnimationHandler.Show( lead );
         this.deriveSkillAnimationHandler.PlayDeriveAnimationPart2();
 
         // 結算演出時機 A - 在 Part B 的第 0.1 秒起播放。
@@ -1380,5 +1384,10 @@ public partial class BattleAnimationManager : MonoBehaviour
     {
         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HINTS );
         this.skillPromptPanel.ShowCasterCurrentSkillInfo( caster );
+    }
+
+    public bool GetIsAbleToAssignSkillInPartB()
+    {
+        return this.isAbleToAssignSkillInPartB;
     }
 }

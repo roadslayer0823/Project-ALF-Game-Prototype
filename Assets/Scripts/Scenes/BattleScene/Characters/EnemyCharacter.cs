@@ -507,7 +507,10 @@ public class EnemyCharacter : GameCharacter
             {
                 LeanTween.delayedCall( Random.Range( 1.0f, 1.2f ), () =>
                 {
-                    base.SetAssignedSkill( _derivedSkill );
+                    if (battleGameManager.GetBattleAnimationManager().GetIsAbleToAssignSkillInPartB())
+                    {
+                        base.SetAssignedSkill( _derivedSkill );
+                    }
                 } );
             }
             else if (_availableSkillList?.Count > 0)
