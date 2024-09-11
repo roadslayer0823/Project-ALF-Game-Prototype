@@ -129,15 +129,15 @@ public class CharacterAnimationHandler : MonoBehaviour
         int _animationType = AnimationParameterData.ConvertToAnimationType(this.gameCharacter);
 
         List<AnimationData> _animationDataList = DatabaseManager.Instance.GetAnimationDataList();
-        for (int i =0; i < _animationDataList.Count; i ++)
+        for (int i = 0; i < _animationDataList.Count; i++)
         {
-            AnimationData _animationData = _animationDataList[i];
-            if(_animationData.SubskillIdsArray.Contains(_currentSubskillId)
-                && _animationData.Type == _animationType
-                && _animationData.IsPlayer == _isPlayer)
+            AnimationData _animationData = _animationDataList[ i ];
+            if (_animationData.IsPlayer == _isPlayer
+                && _animationData.SubskillIdsArray.Contains( _currentSubskillId )
+                && ( _animationData.Type != 0 || _animationData.Type == _animationType ))
             {
-                _codeTypeList.Add(_animationData.CodeString);
-                Debug.Log("_animationDataList[i].Code: " + _animationData.Code);
+                _codeTypeList.Add( _animationData.CodeString );
+                Debug.Log( "_animationDataList[i].Code: " + _animationData.Code );
             }
         }
 
