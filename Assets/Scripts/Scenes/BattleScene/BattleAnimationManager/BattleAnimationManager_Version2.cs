@@ -198,7 +198,8 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         // 是否有一方按下“派生技能”？
         // YES
-        // “先手方”使用派生技能。
+        // Part B頁面："先手方"已按下技能是否"派生技能"?
+        // YES
         if (_leadSkillType == SkillType.derived)
         {
             // 取消對方的任何技能指令並進入“判定 Part B 結果及結算”。
@@ -231,7 +232,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         // 当前的距离是否为“近距离”？
         // YES
         if (_isLeadMeleeAttacking
-                && this.battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType() == DistanceType.Near)
+            && this.battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType() == DistanceType.Near)
         {
             // “後手方”發動技能。
             _improviser.ApplyAssignedSkillAsCurrentSkill();
@@ -440,518 +441,508 @@ public partial class BattleAnimationManager : MonoBehaviour
         _leadBattleResultData = _battleResultData.GetGameCharacterResultData( _lead );
         _improviserBattleResultData = _battleResultData.GetGameCharacterResultData( _improviser );
 
-        // "先手方"已按下技能是否"派生技能"?
-        // YES
-        if (_leadSkillType == SkillType.derived)
+        // 判定"己方"的指令時間
+        BattleLogicManagerV2.DetermineCommandTimeInPartB( this.battleGameManager, _playerCharacter );
+        BattleLogicManagerV2.DetermineCommandTimeInPartB( this.battleGameManager, _enemyCharacter );
+
+        CharacterAnimationHandler _playerCharacterAnimationHandler = _playerCharacter.GetCharacterAnimationHandler();
+        CharacterAnimationHandler _enemyCharacterAnimationHandler = _enemyCharacter.GetCharacterAnimationHandler();
+
+        // 判定己方PART B演出
+        var ( _animationParameterDataForPlayerOne, _extraAnimationParameterDataForPlayerOne ) = DetermineAnimationOfPlayerOneForPartB( _playerCharacter, _enemyCharacter );
+
+        // 判定敵方PART B演出
+        var ( _animationParameterDataForPlayerTwo, _extraAnimationParameterDataForPlayerTwo ) = DetermineAnimationOfPlayerTwoForPartB( _playerCharacter, _enemyCharacter );
+
+        // 判定PART B共用特效
+        var ( _visualEffectParameterDataForPlayerOne, _visualEffectParameterDataForPlayerTwo ) = DetermineVisualEffectForPartB_V2( _playerCharacter, _enemyCharacter );
+
+        this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtRecipient(_playerCharacter.HasCharacterIdentityType(CharacterIdentityType.Recipient));
+        _playerCharacter.HideCharacterObject();
+        _enemyCharacter.HideCharacterObject();
+
+        bool _needToWaitForOneSecond = false;
+
+        // 判定後是否有[己方1秒演出]?
+        if (_extraAnimationParameterDataForPlayerOne != null)
         {
-            // TODO: 派生技能演出
+            _needToWaitForOneSecond = true;
+
+            // "己方"播放已判定的[己方1秒演出]。
+            UpdateCameraView( _playerCharacter, _animationParameterDataForPlayerOne );
+            _playerCharacterAnimationHandler.LoadAndPlayAnimation( _extraAnimationParameterDataForPlayerOne );
         }
-        // NO
+
+        // 判定後是否有[敵方1秒演出]?
+        if (_extraAnimationParameterDataForPlayerTwo != null)
+        {
+            _needToWaitForOneSecond = true;
+
+            // "敵方"播放已判定的[敵方1秒演出]。
+            UpdateCameraView( _enemyCharacter, _extraAnimationParameterDataForPlayerTwo );
+            _enemyCharacterAnimationHandler.LoadAndPlayAnimation( _extraAnimationParameterDataForPlayerTwo );
+        }
+
+        UpdateGameCharacterVisibility();
+
+        // 開始 Part-B 階段的倒數計時。
+        _skillCountdownTime = ANIMATION_DURATION_FOR_PART_B + ( ( _needToWaitForOneSecond ) ? 1.0f : 0.0f );
+        _skillCountdownTimeStartTime = Time.time;
+        _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
+
+        // 播放演出同時，根據"當前距離"，更新畫面中ATL的距離圖標。
+        this.battleGameManager.GetBattleDistanceManager().UpdateBattleDistancePanel();
+
+        if (_improviserCurrentSkill != null)
+        {
+            // 結算演出時機 A - 在 Part B 的第 0.1 秒起播放。
+            // 參數：以太值消耗、以太值提升
+            LeanTween.delayedCall( RESULT_ANIMATION_TIMING_A, () =>
+            {
+                _improviser.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
+
+                // 播放演出同時，UI反映各項參數。
+                _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager, true );
+                //StartCoroutine( ShowPopUpDisplayInfo( improviser, statePointReduced: improviserBattleResultData.statePointCost, maximumStatePointIncreased: improviserBattleResultData.maximumStatePointIncrease ) );
+                _improviser.ShowPopUpDisplayInfoV2(
+                    maxStatePointUp: _improviserBattleResultData.maximumStatePointIncreaseForBase
+                    //,
+                    //statePointDamage: _improviserBattleResultData.statePointCost
+                    );
+            } );
+        }
+
+        if (_needToWaitForOneSecond)
+        {
+            yield return new WaitForSeconds( 1.0f );
+        }
+
+        // 播放已判定的[己方PART B演出]&[敵方PART B演出]&[PART B特效]
+
+        if (_animationParameterDataForPlayerOne != null)
+        {
+            UpdateCameraView( _playerCharacter, _animationParameterDataForPlayerOne );
+            _playerCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerOne );
+        }
+
+        if (_visualEffectParameterDataForPlayerOne != null)
+        {
+            _playerCharacterAnimationHandler.LoadAndPlayVisualEffect( _visualEffectParameterDataForPlayerOne );
+        }
+
+        if (_animationParameterDataForPlayerTwo != null)
+        {
+            UpdateCameraView( _enemyCharacter, _animationParameterDataForPlayerTwo );
+            _enemyCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerTwo );
+        }
+
+        if (_visualEffectParameterDataForPlayerTwo != null)
+        {
+            _enemyCharacterAnimationHandler.LoadAndPlayVisualEffect( _visualEffectParameterDataForPlayerTwo );
+        }
+
+        if ((_leadCurrentSkill != null && _leadCurrentSkill.GetSkillData().skillType == SkillType.repulse)
+            || (_improviserCurrentSkill != null && _improviserCurrentSkill.GetSkillData().skillType == SkillType.repulse))
+        {
+            this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAnimationAtRepulse();
+        }
+
+        UpdateGameCharacterVisibility();
+
+        // 首0.3秒後，指令牌出現。
+        LeanTween.delayedCall( 0.3f, () =>
+        {
+            string _commandTimeTypeText = TerminologyManager.GetCommandTimeTypeText( _playerCharacter.GetCurrentCommandTimeType() );
+            this.skillPromptPanel.ShowCommandPhase( _commandTimeTypeText, true );
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _playerCharacter.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { _commandTimeTypeText } 】</color>。" );
+
+            // -------------------- 開始檢查“己方”和“敵方”是否有在 Part-B 階段裡輸入指令。 --------------------
+
+            this.isAbleToAssignSkillInPartB = true;
+
+            StartCoroutine( RunCheckingIfSkillIsSelectedInPartB( _playerCharacter ) );
+            StartCoroutine( RunCheckingIfSkillIsSelectedInPartB( _enemyCharacter ) );
+
+            if (_winner != null)
+            {
+                StartCoroutine( RunCheckingIfDerivedSkillIsSelectedInPartB( _winner, _skillCountdownTime, _skillCountdownTimeStartTime ) );
+            }
+
+            // ------------------------------------------------------------------------------------------
+        } );
+
+        // 0.5秒後參考【技能按鈕可用性】開啟"己方"可用的指令
+        LeanTween.delayedCall( 0.5f, () =>
+        {
+            _lead.TriggerEvent( AnimationEvent.OnPartB );
+            _improviser.TriggerEvent( AnimationEvent.OnPartB );
+
+            // 倒數計時開始。
+            ShowCommandPhaseCountdownTimer( true, _playerCharacter, 1.3f );
+        } );
+
+        if (this.isUsingGameCharacterV2)
+        {
+            string _crashef = "crashef";
+            bool _hasCrashEffectForLead = false;
+            bool _hasCrashEffectForImproviser = false;
+
+            if (_lead == _playerCharacter)
+            {
+                if (_visualEffectParameterDataForPlayerOne != null)
+                {
+                    _hasCrashEffectForLead = _visualEffectParameterDataForPlayerOne.GetVisualEffectName().Contains( _crashef );
+                }
+            }
+            else if (_lead == _enemyCharacter)
+            {
+                if (_visualEffectParameterDataForPlayerTwo != null)
+                {
+                    _hasCrashEffectForLead = _visualEffectParameterDataForPlayerTwo.GetVisualEffectName().Contains( _crashef );
+                }
+            }
+
+            if (_improviser == _playerCharacter)
+            {
+                if (_visualEffectParameterDataForPlayerOne != null)
+                {
+                    _hasCrashEffectForImproviser = _visualEffectParameterDataForPlayerOne.GetVisualEffectName().Contains( _crashef );
+                }
+            }
+            else if (_improviser == _enemyCharacter)
+            {
+                if (_visualEffectParameterDataForPlayerTwo != null)
+                {
+                    _hasCrashEffectForImproviser = _visualEffectParameterDataForPlayerTwo.GetVisualEffectName().Contains( _crashef );
+                }
+            }
+
+            // 結算演出時機 B - 在partB的第0.6秒起播放。
+            // 參數：以太傷害, 負荷傷害, 回避壓力消耗, break字樣演出
+            // 生命傷害(只限沒有出現包含“crashef”的演出時)
+            // (近戰獎勵版) 以太提升, 回流造成的當前以太增加
+            LeanTween.delayedCall( RESULT_ANIMATION_TIMING_B, () =>
+            {
+                // 播放演出同時，UI反映結算階段的各項參數。
+                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
+                _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
+
+                _lead.ShowPopUpDisplayInfoV2( healthPointDamage: ( _hasCrashEffectForLead ) ? 0.0f : _leadBattleResultData.GetHealthPointDamageTaken(),
+                                                stressValueDamage: _leadBattleResultData.stressValueDamageTaken,
+                                                statePointDamage: _leadBattleResultData.statePointDamageTaken,
+                                                maxStatePointUp: _leadBattleResultData.maximumStatePointIncreaseForBonus
+                                                );
+
+                _improviser.ShowPopUpDisplayInfoV2( healthPointDamage: ( _hasCrashEffectForImproviser ) ? 0.0f : _improviserBattleResultData.GetHealthPointDamageTaken(),
+                                                    stressValueDamage: _improviserBattleResultData.stressValueDamageTaken,
+                                                    statePointDamage: _improviserBattleResultData.statePointDamageTaken,
+                                                    maxStatePointUp: _improviserBattleResultData.maximumStatePointIncreaseForBonus
+                                                    );
+            } );
+
+            // 結算演出時機 C - 在partB的第1.2秒起播放。
+            // 參數：生命傷害(當該次演出出現包含“crashef”的演出時)
+            LeanTween.delayedCall( RESULT_ANIMATION_TIMING_C, () =>
+            {
+                if (_hasCrashEffectForLead)
+                {
+                    _lead.ShowPopUpDisplayInfoV2( healthPointDamage: _leadBattleResultData.GetHealthPointDamageTaken() );
+                }
+
+                if (_hasCrashEffectForImproviser)
+                {
+                    _improviser.ShowPopUpDisplayInfoV2( healthPointDamage: _leadBattleResultData.GetHealthPointDamageTaken() );
+                }
+            } );
+        }
         else
         {
-            // 判定"己方"的指令時間
-            BattleLogicManagerV2.DetermineCommandTimeInPartB( this.battleGameManager, _playerCharacter );
-            BattleLogicManagerV2.DetermineCommandTimeInPartB( this.battleGameManager, _enemyCharacter );
+            string _leadCharacterPartB = "";
+            string _leadSkillEffectPartB = "";
 
-            CharacterAnimationHandler _playerCharacterAnimationHandler = _playerCharacter.GetCharacterAnimationHandler();
-            CharacterAnimationHandler _enemyCharacterAnimationHandler = _enemyCharacter.GetCharacterAnimationHandler();
-
-            // 判定己方PART B演出
-            var ( _animationParameterDataForPlayerOne, _extraAnimationParameterDataForPlayerOne ) = DetermineAnimationOfPlayerOneForPartB( _playerCharacter, _enemyCharacter );
-
-            // 判定敵方PART B演出
-            var ( _animationParameterDataForPlayerTwo, _extraAnimationParameterDataForPlayerTwo ) = DetermineAnimationOfPlayerTwoForPartB( _playerCharacter, _enemyCharacter );
-
-            // 判定PART B共用特效
-            var ( _visualEffectParameterDataForPlayerOne, _visualEffectParameterDataForPlayerTwo ) = DetermineVisualEffectForPartB_V2( _playerCharacter, _enemyCharacter );
-
-            this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAtRecipient(_playerCharacter.HasCharacterIdentityType(CharacterIdentityType.Recipient));
-            _playerCharacter.HideCharacterObject();
-            _enemyCharacter.HideCharacterObject();
-
-            bool _needToWaitForOneSecond = false;
-
-            // 判定後是否有[己方1秒演出]?
-            if (_extraAnimationParameterDataForPlayerOne != null)
+            if (_lead.GetIsPlayer())
             {
-                _needToWaitForOneSecond = true;
-
-                // "己方"播放已判定的[己方1秒演出]。
-                UpdateCameraView( _playerCharacter, _animationParameterDataForPlayerOne );
-                _playerCharacterAnimationHandler.LoadAndPlayAnimation( _extraAnimationParameterDataForPlayerOne );
-            }
-
-            // 判定後是否有[敵方1秒演出]?
-            if (_extraAnimationParameterDataForPlayerTwo != null)
-            {
-                _needToWaitForOneSecond = true;
-
-                // "敵方"播放已判定的[敵方1秒演出]。
-                UpdateCameraView( _enemyCharacter, _extraAnimationParameterDataForPlayerTwo );
-                _enemyCharacterAnimationHandler.LoadAndPlayAnimation( _extraAnimationParameterDataForPlayerTwo );
-            }
-
-            UpdateGameCharacterVisibility();
-
-            // 開始 Part-B 階段的倒數計時。
-            _skillCountdownTime = ANIMATION_DURATION_FOR_PART_B + ( ( _needToWaitForOneSecond ) ? 1.0f : 0.0f );
-            _skillCountdownTimeStartTime = Time.time;
-            _atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
-
-            // 播放演出同時，根據"當前距離"，更新畫面中ATL的距離圖標。
-            this.battleGameManager.GetBattleDistanceManager().UpdateBattleDistancePanel();
-
-            if (_improviserCurrentSkill != null)
-            {
-                // 結算演出時機 A - 在 Part B 的第 0.1 秒起播放。
-                // 參數：以太值消耗、以太值提升
-                LeanTween.delayedCall( RESULT_ANIMATION_TIMING_A, () =>
+                if (_leadRangeType == RangeType.melee)
                 {
-                    _improviser.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
-
-                    // 播放演出同時，UI反映各項參數。
-                    _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager, true );
-                    //StartCoroutine( ShowPopUpDisplayInfo( improviser, statePointReduced: improviserBattleResultData.statePointCost, maximumStatePointIncreased: improviserBattleResultData.maximumStatePointIncrease ) );
-                    _improviser.ShowPopUpDisplayInfoV2(
-                        maxStatePointUp: _improviserBattleResultData.maximumStatePointIncreaseForBase
-                        //,
-                        //statePointDamage: _improviserBattleResultData.statePointCost
-                        );
-                } );
-            }
-
-            if (_needToWaitForOneSecond)
-            {
-                yield return new WaitForSeconds( 1.0f );
-            }
-
-            // 播放已判定的[己方PART B演出]&[敵方PART B演出]&[PART B特效]
-
-            if (_animationParameterDataForPlayerOne != null)
-            {
-                UpdateCameraView( _playerCharacter, _animationParameterDataForPlayerOne );
-                _playerCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerOne );
-            }
-
-            if (_visualEffectParameterDataForPlayerOne != null)
-            {
-                _playerCharacterAnimationHandler.LoadAndPlayVisualEffect( _visualEffectParameterDataForPlayerOne );
-            }
-
-            if (_animationParameterDataForPlayerTwo != null)
-            {
-                UpdateCameraView( _enemyCharacter, _animationParameterDataForPlayerTwo );
-                _enemyCharacterAnimationHandler.LoadAndPlayAnimation( _animationParameterDataForPlayerTwo );
-            }
-
-            if (_visualEffectParameterDataForPlayerTwo != null)
-            {
-                _enemyCharacterAnimationHandler.LoadAndPlayVisualEffect( _visualEffectParameterDataForPlayerTwo );
-            }
-
-            if ((_leadCurrentSkill != null && _leadCurrentSkill.GetSkillData().skillType == SkillType.repulse)
-                || (_improviserCurrentSkill != null && _improviserCurrentSkill.GetSkillData().skillType == SkillType.repulse))
-            {
-                this.battleGameManager.GetBattleVisualEffectManager().ApplyBlurShaderAnimationAtRepulse();
-            }
-
-            UpdateGameCharacterVisibility();
-
-            // 首0.3秒後，指令牌出現。
-            LeanTween.delayedCall( 0.3f, () =>
-            {
-                string _commandTimeTypeText = TerminologyManager.GetCommandTimeTypeText( _playerCharacter.GetCurrentCommandTimeType() );
-                this.skillPromptPanel.ShowCommandPhase( _commandTimeTypeText, true );
-                BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _playerCharacter.GetCharacterName() }</color>進入<color={ BattleLog.SPECIAL_COLOR_CODE }>【 { _commandTimeTypeText } 】</color>。" );
-
-                // -------------------- 開始檢查“己方”和“敵方”是否有在 Part-B 階段裡輸入指令。 --------------------
-
-                this.isAbleToAssignSkillInPartB = true;
-
-                StartCoroutine( RunCheckingIfSkillIsSelectedInPartB( _playerCharacter ) );
-                StartCoroutine( RunCheckingIfSkillIsSelectedInPartB( _enemyCharacter ) );
-
-                if (_winner != null)
-                {
-                    StartCoroutine( RunCheckingIfDerivedSkillIsSelectedInPartB( _winner, _skillCountdownTime, _skillCountdownTimeStartTime ) );
+                    _leadCharacterPartB = "MeleeAttack_Part_B";
+                    _leadSkillEffectPartB = "MeleeAttack_Part_B";
                 }
-
-                // ------------------------------------------------------------------------------------------
-            } );
-
-            // 0.5秒後參考【技能按鈕可用性】開啟"己方"可用的指令
-            LeanTween.delayedCall( 0.5f, () =>
-            {
-                _lead.TriggerEvent( AnimationEvent.OnPartB );
-                _improviser.TriggerEvent( AnimationEvent.OnPartB );
-
-                // 倒數計時開始。
-                ShowCommandPhaseCountdownTimer( true, _playerCharacter, 1.3f );
-            } );
-
-            if (this.isUsingGameCharacterV2)
-            {
-                string _crashef = "crashef";
-                bool _hasCrashEffectForLead = false;
-                bool _hasCrashEffectForImproviser = false;
-
-                if (_lead == _playerCharacter)
+                else if (_leadRangeType == RangeType.ranged)
                 {
-                    if (_visualEffectParameterDataForPlayerOne != null)
-                    {
-                        _hasCrashEffectForLead = _visualEffectParameterDataForPlayerOne.GetVisualEffectName().Contains( _crashef );
-                    }
+                    _leadCharacterPartB = "-";
+                    _leadSkillEffectPartB = "Fireball_Part_B";
                 }
-                else if (_lead == _enemyCharacter)
-                {
-                    if (_visualEffectParameterDataForPlayerTwo != null)
-                    {
-                        _hasCrashEffectForLead = _visualEffectParameterDataForPlayerTwo.GetVisualEffectName().Contains( _crashef );
-                    }
-                }
-
-                if (_improviser == _playerCharacter)
-                {
-                    if (_visualEffectParameterDataForPlayerOne != null)
-                    {
-                        _hasCrashEffectForImproviser = _visualEffectParameterDataForPlayerOne.GetVisualEffectName().Contains( _crashef );
-                    }
-                }
-                else if (_improviser == _enemyCharacter)
-                {
-                    if (_visualEffectParameterDataForPlayerTwo != null)
-                    {
-                        _hasCrashEffectForImproviser = _visualEffectParameterDataForPlayerTwo.GetVisualEffectName().Contains( _crashef );
-                    }
-                }
-
-                // 結算演出時機 B - 在partB的第0.6秒起播放。
-                // 參數：以太傷害, 負荷傷害, 回避壓力消耗, break字樣演出
-                // 生命傷害(只限沒有出現包含“crashef”的演出時)
-                // (近戰獎勵版) 以太提升, 回流造成的當前以太增加
-                LeanTween.delayedCall( RESULT_ANIMATION_TIMING_B, () =>
-                {
-                    // 播放演出同時，UI反映結算階段的各項參數。
-                    _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
-                    _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
-
-                    _lead.ShowPopUpDisplayInfoV2( healthPointDamage: ( _hasCrashEffectForLead ) ? 0.0f : _leadBattleResultData.GetHealthPointDamageTaken(),
-                                                  stressValueDamage: _leadBattleResultData.stressValueDamageTaken,
-                                                  statePointDamage: _leadBattleResultData.statePointDamageTaken,
-                                                  maxStatePointUp: _leadBattleResultData.maximumStatePointIncreaseForBonus
-                                                  );
-
-                    _improviser.ShowPopUpDisplayInfoV2( healthPointDamage: ( _hasCrashEffectForImproviser ) ? 0.0f : _improviserBattleResultData.GetHealthPointDamageTaken(),
-                                                        stressValueDamage: _improviserBattleResultData.stressValueDamageTaken,
-                                                        statePointDamage: _improviserBattleResultData.statePointDamageTaken,
-                                                        maxStatePointUp: _improviserBattleResultData.maximumStatePointIncreaseForBonus
-                                                        );
-                } );
-
-                // 結算演出時機 C - 在partB的第1.2秒起播放。
-                // 參數：生命傷害(當該次演出出現包含“crashef”的演出時)
-                LeanTween.delayedCall( RESULT_ANIMATION_TIMING_C, () =>
-                {
-                    if (_hasCrashEffectForLead)
-                    {
-                        _lead.ShowPopUpDisplayInfoV2( healthPointDamage: _leadBattleResultData.GetHealthPointDamageTaken() );
-                    }
-
-                    if (_hasCrashEffectForImproviser)
-                    {
-                        _improviser.ShowPopUpDisplayInfoV2( healthPointDamage: _leadBattleResultData.GetHealthPointDamageTaken() );
-                    }
-                } );
             }
             else
             {
-                string _leadCharacterPartB = "";
-                string _leadSkillEffectPartB = "";
-
-                if (_lead.GetIsPlayer())
+                if (_leadRangeType == RangeType.melee)
                 {
-                    if (_leadRangeType == RangeType.melee)
-                    {
-                        _leadCharacterPartB = "MeleeAttack_Part_B";
-                        _leadSkillEffectPartB = "MeleeAttack_Part_B";
-                    }
-                    else if (_leadRangeType == RangeType.ranged)
-                    {
-                        _leadCharacterPartB = "-";
-                        _leadSkillEffectPartB = "Fireball_Part_B";
-                    }
+                    _leadCharacterPartB = "Attack_Part_B";
+                    _leadSkillEffectPartB = "HittingEffect";
                 }
-                else
+                else if (_leadRangeType == RangeType.ranged)
                 {
-                    if (_leadRangeType == RangeType.melee)
-                    {
-                        _leadCharacterPartB = "Attack_Part_B";
-                        _leadSkillEffectPartB = "HittingEffect";
-                    }
-                    else if (_leadRangeType == RangeType.ranged)
-                    {
-                        _leadCharacterPartB = "-";
-                        _leadSkillEffectPartB = "Fireball_Part_B";
-                    }
+                    _leadCharacterPartB = "-";
+                    _leadSkillEffectPartB = "Fireball_Part_B";
                 }
+            }
 
-                switch ( _improviserSkillType )
-                {
-                    case SkillType.none:
+            switch ( _improviserSkillType )
+            {
+                case SkillType.none:
 
-                        //_skillCountdownTime = GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                    //_skillCountdownTime = GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
 
-                        //_attacker.SetSkillCountdownTime( _skillCountdownTime );
-                        //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
-                        //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
+                    //_attacker.SetSkillCountdownTime( _skillCountdownTime );
+                    //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
+                    //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
 
-                        //ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
-                        //ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
-                        //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
-                        //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
+                    //ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
+                    //ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
+                    //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
+                    //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
 
-                        if (_leadCharacterPartB != NO_ANIMATION)
+                    if (_leadCharacterPartB != NO_ANIMATION)
+                    {
+                        yield return StartCoroutine( PlayCharacterAnimation( _lead, _leadCharacterPartB ) );
+                    }
+
+                    if (_leadSkillEffectPartB != NO_ANIMATION)
+                    {
+                        yield return StartCoroutine( PlaySkillEffectAnimation( _lead, _leadSkillEffectPartB ) );
+                    }
+
+                    _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
+                    _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
+
+                    this.cameraEffect.Shake();
+                    AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
+                    yield return StartCoroutine( PlayCharacterAnimation( _improviser, GETTING_HIT_ANIMATION_NAME, _improviserBattleResultData ) );
+                    //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+
+                    break;
+
+                case SkillType.repulse:
+
+                    yield return StartCoroutine( PlayShowingSkillInformation( _improviser ) );
+
+                    if (_leadCharacterPartB != NO_ANIMATION)
+                    {
+                        StartCoroutine( PlayCharacterAnimation( _lead, _leadCharacterPartB + "_" + REPULSE_ANIMATION_NAME ) );
+                    }
+
+                    if (_leadSkillEffectPartB != NO_ANIMATION)
+                    {
+                        StartCoroutine( PlaySkillEffectAnimation( _lead, _leadSkillEffectPartB + "_" + REPULSE_ANIMATION_NAME ) );
+                    }
+
+                    //_skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                    //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
+
+                    //ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
+                    //ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
+                    //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
+                    //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
+
+                    yield return StartCoroutine( PlayCharacterAnimation( _improviser, REPULSE_ANIMATION_NAME ) );
+                    yield return StartCoroutine( PlaySkillEffectAnimation( _improviser, REPULSE_ANIMATION_NAME ) );
+
+                    _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
+                    _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
+
+                    bool _hasAssault = false;
+                    if (_winner != null)
+                    {
+                        if (_winner.HasOneOfCharacterIdentityTypes( new CharacterIdentityType[]
+                                                                    {
+                                                                        CharacterIdentityType.LightAssaulter,
+                                                                        CharacterIdentityType.HeavyAssaulter
+                                                                    }
+                                                                    ))
                         {
-                            yield return StartCoroutine( PlayCharacterAnimation( _lead, _leadCharacterPartB ) );
-                        }
+                            _hasAssault = true;
 
-                        if (_leadSkillEffectPartB != NO_ANIMATION)
+                            //_skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                            //_winner.SetSkillCountdownTime( _skillCountdownTime );
+                            //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _winner, AnimationEvent.OnRepulseWin_Cutoff ) );
+
+                            this.cameraEffect.Shake();
+                            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
+
+                            string _animationName = GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_" + ( ( _lead.GetIsPlayer() ) ? "Left" : "Right" );
+
+                            ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
+                            ShowPopUpDisplayInfo( _improviser, _improviserBattleResultData );
+
+                            if (_winner == _lead && _improviser.IsCharacterObjectActive())
+                            {
+                                yield return StartCoroutine( PlayCharacterAnimation( _improviser, _animationName, _improviserBattleResultData ) );
+                            }
+                            else if (_winner == _improviser && _lead.IsCharacterObjectActive())
+                            {
+                                yield return StartCoroutine( PlayCharacterAnimation( _lead, _animationName, _improviserBattleResultData ) );
+                            }
+                        }
+                    }
+
+                    if (!_hasAssault)
+                    {
+                        ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
+                        ShowPopUpDisplayInfo( _improviser, _improviserBattleResultData );
+                    }
+
+                    //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+
+                    break;
+
+                case SkillType.backend:
+
+                    yield return StartCoroutine( PlayShowingSkillInformation( _improviser ) );
+
+                    //_skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                    //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
+
+                    //ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
+                    //ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
+                    //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
+                    //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
+
+                    if (_leadCharacterPartB != NO_ANIMATION)
+                    {
+                        yield return StartCoroutine( PlayCharacterAnimation( _lead, _leadCharacterPartB ) );
+                    }
+
+                    if (_leadSkillEffectPartB != NO_ANIMATION)
+                    {
+                        if (_leadSkillEffectPartB != "HittingEffect")
+                        {
+                            yield return StartCoroutine( PlaySkillEffectAnimation( _lead, _leadSkillEffectPartB ) );
+                        }
+                    }
+
+                    BattleLog.Instance.AddOnScreenBattleLog( _log );
+
+                    string _attackTargetBackendSkillAnimationCharacterPartA = "";
+                    string _attackTargetBackendSkillAnimationSkillEffectPartA = "";
+
+                    if (_improviserSubskillData.IsDefendingSkill)
+                    {
+                        _attackTargetBackendSkillAnimationCharacterPartA = "Defend";
+                        _attackTargetBackendSkillAnimationSkillEffectPartA = "Defend";
+                    }
+                    else if (_improviserSubskillData.IsEvadingSkill)
+                    {
+                        _attackTargetBackendSkillAnimationCharacterPartA = "Evade";
+                        _attackTargetBackendSkillAnimationSkillEffectPartA = NO_ANIMATION;
+                    }
+
+                    _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
+                    _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
+
+                    if (_winner == _lead)
+                    {
+                        if (_leadSkillEffectPartB == "HittingEffect")
                         {
                             yield return StartCoroutine( PlaySkillEffectAnimation( _lead, _leadSkillEffectPartB ) );
                         }
 
-                        _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
-                        _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
+                        //_skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                        //_attacker.SetSkillCountdownTime( _skillCountdownTime );
+                        //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
 
                         this.cameraEffect.Shake();
                         AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
+                        ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
                         yield return StartCoroutine( PlayCharacterAnimation( _improviser, GETTING_HIT_ANIMATION_NAME, _improviserBattleResultData ) );
                         //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
-
-                        break;
-
-                    case SkillType.repulse:
-
-                        yield return StartCoroutine( PlayShowingSkillInformation( _improviser ) );
-
-                        if (_leadCharacterPartB != NO_ANIMATION)
-                        {
-                            StartCoroutine( PlayCharacterAnimation( _lead, _leadCharacterPartB + "_" + REPULSE_ANIMATION_NAME ) );
-                        }
-
-                        if (_leadSkillEffectPartB != NO_ANIMATION)
-                        {
-                            StartCoroutine( PlaySkillEffectAnimation( _lead, _leadSkillEffectPartB + "_" + REPULSE_ANIMATION_NAME ) );
-                        }
-
-                        //_skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                        //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
-
-                        //ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
-                        //ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
-                        //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
-                        //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
-
-                        yield return StartCoroutine( PlayCharacterAnimation( _improviser, REPULSE_ANIMATION_NAME ) );
-                        yield return StartCoroutine( PlaySkillEffectAnimation( _improviser, REPULSE_ANIMATION_NAME ) );
-
-                        _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
-                        _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
-
-                        bool _hasAssault = false;
-                        if (_winner != null)
-                        {
-                            if (_winner.HasOneOfCharacterIdentityTypes( new CharacterIdentityType[]
-                                                                        {
-                                                                            CharacterIdentityType.LightAssaulter,
-                                                                            CharacterIdentityType.HeavyAssaulter
-                                                                        }
-                                                                        ))
-                            {
-                                _hasAssault = true;
-
-                                //_skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                                //_winner.SetSkillCountdownTime( _skillCountdownTime );
-                                //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _winner, AnimationEvent.OnRepulseWin_Cutoff ) );
-
-                                this.cameraEffect.Shake();
-                                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-
-                                string _animationName = GETTING_HIT_ANIMATION_NAME + "_" + REPULSE_ANIMATION_NAME + "_" + ( ( _lead.GetIsPlayer() ) ? "Left" : "Right" );
-
-                                ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
-                                ShowPopUpDisplayInfo( _improviser, _improviserBattleResultData );
-
-                                if (_winner == _lead && _improviser.IsCharacterObjectActive())
-                                {
-                                    yield return StartCoroutine( PlayCharacterAnimation( _improviser, _animationName, _improviserBattleResultData ) );
-                                }
-                                else if (_winner == _improviser && _lead.IsCharacterObjectActive())
-                                {
-                                    yield return StartCoroutine( PlayCharacterAnimation( _lead, _animationName, _improviserBattleResultData ) );
-                                }
-                            }
-                        }
-
-                        if (!_hasAssault)
-                        {
-                            ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
-                            ShowPopUpDisplayInfo( _improviser, _improviserBattleResultData );
-                        }
-
-                        //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
-
-                        break;
-
-                    case SkillType.backend:
-
-                        yield return StartCoroutine( PlayShowingSkillInformation( _improviser ) );
-
-                        //_skillCountdownTime = ( GetAttackAnimationLength( _attacker, _attackerCharacterPartB, _attackerSkillEffectPartB ) ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                        //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnActiveSkillFinished ) );
-
-                        //ShowCommandPhaseCountdownTimer( true, _attacker, _skillCountdownTime );
-                        //ShowCommandPhaseCountdownTimer( true, _attackTarget, _skillCountdownTime );
-                        //ShowCommandPhaseCountdownTimer( true, _playerCharacter, _skillCountdownTime );
-                        //_atlSlotListPanel.GoToEndAtCurrentAtlSlot( _skillCountdownTime );
-
-                        if (_leadCharacterPartB != NO_ANIMATION)
-                        {
-                            yield return StartCoroutine( PlayCharacterAnimation( _lead, _leadCharacterPartB ) );
-                        }
-
-                        if (_leadSkillEffectPartB != NO_ANIMATION)
-                        {
-                            if (_leadSkillEffectPartB != "HittingEffect")
-                            {
-                                yield return StartCoroutine( PlaySkillEffectAnimation( _lead, _leadSkillEffectPartB ) );
-                            }
-                        }
-
-                        BattleLog.Instance.AddOnScreenBattleLog( _log );
-
-                        string _attackTargetBackendSkillAnimationCharacterPartA = "";
-                        string _attackTargetBackendSkillAnimationSkillEffectPartA = "";
+                    }
+                    else if (_winner == _improviser)
+                    {
+                        //_skillCountdownTime = ( GetAttackAnimationLength( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBackendSkillAnimationSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
+                        //_attackTarget.SetSkillCountdownTime( _skillCountdownTime );
+                        //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefenseWin_Cutoff ) );
 
                         if (_improviserSubskillData.IsDefendingSkill)
                         {
-                            _attackTargetBackendSkillAnimationCharacterPartA = "Defend";
-                            _attackTargetBackendSkillAnimationSkillEffectPartA = "Defend";
+                            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DEFEND );
                         }
                         else if (_improviserSubskillData.IsEvadingSkill)
                         {
-                            _attackTargetBackendSkillAnimationCharacterPartA = "Evade";
-                            _attackTargetBackendSkillAnimationSkillEffectPartA = NO_ANIMATION;
+                            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DODGE );
                         }
 
-                        _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
-                        _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
+                        ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
 
-                        if (_winner == _lead)
+                        if (_attackTargetBackendSkillAnimationCharacterPartA != NO_ANIMATION)
                         {
-                            if (_leadSkillEffectPartB == "HittingEffect")
-                            {
-                                yield return StartCoroutine( PlaySkillEffectAnimation( _lead, _leadSkillEffectPartB ) );
-                            }
-
-                            //_skillCountdownTime = 1.6f * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                            //_attacker.SetSkillCountdownTime( _skillCountdownTime );
-                            //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attacker, AnimationEvent.OnAttackPartB_Cutoff ) );
-
-                            this.cameraEffect.Shake();
-                            AudioManager.Instance.PlaySoundEffect( AUDIO_ID_HIT );
-                            ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
-                            yield return StartCoroutine( PlayCharacterAnimation( _improviser, GETTING_HIT_ANIMATION_NAME, _improviserBattleResultData ) );
-                            //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+                            yield return StartCoroutine( PlayCharacterAnimation( _improviser, _attackTargetBackendSkillAnimationCharacterPartA, _improviserBattleResultData ) );
                         }
-                        else if (_winner == _improviser)
+
+                        if (_attackTargetBackendSkillAnimationSkillEffectPartA != NO_ANIMATION)
                         {
-                            //_skillCountdownTime = ( GetAttackAnimationLength( _attackTarget, _attackTargetBackendSkillAnimationCharacterPartA, _attackTargetBackendSkillAnimationSkillEffectPartA ) + 1.0f ) * GameConfiguration.Instance.GetBattleConfiguration().GetActionCutoffTimePercentage();
-                            //_attackTarget.SetSkillCountdownTime( _skillCountdownTime );
-                            //StartCoroutine( CountdownForEventCutoff( _skillCountdownTime, _attackTarget, AnimationEvent.OnDefenseWin_Cutoff ) );
-
-                            if (_improviserSubskillData.IsDefendingSkill)
-                            {
-                                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DEFEND );
-                            }
-                            else if (_improviserSubskillData.IsEvadingSkill)
-                            {
-                                AudioManager.Instance.PlaySoundEffect( AUDIO_ID_DODGE );
-                            }
-
-                            ShowPopUpDisplayInfo( _lead, _leadBattleResultData );
-
-                            if (_attackTargetBackendSkillAnimationCharacterPartA != NO_ANIMATION)
-                            {
-                                yield return StartCoroutine( PlayCharacterAnimation( _improviser, _attackTargetBackendSkillAnimationCharacterPartA, _improviserBattleResultData ) );
-                            }
-
-                            if (_attackTargetBackendSkillAnimationSkillEffectPartA != NO_ANIMATION)
-                            {
-                                yield return StartCoroutine( PlaySkillEffectAnimation( _improviser, _attackTargetBackendSkillAnimationSkillEffectPartA ) );
-                            }
-
-                            //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
+                            yield return StartCoroutine( PlaySkillEffectAnimation( _improviser, _attackTargetBackendSkillAnimationSkillEffectPartA ) );
                         }
 
-                        break;
-                }
-            }
-
-            while (Time.time - _skillCountdownTimeStartTime < _skillCountdownTime)
-            {
-                yield return null;
-            }
-
-            this.isAbleToAssignSkillInPartB = false;
-
-            for (int i = 0; i < _gameCharacters.Length; i++)
-            {
-                _gameCharacters[ i ].SetCurrentCommandTimeType( CommandTimeType.None );
-            }
-
-            _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
-            _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
-
-            if (EndPartB( _lead, _improviser ))
-            {
-                yield break;
-            }
-
-            CharacterSkill _attackerAssignedSkill = _lead.GetAssignedSkill();
-            CharacterSkill _attackTargetAssignedSkill = _improviser.GetAssignedSkill();
-
-            if (battleFlowRound.GetCurrentATL().GetATLNumber() == GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots())
-            {
-                if (_attackerAssignedSkill != null)
-                {
-                    if (_attackerAssignedSkill.GetSkillData().skillType == SkillType.derived)
-                    {
-                        battleFlowRound.AddExtraATL();
+                        //yield return StartCoroutine( WaitForPopUpDisplayInfoCompleted() );
                     }
-                }
 
-                if (_attackTargetAssignedSkill != null)
+                    break;
+            }
+        }
+
+        while (Time.time - _skillCountdownTimeStartTime < _skillCountdownTime)
+        {
+            yield return null;
+        }
+
+        this.isAbleToAssignSkillInPartB = false;
+
+        for (int i = 0; i < _gameCharacters.Length; i++)
+        {
+            _gameCharacters[ i ].SetCurrentCommandTimeType( CommandTimeType.None );
+        }
+
+        _playerCharacter.TriggerEvent( AnimationEvent.OnTransition );
+        _enemyCharacter.TriggerEvent( AnimationEvent.OnTransition );
+
+        if (EndPartB( _lead, _improviser ))
+        {
+            yield break;
+        }
+
+        CharacterSkill _leadAssignedSkill = _lead.GetAssignedSkill();
+        CharacterSkill _improviserAssignedSkill = _improviser.GetAssignedSkill();
+
+        if (battleFlowRound.GetCurrentATL().GetATLNumber() == GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots())
+        {
+            if (_leadAssignedSkill != null)
+            {
+                if (_leadAssignedSkill.GetSkillData().skillType == SkillType.derived)
                 {
-                    if (_attackTargetAssignedSkill.GetSkillData().skillType == SkillType.derived)
-                    {
-                        battleFlowRound.AddExtraATL();
-                    }
+                    battleFlowRound.AddExtraATL();
                 }
             }
 
-            bool _isDerivedSkill = false;
-
-            if (( _attackerAssignedSkill != null && _attackerAssignedSkill.GetSkillData().skillType == SkillType.derived )
-                || ( _attackTargetAssignedSkill != null && _attackTargetAssignedSkill.GetSkillData().skillType == SkillType.derived ))
+            if (_improviserAssignedSkill != null)
             {
-                _isDerivedSkill = true;
+                if (_improviserAssignedSkill.GetSkillData().skillType == SkillType.derived)
+                {
+                    battleFlowRound.AddExtraATL();
+                }
             }
+        }
 
-            if (!_isDerivedSkill)
-            {
-                yield return StartCoroutine( RunTransitioningToNextATL() );
-            }
+        bool _isDerivedSkill = false;
+
+        if (( _leadAssignedSkill != null && _leadAssignedSkill.GetSkillData().skillType == SkillType.derived )
+            || ( _improviserAssignedSkill != null && _improviserAssignedSkill.GetSkillData().skillType == SkillType.derived ))
+        {
+            _isDerivedSkill = true;
+        }
+
+        if (!_isDerivedSkill)
+        {
+            yield return StartCoroutine( RunTransitioningToNextATL() );
         }
     }
 
@@ -1234,6 +1225,8 @@ public partial class BattleAnimationManager : MonoBehaviour
         BattleResultData.BattleResultData_GameCharacter _improviserBattleResultData = _battleResultData.GetGameCharacterResultData( improviser );
         ShowBattleLog( _battleResultData.GetResultLogList() );
 
+        // -------------------------------------------------- 頁面：派生技能演出 --------------------------------------------------
+
         this.isAnimationEventTriggered = false;
         this.deriveSkillAnimationHandler.PlayDeriveAnimationPart2();
 
@@ -1286,6 +1279,8 @@ public partial class BattleAnimationManager : MonoBehaviour
 
         this.derivedSkillLastFrameObject.SetActive( true );
         this.deriveSkillAnimationHandler.Hide();
+
+        // ---------------------------------------------------------------------------------------------------------------------
     }
 
     private IEnumerator PlayCharacterAnimation( GameCharacter gameCharacter, string animationName, BattleResultData.BattleResultData_GameCharacter battleResultData )
