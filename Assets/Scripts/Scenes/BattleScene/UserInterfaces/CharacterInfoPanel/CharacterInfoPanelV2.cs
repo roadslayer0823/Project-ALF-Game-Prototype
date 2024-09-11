@@ -419,32 +419,35 @@ public class CharacterInfoPanelV2 : MonoBehaviour
         float stressScore = this.selectedCharacter.GetStressScore();
         float convertStressScore = Mathf.RoundToInt(stressScore);
         GameConfiguration.Battle _battleConfiguration = GameConfiguration.Instance.GetBattleConfiguration();
-        float _stressLevelOneTarget = _battleConfiguration.GetStressScoreTargetForStressLevelOne(); //150
-        float _stressLevelTwoTarget = _battleConfiguration.GetStressScoreTargetForStressLevelTwo(); //200
-        float _stressLevelThreeTarget = _battleConfiguration.GetStressScoreTargetForStressLevelThree(); //350
+        if(_battleConfiguration != null)
+        {
+            float _stressLevelOneTarget = _battleConfiguration.GetStressScoreTargetForStressLevelOne(); //150
+            float _stressLevelTwoTarget = _battleConfiguration.GetStressScoreTargetForStressLevelTwo(); //200
+            float _stressLevelThreeTarget = _battleConfiguration.GetStressScoreTargetForStressLevelThree(); //350
 
-        if (convertStressScore <= _stressLevelOneTarget)
-        {
-            this.stressScoreProgressBar.fillAmount = convertStressScore / _stressLevelOneTarget;
-        }
-       
-        else if(convertStressScore <= _stressLevelTwoTarget)
-        {
-            if(!resetFirstFillAmount)
+            if (convertStressScore <= _stressLevelOneTarget)
             {
-                this.stressScoreProgressBar.fillAmount = 0;
-                resetFirstFillAmount = true;
+                this.stressScoreProgressBar.fillAmount = convertStressScore / _stressLevelOneTarget;
             }
-            this.stressScoreProgressBar.fillAmount = (convertStressScore - _stressLevelOneTarget)/ 50;
-        }
-        else if (convertStressScore <= _stressLevelThreeTarget)
-        {
-            if(!resetSecondFillAmount)
+
+            else if (convertStressScore <= _stressLevelTwoTarget)
             {
-                this.stressScoreProgressBar.fillAmount = 0;
-                resetSecondFillAmount = true;
+                if (!resetFirstFillAmount)
+                {
+                    this.stressScoreProgressBar.fillAmount = 0;
+                    resetFirstFillAmount = true;
+                }
+                this.stressScoreProgressBar.fillAmount = (convertStressScore - _stressLevelOneTarget) / 50;
             }
-            this.stressScoreProgressBar.fillAmount = (convertStressScore - _stressLevelTwoTarget) / _stressLevelOneTarget;
+            else if (convertStressScore <= _stressLevelThreeTarget)
+            {
+                if (!resetSecondFillAmount)
+                {
+                    this.stressScoreProgressBar.fillAmount = 0;
+                    resetSecondFillAmount = true;
+                }
+                this.stressScoreProgressBar.fillAmount = (convertStressScore - _stressLevelTwoTarget) / _stressLevelOneTarget;
+            }
         }
     }
 

@@ -123,7 +123,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 //己方是否"速度勝方"?
                 if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.NonResister ) ||
                     ( _playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged ) ||
-                    ( playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedWinner ) ))
+                    playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedWinner ))
                 {
                     //己方是否"中距離近戰方"&已按下技能有"vc演出" ?
                     if (playerOne.HasCharacterIdentityType( CharacterIdentityType.NormalDistanceMeleeDealer ) && _playerOne_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("VC"))
@@ -147,8 +147,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BDVC, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
                 //已按下技能是否與上1ATL 相同&有"v2演出" ?
-                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType("V1") && _playerOne_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2") &&
-                    _getLastATLSkill == _getCurrentSkill)
+                else if (_playerOne_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2") && _getLastATLSkill == _getCurrentSkill)
                 {
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BDV2, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
@@ -207,7 +206,7 @@ public partial class BattleAnimationManager: MonoBehaviour
             if (playerOne.HasCharacterIdentityType( CharacterIdentityType.Lead ))
             {
                 //己方是否"中距離近戰方"&已按下技能有"vc演出" ?
-                if (playerOne.HasCharacterIdentityType( CharacterIdentityType.NormalDistanceMeleeDealer ) && _getCurrentSkill == "S17")
+                if (playerOne.HasCharacterIdentityType( CharacterIdentityType.NormalDistanceMeleeDealer ) && _playerOne_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("VC"))
                 {
                     //己方是否"輕受擊方" ?
                     if (playerOne.HasCharacterIdentityType( CharacterIdentityType.LightRecipient ))
@@ -237,15 +236,10 @@ public partial class BattleAnimationManager: MonoBehaviour
                 else if (playerOne.HasCharacterIdentityType( CharacterIdentityType.LightRecipient ))
                 {
                     //己方是否"速度負方" ? or 雙方已按下技能是否都是"遠程" ?
-                    if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ))
+                    if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || (_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged))
                     {
                         _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType );
                         _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_D_L, _playerOne_SubskillId, _playerOne_AnimationType );
-                    }
-                    else if(_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged)
-                    {
-                        _extraAnimationParameterData = new AnimationParameterData(false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType);
-                        _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_D_L, _playerOne_SubskillId, _playerOne_AnimationType);
                     }
                     else
                     {
@@ -253,15 +247,10 @@ public partial class BattleAnimationManager: MonoBehaviour
                     }
                 }
                 //己方是否"速度負方" ?  or 雙方已按下技能是否都是"遠程" ?
-                else if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ))
+                else if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || (_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged))
                 {
                     _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType );
                     _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_D_H, _playerOne_SubskillId, _playerOne_AnimationType );
-                }
-                else if (_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged)
-                {
-                    _extraAnimationParameterData = new AnimationParameterData(false, true, CodeType.camA_type_BFL, _playerOne_SubskillId, _playerOne_AnimationType);
-                    _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_D_H, _playerOne_SubskillId, _playerOne_AnimationType);
                 }
                 else
                 {
@@ -317,19 +306,17 @@ public partial class BattleAnimationManager: MonoBehaviour
                     }
                 }
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
-                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V1" ) && _playerOne_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("VC") &&
+                else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V1" ) && _playerOne_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2") &&
                     _getLastATLSkill == _getCurrentSkill)
                 {
                     //己方是否"輕受擊方" ?
                     if (playerOne.HasCharacterIdentityType( CharacterIdentityType.LightRecipient ))
                     {
                         _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CLSV2_L, _playerOne_SubskillId, _playerOne_AnimationType );
-                        Debug.Log("working");
                     }
                     else
                     {
                         _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CLSV2_H, _playerOne_SubskillId, _playerOne_AnimationType );
-                        Debug.Log("working");
                     }
                 }
                 //己方是否"輕受擊方" ?
@@ -498,8 +485,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                     // NO
                     // 已按下技能是否與上1ATL相同&有"v2演出"?
                     // YES
-                    else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V1" ) && _playerTwo_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2") &&
-                        _getLastATLSkill == _getCurrentSkill)
+                    else if (_playerTwo_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2") && _getLastATLSkill == _getCurrentSkill)
                     {
                         _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_AV2, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     }
@@ -608,7 +594,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 // NO
                 // 已按下技能是否與上1ATL相同&上1ATL播放了"v1演出"&有"v2演出"?
                 // YES
-                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V1" ) && _playerTwo_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2") && _getLastATLSkill == _getCurrentSkill)
+                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V1" ) && _playerTwo_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2") &&
+                    _getLastATLSkill == _getCurrentSkill)
                 {
                     // 敵方是否"輕受擊方"?
                     // YES
@@ -629,15 +616,10 @@ public partial class BattleAnimationManager: MonoBehaviour
                 {
                     // 敵方是否"速度負方"? or 雙方已按下技能是否都是"遠程"?
                     // YES
-                    if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ))
+                    if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) && (_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged))
                     {
                         _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType );
                         _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_D_L, _playerTwo_SubskillId, _playerTwo_AnimationType );
-                    }
-                    else if((_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged))
-                    {
-                        _extraAnimationParameterData = new AnimationParameterData(false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType);
-                        _animationParameterData = new AnimationParameterData(true, true, CodeType.camA_type_D_L, _playerTwo_SubskillId, _playerTwo_AnimationType);
                     }
                     // NO
                     else
@@ -647,15 +629,10 @@ public partial class BattleAnimationManager: MonoBehaviour
                 }
                 // 敵方是否"速度負方"? or 雙方已按下技能是否都是"遠程"?
                 // YES
-                else if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ))
+                else if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SpeedLoser ) || (_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged))
                 {
                     _extraAnimationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_D_H, _playerTwo_SubskillId, _playerTwo_AnimationType );
-                }
-                else if (_playerOne_SubskillData.Range == RangeType.ranged && _playerTwo_SubskillData.Range == RangeType.ranged)
-                {
-                    _extraAnimationParameterData = new AnimationParameterData(false, true, CodeType.camB_type_BFL, _playerTwo_SubskillId, _playerTwo_AnimationType);
-                    _animationParameterData = new AnimationParameterData(true, true, CodeType.camA_type_D_H, _playerTwo_SubskillId, _playerTwo_AnimationType);
                 }
                 // NO
                 else
@@ -679,7 +656,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 {
                     // 已按下技能是否與上1ATL相同&上1ATL播放了"v1演出"&有"v2演出"?
                     // YES
-                    if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V1" ) && _playerTwo_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2") && _getLastATLSkill == _getCurrentSkill)
+                    if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V1" ) && _playerTwo_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2") &&
+                        _getLastATLSkill == _getCurrentSkill)
                     {
                         // 敵方是否"輕受擊方"?
                         // YES
@@ -725,7 +703,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 // NO
                 // 已按下技能是否與上1ATL相同&上1ATL播放了"v1演出"&有"v2演出"?
                 // YES
-                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V1" ) && _playerTwo_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2") && _getLastATLSkill == _getCurrentSkill)
+                else if (_playerTwo_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V1" ) && _playerTwo_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2") &&
+                    _getLastATLSkill == _getCurrentSkill)
                 {
                     // 敵方是否"輕受擊方"?
                     // YES
