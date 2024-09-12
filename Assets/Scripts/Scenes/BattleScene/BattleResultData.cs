@@ -251,52 +251,17 @@ public class BattleResultData
         UpdateDebugLog( gameCharacterResultData );
     }
 
-    public void UpdateDebugLog( BattleResultData_GameCharacter gameCharacterResultData )
+    public void UpdateDebugLog( BattleResultData_GameCharacter gameCharacterResultData, string eventName = "" )
     {
 #if ALF_DEBUG
 
-        gameCharacterResultData.virtualHealthDamage = gameCharacterResultData.GetVirtualHealthDamage();
-
-        string _characterIdentityTypeString = "";
-
-        List<CharacterIdentityType> _characterIdentityTypeList = gameCharacterResultData.GetGameCharacter().GetAllCharacterIdentityTypes();
-        for (int i = 0; i < _characterIdentityTypeList.Count; i++)
+        if (eventName != "")
         {
-            _characterIdentityTypeString += ( ( i > 0 ) ? " | " : "" ) +
-                                            _characterIdentityTypeList[ i ] switch
-                                            {
-                                                CharacterIdentityType.PlayerOne => "玩家1",
-                                                CharacterIdentityType.PlayerTwo => "玩家2",
-                                                CharacterIdentityType.Lead => "先手方",
-                                                CharacterIdentityType.Improviser => "後手方",
-                                                CharacterIdentityType.Deuce => "平手方",
-                                                CharacterIdentityType.SuccessfulResister => "抵抗成功方",
-                                                CharacterIdentityType.Assaulter => "直擊方",
-                                                CharacterIdentityType.LightAssaulter => "輕直擊方",
-                                                CharacterIdentityType.HeavyAssaulter => "重直擊方",
-                                                CharacterIdentityType.Recipient => "受擊方",
-                                                CharacterIdentityType.LightRecipient => "輕受擊方",
-                                                CharacterIdentityType.HeavyRecipient => "重受擊方",
-                                                CharacterIdentityType.NonResister => "未能抵抗方",
-                                                CharacterIdentityType.SpeedWinner => "速度勝方",
-                                                CharacterIdentityType.StrengthWinner => "強度勝方",
-                                                CharacterIdentityType.SpeedLoser => "速度負方",
-                                                CharacterIdentityType.StrengthLoser => "強度負方",
-                                                CharacterIdentityType.SpeedStrengthLoser => "速度強度負方",
-                                                CharacterIdentityType.StateBreakStatusHolder => "以太崩潰方",
-                                                CharacterIdentityType.StressBreakStatusHolder => "負荷崩潰方",
-                                                CharacterIdentityType.WinningBenefitHolder => "勝利優惠機制方",
-                                                CharacterIdentityType.NearDistanceRangedDealer => "近距離遠程方",
-                                                CharacterIdentityType.NormalDistanceMeleeDealer => "中距離近戰方",
-                                                CharacterIdentityType.UpdatedSelectedSkill => "已更新按下技能方",
-                                                CharacterIdentityType.IgnoreZhuiFengJiaoLi => "無視追風角力方",
-                                                CharacterIdentityType.IgnoreZhuiFengJiaoLiJiAng => "無視追風角力激昂方",
-                                                CharacterIdentityType.IgnoreRangedSkill => "無視遠程方",
-                                                _ => ""
-                                            };
+            gameCharacterResultData.eventName = eventName;
         }
 
-        gameCharacterResultData.characterIdentityTypeListString = _characterIdentityTypeString;
+        gameCharacterResultData.virtualHealthDamage = gameCharacterResultData.GetVirtualHealthDamage();
+        gameCharacterResultData.characterIdentityTypeListString = GetCharacterIdentityTypeListString( gameCharacterResultData.GetGameCharacter().GetAllCharacterIdentityTypes() );
 
         string _triggeredPassiveSkillListString = "";
 
@@ -323,7 +288,8 @@ public class BattleResultData
             string _oldJsonString = _oldJsonStringArray[ i ];
             string _newJsonString = _newJsonStringArray[ i ];
             if (_oldJsonString != _newJsonString
-                || _newJsonString.Contains( "gameCharacterName" ))
+                || _newJsonString.Contains( "gameCharacterName" )
+                || _newJsonString.Contains( "eventName" ))
             {
                 _oldTextArray.Add( _oldJsonString );
                 _newTextArray.Add( _newJsonString );
@@ -431,6 +397,49 @@ public class BattleResultData
                         );
 
 #endif
+    }
+
+    private string GetCharacterIdentityTypeListString( List<CharacterIdentityType> characterIdentityTypeList )
+    {
+        string _characterIdentityTypeString = "";
+
+        for (int i = 0; i < characterIdentityTypeList.Count; i++)
+        {
+            _characterIdentityTypeString += ( ( i > 0 ) ? " | " : "" ) +
+                                            characterIdentityTypeList[ i ] switch
+                                            {
+                                                CharacterIdentityType.PlayerOne => "玩家1",
+                                                CharacterIdentityType.PlayerTwo => "玩家2",
+                                                CharacterIdentityType.Lead => "先手方",
+                                                CharacterIdentityType.Improviser => "後手方",
+                                                CharacterIdentityType.Deuce => "平手方",
+                                                CharacterIdentityType.SuccessfulResister => "抵抗成功方",
+                                                CharacterIdentityType.Assaulter => "直擊方",
+                                                CharacterIdentityType.LightAssaulter => "輕直擊方",
+                                                CharacterIdentityType.HeavyAssaulter => "重直擊方",
+                                                CharacterIdentityType.Recipient => "受擊方",
+                                                CharacterIdentityType.LightRecipient => "輕受擊方",
+                                                CharacterIdentityType.HeavyRecipient => "重受擊方",
+                                                CharacterIdentityType.NonResister => "未能抵抗方",
+                                                CharacterIdentityType.SpeedWinner => "速度勝方",
+                                                CharacterIdentityType.StrengthWinner => "強度勝方",
+                                                CharacterIdentityType.SpeedLoser => "速度負方",
+                                                CharacterIdentityType.StrengthLoser => "強度負方",
+                                                CharacterIdentityType.SpeedStrengthLoser => "速度強度負方",
+                                                CharacterIdentityType.StateBreakStatusHolder => "以太崩潰方",
+                                                CharacterIdentityType.StressBreakStatusHolder => "負荷崩潰方",
+                                                CharacterIdentityType.WinningBenefitHolder => "勝利優惠機制方",
+                                                CharacterIdentityType.NearDistanceRangedDealer => "近距離遠程方",
+                                                CharacterIdentityType.NormalDistanceMeleeDealer => "中距離近戰方",
+                                                CharacterIdentityType.UpdatedSelectedSkill => "已更新按下技能方",
+                                                CharacterIdentityType.IgnoreZhuiFengJiaoLi => "無視追風角力方",
+                                                CharacterIdentityType.IgnoreZhuiFengJiaoLiJiAng => "無視追風角力激昂方",
+                                                CharacterIdentityType.IgnoreRangedSkill => "無視遠程方",
+                                                _ => ""
+                                            };
+        }
+
+        return _characterIdentityTypeString;
     }
 
     // 回復受到的“虛傷”。
@@ -1013,6 +1022,7 @@ public class BattleResultData
 #if ALF_DEBUG
 
                 gameCharacterName = $"{ gameCharacter.GetCharacterName() } { ( gameCharacter.GetIsPlayer() ? "<color=#ADD8E6>[ PLAYER ]</color>" : "<color=#FF0000>[ ENEMY ]</color>" ) }",
+                characterIdentityTypeListString = GetCharacterIdentityTypeListString( gameCharacter.GetPermanentCharacterIdentityTypeList() ),
 
 #endif
                 maximumHealthPoint = gameCharacter.GetMaximumHealthPoint(),

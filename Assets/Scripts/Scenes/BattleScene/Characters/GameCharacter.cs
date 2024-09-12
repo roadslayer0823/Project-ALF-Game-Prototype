@@ -759,13 +759,13 @@ public partial class GameCharacter : MonoBehaviour
         this.temporaryBattleResultData = null;
     }
 
-    private void UpdateDebugLog()
+    private void UpdateDebugLog( string eventName )
     {
 #if ALF_DEBUG
 
         if (this.temporaryBattleResultData != null)
         {
-            this.temporaryBattleResultData.GetBattleResultData().UpdateDebugLog( this.temporaryBattleResultData );
+            this.temporaryBattleResultData.GetBattleResultData().UpdateDebugLog( this.temporaryBattleResultData, eventName );
         }
 
 #endif
@@ -774,31 +774,31 @@ public partial class GameCharacter : MonoBehaviour
     public void AddCharacterIdentityType( CharacterIdentityType characterIdentityType )
     {
         this.characterIdentityTypeList.Add( characterIdentityType );
-        UpdateDebugLog();
+        UpdateDebugLog( "得到新身份" );
     }
 
     public void AddCharacterIdentityTypes( CharacterIdentityType[] characterIdentityTypes )
     {
         this.characterIdentityTypeList.AddRange( characterIdentityTypes );
-        UpdateDebugLog();
+        UpdateDebugLog( "得到新身份" );
     }
 
     public void AddCharacterIdentityTypes( List<CharacterIdentityType> characterIdentityTypes )
     {
         this.characterIdentityTypeList.AddRange( characterIdentityTypes );
-        UpdateDebugLog();
+        UpdateDebugLog( "得到新身份" );
     }
 
     public void AddPermanentCharacterIdentityType( CharacterIdentityType characterIdentityType )
     {
         this.permanentCharacterIdentityTypeList.Add( characterIdentityType );
-        UpdateDebugLog();
+        UpdateDebugLog( "得到新身份" );
     }
 
     public void RemoveCharacterIdentityType( CharacterIdentityType characterIdentityType )
     {
         this.characterIdentityTypeList.Remove( characterIdentityType );
-        UpdateDebugLog();
+        UpdateDebugLog( "取消舊身份" );
     }
 
     public bool HasCharacterIdentityType( CharacterIdentityType characterIdentityType )
@@ -827,6 +827,11 @@ public partial class GameCharacter : MonoBehaviour
     public bool IsCharacterIdentityTypeListEmpty()
     {
         return ( this.characterIdentityTypeList.Count <= 0 );
+    }
+
+    public List<CharacterIdentityType> GetPermanentCharacterIdentityTypeList()
+    {
+        return this.permanentCharacterIdentityTypeList;
     }
 
     public List<CharacterIdentityType> GetAllCharacterIdentityTypes()
