@@ -759,29 +759,46 @@ public partial class GameCharacter : MonoBehaviour
         this.temporaryBattleResultData = null;
     }
 
+    private void UpdateDebugLog()
+    {
+#if ALF_DEBUG
+
+        if (this.temporaryBattleResultData != null)
+        {
+            this.temporaryBattleResultData.GetBattleResultData().UpdateDebugLog( this.temporaryBattleResultData );
+        }
+
+#endif
+    }
+
     public void AddCharacterIdentityType( CharacterIdentityType characterIdentityType )
     {
         this.characterIdentityTypeList.Add( characterIdentityType );
+        UpdateDebugLog();
     }
 
     public void AddCharacterIdentityTypes( CharacterIdentityType[] characterIdentityTypes )
     {
         this.characterIdentityTypeList.AddRange( characterIdentityTypes );
+        UpdateDebugLog();
     }
 
     public void AddCharacterIdentityTypes( List<CharacterIdentityType> characterIdentityTypes )
     {
         this.characterIdentityTypeList.AddRange( characterIdentityTypes );
+        UpdateDebugLog();
     }
 
     public void AddPermanentCharacterIdentityType( CharacterIdentityType characterIdentityType )
     {
         this.permanentCharacterIdentityTypeList.Add( characterIdentityType );
+        UpdateDebugLog();
     }
 
     public void RemoveCharacterIdentityType( CharacterIdentityType characterIdentityType )
     {
         this.characterIdentityTypeList.Remove( characterIdentityType );
+        UpdateDebugLog();
     }
 
     public bool HasCharacterIdentityType( CharacterIdentityType characterIdentityType )

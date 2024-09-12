@@ -34,7 +34,8 @@ public class BattleResultData
 
     public class BattleResultData_GameCharacter
     {
-        [NonSerialized] public GameCharacter gameCharacter = null;
+        private readonly BattleResultData battleResultData = null;
+        private readonly GameCharacter gameCharacter = null;
 
 #if ALF_DEBUG
 
@@ -118,6 +119,22 @@ public class BattleResultData
         [NonSerialized] public string lastJsonString = "";
 
 #endif
+
+        public BattleResultData_GameCharacter( BattleResultData battleResultData, GameCharacter gameCharacter )
+        {
+            this.battleResultData = battleResultData;
+            this.gameCharacter = gameCharacter;
+        }
+
+        public BattleResultData GetBattleResultData()
+        {
+            return this.battleResultData;
+        }
+
+        public GameCharacter GetGameCharacter()
+        {
+            return this.gameCharacter;
+        }
 
         public bool IsInBreakStatus()
         {
@@ -231,13 +248,18 @@ public class BattleResultData
             this.gameCharacterResultDataList.Add( gameCharacterResultData );
         }
 
+        UpdateDebugLog( gameCharacterResultData );
+    }
+
+    public void UpdateDebugLog( BattleResultData_GameCharacter gameCharacterResultData )
+    {
 #if ALF_DEBUG
 
         gameCharacterResultData.virtualHealthDamage = gameCharacterResultData.GetVirtualHealthDamage();
 
         string _characterIdentityTypeString = "";
 
-        List<CharacterIdentityType> _characterIdentityTypeList = gameCharacterResultData.gameCharacter.GetAllCharacterIdentityTypes();
+        List<CharacterIdentityType> _characterIdentityTypeList = gameCharacterResultData.GetGameCharacter().GetAllCharacterIdentityTypes();
         for (int i = 0; i < _characterIdentityTypeList.Count; i++)
         {
             _characterIdentityTypeString += ( ( i > 0 ) ? " | " : "" ) +
@@ -404,6 +426,8 @@ public class BattleResultData
                         .ReplaceFirst( "temp_JiaoLiMaxStatePointIncrease", "角力最大以太提升" )
                         .ReplaceFirst( "temp_StressEvasionCost", "回避壓力消耗" )
                         .ReplaceFirst( "temp_StressEvasionMaxStatePointIncrease", "回避壓力消耗以太提升" )
+                        .Replace( "true", "是" )
+                        .Replace( "false", "否" )
                         );
 
 #endif
@@ -975,7 +999,7 @@ public class BattleResultData
     {
         isNewElement = false;
 
-        BattleResultData_GameCharacter _gameCharacterResultData = gameCharacterResultDataList.FirstOrDefault( p => p.gameCharacter == gameCharacter );
+        BattleResultData_GameCharacter _gameCharacterResultData = gameCharacterResultDataList.FirstOrDefault( p => p.GetGameCharacter() == gameCharacter );
 
         if (_gameCharacterResultData == null)
         {
@@ -984,10 +1008,8 @@ public class BattleResultData
             CharacterSkill _currentSkill = gameCharacter.GetCurrentSkill();
             Subskill _subskillData = _currentSkill?.GetCharacterSubskillData().GetSubskillData();
 
-            _gameCharacterResultData = new BattleResultData_GameCharacter()
+            _gameCharacterResultData = new BattleResultData_GameCharacter( this, gameCharacter )
             {
-                gameCharacter = gameCharacter,
-
 #if ALF_DEBUG
 
                 gameCharacterName = $"{ gameCharacter.GetCharacterName() } { ( gameCharacter.GetIsPlayer() ? "<color=#ADD8E6>[ PLAYER ]</color>" : "<color=#FF0000>[ ENEMY ]</color>" ) }",

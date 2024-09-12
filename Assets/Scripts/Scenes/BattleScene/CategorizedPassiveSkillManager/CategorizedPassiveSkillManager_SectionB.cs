@@ -559,7 +559,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         battleResultData.AddResultLog("生命流逆境流轉積分結算\n\n" +gameCharacter.GetCharacterName() +
                                       " 是否 HP<50% & \n當前生命積分<100?");
 
-        if ((_gameCharacter_BattleResultData.currentHealthPoint < (_gameCharacter_BattleResultData.maximumHealthPoint * 0.5f)) && _gameCharacter_BattleResultData.gameCharacter.GetLifeScore() < 100)
+        if ((_gameCharacter_BattleResultData.currentHealthPoint < (_gameCharacter_BattleResultData.maximumHealthPoint * 0.5f)) && gameCharacter.GetLifeScore() < 100)
         {
             if (gameCharacter.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSL8, out PassiveSkill _passiveSkill))
             {
@@ -618,7 +618,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         // Case B: "己方"當前流向"負荷流"
         else if (gameCharacterOne.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress)
         {
-            int _stressLevel = _gameCharacterOne_BattleResultData.gameCharacter.GetStressLevel();
+            int _stressLevel = gameCharacterOne.GetStressLevel();
             float _characterOneStressValueDamage = gameCharacterOne.GetCurrentSkill() == null ? 0 :
                                                    gameCharacterOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().StressValueDamage;
             float _characterTwoActualHealthDamage = gameCharacterTwo.GetCurrentSkill() == null ? 0 :
