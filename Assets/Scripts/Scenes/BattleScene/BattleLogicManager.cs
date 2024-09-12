@@ -545,8 +545,8 @@ public class BattleLogicManager
                 float _maximumStatePointDecreased = _gameCharacter.MinusMaximumStatePoint( Mathf.Abs( _currentStatePoint ) );
                 _extraLog = $"因<color={ BattleLog.KEYWORD_COLOR_CODE }>當前{ TerminologyManager.STATE_POINT }</color>為負數而導致"
                             + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>最大{ TerminologyManager.STATE_POINT }</color>"
-                            + $"減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointDecreased }</color>至"
-                            + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetMaximumStatePoint() }</color>，";
+                            + $"減少了<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _maximumStatePointDecreased }</color>後"
+                            + $"變成<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _gameCharacter.GetMaximumStatePoint() }</color>，";
             }
 
             float _maximumStatePointIncreased = _gameCharacter.AddMaximumStatePoint( _maximumStatePointIncreaseOnRoundStart );
@@ -611,8 +611,8 @@ public class BattleLogicManager
                         _observedSkillData.DecreaseObservedRate( observationRateDeductionPerRound );
 
                         BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _gameCharacter.GetCharacterName() + "</color>對"
-                                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _observedSkillData.GetSkillName() + "</color>的看破值減少"
-                                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + observationRateDeductionPerRound.ConvertToIntegerInPercentage() + "%</color>至"
+                                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _observedSkillData.GetSkillName() + "</color>的看破值減少了"
+                                                                 + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + observationRateDeductionPerRound.ConvertToIntegerInPercentage() + "%</color>後變成"
                                                                  + $"<color={ BattleLog.KEYWORD_COLOR_CODE }>" + _observedSkillData.GetCurrentObservedRate().ConvertToIntegerInPercentage() + "%</color>。" );
                     }
                 }
