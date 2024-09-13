@@ -1022,7 +1022,7 @@ public class BattleResultData
 #if ALF_DEBUG
 
                 gameCharacterName = $"{ gameCharacter.GetCharacterName() } { ( gameCharacter.GetIsPlayer() ? "<color=#ADD8E6>[ PLAYER ]</color>" : "<color=#FF0000>[ ENEMY ]</color>" ) }",
-                characterIdentityTypeListString = GetCharacterIdentityTypeListString( gameCharacter.GetAllCharacterIdentityTypes() ),
+                characterIdentityTypeListString = GetCharacterIdentityTypeListString( gameCharacter.GetPermanentCharacterIdentityTypeList() ),
 
 #endif
                 maximumHealthPoint = gameCharacter.GetMaximumHealthPoint(),
