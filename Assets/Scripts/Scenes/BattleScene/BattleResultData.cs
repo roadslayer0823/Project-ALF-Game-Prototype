@@ -587,7 +587,7 @@ public class BattleResultData
             gameCharacterResultData.statePointDamageTaken += statePointDamage;
             gameCharacterResultData.SetCurrentStatePoint( gameCharacterResultData.currentStatePoint - statePointDamage );
 
-            if(gameCharacter.HasCharacterIdentityType(CharacterIdentityType.WinningBenefitHolder))
+            if (gameCharacterResultData.currentStatePoint < 1 && gameCharacter.HasCharacterIdentityType(CharacterIdentityType.WinningBenefitHolder))
             {
                 // 勝利優惠機制解說
                 // 當前以太值最低為1
@@ -1022,7 +1022,7 @@ public class BattleResultData
 #if ALF_DEBUG
 
                 gameCharacterName = $"{ gameCharacter.GetCharacterName() } { ( gameCharacter.GetIsPlayer() ? "<color=#ADD8E6>[ PLAYER ]</color>" : "<color=#FF0000>[ ENEMY ]</color>" ) }",
-                characterIdentityTypeListString = GetCharacterIdentityTypeListString( gameCharacter.GetPermanentCharacterIdentityTypeList() ),
+                characterIdentityTypeListString = GetCharacterIdentityTypeListString( gameCharacter.GetAllCharacterIdentityTypes() ),
 
 #endif
                 maximumHealthPoint = gameCharacter.GetMaximumHealthPoint(),
