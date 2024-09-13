@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
+using RangeType = DatabaseManager.Subskill.RangeType;
 
 public class CharacterSkill
 {
@@ -11,6 +12,7 @@ public class CharacterSkill
     private int selectedSkillLevel = 1; // 當前出力等級
     private int presetSkillLevel = 1; // 預設出力等級（在準備階段裡設定的出力等級）
     private bool hasSkillUpdateIndicator = false;
+    private RangeType currentRangeType = RangeType.none;
 
     // 看破技能
     [System.Obsolete] private List<ObservedSkillData> observedSkillDataList = null;
@@ -190,6 +192,16 @@ public class CharacterSkill
     public bool GetHasSkillUpdateIndicator()
     {
         return this.hasSkillUpdateIndicator;
+    }
+
+    public void SetCurrentRangeType( RangeType currentRangeType )
+    {
+        this.currentRangeType = currentRangeType;
+    }
+
+    public RangeType GetCurrentRangeType()
+    {
+        return this.currentRangeType;
     }
 
 #region Observed Skill Data

@@ -249,7 +249,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                 // 後手方的已按下技能的接觸判定"遠/近"變為"近戰"
                 if (_improviserSubskillData.Range == RangeType.melee_or_ranged)
                 {
-                    _improviser.SetCurrentSkillRangeType( RangeType.melee );
+                    _improviserCurrentSkill.SetCurrentRangeType( RangeType.melee );
                 }
                 // 後手方是否按下了遠程技能?
                 // YES
@@ -352,7 +352,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                     // 後手方的已按下技能的接觸判定"遠/近"變為"近戰"
                     if (_improviserCurrentSkillRange == RangeType.melee_or_ranged)
                     {
-                        _improviser.SetCurrentSkillRangeType( RangeType.melee );
+                        _improviserCurrentSkill.SetCurrentRangeType( RangeType.melee );
                     }
                     // "後手方"的已按下技能是否遠程技能?
                     // YES
@@ -368,7 +368,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                     // 後手方的已按下技能的接觸判定"遠/近"變為"遠程"
                     if (_improviserCurrentSkillRange == RangeType.melee_or_ranged)
                     {
-                        _improviser.SetCurrentSkillRangeType( RangeType.ranged );
+                        _improviserCurrentSkill.SetCurrentRangeType( RangeType.ranged );
                     }
                 }
             }

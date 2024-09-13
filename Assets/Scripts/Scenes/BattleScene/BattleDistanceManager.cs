@@ -23,7 +23,8 @@ public class BattleDistanceManager : MonoBehaviour
     {
         resultLogList = new List<string>();
 
-        Subskill leadCurrentSkill = lead.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData();
+        CharacterSkill _leadCurrentSkill = lead.GetCurrentSkill();
+        Subskill _leadCurrentSkill_SubskillData = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData();
         DistanceType _lastDistanceType = this.currentDistanceType;
 
         resultLogList.Add( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>當前距離</color>為<color={ BattleLog.KEYWORD_COLOR_CODE }>{ TerminologyManager.GetDistanceTypeText( this.currentDistanceType ) }</color>。" );
@@ -34,14 +35,14 @@ public class BattleDistanceManager : MonoBehaviour
             case DistanceType.Near:
 
                 // 先手方的已按下技能的接觸判定"遠/近"變為"近戰"
-                if (leadCurrentSkill.Range == RangeType.melee_or_ranged)
+                if (_leadCurrentSkill_SubskillData.Range == RangeType.melee_or_ranged)
                 {
-                    lead.SetCurrentSkillRangeType( RangeType.melee );
+                    _leadCurrentSkill.SetCurrentRangeType( RangeType.melee );
                 }
 
                 // 當前先手方是否選擇近戰技能？
                 // YES
-                if (lead.GetCurrentSkillRangeType() == RangeType.melee)
+                if (_leadCurrentSkill.GetCurrentRangeType() == RangeType.melee)
                 {
                     // 當前距離更新為“近距離”。
                     SetCurrentDistanceType( DistanceType.Near );
@@ -62,14 +63,14 @@ public class BattleDistanceManager : MonoBehaviour
             case DistanceType.Normal:
 
                 // 先手方的已按下技能的接觸判定"遠/近"變為"遠程"
-                if (leadCurrentSkill.Range == RangeType.melee_or_ranged)
+                if (_leadCurrentSkill_SubskillData.Range == RangeType.melee_or_ranged)
                 {
-                    lead.SetCurrentSkillRangeType( RangeType.ranged );
+                    _leadCurrentSkill.SetCurrentRangeType( RangeType.ranged );
                 }
 
                 // 當前先手方是否選擇近戰技能？
                 // YES
-                if (lead.GetCurrentSkillRangeType() == RangeType.melee)
+                if (_leadCurrentSkill.GetCurrentRangeType() == RangeType.melee)
                 {
                     // 當前距離更新為“近距離”。
                     SetCurrentDistanceType( DistanceType.Near );
@@ -90,14 +91,14 @@ public class BattleDistanceManager : MonoBehaviour
             case DistanceType.Far:
 
                 // 先手方的已按下技能的接觸判定"遠/近"變為"遠程"
-                if (leadCurrentSkill.Range == RangeType.melee_or_ranged)
+                if (_leadCurrentSkill_SubskillData.Range == RangeType.melee_or_ranged)
                 {
-                    lead.SetCurrentSkillRangeType( RangeType.ranged );
+                    _leadCurrentSkill.SetCurrentRangeType( RangeType.ranged );
                 }
 
                 // 當前先手方是否選擇近戰技能？
                 // YES
-                if (lead.GetCurrentSkillRangeType() == RangeType.melee)
+                if (_leadCurrentSkill.GetCurrentRangeType() == RangeType.melee)
                 {
                     // 當前距離更新為“近距離”。
                     SetCurrentDistanceType( DistanceType.Near );
@@ -132,11 +133,12 @@ public class BattleDistanceManager : MonoBehaviour
     {
         CategorizedPassiveSkillManager.CategoryType _improviserSelectedPassiveSkillCategoryType = improviser.GetSelectedPassiveSkillCategoryType();
         CharacterSkill _improviserCurrentSkill = improviser.GetCurrentSkill();
-        RangeType _improviserCurrentSkillRangeType = improviser.GetCurrentSkillRangeType();
+        RangeType _improviserCurrentSkillRangeType = RangeType.none;
         bool _isImproviserUsingEvadingSkill = false;
 
         if (_improviserCurrentSkill != null)
         {
+            _improviserCurrentSkillRangeType = _improviserCurrentSkill.GetCurrentRangeType();
             _isImproviserUsingEvadingSkill = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().IsEvadingSkill;
         }
 

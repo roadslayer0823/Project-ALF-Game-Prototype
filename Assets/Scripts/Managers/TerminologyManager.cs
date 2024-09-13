@@ -70,7 +70,7 @@ public class TerminologyManager
         Skill _characterSkillData = characterSkill.GetSkillData();
         Subskill _characterSubskillData = characterSkill.GetCharacterSubskillData().GetSubskillData();
 
-        string _skillInformationText = $"{ GetSkillTypeText( _characterSkillData.skillType ) }: { GetRangeTypeText( _characterSubskillData.Range ) }，";
+        string _skillInformationText = $"{ GetSkillTypeText( _characterSkillData.skillType ) }: { GetRangeTypeText( characterSkill.GetCurrentRangeType() ) }，";
 
         if (_characterSubskillData.EffectType == Subskill.EffectTypeEnum.wide)
         {

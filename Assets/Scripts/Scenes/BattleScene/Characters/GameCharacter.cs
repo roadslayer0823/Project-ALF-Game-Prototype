@@ -52,7 +52,6 @@ public partial class GameCharacter : MonoBehaviour
     private Action onCharacterInfoUpdated = null;
 
     private CharacterSkill currentSkill = null;
-    private RangeType currentSkillRangeType = RangeType.none;
     private CharacterSkill currentObservingSkill = null;
     private GameCharacter currentAttacker = null;
     private GameCharacter currentAttackTarget = null;
@@ -565,7 +564,7 @@ public partial class GameCharacter : MonoBehaviour
 
         if (this.currentSkill != null)
         {
-            SetCurrentSkillRangeType( this.currentSkill.GetCharacterSubskillData().GetSubskillData().Range );
+            this.currentSkill.SetCurrentRangeType( this.currentSkill.GetCharacterSubskillData().GetSubskillData().Range );
         }
 
         //this.isAbleToUseSkill = true;
@@ -601,14 +600,14 @@ public partial class GameCharacter : MonoBehaviour
         return this.currentSkill;
     }
 
-    public void SetCurrentSkillRangeType( RangeType currentSkillRangeType )
-    {
-        this.currentSkillRangeType = currentSkillRangeType;
-    }
-
     public RangeType GetCurrentSkillRangeType()
     {
-        return this.currentSkillRangeType;
+        if (this.currentSkill != null)
+        {
+            return this.currentSkill.GetCurrentRangeType();
+        }
+
+        return RangeType.none;
     }
 
     public void SetCurrentObservingSkill( CharacterSkill observingSkill, bool isSelectingSkill )
@@ -693,11 +692,12 @@ public partial class GameCharacter : MonoBehaviour
 
     public void Reset()
     {
+        this.currentSkill?.SetCurrentRangeType( RangeType.none );
+
+        SetCurrentAttacker( null );
         SetCurrentSkill( null );
-        SetCurrentSkillRangeType( RangeType.none );
         ResetCurrentObservingSkill();
         SetCurrentObservedSkill( null ); // Obsolete
-        SetCurrentAttacker( null );
     }
 
 #region Version 2

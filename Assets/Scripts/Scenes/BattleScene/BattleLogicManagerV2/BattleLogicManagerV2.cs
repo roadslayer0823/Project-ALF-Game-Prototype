@@ -603,7 +603,7 @@ public partial class BattleLogicManagerV2
             Subskill _improviserSubskillData = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData();
             _improviserRangeType = _improviserSubskillData.Range;
 
-            improviser.SetCurrentSkillRangeType( _improviserRangeType );
+            _improviserCurrentSkill.SetCurrentRangeType( _improviserRangeType );
 
             if (_improviserSkillData.skillType == Skill.SkillType.repulse)
             {
