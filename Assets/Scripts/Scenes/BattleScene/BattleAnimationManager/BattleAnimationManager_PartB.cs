@@ -153,7 +153,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 }
                 else
                 {
-                    _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_BDV1, _playerOne_SubskillId, _playerOne_AnimationType );
+                    _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BDV1, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
             }
             //己方為後手方
@@ -513,7 +513,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 // NO
                 else
                 {
-                    _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_BDV1, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                    _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BDV1, _playerTwo_SubskillId, _playerTwo_AnimationType );
                 }
             }
             // 敵方為後手方

@@ -836,6 +836,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         string _finalString;
         string _gameCharacterCurrentPassiveSkill;
 
+        float _currentStatePointMoreThan50 = gameCharacterData.currentStatePoint - oponentData.currentStatePoint;
+
         _gameCharacterCurrentPassiveSkill = gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.Life ? "生命流" :
            gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.State ? "以太流" :
            gameCharacter.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress ? "負荷流" :
@@ -856,7 +858,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         {
             case CategoryType.State:
                 //"己方"當前以太值是否比"對方" >= 50 ?
-                if (gameCharacterData.currentStatePoint - oponentData.currentStatePoint >= 50)
+                if (_currentStatePointMoreThan50 >= 50)
                 {
                     //"己方"已按下技能強度+1&速度+1
                     battleResultData.AddGameCharacterResultData_ChangeCurrentSkillSpeed(gameCharacter, skill_PSE11_YiTaiYaZhi2, out _);
@@ -957,7 +959,8 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         float gameCharacterStressResistance = 0.0f;
         float opponentStressValueDamage = 0.0f;
         float multiplyZeroPointFive = isMultipleZeroPointFive ? 0.5f : 1.0f;
-        if(gameCharacter.GetCurrentSkill() != null)
+        float currentStressValueLessThan50 = gameCharacterData.currentStressValue - opponentData.currentStressValue;
+        if (gameCharacter.GetCurrentSkill() != null)
         {
             gameCharacterStressResistance = gameCharacter.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().StressResistance;
         }
@@ -1043,7 +1046,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             (opponent.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress) &&
             (opponent.GetStressLevel() >= 3) &&
             (opponentData.currentStatePoint > gameCharacterData.currentStatePoint) &&
-            (gameCharacterData.currentStressValue - opponentData.currentStressValue >= 50))
+            (currentStressValueLessThan50 >= 50))
         {
             battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacter, _passiveSkill, out _);
             skill_PSS11_FuheYaZhi2 = 1.0f;
