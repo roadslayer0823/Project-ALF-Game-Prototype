@@ -142,11 +142,13 @@ public partial class BattleAnimationManager : MonoBehaviour
         };
 
         // 先手方的技能
+        CharacterSkill _leadAssignedSkill = null;
         CharacterSkill _leadCurrentSkill = _lead.GetCurrentSkill();
         Subskill _leadSubskillData = _leadCurrentSkill.GetCharacterSubskillData().GetSubskillData();
         RangeType _leadRangeType = _lead.GetCurrentSkillRangeType();
 
         // 後手方的技能
+        CharacterSkill _improviserAssignedSkill = null;
         CharacterSkill _improviserCurrentSkill = null;
         SkillType _improviserSkillType = SkillType.none;
         Subskill _improviserSubskillData = null;
@@ -230,6 +232,8 @@ public partial class BattleAnimationManager : MonoBehaviour
             yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, ( _lead.GetIsPlayer() ) ? "Player_Ariku_Counterattack" : ( this.isUsingGameCharacterV2 ) ? "Player_Ariku_Counterattack-enemy" : "Enemy_Enemy_Counterattack" ) );
         }
 
+        _improviserAssignedSkill = _improviser.GetAssignedSkill();
+
         // 先手方是否在“近戰指令時間”或“近戰反擊指令時間”按下主動或反擊技能？
         // YES
         // 当前的距离是否为“近距离”？
@@ -237,6 +241,12 @@ public partial class BattleAnimationManager : MonoBehaviour
         if (_isLeadMeleeAttacking
             && this.battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType() == DistanceType.Near)
         {
+            if (_improviserAssignedSkill != null
+                && _improviserAssignedSkill.GetSkillData().skillType == SkillType.active)
+            {
+                _improviser.SetAssignedSkill( _improviserAssignedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() );
+            }
+
             // “後手方”發動技能。
             _improviser.ApplyAssignedSkillAsCurrentSkill();
 
@@ -336,6 +346,12 @@ public partial class BattleAnimationManager : MonoBehaviour
             // 指令結束，禁用技能。
             _lead.TriggerEvent( AnimationEvent.OnTransition );
             _improviser.TriggerEvent( AnimationEvent.OnTransition );
+
+            if (_improviserAssignedSkill != null
+              && _improviserAssignedSkill.GetSkillData().skillType == SkillType.active)
+            {
+                _improviser.SetAssignedSkill( _improviserAssignedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() );
+            }
 
             // “後手方”發動技能。
             _improviser.ApplyAssignedSkillAsCurrentSkill();
@@ -913,8 +929,8 @@ public partial class BattleAnimationManager : MonoBehaviour
             yield break;
         }
 
-        CharacterSkill _leadAssignedSkill = _lead.GetAssignedSkill();
-        CharacterSkill _improviserAssignedSkill = _improviser.GetAssignedSkill();
+        _leadAssignedSkill = _lead.GetAssignedSkill();
+        _improviserAssignedSkill = _improviser.GetAssignedSkill();
 
         if (battleFlowRound.GetCurrentATL().GetATLNumber() == GameConfiguration.Instance.GetBattleConfiguration().GetNumberOfATLSlots())
         {
