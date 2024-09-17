@@ -45,21 +45,29 @@ public partial class BattleAnimationManager: MonoBehaviour
         //抵抗成功方
         if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
         {
-            //己方當前流向是否"生命流" 
-            if (playerOne.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life)
+            //己方是已按下技能是否回避技能 ?
+            if (_playerOne_SubskillData.IsEvadingSkill)
             {
-                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV2, _playerOne_SubskillId, _playerOne_AnimationType);
-            }
-            //己方當前流向是否"以太流" / "無流向" ?
-            else if (playerOne.GetSelectedPassiveSkillCategoryType() is CategorizedPassiveSkillManager.CategoryType.State or CategorizedPassiveSkillManager.CategoryType.None)
-            {
-                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerOne_SubskillId, _playerOne_AnimationType);
-            }
-            //"先手方"已按下技能是否"遠程" ?
-            else if((playerOne.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerOne_SubskillData.Range == RangeType.ranged) ||
-                playerTwo.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerTwo_SubskillData.Range == RangeType.ranged)
-            {
-                _animationParameterData = new AnimationParameterData(true, false, CodeType.camB_type_CDV3, _playerOne_SubskillId, _playerOne_AnimationType);
+                 //己方當前流向是否"生命流" 
+                if (playerOne.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life)
+                {
+                    _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV2, _playerOne_SubskillId, _playerOne_AnimationType);
+                }
+                //己方當前流向是否"以太流" / "無流向" ?
+                else if (playerOne.GetSelectedPassiveSkillCategoryType() is CategorizedPassiveSkillManager.CategoryType.State or CategorizedPassiveSkillManager.CategoryType.None)
+                {
+                    _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerOne_SubskillId, _playerOne_AnimationType);
+                }
+                //"先手方"已按下技能是否"遠程" ?
+                else if ((playerOne.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerOne_SubskillData.Range == RangeType.ranged) ||
+                    playerTwo.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerTwo_SubskillData.Range == RangeType.ranged)
+                {
+                    _animationParameterData = new AnimationParameterData(true, false, CodeType.camB_type_CDV3, _playerOne_SubskillId, _playerOne_AnimationType);
+                }
+                else
+                {
+                    _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerOne_SubskillId, _playerOne_AnimationType);
+                }
             }
             else
             {
@@ -381,25 +389,33 @@ public partial class BattleAnimationManager: MonoBehaviour
         // 抵抗成功方
         if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
         {
-            //敵方當前流向是否"生命流" 
-            if (playerTwo.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life)
+            //敵方是已按下技能是否回避技能 ?
+            if (_playerTwo_SubskillData.IsEvadingSkill)
             {
-                _animationParameterData = new AnimationParameterData(true, true, CodeType.camA_type_CDV2, _playerTwo_SubskillId, _playerTwo_AnimationType);
-            }
-            //敵方當前流向是否"以太流" / "無流向" ?
-            else if (playerTwo.GetSelectedPassiveSkillCategoryType() is CategorizedPassiveSkillManager.CategoryType.State or CategorizedPassiveSkillManager.CategoryType.None)
-            {
-                _animationParameterData = new AnimationParameterData(true, true, CodeType.camA_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
-            }
-            //"先手方"已按下技能是否"遠程" ?
-            else if ((playerOne.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerOne_SubskillData.Range == RangeType.ranged) ||
-               playerTwo.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerTwo_SubskillData.Range == RangeType.ranged)
-            {
-                _animationParameterData = new AnimationParameterData(true, false, CodeType.camA_type_CDV3, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                //敵方當前流向是否"生命流" 
+                if (playerTwo.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life)
+                {
+                    _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV2, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                }
+                //敵方當前流向是否"以太流" / "無流向" ?
+                else if (playerTwo.GetSelectedPassiveSkillCategoryType() is CategorizedPassiveSkillManager.CategoryType.State or CategorizedPassiveSkillManager.CategoryType.None)
+                {
+                    _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                }
+                //"先手方"已按下技能是否"遠程" ?
+                else if ((playerOne.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerOne_SubskillData.Range == RangeType.ranged) ||
+                    playerTwo.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerTwo_SubskillData.Range == RangeType.ranged)
+                {
+                    _animationParameterData = new AnimationParameterData(true, false, CodeType.camB_type_CDV3, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                }
+                else
+                {
+                    _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                }
             }
             else
             {
-                _animationParameterData = new AnimationParameterData(true, true, CodeType.camA_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
             }
         }
 
