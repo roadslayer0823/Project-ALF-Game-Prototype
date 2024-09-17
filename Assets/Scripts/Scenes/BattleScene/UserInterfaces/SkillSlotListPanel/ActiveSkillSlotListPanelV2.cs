@@ -49,6 +49,8 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
 
     public void Show()
     {
+        this.middleSkillSlot.SetSelectedSkill( null );
+
         base.gameObject.SetActive(true);
         for (int i = 0; i < skillSlots.Length; i++)
         {
