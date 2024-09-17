@@ -201,7 +201,12 @@ public class CharacterSkill
 
     public RangeType GetCurrentRangeType()
     {
-        return this.currentRangeType;
+        if (this.currentRangeType != RangeType.none)
+        {
+            return this.currentRangeType;
+        }
+
+        return this.GetCharacterSubskillData().GetSubskillData().Range;
     }
 
 #region Observed Skill Data
