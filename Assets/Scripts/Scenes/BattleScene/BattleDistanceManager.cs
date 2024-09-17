@@ -151,17 +151,7 @@ public class BattleDistanceManager : MonoBehaviour
                 // NO
                 if (!_isImproviserUsingEvadingSkill)
                 {
-                    // "後手方"已按下技能是否"遠程技能"?
-                    // YES
-                    if (_improviserCurrentSkillRangeType == RangeType.ranged)
-                    {
-                        SetCurrentDistanceType( DistanceType.Normal );
-                    }
-                    // NO
-                    else
-                    {
-                        SetCurrentDistanceType( DistanceType.Near );
-                    }
+                    SetCurrentDistanceType( DistanceType.Near );
                 }
                 // YES
                 else

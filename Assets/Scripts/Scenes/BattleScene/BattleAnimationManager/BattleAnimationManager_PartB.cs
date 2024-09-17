@@ -45,27 +45,25 @@ public partial class BattleAnimationManager: MonoBehaviour
         //抵抗成功方
         if (playerOne.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
         {
-            //角色是已按下技能是否回避技能 ?
-            if (_playerOne_SubskillData.IsEvadingSkill)
+            //己方當前流向是否"生命流" 
+            if (playerOne.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life)
             {
-                //己方當前流向是否"以太流" / "無流向" ?
-                if (playerOne.GetSelectedPassiveSkillCategoryType() is CategorizedPassiveSkillManager.CategoryType.State or CategorizedPassiveSkillManager.CategoryType.None)
-                {
-                    _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CDV1, _playerOne_SubskillId, _playerOne_AnimationType );
-                }
-                //己方當前流向是否"生命流" ? 或者 當前距離是否近距離 ?
-                else if (playerOne.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life || _battleDistanceManager.GetCurrentDistanceType() == BattleDistanceManager.DistanceType.Near)
-                {
-                    _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CDV2, _playerOne_SubskillId, _playerOne_AnimationType );
-                }
-                else
-                {
-                    _animationParameterData = new AnimationParameterData( true, false, CodeType.camB_type_CDV3, _playerOne_SubskillId, _playerOne_AnimationType );
-                }
+                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV2, _playerOne_SubskillId, _playerOne_AnimationType);
+            }
+            //己方當前流向是否"以太流" / "無流向" ?
+            else if (playerOne.GetSelectedPassiveSkillCategoryType() is CategorizedPassiveSkillManager.CategoryType.State or CategorizedPassiveSkillManager.CategoryType.None)
+            {
+                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerOne_SubskillId, _playerOne_AnimationType);
+            }
+            //"先手方"已按下技能是否"遠程" ?
+            else if((playerOne.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerOne_SubskillData.Range == RangeType.ranged) ||
+                playerTwo.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerTwo_SubskillData.Range == RangeType.ranged)
+            {
+                _animationParameterData = new AnimationParameterData(true, false, CodeType.camB_type_CDV3, _playerOne_SubskillId, _playerOne_AnimationType);
             }
             else
             {
-                _animationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CDV1, _playerOne_SubskillId, _playerOne_AnimationType );
+                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerOne_SubskillId, _playerOne_AnimationType);
             }
         }
 
@@ -383,33 +381,25 @@ public partial class BattleAnimationManager: MonoBehaviour
         // 抵抗成功方
         if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.SuccessfulResister ))
         {
-            // 敵方是已按下技能是否回避技能?
-            // YES
-            if (_playerTwo_SubskillData.IsEvadingSkill)
+            //敵方當前流向是否"生命流" 
+            if (playerTwo.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life)
             {
-                // 敵方當前流向是否"生命流"/"無流向"?
-                // YES
-                if (playerTwo.GetSelectedPassiveSkillCategoryType() is CategorizedPassiveSkillManager.CategoryType.State or CategorizedPassiveSkillManager.CategoryType.None)
-                {
-                    _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType );
-                }
-                // NO
-                // 敵方當前流向是否"生命流"? or 當前距離是否近距離?
-                // YES
-                else if (playerTwo.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life || _battleDistanceManager.GetCurrentDistanceType() == BattleDistanceManager.DistanceType.Near)
-                {
-                    _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CDV2, _playerTwo_SubskillId, _playerTwo_AnimationType );
-                }
-                // NO
-                else
-                {
-                    _animationParameterData = new AnimationParameterData( true, false, CodeType.camA_type_CDV3, _playerTwo_SubskillId, _playerTwo_AnimationType );
-                }
+                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV2, _playerTwo_SubskillId, _playerTwo_AnimationType);
             }
-            // NO
+            //敵方當前流向是否"以太流" / "無流向" ?
+            else if (playerTwo.GetSelectedPassiveSkillCategoryType() is CategorizedPassiveSkillManager.CategoryType.State or CategorizedPassiveSkillManager.CategoryType.None)
+            {
+                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
+            }
+            //"先手方"已按下技能是否"遠程" ?
+            else if ((playerOne.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerOne_SubskillData.Range == RangeType.ranged) ||
+               playerTwo.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerTwo_SubskillData.Range == RangeType.ranged)
+            {
+                _animationParameterData = new AnimationParameterData(true, false, CodeType.camB_type_CDV3, _playerTwo_SubskillId, _playerTwo_AnimationType);
+            }
             else
             {
-                _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType );
+                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
             }
         }
 
