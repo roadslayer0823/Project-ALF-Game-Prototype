@@ -41,7 +41,10 @@ public class GameObjectPositionHandler : MonoBehaviour
                 this.UiMiddleFrame.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2450);
                 this.PassiveSkillSelectionList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2450);
             }
-
+            else
+            {
+                this.ActiveSkillSlotList.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 2350);
+            }
             Debug.Log("aspect ratio:" +_aspectRatio);
             //position
             Vector3 _battleFieldPosition = BattleFieldPosition.position;
