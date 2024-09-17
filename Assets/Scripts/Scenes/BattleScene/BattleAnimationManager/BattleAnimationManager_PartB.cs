@@ -384,22 +384,22 @@ public partial class BattleAnimationManager: MonoBehaviour
             //敵方當前流向是否"生命流" 
             if (playerTwo.GetSelectedPassiveSkillCategoryType() == CategorizedPassiveSkillManager.CategoryType.Life)
             {
-                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV2, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                _animationParameterData = new AnimationParameterData(true, true, CodeType.camA_type_CDV2, _playerTwo_SubskillId, _playerTwo_AnimationType);
             }
             //敵方當前流向是否"以太流" / "無流向" ?
             else if (playerTwo.GetSelectedPassiveSkillCategoryType() is CategorizedPassiveSkillManager.CategoryType.State or CategorizedPassiveSkillManager.CategoryType.None)
             {
-                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                _animationParameterData = new AnimationParameterData(true, true, CodeType.camA_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
             }
             //"先手方"已按下技能是否"遠程" ?
             else if ((playerOne.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerOne_SubskillData.Range == RangeType.ranged) ||
                playerTwo.HasCharacterIdentityType(CharacterIdentityType.Lead) && _playerTwo_SubskillData.Range == RangeType.ranged)
             {
-                _animationParameterData = new AnimationParameterData(true, false, CodeType.camB_type_CDV3, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                _animationParameterData = new AnimationParameterData(true, false, CodeType.camA_type_CDV3, _playerTwo_SubskillId, _playerTwo_AnimationType);
             }
             else
             {
-                _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
+                _animationParameterData = new AnimationParameterData(true, true, CodeType.camA_type_CDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
             }
         }
 
