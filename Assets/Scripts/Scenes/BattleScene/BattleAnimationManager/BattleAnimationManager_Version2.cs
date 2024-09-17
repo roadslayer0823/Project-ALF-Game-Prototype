@@ -226,7 +226,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
         // NO
 
-        if (_isLeadCounterAttacking)
+        if (this.shouldShowCounterAttackUI && _isLeadCounterAttacking)
         {
             AudioManager.Instance.PlaySoundEffect( AUDIO_ID_COUNTER );
             yield return StartCoroutine( PlayAnimation( skillEffectUiAnimator, ( _lead.GetIsPlayer() ) ? "Player_Ariku_Counterattack" : ( this.isUsingGameCharacterV2 ) ? "Player_Ariku_Counterattack-enemy" : "Enemy_Enemy_Counterattack" ) );

@@ -6002,6 +6002,7 @@ MonoBehaviour:
   skillNormalDarkness: 0.5
   skillTimeStopDarkness: 0.8
   isUsingGameCharacterV2: 1
+  shouldShowCounterAttackUI: 0
   background: {fileID: 1003058115}
   backgroundPartA: {fileID: 21300000, guid: e9e644f3e70da42c8935b7dfbbf66d21, type: 3}
   backgroundPartB: {fileID: 21300000, guid: 41f42e829d964462387abc6c8834c294, type: 3}
