@@ -137,7 +137,6 @@ public class CharacterAnimationHandler : MonoBehaviour
                 && ( _animationData.Type != 0 || _animationData.Type == _animationType ))
             {
                 _codeTypeList.Add( _animationData.CodeString );
-                Debug.Log( "_animationDataList[i].Code: " + _animationData.Code );
             }
         }
 
@@ -145,6 +144,7 @@ public class CharacterAnimationHandler : MonoBehaviour
         {
             if (_codeTypeList[i].Contains(keyword))
             {
+                Debug.Log(_codeTypeList[i] + " Contain keyword: " + keyword);
                 return true;
             }
         }
@@ -221,9 +221,9 @@ public class CharacterAnimationHandler : MonoBehaviour
     {
         ResetAnimation();
 
-        //Debug.Log("codeType: " + codeType);
-        //Debug.Log("subskillId: " + subskillId);
-        //Debug.Log("type: " + type);
+        Debug.Log("codeType: " + codeType);
+        Debug.Log("subskillId: " + subskillId);
+        Debug.Log("type: " + type);
         AnimationClip _animationClip = null;
         AudioClip _audioClip = null;
         AnimationData _animationData = DatabaseManager.Instance.GetAnimationData(codeType,subskillId,type);
@@ -237,9 +237,9 @@ public class CharacterAnimationHandler : MonoBehaviour
             if (type == 1) type = 2;
             else if (type == 2) type = 1;
             _animationData = DatabaseManager.Instance.GetAnimationData(codeType, subskillId, type);
-            //Debug.Log("codeType: " + codeType);
-            //Debug.Log("subskillId: " + subskillId);
-            //Debug.Log("type: " + type);
+            Debug.Log("codeType: " + codeType);
+            Debug.Log("subskillId: " + subskillId);
+            Debug.Log("type: " + type);
             if (_animationData == null)
             {
                 Debug.LogError("Even changed type still cannot found animation data from database");
@@ -267,7 +267,7 @@ public class CharacterAnimationHandler : MonoBehaviour
             string[] _actionClipArray = _animationData.ActionsArray;
             for (int i = 0; i < _actionClipArray.Length; i++)
             {
-                //Debug.Log("_actionClipArray["+i+"]: " + _actionClipArray[i]);
+                Debug.Log("_actionClipArray[" + i + "]: " + _actionClipArray[i]);
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/Actions/" + _actionClipArray[i]);
                 this.playerAnimatorOverrideController["Animation_" + i] = _animationClip;
                 actionAnimationLength += _animationClip.length;
@@ -290,7 +290,7 @@ public class CharacterAnimationHandler : MonoBehaviour
             Animator _skillEffectAnimator = isSkillEffectFront ? this.skillEffectFrontAnimator : this.skillEffectBackAnimator;
             for (int i = 0; i < _effectClipArray.Length; i++)
             {
-                //Debug.Log("_effectClipArray[" + i + "]: " + _effectClipArray[i]);
+                Debug.Log("_effectClipArray[" + i + "]: " + _effectClipArray[i]);
                 _animationClip = Resources.Load<AnimationClip>("Animations/Battle/SkillEffects/" + _effectClipArray[i]);
 
                 ( ( isSkillEffectFront ) ? this.skillEffectFrontAnimatorOverrideController
@@ -320,7 +320,7 @@ public class CharacterAnimationHandler : MonoBehaviour
             {
                 _audioClip = Resources.Load<AudioClip>( "Audios/Battle/Audios/" + _audioArray[ 0 ] );
                 AudioManager.Instance.PlaySoundEffect( _audioClip );
-                Debug.Log( "_audioArray: " + _audioArray[ 0 ] );
+                Debug.Log("_audioArray: " + _audioArray[0]);
                 audioLength += _audioClip.length;
             }
         }
@@ -378,8 +378,8 @@ public class CharacterAnimationHandler : MonoBehaviour
 
     public void LoadAndPlayVisualEffect(bool isFlipped,bool isSkillEffectFront, string visualEffectName, string visualEffectAudioId)
     {
-        //Debug.Log("visualEffectName: " + visualEffectName);
-        //Debug.Log("visualEffectAudioId: " + visualEffectAudioId);
+        Debug.Log("visualEffectName: " + visualEffectName);
+        Debug.Log("visualEffectAudioId: " + visualEffectAudioId);
 
         Animator _visualEffectAnimator = isSkillEffectFront ? this.visualEffectFrontAnimator : this.visualEffectBackAnimator;
 
