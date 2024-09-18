@@ -347,6 +347,8 @@ public partial class BattleAnimationManager : MonoBehaviour
             _lead.TriggerEvent( AnimationEvent.OnTransition );
             _improviser.TriggerEvent( AnimationEvent.OnTransition );
 
+            _improviserAssignedSkill = _improviser.GetAssignedSkill();
+
             if (_improviserAssignedSkill != null
               && _improviserAssignedSkill.GetSkillData().skillType == SkillType.active)
             {
@@ -357,6 +359,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             _improviser.ApplyAssignedSkillAsCurrentSkill();
 
             _improviserCurrentSkill = _improviser.GetCurrentSkill();
+
             if (_improviserCurrentSkill != null)
             {
                 RangeType _improviserCurrentSkillRange = _improviserCurrentSkill.GetCharacterSubskillData().GetSubskillData().Range;
