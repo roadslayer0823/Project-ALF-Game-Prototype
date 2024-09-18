@@ -158,7 +158,7 @@ public class BattleDistanceManager : MonoBehaviour
                 {
                     // "後手方"當前流向是否"生命流"?
                     // NO
-                    if (_improviserSelectedPassiveSkillCategoryType == CategorizedPassiveSkillManager.CategoryType.Life)
+                    if (_improviserSelectedPassiveSkillCategoryType != CategorizedPassiveSkillManager.CategoryType.Life)
                     {
                         SetCurrentDistanceType( DistanceType.Near );
                     }
@@ -173,10 +173,14 @@ public class BattleDistanceManager : MonoBehaviour
 
             // 當前距離為[中距離]
             case DistanceType.Normal:
-
+                //"後手方"是否"無視遠程方" ?
+                if (improviser.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.IgnoreRangedSkill))
+                {
+                    SetCurrentDistanceType(DistanceType.Near);
+                }
                 // "後手方"已按下技能是否"回避技能"?
                 // NO
-                if (!_isImproviserUsingEvadingSkill)
+                else if (!_isImproviserUsingEvadingSkill)
                 {
                     SetCurrentDistanceType( DistanceType.Normal );
                 }
@@ -210,10 +214,14 @@ public class BattleDistanceManager : MonoBehaviour
 
             // 當前距離為[遠距離]
             case DistanceType.Far:
-
+                //"後手方"是否"無視遠程方" ?
+                if (improviser.HasCharacterIdentityType(GameCharacter.CharacterIdentityType.IgnoreRangedSkill))
+                {
+                    SetCurrentDistanceType(DistanceType.Near);
+                }
                 // "後手方"已按下技能是否"回避技能"?
                 // NO
-                if (!_isImproviserUsingEvadingSkill)
+                else if (!_isImproviserUsingEvadingSkill)
                 {
                     // "後手方"已按下技能是否"迎擊技能"?
                     // YES
