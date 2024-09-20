@@ -619,10 +619,10 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         else if (gameCharacterOne.GetSelectedPassiveSkillCategoryType() == CategoryType.Stress)
         {
             int _stressLevel = gameCharacterOne.GetStressLevel();
-            float _characterOneStressValueDamage = gameCharacterOne.GetCurrentSkill() == null ? 0 :
-                                                   gameCharacterOne.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().StressValueDamage;
-            float _characterTwoActualHealthDamage = gameCharacterTwo.GetCurrentSkill() == null ? 0 :
-                                                    gameCharacterTwo.GetCurrentSkill().GetCharacterSubskillData().GetSubskillData().AttackDamage;
+            float _characterOneStressValueDamageDealt = gameCharacterOne.GetCurrentSkill() == null ? 0 :
+                                                   _gameCharacterOne_BattleResultData.stressValueDamageDealt;
+            float _characterTwoActualHealthDamageDealt = gameCharacterTwo.GetCurrentSkill() == null ? 0 :
+                                                    _gameCharacterTwo_BattleResultData.actualHealthPointDamageDealt;
             float _maximumHealthPoint = gameCharacterOne.GetMaximumHealthPoint();
 
             battleResultData.AddResultLog(characterOneName + " 發動流向效果B");
@@ -642,9 +642,9 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 //["己方"當前以太值]+["己方"此ATL給予"對方"的負荷傷害]
                 battleResultData.AddResultLog("[\"己方\"當前以太值]+[\"己方\"此ATL給予\"對方\"的負荷傷害]");
                 battleResultData.AddResultLog("己方 負荷等級 >= 1\n發動 負荷流 6.變頻 \n\n" + characterOneName +
-                                              " 給予\"對方\"的負荷傷害:" + _characterOneStressValueDamage +
-                                              "\n\n當前以太值提升：" + _characterOneStressValueDamage);
-                battleResultData.AddGameCharacterResultData_IncreaseCurrentStatePoint(gameCharacterOne, _characterOneStressValueDamage, out _);
+                                              " 給予\"對方\"的負荷傷害:" + _characterOneStressValueDamageDealt +
+                                              "\n\n當前以太值提升：" + _characterOneStressValueDamageDealt);
+                battleResultData.AddGameCharacterResultData_IncreaseCurrentStatePoint(gameCharacterOne, _characterOneStressValueDamageDealt, out _);
             }
             else
             {
@@ -655,7 +655,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
              * "己方"的負荷等級
                 是否=3?
              */
-            if (_stressLevel == 3 && _characterTwoActualHealthDamage > 0)
+            if (_stressLevel == 3 && _characterTwoActualHealthDamageDealt > 0)
             {
                 /*
                  * 發動
@@ -663,14 +663,14 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                 */
                 //["己方"負荷值]-["己方"最大HP]÷["對方"此ATL給予"己方"的HP傷害]
                 battleResultData.AddResultLog("[\"己方\"負荷值]-[\"己方\"最大HP]÷[\"對方\"此ATL給予\"己方\"的HP傷害]");
-                float _minusValue = _maximumHealthPoint / _characterTwoActualHealthDamage;
+                float _minusValue = _maximumHealthPoint / _characterTwoActualHealthDamageDealt;
                 battleResultData.AddResultLog(characterOneName + " 負荷等級 = 3" + "\n" +
                                             "\n發動 負荷流 12.逆轉 \n\n" +
                                             characterOneName + " 最大HP:" + _gameCharacterOne_BattleResultData.maximumHealthPoint + "\n" +
-                                            characterTwoName + "給予 \"己方\"的HP傷害:" + _characterTwoActualHealthDamage +
+                                            characterTwoName + "給予 \"己方\"的HP傷害:" + _characterTwoActualHealthDamageDealt +
                                             "\n\n負荷傷害: " + Mathf.Round(_minusValue));
                 battleResultData.AddGameCharacterResultData_TriggerPassiveSkill(gameCharacterOne, gameCharacterOne.GetPassiveSkill(PASSIVE_SKILL_ID_PSS12), out _);
-                battleResultData.AddGameCharacterResultData_StressValueDamage(gameCharacterOne, _minusValue, out _);
+                battleResultData.AddGameCharacterResultData_StressValueDamageRecovered(gameCharacterOne, _minusValue, out _);
             }
         }
     }
