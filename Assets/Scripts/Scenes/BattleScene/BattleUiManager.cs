@@ -106,6 +106,7 @@ public class BattleUiManager : MonoBehaviour
             this.characterInfoPanelV2.Initialize();
         }
 
+        this.skillPromptPanel.Initialize();
         this.passiveSkillCategorySelectionPanel.Initialize();
 
         if (this.battleResultPanelV2 != null)
@@ -652,7 +653,16 @@ public class BattleUiManager : MonoBehaviour
         Debug.Log( "Skill Type List = " + string.Join( " | ", _skillTypeList ) );
 
         Debug.Log( "UpdateSkillButtons" );
-        if (_skillTypeList.Contains( SkillType.Repulse ))
+
+        if (_skillTypeList.Count <= 0)
+        {
+            SkillSlotV2[] _skillSlots = this.activeSkillSlotListPanelV2.GetSkillSlots();
+            for (int i = 0; i < _skillSlots.Length; i++)
+            {
+                _skillSlots[ i ].SetCurrentStateType( SkillSlotV2.StateType.Disabled );
+            }
+        }
+        else if (_skillTypeList.Contains( SkillType.Repulse ))
         {
             _isAbleToRepulse = true;
 

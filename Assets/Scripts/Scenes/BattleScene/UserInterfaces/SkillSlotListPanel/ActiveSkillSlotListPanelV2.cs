@@ -159,6 +159,7 @@ public class ActiveSkillSlotListPanelV2 : MonoBehaviour
                 }
             }
         }
+
         AudioManager.Instance.PlaySoundEffect(AUDIO_ID_PASSIVE_FLASH);
     }
 

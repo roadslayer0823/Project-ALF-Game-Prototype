@@ -78,6 +78,29 @@ public class SkillPromptPanelV2 : MonoBehaviour
     [SerializeField] private TextMeshProUGUI playerPassiveSkillTextSlot3 = null;
     [SerializeField] private TextMeshProUGUI playerPassiveSkillTextSlot4 = null;
 
+    private Vector3 enemyPassiveSkillSlot1_Position;
+    private Vector3 enemyPassiveSkillSlot2_Position;
+    private Vector3 enemyPassiveSkillSlot3_Position;
+    private Vector3 enemyPassiveSkillSlot4_Position;
+
+    private Vector3 playerPassiveSkillSlot1_Position;
+    private Vector3 playerPassiveSkillSlot2_Position;
+    private Vector3 playerPassiveSkillSlot3_Position;
+    private Vector3 playerPassiveSkillSlot4_Position;
+
+    public void Initialize()
+    {
+        this.enemyPassiveSkillSlot1_Position = this.enemyPassiveSkillSlot1.transform.position;
+        this.enemyPassiveSkillSlot2_Position = this.enemyPassiveSkillSlot2.transform.position;
+        this.enemyPassiveSkillSlot3_Position = this.enemyPassiveSkillSlot3.transform.position;
+        this.enemyPassiveSkillSlot4_Position = this.enemyPassiveSkillSlot4.transform.position;
+
+        this.playerPassiveSkillSlot1_Position = this.playerPassiveSkillSlot1.transform.position;
+        this.playerPassiveSkillSlot2_Position = this.playerPassiveSkillSlot2.transform.position;
+        this.playerPassiveSkillSlot3_Position = this.playerPassiveSkillSlot3.transform.position;
+        this.playerPassiveSkillSlot4_Position = this.playerPassiveSkillSlot4.transform.position;
+    }
+
     // hide the skill prompt panel
     private void Hide()
     {
@@ -403,6 +426,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         {
             if (!this.playerPassiveSkillSlot1.activeInHierarchy) // slot 1
             {
+                this.playerPassiveSkillSlot1.transform.position = this.playerPassiveSkillSlot1_Position;
                 PopPassiveSkillSlot(this.playerPassiveSkillSlot1, this.playerPassiveSkillBackgroundSlot1, this.playerPassiveSkillTextSlot1, tagName, isPlayer);
 
                 if (this.playerPassiveSkillSlot3.activeInHierarchy)
@@ -412,6 +436,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
             }
             else if (this.playerPassiveSkillSlot1.activeInHierarchy && !this.playerPassiveSkillSlot2.activeInHierarchy) //slot 2
             {
+                this.playerPassiveSkillSlot2.transform.position = this.playerPassiveSkillSlot2_Position;
                 PopPassiveSkillSlot(this.playerPassiveSkillSlot2, this.playerPassiveSkillBackgroundSlot2, this.playerPassiveSkillTextSlot2, tagName, isPlayer);
 
                 if (this.playerPassiveSkillSlot4.activeInHierarchy)
@@ -421,12 +446,14 @@ public class SkillPromptPanelV2 : MonoBehaviour
             }
             else if (this.playerPassiveSkillSlot1.activeInHierarchy && this.playerPassiveSkillSlot2.activeInHierarchy && !this.playerPassiveSkillSlot3.activeInHierarchy) //slot 3
             {
+                this.playerPassiveSkillSlot3.transform.position = this.playerPassiveSkillSlot3_Position;
                 PopPassiveSkillSlot(this.playerPassiveSkillSlot3, this.playerPassiveSkillBackgroundSlot3, this.playerPassiveSkillTextSlot3, tagName, isPlayer);
 
                 PushFurtherPassiveSkillSlot(this.playerPassiveSkillSlot1, this.playerPassiveSkillBackgroundSlot1, this.playerPassiveSkillTextSlot1, isPlayer);
             }
             else if (this.playerPassiveSkillSlot1.activeInHierarchy && this.playerPassiveSkillSlot2.activeInHierarchy && this.playerPassiveSkillSlot3.activeInHierarchy && !this.playerPassiveSkillSlot4.activeInHierarchy) //slot 4
             {
+                this.playerPassiveSkillSlot4.transform.position = this.playerPassiveSkillSlot4_Position;
                 PopPassiveSkillSlot(this.playerPassiveSkillSlot4, this.playerPassiveSkillBackgroundSlot4, this.playerPassiveSkillTextSlot4, tagName, isPlayer);
 
                 PushFurtherPassiveSkillSlot(this.playerPassiveSkillSlot2, this.playerPassiveSkillBackgroundSlot2, this.playerPassiveSkillTextSlot2, isPlayer);
@@ -436,6 +463,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
         {
             if (!this.enemyPassiveSkillSlot1.activeInHierarchy) // slot 1
             {
+                this.enemyPassiveSkillSlot1.transform.position = this.enemyPassiveSkillSlot1_Position;
                 PopPassiveSkillSlot(this.enemyPassiveSkillSlot1, this.enemyPassiveSkillBackgroundSlot1, this.enemyPassiveSkillTextSlot1, tagName, isPlayer);
 
                 if (this.enemyPassiveSkillSlot3.activeInHierarchy)
@@ -445,6 +473,7 @@ public class SkillPromptPanelV2 : MonoBehaviour
             }
             else if (this.enemyPassiveSkillSlot1.activeInHierarchy && !this.enemyPassiveSkillSlot2.activeInHierarchy) //slot 2
             {
+                this.enemyPassiveSkillSlot2.transform.position = this.enemyPassiveSkillSlot2_Position;
                 PopPassiveSkillSlot(this.enemyPassiveSkillSlot2, this.enemyPassiveSkillBackgroundSlot2, this.enemyPassiveSkillTextSlot2, tagName, isPlayer);
 
                 if (this.enemyPassiveSkillSlot4.activeInHierarchy)
@@ -454,12 +483,14 @@ public class SkillPromptPanelV2 : MonoBehaviour
             }
             else if (this.enemyPassiveSkillSlot1.activeInHierarchy && this.enemyPassiveSkillSlot2.activeInHierarchy && !this.enemyPassiveSkillSlot3.activeInHierarchy) //slot 3
             {
+                this.enemyPassiveSkillSlot3.transform.position = this.enemyPassiveSkillSlot3_Position;
                 PopPassiveSkillSlot(this.enemyPassiveSkillSlot3, this.enemyPassiveSkillBackgroundSlot3, this.enemyPassiveSkillTextSlot3, tagName, isPlayer);
 
                 PushFurtherPassiveSkillSlot(this.enemyPassiveSkillSlot1, this.enemyPassiveSkillBackgroundSlot1, this.enemyPassiveSkillTextSlot1, isPlayer);
             }
             else if (this.enemyPassiveSkillSlot1.activeInHierarchy && this.enemyPassiveSkillSlot2.activeInHierarchy && this.enemyPassiveSkillSlot3.activeInHierarchy && !this.enemyPassiveSkillSlot4.activeInHierarchy) //slot 4
             {
+                this.enemyPassiveSkillSlot4.transform.position = this.enemyPassiveSkillSlot4_Position;
                 PopPassiveSkillSlot(this.enemyPassiveSkillSlot4, this.enemyPassiveSkillBackgroundSlot4, this.enemyPassiveSkillTextSlot4, tagName, isPlayer);
 
                 PushFurtherPassiveSkillSlot(this.enemyPassiveSkillSlot2, this.enemyPassiveSkillBackgroundSlot2, this.enemyPassiveSkillTextSlot2, isPlayer);
@@ -524,6 +555,8 @@ public class SkillPromptPanelV2 : MonoBehaviour
     // show the passive skill slot
     private void PopPassiveSkillSlot(GameObject slotToPop, Image slotBackground, TextMeshProUGUI slotText, string tagName, bool isPlayer)
     {
+        LeanTween.cancel( slotToPop );
+
         slotToPop.SetActive(true);
         slotText.SetText(tagName);
         SetAlphaToMax(slotBackground, slotText);
