@@ -655,7 +655,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
              * "己方"的負荷等級
                 是否=3?
              */
-            if (_stressLevel == 3)
+            if (_stressLevel == 3 && _characterTwoActualHealthDamage > 0)
             {
                 /*
                  * 發動
