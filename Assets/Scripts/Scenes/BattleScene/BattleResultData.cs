@@ -594,13 +594,13 @@ public class BattleResultData
                 Debug.Log("gameCharacter.HasCharacterIdentityType 勝利優惠機制 當前以太值最低為1");
                 gameCharacterResultData.SetCurrentStatePoint(1);
             }
-            else if (gameCharacterResultData.currentStatePoint < 0)
-            {
-                // 陷入以太崩潰狀態。
-                gameCharacterResultData.stateBreakStatusRemainingATLs = 1;
-                gameCharacterResultData.numberOfEnteringIntoBreakStatus++;
-                BattleLogicManagerV2.OnGameCharacterBeingInBreakStatus( gameCharacter );
-            }
+            //else if (gameCharacterResultData.currentStatePoint < 0)
+            //{
+            //    // 陷入以太崩潰狀態。
+            //    gameCharacterResultData.stateBreakStatusRemainingATLs = 1;
+            //    gameCharacterResultData.numberOfEnteringIntoBreakStatus++;
+            //    BattleLogicManagerV2.OnGameCharacterBeingInBreakStatus( gameCharacter );
+            //}
         }
 
 #if ALF_DEBUG
@@ -662,13 +662,13 @@ public class BattleResultData
                     gameCharacterResultData.stressValueDamageTaken -= _stressValueReduction;
                     gameCharacterResultData.currentStressValue -= _stressValueReduction;
                 }
-                else
-                {                  
-                    // 陷入負荷崩潰狀態。
-                    gameCharacterResultData.stressBreakStatusRemainingATLs = 1;
-                    gameCharacterResultData.numberOfEnteringIntoBreakStatus++;
-                    BattleLogicManagerV2.OnGameCharacterBeingInBreakStatus(gameCharacter);
-                }
+                //else
+                //{                  
+                //    // 陷入負荷崩潰狀態。
+                //    gameCharacterResultData.stressBreakStatusRemainingATLs = 1;
+                //    gameCharacterResultData.numberOfEnteringIntoBreakStatus++;
+                //    BattleLogicManagerV2.OnGameCharacterBeingInBreakStatus(gameCharacter);
+                //}
             }
         }
 
@@ -702,7 +702,8 @@ public class BattleResultData
     // HP 傷害（實傷）
     public BattleResultData AddGameCharacterResultData_ActualHealthPointDamage( GameCharacter gameCharacter, float actualHealthPointDamage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
-        actualHealthPointDamage = Mathf.Round(actualHealthPointDamage);
+        actualHealthPointDamage = ( actualHealthPointDamage < 1.0f ) ? 1.0f : Mathf.Round( actualHealthPointDamage );
+
         GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
         if (_currentAttacker != null)
         {
@@ -728,7 +729,8 @@ public class BattleResultData
     // HP 傷害（虛傷）
     public BattleResultData AddGameCharacterResultData_VirtualHealthPointDamage( GameCharacter gameCharacter, float virtualHealthPointDamage, out BattleResultData_GameCharacter gameCharacterResultData )
     {
-        virtualHealthPointDamage = Mathf.Round(virtualHealthPointDamage);
+        virtualHealthPointDamage = ( virtualHealthPointDamage < 1.0f ) ? 1.0f : Mathf.Round( virtualHealthPointDamage );
+
         GameCharacter _currentAttacker = gameCharacter.GetCurrentAttacker();
         if (_currentAttacker != null)
         {

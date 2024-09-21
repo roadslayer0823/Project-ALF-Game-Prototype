@@ -198,6 +198,14 @@ public partial class GameCharacter : MonoBehaviour
         Evade
     }
 
+    public enum BattleResultApplyingTimingType
+    {
+        None,
+        TIMING_A,
+        TIMING_B,
+        TIMING_C
+    }
+
     public void Initialize( Character characterData, bool isPlayer, GameObject ownContainer, GameObject opponentContainer, Action<AnimationEvent,GameCharacter> onEventTriggeredCallback = null )
     {
         base.gameObject.name = "Character: " + characterData.DisplayName;
@@ -718,39 +726,71 @@ public partial class GameCharacter : MonoBehaviour
         }
     }
 
-    public void ApplyBattleResultData( BattleResultData_GameCharacter battleResultData, BattleGameManager battleGameManager = null, bool useMaximumStatePointWithoutBonus = false )
+    public void ApplyBattleResultData( BattleResultData_GameCharacter battleResultData,
+                                       BattleGameManager battleGameManager = null,
+                                       BattleResultApplyingTimingType battleResultApplyingTimingType = BattleResultApplyingTimingType.None,
+                                       bool needToUpdateHealthPoint = true )
     {
         if (battleResultData != null)
         {
             bool _isDead = this.isDead;
 
-            this.maximumHealthPoint = battleResultData.maximumHealthPoint;
-            this.currentHealthPoint = battleResultData.currentHealthPoint;
-            this.virtualHealthPoint = battleResultData.virtualHealthPoint;
-            this.originalStatePoint = battleResultData.originalStatePoint;
-            this.maximumStatePoint = ( useMaximumStatePointWithoutBonus ) ? battleResultData.maximumStatePointWithoutBonus : battleResultData.maximumStatePoint;
-            this.minimumStatePoint = battleResultData.minimumStatePoint;
-            this.currentStatePoint = battleResultData.currentStatePoint;
-            this.maximumStressValue = battleResultData.maximumStressValue;
-            this.currentStressValue = battleResultData.currentStressValue;
+            if (battleResultApplyingTimingType != BattleResultApplyingTimingType.TIMING_A)
+            {
+                this.maximumHealthPoint = battleResultData.maximumHealthPoint;
 
-            // 崩潰狀態
-            this.stateBreakStatusRemainingATLs = battleResultData.stateBreakStatusRemainingATLs;
-            this.stressBreakStatusRemainingATLs = battleResultData.stressBreakStatusRemainingATLs;
-            this.numberOfEnteringIntoBreakStatus = battleResultData.numberOfEnteringIntoBreakStatus;
+                if (needToUpdateHealthPoint)
+                {
+                    this.currentHealthPoint = battleResultData.currentHealthPoint;
+                    this.virtualHealthPoint = battleResultData.virtualHealthPoint;
+                }
+            }
 
-            // 能量殘響
-            this.energyMarkerRemainingATLs = battleResultData.energyMarkerRemainingATLs;
+            if (battleResultApplyingTimingType != BattleResultApplyingTimingType.TIMING_C)
+            {
+                this.originalStatePoint = battleResultData.originalStatePoint;
 
-            // 其他狀態
-            this.isDead = battleResultData.isDead;
-            this.hasJustDied = ( !_isDead && this.isDead );
+                this.maximumStatePoint = ( battleResultApplyingTimingType == BattleResultApplyingTimingType.TIMING_A )
+                                         ? battleResultData.maximumStatePointWithoutBonus
+                                         : battleResultData.maximumStatePoint;
 
-            ApplyBattleResultData_CategorizedPassiveSkillManager( battleResultData );
+                this.minimumStatePoint = battleResultData.minimumStatePoint;
+
+                if (battleResultApplyingTimingType is BattleResultApplyingTimingType.None or BattleResultApplyingTimingType.TIMING_A)
+                {
+                    this.currentStatePoint = battleResultData.currentStatePoint;
+                }
+
+                if (battleResultApplyingTimingType != BattleResultApplyingTimingType.TIMING_A)
+                {
+                    this.maximumStressValue = battleResultData.maximumStressValue;
+                    this.currentStressValue = battleResultData.currentStressValue;
+
+                    // 崩潰狀態
+                    this.stateBreakStatusRemainingATLs = battleResultData.stateBreakStatusRemainingATLs;
+                    this.stressBreakStatusRemainingATLs = battleResultData.stressBreakStatusRemainingATLs;
+                    this.numberOfEnteringIntoBreakStatus = battleResultData.numberOfEnteringIntoBreakStatus;
+
+                    // 能量殘響
+                    this.energyMarkerRemainingATLs = battleResultData.energyMarkerRemainingATLs;
+                }
+            }
+
+            if (battleResultApplyingTimingType != BattleResultApplyingTimingType.TIMING_A)
+            {
+                // 其他狀態
+                this.isDead = battleResultData.isDead;
+                this.hasJustDied = ( !_isDead && this.isDead );
+            }
+
+            if (battleResultApplyingTimingType is BattleResultApplyingTimingType.None or BattleResultApplyingTimingType.TIMING_A)
+            {
+                ApplyBattleResultData_CategorizedPassiveSkillManager( battleResultData );
+            }
 
             if (battleGameManager != null)
             {
-                ShowPassiveSkillTags( battleResultData.triggeredPassiveSkillList, battleGameManager );
+                ShowPassiveSkillTags( battleResultData.triggeredPassiveSkillList, battleGameManager, battleResultApplyingTimingType );
             }
 
             InvokeOnCharacterInfoUpdatedCallback();

@@ -51,13 +51,58 @@ public partial class GameCharacter : MonoBehaviour
         }
     }
 
-    private void ShowPassiveSkillTags( List<PassiveSkill> passiveSkills, BattleGameManager battleGameManager )
+    private void ShowPassiveSkillTags( List<PassiveSkill> passiveSkills, BattleGameManager battleGameManager,
+                                       BattleResultApplyingTimingType battleResultApplyingTimingType = BattleResultApplyingTimingType.None )
     {
         SkillPromptPanelV2 _skillPromptPanelV2 = battleGameManager.GetBattleUiManager().GetSkillPromptPanel();
 
         for (int i = 0; i < passiveSkills.Count; i++)
         {
-            _skillPromptPanelV2.ShowPassiveSkillEffectTag( passiveSkills[ i ].DisplayName, this.isPlayer );
+            bool _needToShow = false;
+            PassiveSkill _passiveSkill = passiveSkills[ i ];
+            string _passiveSkillId = _passiveSkill.Id;
+
+            switch ( battleResultApplyingTimingType )
+            {
+                case BattleResultApplyingTimingType.TIMING_A:
+
+                    _needToShow = ( _passiveSkillId is CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE5
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE11
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE12
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS7
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS8
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS9
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS10
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL6
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL7
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL9
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL10
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL11
+                                                    );
+
+                    break;
+
+                case BattleResultApplyingTimingType.TIMING_B:
+
+                    _needToShow = ( _passiveSkillId is CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE2
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE6
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSE10
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS2
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS3
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS11
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSS12
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL2
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL3
+                                                    or CategorizedPassiveSkillManager.PASSIVE_SKILL_ID_PSL4
+                                                    );
+
+                    break;
+            }
+
+            if (_needToShow)
+            {
+                _skillPromptPanelV2.ShowPassiveSkillEffectTag( _passiveSkill.DisplayName, this.isPlayer );
+            }
         }
     }
 

@@ -399,13 +399,14 @@ public class CharacterAnimationHandler : MonoBehaviour
     public void ResetAnimation()
     {
         //Debug.Log( "Reset Animation" );
+
         this.playerAnimator.StopPlayback();
         this.skillEffectBackAnimator.StopPlayback();
         this.skillEffectFrontAnimator.StopPlayback();
         this.visualEffectBackAnimator.StopPlayback();
         this.visualEffectFrontAnimator.StopPlayback();
 
-        Transform[] _transforms = this.GetComponentsInChildren<Transform>();
+        Transform[] _transforms = this.GetComponentsInChildren<Transform>( true );
         for (int i = 0; i < _transforms.Length; i++)
         {
             Transform _transform = _transforms[ i ];
@@ -415,7 +416,7 @@ public class CharacterAnimationHandler : MonoBehaviour
             }
         }
 
-        SpriteRenderer[] _spriteRenderers = this.GetComponentsInChildren<SpriteRenderer>();
+        SpriteRenderer[] _spriteRenderers = this.GetComponentsInChildren<SpriteRenderer>( true );
         for (int i = 0; i < _spriteRenderers.Length; i++)
         {
             _spriteRenderers[ i ].sprite = null;

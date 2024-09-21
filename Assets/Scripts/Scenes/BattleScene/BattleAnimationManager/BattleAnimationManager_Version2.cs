@@ -6,6 +6,7 @@ using Subskill = DatabaseManager.Subskill;
 using RangeType = DatabaseManager.Subskill.RangeType;
 using CharacterIdentityType = GameCharacter.CharacterIdentityType;
 using CommandTimeType = GameCharacter.CommandTimeType;
+using BattleResultApplyingTimingType = GameCharacter.BattleResultApplyingTimingType;
 using DistanceType = BattleDistanceManager.DistanceType;
 using AnimationParameterData = CharacterAnimationHandler.AnimationParameterData;
 
@@ -310,7 +311,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             LeanTween.delayedCall( RESULT_ANIMATION_TIMING_A, () =>
             {
                 // 播放演出同時，UI反映各項參數。
-                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager, true );
+                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager, BattleResultApplyingTimingType.TIMING_A );
 
                 _lead.ShowPopUpDisplayInfoV2(
                     maxStatePointUp: _leadBattleResultData.maximumStatePointIncreaseForBase
@@ -524,7 +525,7 @@ public partial class BattleAnimationManager : MonoBehaviour
                 _improviser.TriggerEvent( AnimationEvent.OnNormalSkillBeingUsed );
 
                 // 播放演出同時，UI反映各項參數。
-                _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager, true );
+                _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager, BattleResultApplyingTimingType.TIMING_A );
                 //StartCoroutine( ShowPopUpDisplayInfo( improviser, statePointReduced: improviserBattleResultData.statePointCost, maximumStatePointIncreased: improviserBattleResultData.maximumStatePointIncrease ) );
                 _improviser.ShowPopUpDisplayInfoV2(
                     maxStatePointUp: _improviserBattleResultData.maximumStatePointIncreaseForBase
@@ -646,8 +647,8 @@ public partial class BattleAnimationManager : MonoBehaviour
             LeanTween.delayedCall( RESULT_ANIMATION_TIMING_B, () =>
             {
                 // 播放演出同時，UI反映結算階段的各項參數。
-                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager );
-                _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager );
+                _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager, BattleResultApplyingTimingType.TIMING_B, !_hasCrashEffectForLead );
+                _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager, BattleResultApplyingTimingType.TIMING_B, !_hasCrashEffectForImproviser );
 
                 _lead.ShowPopUpDisplayInfoV2( healthPointDamage: ( _hasCrashEffectForLead ) ? 0.0f : _leadBattleResultData.GetHealthPointDamageTaken(),
                                                 stressValueDamage: _leadBattleResultData.stressValueDamageTaken,
@@ -668,11 +669,13 @@ public partial class BattleAnimationManager : MonoBehaviour
             {
                 if (_hasCrashEffectForLead)
                 {
+                    _lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager, BattleResultApplyingTimingType.TIMING_C );
                     _lead.ShowPopUpDisplayInfoV2( healthPointDamage: _leadBattleResultData.GetHealthPointDamageTaken() );
                 }
 
                 if (_hasCrashEffectForImproviser)
                 {
+                    _improviser.ApplyBattleResultData( _improviserBattleResultData, this.battleGameManager, BattleResultApplyingTimingType.TIMING_C );
                     _improviser.ShowPopUpDisplayInfoV2( healthPointDamage: _leadBattleResultData.GetHealthPointDamageTaken() );
                 }
             } );
@@ -1258,7 +1261,7 @@ public partial class BattleAnimationManager : MonoBehaviour
         LeanTween.delayedCall( RESULT_ANIMATION_TIMING_A, () =>
         {
             // 播放演出同時，UI反映各項參數。
-            lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager, true );
+            lead.ApplyBattleResultData( _leadBattleResultData, this.battleGameManager, BattleResultApplyingTimingType.TIMING_A );
 
             PopUpDisplayInfoV2Canvas.SpawnPopUpDisplayInfoV2( this.popUpDisplayInfoPrefabV2, this.canvasTransform,
                                                               this.deriveSkillAnimationHandler.GetPivot().position, !lead.GetIsPlayer(),
