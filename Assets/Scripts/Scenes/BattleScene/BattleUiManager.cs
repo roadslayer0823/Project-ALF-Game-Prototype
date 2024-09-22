@@ -714,7 +714,7 @@ public class BattleUiManager : MonoBehaviour
                 if (_assignedSkill.GetSkillData().skillType == DatabaseManager.Skill.SkillType.active)
                 {
                     CharacterSkill _repulseSkill = _assignedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill();
-                    this.activeSkillSlotListPanelV2.GetSkillSlots( _repulseSkill )[ 0 ].SelectSkill();
+                    this.activeSkillSlotListPanelV2.GetSkillSlots( _repulseSkill )[ 0 ].SelectSkill( false );
                 }
             }
         }

@@ -184,11 +184,13 @@ public class CharacterSkill
                || ( canObserve && _subskill.IsObservingSkill ) );
     }
 
+    [System.Obsolete]
     public void SetHasSkillUpdateIndicator( bool hasSkillUpdateIndicator )
     {
         this.hasSkillUpdateIndicator = hasSkillUpdateIndicator;
     }
 
+    [System.Obsolete]
     public bool GetHasSkillUpdateIndicator()
     {
         return this.hasSkillUpdateIndicator;

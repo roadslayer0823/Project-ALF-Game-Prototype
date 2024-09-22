@@ -81,6 +81,7 @@ public partial class GameCharacter : MonoBehaviour
     private List<CharacterIdentityType> permanentCharacterIdentityTypeList = null; // 永久性身份列表
     private CommandTimeType currentCommandTimeType = CommandTimeType.None; // 目前的指令時間
     private float statePointBeforeBreakStatus = 0.0f; // 崩潰前一刻的以太值數值
+    private bool hasUpdatedSkillInRepulseCommandTime = false; // 是否在“迎戰指令時間”裡已經更新了技能？
     private List<CharacterSkill> allSkills = null;
     private CharacterSkill lastAtlSkill = null;
 
@@ -889,15 +890,24 @@ public partial class GameCharacter : MonoBehaviour
         return this.currentCommandTimeType;
     }
 
-    public void SetAssignedSkill( CharacterSkill assignedSkill )
+    public void SetAssignedSkill( CharacterSkill assignedSkill, bool isPlayerAction = true )
     {
         if (this.isInRepulseCommandTime)
         {
-            if(this.assignedSkill == null)
+            if (this.assignedSkill == null)
             {
                 this.assignedSkill = assignedSkill;
             }
-            this.assignedSkill?.SetHasSkillUpdateIndicator(true);
+
+            // 在迎擊指令時間的操作
+            if (isPlayerAction && this.isInRepulseCommandTime)
+            {
+                // 得到"已更新按下技能方"
+                AddCharacterIdentityType( CharacterIdentityType.UpdatedSelectedSkill );
+                this.hasUpdatedSkillInRepulseCommandTime = true;
+            }
+
+            this.assignedSkill?.SetHasSkillUpdateIndicator( true ); // Obsolete
         }
         else
         {
@@ -1011,6 +1021,16 @@ public partial class GameCharacter : MonoBehaviour
     public float GetStatePointBeforeBreakStatus()
     {
         return this.statePointBeforeBreakStatus;
+    }
+
+    public void SetHasUpdatedSkillInRepulseCommandTime( bool hasUpdatedSkillInRepulseCommandTime )
+    {
+        this.hasUpdatedSkillInRepulseCommandTime = hasUpdatedSkillInRepulseCommandTime;
+    }
+
+    public bool GetHasUpdatedSkillInRepulseCommandTime()
+    {
+        return this.hasUpdatedSkillInRepulseCommandTime;
     }
 
     public void SetTemporaryBattleResultData( BattleResultData_GameCharacter temporaryBattleResultData )

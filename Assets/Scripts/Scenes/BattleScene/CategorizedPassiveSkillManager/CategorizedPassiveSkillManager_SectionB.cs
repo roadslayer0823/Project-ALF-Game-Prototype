@@ -812,13 +812,13 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
              */
             _improviser_BattleResultData.temp_FinalTotalStatePointCost *= (1 - _pSL9_ShengMingYaZhi_value);
             battleResultData.AddResultLog("CASE B:當前流向為 生命流" +
-                                          "\n\n[當前以太值]-<[以太消耗]*[1+\"後手方\"是否有\"近距離遠程方\"+\"後手方\"\n是否有\"已更新按下技能方\"]*" +
+                                          "\n\n[當前以太值]-<[以太消耗]*[1+\"後手方\"是否有\"近距離遠程方\"+\"後手方\"是否有\"已更新按下技能方\"]*" +
                                           "[1-\"後手方\"生命壓制]>\n<此以太消耗為\"最終以太消耗\">" +
                                           "\n\n以太消耗: " + _statePointCost +
                                           "\n\"後手方\"是否有\"近距離遠程方\": " + _nearRangeAttack_value +
+                                          "\n\"後手方\"是否有\"已更新按下技能方\": " + _updatedSkill_value +
                                           "\n後手方 生命流 9.生命壓制：" + _pSL9_ShengMingYaZhi_value);
         }
-
         // CASE C:當前流向為"以太流"
         else if (_improviserCategoryType == CategoryType.State)
         {
@@ -828,19 +828,23 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
              */
             _improviser_BattleResultData.temp_FinalTotalStatePointCost *= (1 - _psE8_JieLiu_PSE9_YouRen_value);
             battleResultData.AddResultLog("CASE C:當前流向為 以太流" +
-                                          "\n\n[當前以太值]-<[以太消耗]*[1+\"後手方\"是否有\"近距離遠程方\"+\"後手方\"\n是否有\"已更新按下技能方\"]*" +
+                                          "\n\n[當前以太值]-<[以太消耗]*[1+\"後手方\"是否有\"近距離遠程方\"+\"後手方\"是否有\"已更新按下技能方\"]*" +
                                           "[1-\"後手方\"節流/游刃]>\n<此以太消耗為\"最終以太消耗\">" +
                                           "\n\n以太消耗: " + _statePointCost +
                                           "\n\"後手方\"是否有\"近距離遠程方\": " + _nearRangeAttack_value +
+                                          "\n\"後手方\"是否有\"已更新按下技能方\": " + _updatedSkill_value +
                                           "\n" + _psE8_JieLiu_PSE9_YouRen_text + _psE8_JieLiu_PSE9_YouRen_value);
         }
         else
         {
             battleResultData.AddResultLog("CASE A:當前流向為 負荷流/無流向" +
-                                          "\n\n[當前以太值]-<[以太消耗]*[1+\"後手方\"是否有\"近距離遠程方\"]>\n<此以太消耗為\"最終以太消耗\">" +
+                                          "\n\n[當前以太值]-<[以太消耗]*[1+\"後手方\"是否有\"近距離遠程方\"]+\"後手方\"是否有\"已更新按下技能方\"]>" +
+                                          "\n<此以太消耗為\"最終以太消耗\">" +
                                           "\n\n以太消耗: " + _statePointCost +
-                                          "\n\"後手方\"是否有\"近距離遠程方\": " + _nearRangeAttack_value);
+                                          "\n\"後手方\"是否有\"近距離遠程方\": " + _nearRangeAttack_value +
+                                          "\n\"後手方\"是否有\"已更新按下技能方\": " + _updatedSkill_value);
         }
+
         _improviser_BattleResultData.temp_FinalTotalStatePointCost = Mathf.Round(_improviser_BattleResultData.temp_FinalTotalStatePointCost);
 
         battleResultData.AddResultLog("最終以太消耗：" + _improviser_BattleResultData.temp_FinalTotalStatePointCost);

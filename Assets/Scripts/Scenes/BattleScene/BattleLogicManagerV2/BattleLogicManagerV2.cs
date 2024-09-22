@@ -34,6 +34,17 @@ public partial class BattleLogicManagerV2
         return gameCharacter.IsInBreakStatus();
     }
 
+    public static bool IsAbleToAssignSkill( GameCharacter gameCharacter )
+    {
+        if (gameCharacter.GetIsInRepulseCommandTime()
+            && gameCharacter.GetHasUpdatedSkillInRepulseCommandTime())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public static bool IsAbleToUseAnySkill( GameCharacter gameCharacter )
     {
         if (IsInBreakStatus( gameCharacter ))
@@ -1253,6 +1264,8 @@ public partial class BattleLogicManagerV2
         {
             GameCharacter _gameCharacter = gameCharacters[ i ];
             _gameCharacter.TriggerEvent( BattleAnimationManager.AnimationEvent.OnTransition );
+            _gameCharacter.SetIsInRepulseCommandTime( false );
+            _gameCharacter.SetHasUpdatedSkillInRepulseCommandTime( false );
             UpdateGameCharacterStatus( ref _battleResultData, _gameCharacter );
             UpdateSkillContinuousEffects( ref _battleResultData, _gameCharacter );
 

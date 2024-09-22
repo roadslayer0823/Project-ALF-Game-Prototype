@@ -245,7 +245,7 @@ public partial class BattleAnimationManager : MonoBehaviour
             if (_improviserAssignedSkill != null
                 && _improviserAssignedSkill.GetSkillData().skillType == SkillType.active)
             {
-                _improviser.SetAssignedSkill( _improviserAssignedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() );
+                _improviser.SetAssignedSkill( _improviserAssignedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill(), false );
             }
 
             // “後手方”發動技能。
@@ -347,13 +347,14 @@ public partial class BattleAnimationManager : MonoBehaviour
             // 指令結束，禁用技能。
             _lead.TriggerEvent( AnimationEvent.OnTransition );
             _improviser.TriggerEvent( AnimationEvent.OnTransition );
+            _improviser.SetIsInRepulseCommandTime( false );
 
             _improviserAssignedSkill = _improviser.GetAssignedSkill();
 
             if (_improviserAssignedSkill != null
               && _improviserAssignedSkill.GetSkillData().skillType == SkillType.active)
             {
-                _improviser.SetAssignedSkill( _improviserAssignedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill() );
+                _improviser.SetAssignedSkill( _improviserAssignedSkill.GetCharacterSubskillData().GetSelectedRepulseSkill(), false );
             }
 
             // “後手方”發動技能。
@@ -1237,7 +1238,6 @@ public partial class BattleAnimationManager : MonoBehaviour
         }
         while (_remainingTime > 0);
 
-        gameCharacter.SetIsInRepulseCommandTime( false );
         this.skillPromptPanel.HideCommandPhase( _isPlayer );
     }
 

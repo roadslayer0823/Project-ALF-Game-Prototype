@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using Skill = DatabaseManager.Skill;
 using Subskill = DatabaseManager.Subskill;
+using CharacterIdentityType = GameCharacter.CharacterIdentityType;
 
 public class SkillSlotV2 : MonoBehaviour
 {
@@ -166,27 +167,36 @@ public class SkillSlotV2 : MonoBehaviour
         this.bottomRowText.SetText("");
     }
 
-    public void SelectSkill()
+    public void SelectSkill( bool isPlayerAction = true )
     {
         if (this.currentStateType == StateType.Enabled
             && !this.isSelected)
         {
             GameCharacter _selectedGameCharacter = null;
             bool _isObservingSkill = this.selectedSkill.GetCharacterSubskillData().GetSubskillData().IsObservingSkill;
+            bool _isAbleToAssignSkill = false;
 
             if (this.activeSkillSlotListPanelV2 != null)
             {
                 _selectedGameCharacter = this.activeSkillSlotListPanelV2.GetSelectedGameCharacter();
-                this.activeSkillSlotListPanelV2.OnSkillSlotSelected(this, true);
-                AudioManager.Instance.PlaySoundEffect(AUDIO_ID_ACTIVE_SKILL_SELECTED);
+                _isAbleToAssignSkill = BattleLogicManagerV2.IsAbleToAssignSkill( _selectedGameCharacter );
+
+                if (_isAbleToAssignSkill)
+                {
+                    AudioManager.Instance.PlaySoundEffect( AUDIO_ID_ACTIVE_SKILL_SELECTED );
+                    this.activeSkillSlotListPanelV2.OnSkillSlotSelected( this, true );
+                }
             }
             else if (this.backendSkillSlotListPanel != null)
             {
                 _selectedGameCharacter = this.backendSkillSlotListPanel.GetSelectedGameCharacter();
-                AudioManager.Instance.PlaySoundEffect(AUDIO_ID_BACKEND_SKILL_SELECTED);
-                if (!_isObservingSkill)
+                _isAbleToAssignSkill = BattleLogicManagerV2.IsAbleToAssignSkill( _selectedGameCharacter );
+
+                if (!_isObservingSkill
+                    && _isAbleToAssignSkill)
                 {
-                    this.backendSkillSlotListPanel.OnSkillSlotSelected(this, true);
+                    AudioManager.Instance.PlaySoundEffect( AUDIO_ID_BACKEND_SKILL_SELECTED );
+                    this.backendSkillSlotListPanel.OnSkillSlotSelected( this, true );
                 }
             }
 
@@ -195,9 +205,9 @@ public class SkillSlotV2 : MonoBehaviour
                 _selectedGameCharacter.SetCurrentObservingSkill( this.selectedSkill, true );
                 SetIsSelected( true );
             }
-            else
+            else if (_isAbleToAssignSkill)
             {
-                _selectedGameCharacter.SetAssignedSkill( this.selectedSkill );
+                _selectedGameCharacter.SetAssignedSkill( this.selectedSkill, isPlayerAction );
             }
         }
     }
