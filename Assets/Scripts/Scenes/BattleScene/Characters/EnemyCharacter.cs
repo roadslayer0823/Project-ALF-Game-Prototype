@@ -16,6 +16,7 @@ public class EnemyCharacter : GameCharacter
     private const float CHANCE_TO_USE_ACTIVE_SKILL = 0.8f;
     private const float CHANCE_TO_USE_DERIVED_SKILL = 0.65f;
     private const float CHANCE_TO_USE_OBSERVED_SKILL = 0.5f;
+    private const float CHANCE_TO_UPDATE_SKILL_IN_REPULSE_COMMAND_TIME = 0.5f;
 
     public void InitializeSelectedSkills()
     {
@@ -515,7 +516,29 @@ public class EnemyCharacter : GameCharacter
             }
             else if (_availableSkillList?.Count > 0)
             {
-                base.SetAssignedSkill( _availableSkillList.GetRandomElement() );
+                if (BattleLogicManagerV2.IsAbleToAssignSkill( this ))
+                {
+                    bool _needToUpdateAssignedSkill = false;
+
+                    CharacterSkill _assignedSkill = base.GetAssignedSkill();
+                    if (base.GetIsInRepulseCommandTime() && _assignedSkill != null)
+                    {
+                        if (Random.value < CHANCE_TO_UPDATE_SKILL_IN_REPULSE_COMMAND_TIME)
+                        {
+                            _needToUpdateAssignedSkill = true;
+                            _availableSkillList.RemoveAll( s => s.GetCharacterSubskillData().GetSubskillData().Id == _assignedSkill.GetCharacterSubskillData().GetSubskillData().Id );
+                        }
+                    }
+                    else
+                    {
+                        _needToUpdateAssignedSkill = true;
+                    }
+
+                    if (_needToUpdateAssignedSkill && _availableSkillList.Count > 0)
+                    {
+                        base.SetAssignedSkill( _availableSkillList.GetRandomElement() );
+                    }
+                }
             }
         }
 

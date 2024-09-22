@@ -892,27 +892,17 @@ public partial class GameCharacter : MonoBehaviour
 
     public void SetAssignedSkill( CharacterSkill assignedSkill, bool isPlayerAction = true )
     {
-        if (this.isInRepulseCommandTime)
-        {
-            if (this.assignedSkill == null)
-            {
-                this.assignedSkill = assignedSkill;
-            }
+        this.assignedSkill = assignedSkill;
 
-            // 在迎擊指令時間的操作
-            if (isPlayerAction && this.isInRepulseCommandTime)
-            {
-                // 得到"已更新按下技能方"
-                AddCharacterIdentityType( CharacterIdentityType.UpdatedSelectedSkill );
-                this.hasUpdatedSkillInRepulseCommandTime = true;
-            }
-
-            this.assignedSkill?.SetHasSkillUpdateIndicator( true ); // Obsolete
-        }
-        else
+        // 在迎擊指令時間的操作
+        if (isPlayerAction && this.isInRepulseCommandTime)
         {
-            this.assignedSkill = assignedSkill;
+            // 得到"已更新按下技能方"
+            AddCharacterIdentityType( CharacterIdentityType.UpdatedSelectedSkill );
+            this.hasUpdatedSkillInRepulseCommandTime = true;
         }
+
+        this.assignedSkill?.SetHasSkillUpdateIndicator( true ); // Obsolete
 
         //Debug.Log("Character: " + characterName);
         //Debug.Log("SetAssignedSkill: " + this.assignedSkill.GetSkillData().Id);

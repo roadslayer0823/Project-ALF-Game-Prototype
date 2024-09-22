@@ -254,13 +254,9 @@ public partial class BattleLogicManagerV2
         CharacterSkill _gameCharacterOne_Skill = gameCharacterOne.GetAssignedSkill();
         CharacterSkill _gameCharacterTwo_Skill = gameCharacterTwo.GetAssignedSkill();
 
-        bool _isGameCharacterOneUsingAttackingSkill = IsAttackingSkill( _gameCharacterOne_Skill );
-        bool _isGameCharacterTwoUsingAttackingSkill = IsAttackingSkill( _gameCharacterTwo_Skill );
-
         Subskill _gameCharacterOne_Skill_SubskillData = null;
-        Subskill _gameCharacterTwo_Skill_SubskillData = null;
 
-        if (_isGameCharacterOneUsingAttackingSkill)
+        if (_gameCharacterOne_Skill != null)
         {
             _gameCharacterOne_Skill_SubskillData = _gameCharacterOne_Skill.GetCharacterSubskillData().GetSubskillData();
 
@@ -270,8 +266,14 @@ public partial class BattleLogicManagerV2
 
             resultLogList.Add( _logOne );
         }
+        else
+        {
+            resultLogList.Add( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterOne.GetCharacterName() }</color>沒有按下技能。" );
+        }
 
-        if (_isGameCharacterTwoUsingAttackingSkill)
+        Subskill _gameCharacterTwo_Skill_SubskillData = null;
+
+        if (_gameCharacterTwo_Skill != null)
         {
             _gameCharacterTwo_Skill_SubskillData = _gameCharacterTwo_Skill.GetCharacterSubskillData().GetSubskillData();
 
@@ -281,6 +283,13 @@ public partial class BattleLogicManagerV2
 
             resultLogList.Add( _logTwo );
         }
+        else
+        {
+            resultLogList.Add( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ gameCharacterTwo.GetCharacterName() }</color>沒有按下技能。" );
+        }
+
+        bool _isGameCharacterOneUsingAttackingSkill = IsAttackingSkill( _gameCharacterOne_Skill );
+        bool _isGameCharacterTwoUsingAttackingSkill = IsAttackingSkill( _gameCharacterTwo_Skill );
 
         // 如果雙方都有按下主動技能或反擊技能：
         if (_isGameCharacterOneUsingAttackingSkill && _isGameCharacterTwoUsingAttackingSkill)
