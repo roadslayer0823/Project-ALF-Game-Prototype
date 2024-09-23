@@ -13,7 +13,7 @@ public partial class BattleAnimationManager: MonoBehaviour
         AnimationParameterData _animationParameterData = null;
         AnimationParameterData _extraAnimationParameterData = null;
 
-        BattleDistanceManager _battleDistanceManager = this.battleGameManager.GetBattleDistanceManager();
+        BattleDistanceManager.DistanceType _battleDistanceManager = this.battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType();
         string _getLastATLSkill = null;
         string _getCurrentSkill = null;
         Subskill _playerOne_SubskillData = null;
@@ -81,15 +81,15 @@ public partial class BattleAnimationManager: MonoBehaviour
             //己方為先手方
             if (playerOne.HasCharacterIdentityType( CharacterIdentityType.Lead ))
             {
-                //"己方"已按下技能是否遠程 ?
-                if (_playerOne_SubskillData.Range == RangeType.ranged)
+                //己方是否"中距離近戰方"&已按下技能有"vc演出" ?
+                if (playerOne.HasCharacterIdentityType(CharacterIdentityType.NormalDistanceMeleeDealer) && _playerOne_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("VC"))
+                {
+                    _animationParameterData = new AnimationParameterData(false, true, CodeType.camA_type_BDVC, _playerOne_SubskillId, _playerOne_AnimationType);
+                }
+                //當前距離是否[中距離]或[遠距離] ?
+                else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 {
                     _animationParameterData = new AnimationParameterData(false, true, CodeType.camA_type_BDV1, _playerOne_SubskillId, _playerOne_AnimationType);
-                }
-                //己方是否"中距離近戰方"&已按下技能有"vc演出" ?
-                else if (playerOne.HasCharacterIdentityType( CharacterIdentityType.NormalDistanceMeleeDealer ) && _playerOne_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("VC"))
-                {
-                    _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BDVC, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
                 //已按下技能是否與上1ATL 相同 & 上1ATL播放了"v1演出" & 有"v2演出" ?
                 else if (_playerOne_CharacterAnimationHandler.CheckIfSameAsLastATLCodeType( "V1" ) && _playerOne_CharacterAnimationHandler.CheckIfAnyAnimationCodeTypeForCurrentSkillHasKeyword("V2")
@@ -105,8 +105,8 @@ public partial class BattleAnimationManager: MonoBehaviour
             //己方為後手方
             else if (playerOne.HasCharacterIdentityType( CharacterIdentityType.Improviser ))
             {
-                //"己方"已按下技能是否遠程 ?
-                if (_playerOne_SubskillData.Range == RangeType.ranged)
+                //當前距離是否[中距離]或[遠距離] ?
+                if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 {
                     //己方是否"近距離遠程方" ?
                     if (playerOne.HasCharacterIdentityType(CharacterIdentityType.NearDistanceRangedDealer))
@@ -154,8 +154,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                     {
                         _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AVC, _playerOne_SubskillId, _playerOne_AnimationType );
                     }
-                    //"己方"已按下技能是否遠程 ?
-                    else if(_playerOne_SubskillData.Range == RangeType.ranged)
+                    //當前距離是否[中距離]或[遠距離] ?
+                    else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                     {
                         _animationParameterData = new AnimationParameterData(false, true, CodeType.camA_type_AV1, _playerOne_SubskillId, _playerOne_AnimationType);
                     }
@@ -175,8 +175,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 {
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BDVC, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
-                //"己方"已按下技能是否遠程 ?
-                else if(_playerOne_SubskillData.Range == RangeType.ranged)
+                //當前距離是否[中距離]或[遠距離] ?
+                else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 {
                     _animationParameterData = new AnimationParameterData(false, true, CodeType.camA_type_BDV1, _playerOne_SubskillId, _playerOne_AnimationType);
                 }
@@ -199,8 +199,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                     _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camB_type_CFW, _playerOne_SubskillId, _playerOne_AnimationType );
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_AVC, _playerOne_SubskillId, _playerOne_AnimationType );
                 }
-                //"己方"已按下技能是否遠程 ?
-                else if(_playerOne_SubskillData.Range == RangeType.ranged)
+                //當前距離是否[中距離]或[遠距離] ?
+                else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 {
                     //是否有強度負方&雙方已按下技能是"遠程" ?
                     if ((playerOne.HasCharacterIdentityType(CharacterIdentityType.StrengthLoser) || playerTwo.HasCharacterIdentityType(CharacterIdentityType.StrengthLoser)) &&
@@ -282,8 +282,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                         _animationParameterData = new AnimationParameterData( false, true, CodeType.camA_type_BLPVC_H, _playerOne_SubskillId, _playerOne_AnimationType );
                     }
                 }
-                //"己方"已按下技能是否遠程 ?
-                else if (_playerOne_SubskillData.Range == RangeType.ranged)
+                //當前距離是否[中距離]或[遠距離] ?
+                else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 {
                     //己方是否"輕受擊方" ?
                     if (playerOne.HasCharacterIdentityType(CharacterIdentityType.LightRecipient))
@@ -360,8 +360,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 //己方是否"速度負方" /"速度強度負方" ?
                 else if (playerOne.HasCharacterIdentityType(CharacterIdentityType.SpeedLoser) || playerOne.HasCharacterIdentityType(CharacterIdentityType.SpeedStrengthLoser))
                 {
-                    //"己方"已按下技能是否遠程 ?
-                    if (_playerOne_SubskillData.Range == RangeType.ranged)
+                    //當前距離是否[中距離]或[遠距離] ?
+                    if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                     {
                         //己方是否"輕受擊方" ?
                         if (playerOne.HasCharacterIdentityType(CharacterIdentityType.LightRecipient))
@@ -423,8 +423,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                         _animationParameterData = new AnimationParameterData(true, true, CodeType.camB_type_CLSV1_H, _playerOne_SubskillId, _playerOne_AnimationType);
                     }
                 }
-                //"己方"已按下技能是否遠程 ?
-                else if (_playerOne_SubskillData.Range == RangeType.ranged)
+                //當前距離是否[中距離]或[遠距離] ?
+                else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 {
                     //己方是否"輕受擊方" ?
                     if (playerOne.HasCharacterIdentityType(CharacterIdentityType.LightRecipient))
@@ -495,7 +495,7 @@ public partial class BattleAnimationManager: MonoBehaviour
         AnimationParameterData _animationParameterData = null;
         AnimationParameterData _extraAnimationParameterData = null;
 
-        BattleDistanceManager _battleDistanceManager = this.battleGameManager.GetBattleDistanceManager();
+        BattleDistanceManager.DistanceType _battleDistanceManager = this.battleGameManager.GetBattleDistanceManager().GetCurrentDistanceType();
         string _getLastATLSkill = null;
         string _getCurrentSkill = null;
         Subskill _playerOne_SubskillData = null;
@@ -569,8 +569,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 {
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BDVC, _playerTwo_SubskillId, _playerTwo_AnimationType );
                 }
-                //"敵方"已按下技能是否遠程 ?
-                else if(_playerTwo_SubskillData.Range == RangeType.ranged)
+                //當前距離是否[中距離]或[遠距離] ?
+                else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 {
                     _animationParameterData = new AnimationParameterData(false, true, CodeType.camB_type_BDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
                 }
@@ -590,8 +590,8 @@ public partial class BattleAnimationManager: MonoBehaviour
             // 敵方為後手方
             else if (playerTwo.HasCharacterIdentityType( CharacterIdentityType.Improviser ))
             {
-                //"敵方"已按下技能是否遠程 ?
-                if (_playerTwo_SubskillData.Range == RangeType.ranged)
+                //當前距離是否[中距離]或[遠距離] ?
+                if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 {
                     // 敵方是否"近距離遠程方"?
                     // YES
@@ -646,8 +646,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                     {
                         _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_AVC, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     }
-                    //"敵方"已按下技能是否遠程 ?
-                    else if(_playerTwo_SubskillData.Range == RangeType.ranged)
+                    //當前距離是否[中距離]或[遠距離] ?
+                    else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                     {
                         _animationParameterData = new AnimationParameterData(false, true, CodeType.camB_type_AV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
                     }
@@ -672,8 +672,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 {
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BDVC, _playerTwo_SubskillId, _playerTwo_AnimationType );
                 }
-                //"敵方"已按下技能是否遠程 ?
-                else if(_playerTwo_SubskillData.Range == RangeType.ranged)
+                //當前距離是否[中距離]或[遠距離] ?
+                else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 {
                     _animationParameterData = new AnimationParameterData(false, true, CodeType.camB_type_BDV1, _playerTwo_SubskillId, _playerTwo_AnimationType);
                 }
@@ -700,8 +700,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                     _extraAnimationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CFW, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_AVC, _playerTwo_SubskillId, _playerTwo_AnimationType );
                 }
-                //"敵方"已按下技能是否遠程 ?
-                else if(_playerTwo_SubskillData.Range == RangeType.ranged)
+                //當前距離是否[中距離]或[遠距離] ?
+                else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 {
                     // 是否有強度負方&雙方已按下技能是"遠程"?
                     // YES
@@ -800,8 +800,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                         _animationParameterData = new AnimationParameterData( false, true, CodeType.camB_type_BLPVC_H, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     }
                 }
-                //"敵方"已按下技能是否遠程 ?
-                else if(_playerTwo_SubskillData.Range == RangeType.ranged)
+                //當前距離是否[中距離]或[遠距離] ?
+                else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 { 
                     // 敵方是否"輕受擊方"?
                     // YES
@@ -896,8 +896,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                 // YES
                 else if (playerTwo.HasOneOfCharacterIdentityTypes( new CharacterIdentityType[] { CharacterIdentityType.SpeedLoser, CharacterIdentityType.SpeedStrengthLoser } ))
                 {
-                    //"敵方"已按下技能是否遠程 ?
-                    if (_playerTwo_SubskillData.Range == RangeType.ranged)
+                    //當前距離是否[中距離]或[遠距離] ?
+                    if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                     {
                         // 敵方是否"輕受擊方"?
                         // YES
@@ -972,8 +972,8 @@ public partial class BattleAnimationManager: MonoBehaviour
                         _animationParameterData = new AnimationParameterData( true, true, CodeType.camA_type_CLSV1_H, _playerTwo_SubskillId, _playerTwo_AnimationType );
                     }
                 }
-                //"敵方"已按下技能是否遠程 ?
-                else if(_playerTwo_SubskillData.Range == RangeType.ranged)
+                //當前距離是否[中距離]或[遠距離] ?
+                else if (_battleDistanceManager == BattleDistanceManager.DistanceType.Normal || _battleDistanceManager == BattleDistanceManager.DistanceType.Far)
                 {
                     // 敵方是否"輕受擊方"?
                     // YES
