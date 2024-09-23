@@ -36,7 +36,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         string _PSL5_XunHuanLi = "5.循環力";
         string _PSL1_HuoXin = "1.活性";
         string _PSL12_ShengShengBuXi = "12.生生不息";
-        string _PSE1_GaoYang = "1.高陽";
+        string _PSE1_GaoYang = "1.高揚";
         string _PSE7_FuHeLiuZhuan2 = "7.負荷流轉2";
         string _PSS1_JieYa = "1.解壓";
         string _gameCharacterCurrentPassiveSkill;
