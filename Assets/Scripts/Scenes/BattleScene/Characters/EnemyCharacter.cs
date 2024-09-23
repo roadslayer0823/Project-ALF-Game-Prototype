@@ -330,55 +330,64 @@ public class EnemyCharacter : GameCharacter
 
         // ----------------------------------------------------------------------------------------------------
         // For Debug Mode Only
-
-        int _currentATLNumber = battleGameManager.GetBattleFlowManager_V2().GetCurrentRound().GetCurrentATL().GetATLNumber();
-        if (_currentATLNumber != this.lastAtlNumber && this.nextAtlSkill != null)
+        
+        if(this.nextAtlSkill != null)
         {
+            int _currentATLNumber = battleGameManager.GetBattleFlowManager_V2().GetCurrentRound().GetCurrentATL().GetATLNumber();
             Skill _skillData = this.nextAtlSkill.GetSkillData();
 
             if (_skillData.skillType is SkillType.repulse && _skillTypeList.Contains(BattleSkillManager.SkillType.Repulse))
             {
-                _skillTypeList.Remove(BattleSkillManager.SkillType.Active);
-                base.SetAssignedSkill(this.nextAtlSkill);
-                this.isUsingNextAtlSkill = true;
+                if (_currentATLNumber != this.lastAtlNumber)
+                {
+                    _skillTypeList.Remove(BattleSkillManager.SkillType.Active);
+                    this.isUsingNextAtlSkill = true;
+                }
             }
             else if (_skillData.skillType is SkillType.derived)
             {
-                this.nextAtlDeriveSkill = this.nextAtlSkill;
+                this.isUsingNextAtlSkill = true;
             }
             else
             {
-                base.SetAssignedSkill(this.nextAtlSkill);
-                this.isUsingNextAtlSkill = true;
+                if (_currentATLNumber != this.lastAtlNumber)
+                {
+                    this.isUsingNextAtlSkill = true;
+                }
             }
-            this.nextAtlSkill = null;
-            return;
-        }
 
-        if (this.isUsingNextAtlSkill)
-        {
-            CharacterSkill _assignedSkill = base.GetAssignedSkill();
-            if (_assignedSkill != null)
+            if(this.isUsingNextAtlSkill)
             {
-                CharacterSubskill _assignedSkillCharacterSubskillData = _assignedSkill.GetCharacterSubskillData();
-
-                if (_skillTypeList.Contains( BattleSkillManager.SkillType.Repulse ))
-                {
-                    base.SetAssignedSkill( _assignedSkillCharacterSubskillData.GetSelectedRepulseSkill() );
-                    return;
-                }
-                else if (_skillTypeList.Contains( BattleSkillManager.SkillType.Derive ))
-                {
-                    base.SetAssignedSkill( _assignedSkillCharacterSubskillData.GetSelectedDerivedSkill() );
-                    return;
-                }
-                else if (_skillTypeList.Contains( BattleSkillManager.SkillType.Counter ))
-                {
-                    base.SetAssignedSkill( _assignedSkillCharacterSubskillData.GetSelectedCounterSkill() );
-                    return;
-                }
-            }
+                base.SetAssignedSkill(this.nextAtlSkill);
+                this.nextAtlSkill = null;
+                return;
+            }            
         }
+        
+        //if (this.isUsingNextAtlSkill)
+        //{
+        //    CharacterSkill _assignedSkill = base.GetAssignedSkill();
+        //    if (_assignedSkill != null)
+        //    {
+        //        CharacterSubskill _assignedSkillCharacterSubskillData = _assignedSkill.GetCharacterSubskillData();
+
+        //        if (_skillTypeList.Contains( BattleSkillManager.SkillType.Repulse ))
+        //        {
+        //            base.SetAssignedSkill( _assignedSkillCharacterSubskillData.GetSelectedRepulseSkill() );
+        //            return;
+        //        }
+        //        else if (_skillTypeList.Contains( BattleSkillManager.SkillType.Derive ))
+        //        {
+        //            base.SetAssignedSkill( _assignedSkillCharacterSubskillData.GetSelectedDerivedSkill() );
+        //            return;
+        //        }
+        //        else if (_skillTypeList.Contains( BattleSkillManager.SkillType.Counter ))
+        //        {
+        //            base.SetAssignedSkill( _assignedSkillCharacterSubskillData.GetSelectedCounterSkill() );
+        //            return;
+        //        }
+        //    }
+        //}
 
         // ----------------------------------------------------------------------------------------------------
 
