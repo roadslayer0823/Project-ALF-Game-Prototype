@@ -1123,7 +1123,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                  */
                 if (gameCharacterOne.HasCategorizedPassiveSkill(PASSIVE_SKILL_ID_PSS10, out PassiveSkill _passiveSkill))
                 {
-                    battleResultData.AddResultLog("\"己方\"負荷等級>=2 &\n\"己方\"負荷值 <= \"對方\"負荷值30\n\n" +
+                    battleResultData.AddResultLog("\"己方\"負荷等級>=2 &\n\"己方\"負荷值 <= \"對方\"負荷值30\n" +
                                                   "\n\"己方\"負荷值: " + _gameCharacterOne_BattleResultData.currentStatePoint +
                                                   "\n\"對方\"負荷值: " + _gameCharacterTwo_BattleResultData.currentStatePoint +
                                                   "\n\"己方\" 發動 負荷流 10.負荷壓制\n\"己方\" 得到 \"無視追風角力激昂方\"");
@@ -1147,7 +1147,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                      * "己方"發動
                         追風
                      */
-                    battleResultData.AddResultLog("\"己方\"已按下技能的速度<\"對方\"已按下技能的速度\n\n" +
+                    battleResultData.AddResultLog("\"己方\"已按下技能的速度<\"對方\"已按下技能的速度\n" +
                                                   "\n\"己方\"已按下技能的速度: " + _gameCharacterOne_SkillSpeed +
                                                   "\n\"對方\"已按下技能的速度: " + _gameCharacterTwo_SkillSpeed +
                                                   "\n\"己方\" 發動 負荷流 2.追風\n[負荷值] +[10]");
