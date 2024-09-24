@@ -457,6 +457,10 @@ public partial class BattleAnimationManager : MonoBehaviour
 
             ShowCasterCurrentSkillInfo( _improviser );
         }
+        else
+        {
+            BattleLog.Instance.AddOnScreenBattleLog( $"<color={ BattleLog.KEYWORD_COLOR_CODE }>{ _improviser.GetCharacterName() }</color>沒有使出技能。" );
+        }
 
         // 進入 Part B 階段。
         StartPartB( out _battleResultData, _lead, _improviser, true, out GameCharacter _winner, out GameCharacter _loser );
