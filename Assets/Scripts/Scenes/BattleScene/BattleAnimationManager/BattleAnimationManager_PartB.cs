@@ -204,7 +204,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 {
                     //是否有強度負方&雙方已按下技能是"遠程" ?
                     if ((playerOne.HasCharacterIdentityType(CharacterIdentityType.StrengthLoser) || playerTwo.HasCharacterIdentityType(CharacterIdentityType.StrengthLoser)) &&
-                    (_playerOne_CurrentSkill.GetCurrentRangeType() == RangeType.ranged && _playerOne_CurrentSkill.GetCurrentRangeType() == RangeType.ranged))
+                    (_playerOne_CurrentSkill.GetCurrentRangeType() == RangeType.ranged && _playerTwo_CurrentSkill.GetCurrentRangeType() == RangeType.ranged))
                     {
                         //己方是否"近距離遠程方" ?
                         if (playerOne.HasCharacterIdentityType(CharacterIdentityType.NearDistanceRangedDealer))
@@ -237,7 +237,7 @@ public partial class BattleAnimationManager: MonoBehaviour
                 }
                 //是否有強度負方&雙方已按下技能是"遠程" ?
                 else if (( playerOne.HasCharacterIdentityType( CharacterIdentityType.StrengthLoser ) || playerTwo.HasCharacterIdentityType( CharacterIdentityType.StrengthLoser ) ) &&
-                    (_playerOne_CurrentSkill.GetCurrentRangeType() == RangeType.ranged && _playerOne_CurrentSkill.GetCurrentRangeType() == RangeType.ranged))
+                    (_playerOne_CurrentSkill.GetCurrentRangeType() == RangeType.ranged && _playerTwo_CurrentSkill.GetCurrentRangeType() == RangeType.ranged))
                 {
                     //己方是否"近距離遠程方" ?
                     if (playerOne.HasCharacterIdentityType( CharacterIdentityType.NearDistanceRangedDealer ))
