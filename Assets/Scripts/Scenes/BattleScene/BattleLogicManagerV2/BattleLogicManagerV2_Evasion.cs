@@ -43,8 +43,8 @@ public partial class BattleLogicManagerV2
         // 後手方回避失敗
         if(_lead_BattleResultData.currentSkillSpeed > _improviser_BattleResultData.currentSkillSpeed)
         {
-            // 先手方得到"重直擊方"
-            lead.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
+            // 先手方得到"重直擊方"&"速度勝方"
+            lead.AddCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.HeavyAssaulter, CharacterIdentityType.SpeedWinner });
 
             // 後手方得到"受擊方"&"重受擊方"&"速度負方"
             improviser.AddCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.HeavyRecipient,CharacterIdentityType.SpeedLoser });
