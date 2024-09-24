@@ -46,8 +46,8 @@ public partial class BattleLogicManagerV2
             // 先手方得到"重直擊方"
             lead.AddCharacterIdentityType(GameCharacter.CharacterIdentityType.HeavyAssaulter);
 
-            // 後手方得到"受擊方"&"重受擊方"
-            improviser.AddCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.HeavyRecipient });
+            // 後手方得到"受擊方"&"重受擊方"&"速度負方"
+            improviser.AddCharacterIdentityTypes(new CharacterIdentityType[] { CharacterIdentityType.Recipient, CharacterIdentityType.HeavyRecipient,CharacterIdentityType.SpeedLoser });
 
             // 重直擊方：lead
             // 重受擊方：improviser
