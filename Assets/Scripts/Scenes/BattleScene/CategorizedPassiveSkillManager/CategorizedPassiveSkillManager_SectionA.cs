@@ -603,14 +603,14 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             //["抵抗成功方"當前以太值]-<["平手方"回避壓力]*[1+n]
             _stressEvasionCost = _deuceEvasionStress * (1 + _activatingFirstPassiveSkill);
             _formula = "[抵抗成功方當前以太值]-<[平手方回避壓力]*[1 + （9.生命壓制 或者 11.負荷壓制2）]";
-            _currentActivatingSkill = "已使用的流向技能:" + _currentFirstSkillString;
+            _currentActivatingSkill = _currentFirstSkillString;
         }
         else if (successfulResisterPassiveSkillType == CategoryType.Life)
         {
             //["抵抗成功方"當前以太值]-<["平手方"回避壓力]*[1+n]*[1-n]
             _stressEvasionCost = _deuceEvasionStress * (1 + _activatingFirstPassiveSkill) * (1 - _skill_PSL9_ShenMingYaZhi_ZeroPointFive);
             _formula = "[抵抗成功方當前以太值]-<[平手方回避壓力]*[1 + （9.生命壓制 或者 11.負荷壓制2）] * [1 - 9.生命壓制]";
-            _currentActivatingSkill = "已使用的流向技能:" + _currentFirstSkillString + "\n" + _isPSL9;
+            _currentActivatingSkill = _currentFirstSkillString + "\n" + _isPSL9;
         }
         else if (successfulResisterPassiveSkillType == CategoryType.State)
         {
@@ -618,7 +618,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
             
             _stressEvasionCost = _deuceEvasionStress * (1 + _activatingFirstPassiveSkill) * (1 - _skill_PSE8_PSE9_JieLiu_YouRen);
             _formula = "[抵抗成功方當前以太值]-<[平手方回避壓力]*[1 + （9.生命壓制（平手方） 或者 11.負荷壓制2）] * [1 - " + _JieLiu_YouRen + "（抵抗成功方）]";
-            _currentActivatingSkill = "已使用的流向技能:" + _currentFirstSkillString + "\n" +_JieLiu_YouRen;
+            _currentActivatingSkill = _currentFirstSkillString + "\n" +_JieLiu_YouRen;
         }
         battleResultData.AddGameCharacterResultData_StatePointCost(successfulResister, _stressEvasionCost, out _);
         successfulResisterData.temp_StressEvasionCost = _stressEvasionCost;
@@ -626,7 +626,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
         _successfulResisterString = "當前身份:" + _currentIdentity + "\n" +
                                     "當前流向:" + _successfulResisterCurrentPassiveSkill + "\n" +
                                     "當前以太值=" + successfulResisterData.currentStatePoint + "\n" +
-                                    _currentActivatingSkill;
+                                    "已使用的流向技能:" + _currentActivatingSkill;
 
         _deuceString              = "當前身份:" + _currentIdentity + "\n" +
                                     "當前流向:" + _deuceCurrentPassiveSkill + "\n" +
@@ -1096,7 +1096,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                            "當前負荷值=" + gameCharacter.GetCurrentStressValue() + "\n" +
                                            "能量殘響=" + gameCharacterOneEnergyMarker + "\n" +
                                            "負荷抗性=" + gameCharacterStressResistance + "\n" +
-                                           _activatingPassiveSkillString + "\n" +
+                                           "已使用的流向技能:" + _activatingPassiveSkillString + "\n" +
                                            "6.負荷流轉=" + skill_PSE6_FuHeLiuZhuan + "\n" +
                                            "12.逆風=" + skill_PSE12_NiFeng;
 
@@ -1120,7 +1120,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                            "當前負荷值=" + gameCharacter.GetCurrentStressValue() + "\n" +
                                            "能量殘響=" + gameCharacterOneEnergyMarker + "\n" +
                                            "負荷抗性=" + gameCharacterStressResistance + "\n" +
-                                           _activatingPassiveSkillString + "\n" +
+                                           "已使用的流向技能:" + _activatingPassiveSkillString + "\n" +
                                            "3.化勁=" + skill_PSS3_HuaJing + "\n" +
                                            "9.行雲流水=" + skill_PSS9_XingYunLiuShui;
 
@@ -1142,7 +1142,7 @@ public partial class CategorizedPassiveSkillManager : MonoBehaviour
                                           "當前負荷值=" + gameCharacter.GetCurrentStressValue() + "\n" +
                                           "能量殘響=" + gameCharacterOneEnergyMarker + "\n" +
                                           "負荷抗性=" + gameCharacterStressResistance + "\n" +
-                                          _activatingPassiveSkillString + "\n";
+                                          "已使用的流向技能:" + _activatingPassiveSkillString + "\n";
 
             _opponentFinalString = _opponentCurrentIdentity + ":" + opponent.GetCharacterName() + "\n" +
                                          "當前流向:" + _opponentCurrentPassiveSkill + "\n" +
