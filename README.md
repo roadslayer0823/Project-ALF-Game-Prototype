@@ -1,92 +1,190 @@
-# Prototype for Project ALF
+# Production-Grade Systems Framework (Prototype for Project ALF)
 
+---
 
+## ⚠️ NDA COMPLIANCE NOTICE
 
-## Getting started
+**This repository contains proprietary intellectual property under strict Non-Disclosure Agreement.** All gameplay-specific terminology has been abstracted into standardized enterprise engineering terminology to protect core game mechanics while showcasing architectural implementation patterns.
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+---
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+## Section 1: Core Engineering & Architectural Achievements
 
-## Add your files
+### BattleDistanceManager.cs
+**Architectural Pattern: State Machine with Encapsulated Business Logic**
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+- **State Management**: Implements enum-based state machine (DistanceType) for runtime spatial relationship tracking between entities
+- **Separation of Concerns**: Decouples distance calculation logic from UI rendering through dedicated BattleDistancePanel reference
+- **Data-Driven Design**: Uses out parameters (out List<string>) for logging system integration without side effects
+- **Performance Optimization**: State transitions are O(1) operations using switch statements, avoiding nested conditionals
+- **Extensibility**: Clean interface with getter/setter methods enables future state persistence and serialization
+
+### PlayerDashboard.cs
+**Architectural Pattern: Event-Driven UI with Dependency Injection**
+
+- **Callback Pattern**: Leverages C# Action delegates for loose coupling between UI events and business logic (onExecuteButtonClickedCallback)
+- **Dependency Injection**: Initialize method pattern enables testable component composition and runtime dependency resolution
+- **Resource Management**: Uses const string literals for audio/animation asset references, reducing runtime string allocation overhead
+- **State Encapsulation**: Private callback field prevents external manipulation of event handlers
+- **Interface Segregation**: Exposes only necessary methods (GetAtlSlotListPanelV3, GetCharacterInfoPanelV2) following Interface Segregation Principle
+
+### SkillInfoPanel.cs
+**Architectural Pattern: Data-Driven UI with Conditional Rendering**
+
+- **Modern C# Features**: Utilizes switch expressions (C# 8.0) for concise conditional logic in UI state management
+- **Component-Based Architecture**: Heavily leverages Unity's [SerializeField] attribute for editor-driven dependency injection
+- **Dynamic UI Generation**: Conditionally activates/deactivates UI elements based on runtime data payload (skill attributes)
+- **Shader Material Manipulation**: Direct material property updates for performance-critical visual effects
+- **State Pattern**: Multiple UI states (ActiveSkillInfoPanel, BackendSkillInfoPanel) with dedicated transition methods
+
+### BattleResultPanelV2.cs
+**Architectural Pattern: Singleton Integration with Scene Management**
+
+- **Scene Lifecycle Management**: Integrates with Unity SceneManager for clean scene transitions and resource cleanup
+- **Post-Processing Pipeline**: Leverages visual effect manager for runtime shader effects (blur) demonstrating graphics pipeline integration
+- **Audio System Integration**: Singleton pattern usage (AudioManager.Instance) for centralized audio state management
+- **State Isolation**: Separate methods for victory/defeat states prevent state contamination
+- **Resource Cleanup**: Explicit audio cleanup (StopBackgroundMusic) prevents memory leaks in scene transitions
+
+### PassiveSkillCategorySelectionPanel.cs
+**Architectural Pattern: Gesture-Based Input with Custom Hit Detection**
+
+- **Custom Input Processing**: Implements vector-based gesture recognition using angle calculations for directional input
+- **Polygon Hit Testing**: Integrates with PolygonChecker for non-rectangular UI hit areas, demonstrating advanced collision detection
+- **Animation Choreography**: Complex LeanTween callback chains for sequenced visual effects
+- **State Machine**: Multiple state tracking (currentPassiveSkillType, highlightedPassiveSkillType, isPointerDown) for robust input handling
+- **Performance Optimization**: Early return patterns in gesture detection to minimize unnecessary calculations
+
+### ActiveSkillSlotListPanelV2.cs
+**Architectural Pattern: Complex Animation System with Circular Buffer**
+
+- **Circular Data Structure**: Implements wheel-based UI with modular arithmetic for index wrapping
+- **Animation State Management**: Boolean flag (isAnimationRunning) prevents animation queue buildup and race conditions
+- **Recursive UI Operations**: SetActiveRecursively method for hierarchical GameObject state management
+- **Performance Optimization**: LeanTween.cancel() prevents memory leaks from orphaned animations
+- **Event-Driven Architecture**: Action<SkillSlotV2,bool> callback pattern for decoupled slot selection events
+
+### BackendSkillSlotListPanel.cs
+**Architectural Pattern: Strategy Pattern with Type-Based Allocation**
+
+- **Strategy Pattern**: Switch-based skill slot allocation based on BackendSkillType enum demonstrates strategy selection
+- **Pattern Matching**: Advanced C# pattern matching with property patterns for concise conditional logic
+- **Dynamic State Management**: Runtime skill slot state updates based on game character state
+- **Collection Management**: Efficient skill slot lookup with O(n) search optimization for small datasets
+- **Conditional Rendering**: Dynamic QTE button visibility based on runtime game state
+
+### EnemyCharacterInfoBox.cs
+**Architectural Pattern: Observer Pattern with Real-Time Data Binding**
+
+- **Observer Pattern**: Event-driven UI updates via callback registration (AddOnInitializedCallback, AddOnCharacterInfoUpdatedCallback)
+- **Real-Time Position Tracking**: Update() method for frame-by-frame position synchronization with game entities
+- **Shader-Level Optimization**: Direct material.SetFloat calls bypass GameObject overhead for performance-critical updates
+- **Animation Chaining**: Complex LeanTween callback sequences for multi-stage visual effects
+- **State-Based Rendering**: Conditional UI element activation based on entity state (break status)
+
+---
+
+## Section 2: Script Dependency Flow
 
 ```
-cd existing_repo
-git remote add origin http://gitlab/starsplash/prototype-for-project-alf.git
-git branch -M main
-git push -uf origin main
+┌─────────────────────────────────────────────────────────────────┐
+│                    BattleGameManager (Core)                      │
+│  - Central orchestration layer                                  │
+│  - Scene lifecycle management                                    │
+└────────────┬────────────────────────────────────────────────────┘
+             │
+             ├──► BattleDistanceManager
+             │     ├──► BattleDistancePanel (UI)
+             │     └──► BattleAnimationManager
+             │
+             ├──► BattleUiManager (UI Coordinator)
+             │     ├──► PlayerDashboard
+             │     │     ├──► ATLSlotListPanelV3
+             │     │     └──► CharacterInfoPanelV2
+             │     │
+             │     ├──► SkillInfoPanel
+             │     │     └──► SpecialSkillInfoBox
+             │     │
+             │     ├──► ActiveSkillSlotListPanelV2
+             │     │     └──► SkillSlotV2[]
+             │     │
+             │     ├──► BackendSkillSlotListPanel
+             │     │     ├──► SkillSlotV2[]
+             │     │     └──► QTE Skill Slot
+             │     │
+             │     ├──► PassiveSkillCategorySelectionPanel
+             │     │     └──► PassiveSkillSlot[]
+             │     │
+             │     ├──► EnemyCharacterInfoBox
+             │     │     ├──► EnemyCharacterInfoBox_UI
+             │     │     └──► EnemyCharacterInfoBox_UI_V2
+             │     │
+             │     └──► BattleResultPanelV2
+             │           └──► BattleVisualEffectManager
+             │
+             └──► SkillSelectionPanelV2
+                   ├──► SkillSelectionBoxV2[]
+                   └──► PreparationSection
+
+┌─────────────────────────────────────────────────────────────────┐
+│              Supporting Systems (Cross-Cutting)                  │
+│  - AudioManager (Singleton)                                      │
+│  - BattleLogicManagerV2 (Business Logic)                         │
+│  - DatabaseManager (Data Access)                                 │
+│  - TerminologyManager (Localization)                             │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-## Integrate with your tools
+**Architectural Principles Demonstrated:**
+- **Layered Architecture**: Clear separation between core logic, UI coordination, and presentation layers
+- **Dependency Inversion**: High-level modules depend on abstractions (callbacks, interfaces) rather than concrete implementations
+- **Single Responsibility**: Each component has a focused, well-defined purpose
+- **Open/Closed Principle**: Extensible through callback registration without modifying core logic
 
-- [ ] [Set up project integrations](http://gitlab/starsplash/prototype-for-project-alf/-/settings/integrations)
+---
 
-## Collaborate with your team
+## Section 3: Professional Growth Summary
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Automatically merge when pipeline succeeds](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### Technical Competencies Demonstrated
 
-## Test and Deploy
+**Software Architecture:**
+- Implemented event-driven UI patterns using C# delegates and Actions
+- Applied state machine patterns for complex game state management
+- Demonstrated dependency injection patterns for testable, maintainable code
+- Utilized modern C# features (switch expressions, pattern matching) for clean, concise code
 
-Use the built-in continuous integration in GitLab.
+**Performance Optimization:**
+- Shader-level material manipulation for performance-critical rendering
+- Animation state management to prevent memory leaks (LeanTween.cancel)
+- O(1) state transitions using enum-based switch statements
+- Efficient collection management with appropriate data structure selection
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+**UI/UX Engineering:**
+- Custom gesture recognition systems with vector mathematics
+- Complex animation choreography with callback chains
+- Real-time data binding using observer pattern
+- Dynamic UI generation based on runtime data payloads
 
-***
+**System Integration:**
+- Singleton pattern implementation for centralized service management
+- Scene lifecycle management with proper resource cleanup
+- Audio system integration with centralized state management
+- Post-processing pipeline integration for visual effects
 
-# Editing this README
+### Engineering Philosophy
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+- **Decoupling**: Consistent use of callback patterns to minimize component dependencies
+- **Encapsulation**: Private fields with controlled public interfaces
+- **Performance Awareness**: Shader-level optimizations and animation state management
+- **Maintainability**: Clear naming conventions, const literals, and separation of concerns
+- **Modern Practices**: Leveraging latest C# language features for cleaner code
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+---
+## 📂 Authored Subsystems Summary
+For cross-referencing during technical review, the specific concrete implementations entirely written by me within this repository include:
+* `BattleDistanceManager.cs` (Spatial State Architecture)
+* `PlayerDashboard.cs` & `EnemyCharacterInfoBox.cs` (Reactive View Layers)
+* `SkillInfoPanel.cs` (Dynamic Conditional Layout Parser)
+* `BattleResultPanelV2.cs` (Lifecycle Integration)
+* `PassiveSkillCategorySelectionPanel.cs` (Vector Gesture Parsing)
+* `ActiveSkillSlotListPanelV2.cs` & `BackendSkillSlotListPanel.cs` (Dynamic Matrix Layouts)
