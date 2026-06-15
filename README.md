@@ -1,6 +1,12 @@
 # Production-Grade Systems Framework (Prototype for Project ALF)
 ---
 
+## ⚠️ NDA COMPLIANCE NOTICE
+
+**This repository contains proprietary intellectual property under strict Non-Disclosure Agreement.** All gameplay-specific terminology has been abstracted into standardized enterprise engineering terminology to protect core game mechanics while showcasing architectural implementation patterns.
+
+---
+
 [![Portfolio](https://img.shields.io/badge/Portfolio-Live_Demo-00C5FF?style=for-the-badge&logo=react&logoColor=white)](https://roadslayer0823.github.io/2026-portfolio-website/)
 
 ---
@@ -12,10 +18,6 @@ This system has been fully integrated and deployed into my centralized productio
 🔗 **[Access the Interactive Live Demo Here](https://roadslayer0823.github.io/2026-portfolio-website/)**
 
 ---
-
-## ⚠️ NDA COMPLIANCE NOTICE
-
-**This repository contains proprietary intellectual property under strict Non-Disclosure Agreement.** All gameplay-specific terminology has been abstracted into standardized enterprise engineering terminology to protect core game mechanics while showcasing architectural implementation patterns.
 
 ## Section 1: Core Engineering & Architectural Achievements
 
